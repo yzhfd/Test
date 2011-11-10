@@ -6,14 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * 
+ * @Route("/article")
+ * @author kail
+ */
 class ArticleController extends Controller
 {
     /**
-     * @Route("/hello/{name}")
+     * @Route("/index")
      * @Template()
      */
-    public function indexAction($name)
+    public function indexAction()
     {
-        return array('name' => $name);
+        
     }
 }
