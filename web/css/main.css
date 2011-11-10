@@ -52,3 +52,9 @@ ol, ul { list-style: none; }
 	width: 80px; height: 80px;
 	background-color: rgba(255, 255, 255, 0.5);
 }
+li.ui-selected {
+	background-color: rgba(255, 0, 0, 0.5);
+}
+#hot_dialog {
+	display: none;
+}

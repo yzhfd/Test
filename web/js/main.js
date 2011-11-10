@@ -70,41 +70,11 @@ var PagesView = Backbone.View.extend({
 /**
  * Hot
  */
-var PageCanvas = Backbone.View.extend({
-	events: {
-		"click": "onClick"
-	},
-    initialize: function() {
-		this.el = $('#page_canvas');
-		this.delegateEvents(); // need be called after el is ready
-		
-		this.hots = new Hots;
-		this.hots.bind('add', this.addOne, this);
-		this.hots.bind('reset', this.addAll, this);
-		
-		this.hots.fetch();
-	},
-	addOne: function(hot){
-	    var hv = new HotView({model:hot});
-	    var hotel = $(hv.render().el);
-		
-	    $(this.el).append(hotel);
-	},
-	addAll: function(){		
-		this.hots.each(this.addOne, this);
-	},
-	onClick: function(e){
-		this.hots.create(new Hot);
-	},
-	render: function(){
-		return this;
-	}
-});
-
 // @todo extend Hot for link, video, gallery, etc
 var Hot = Backbone.Model.extend({
 	defaults: {
 		index: 0,
+		stackIndex: 1,
 		x: 0,
 		y: 0,
 		width: 80,
@@ -128,7 +98,7 @@ var HotView = Backbone.View.extend({
 	tagName: 'li',
     events: {
       "click": "select",
-      "dblclick": "remove"
+      "dblclick": "edit"
     },
     initialize: function(){
     	//this.model.bind('change:index', this.render, this);
@@ -168,6 +138,9 @@ var HotView = Backbone.View.extend({
 		e.stopPropagation();
 		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)", zIndex: 100});
     },
+    edit: function(){
+    	$('#hot_dialog').dialog({show:'fade'});
+    },
     remove: function(e){
     	$(this.el).fadeOut('fast', function(){
     		$(this).remove(); // use detach to support undo/redo etc
@@ -177,6 +150,47 @@ var HotView = Backbone.View.extend({
     render: function(){
         return this;
     }
+});
+
+var PageCanvas = Backbone.View.extend({
+	events: {
+		"click": "onClick"
+	},
+    initialize: function() {
+		this.el = $('#page_canvas');
+		this.delegateEvents(); // need be called after el is ready
+		
+		this.hots = new Hots;
+		this.hots.bind('add', this.addOne, this);
+		this.hots.bind('reset', this.addAll, this);
+		
+		this.hots.fetch();
+	},
+	addOne: function(hot){
+	    var hv = new HotView({model:hot});
+	    var hotel = $(hv.render().el);
+		
+	    $(this.el).append(hotel);
+	},
+	addAll: function(){		
+		this.hots.each(this.addOne, this);
+	},
+	onClick: function(e){
+		var hot = new Hot();
+		var x = e.pageX - $(this.el).offset().left;
+		var y = e.pageY - $(this.el).offset().top;
+		var w = hot.get('width');
+		var h = hot.get('height');
+		hot.set({
+			x: x-w/2,
+			y: y-h/2
+		});
+		this.hots.add(hot);
+		hot.save();
+	},
+	render: function(){
+		return this;
+	}
 });
 
 $(function(){
@@ -194,9 +208,14 @@ $(function(){
 	$('#addpage').click(function(){
 		pages.create({index:5});
 	});
-	
-
 	window.pageCanvas = new PageCanvas;
+	/*$('#selenable').change(function(){
+		if ($(this).attr('checked')){
+			$(pageCanvas.el).selectable({disabled:false});
+		} else {
+			$(pageCanvas.el).selectable({disabled:true});
+		}
+	});*/
 	
 	//window.console = $('#info_panel');
 	/*$('#page_editor').click(function(e){
