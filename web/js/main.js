@@ -79,8 +79,8 @@ var Hot = Backbone.Model.extend({
 		stackIndex: 1,
 		x: 0,
 		y: 0,
-		width: 80,
-		height: 80,
+		width: 40,
+		height: 40,
 		selected: false
 	},
 	select: function() {
@@ -229,8 +229,10 @@ var PageCanvas = Backbone.View.extend({
 	},
 	endDraw: function(e) {
 		this.began = false;
-		this.hot.save();
-		this.hot = null;
+		if (this.hot) {
+			this.hot.save();
+			this.hot = null;
+		}
 	},
 	onClick: function(e) {
 		var hot = new Hot();
