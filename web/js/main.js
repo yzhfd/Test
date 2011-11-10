@@ -47,6 +47,7 @@ var PagesView = Backbone.View.extend({
     	this.pages.each(this.addOne, this);
     },
     render: function(){
+    	// @todo move to initialize but if empty, sortable will be wrong
 	    var pages = this.pages;
 		$(this.el).sortable({
 			opacity: 0.6,
@@ -86,7 +87,6 @@ var PageCanvas = Backbone.View.extend({
 	addOne: function(hot){
 	    var hv = new HotView({model:hot});
 	    var hotel = $(hv.render().el);
-	    hotel.data('cid', hot.cid);
 		
 	    $(this.el).append(hotel);
 	},
@@ -94,7 +94,6 @@ var PageCanvas = Backbone.View.extend({
 		this.hots.each(this.addOne, this);
 	},
 	onClick: function(e){
-		console.log(e.pageX);
 		this.hots.create(new Hot);
 	},
 	render: function(){
@@ -134,19 +133,35 @@ var HotView = Backbone.View.extend({
     initialize: function(){
     	//this.model.bind('change:index', this.render, this);
     	
-    	$(this.el).addClass('hot');
-    	$(this.el).draggable({
+    	var hotel = $(this.el);
+    	hotel.addClass('hot');
+	    hotel.css({
+	    	left: this.model.get('x'),
+	    	top: this.model.get('y'),
+	    	width: this.model.get('width'),
+	    	height: this.model.get('height')
+	    });
+	    hotel.data('cid', this.model.cid);
+	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
-			drag: function(){
-				//console.text($('#page_editor .hot').position().left);
-			}
+			stop: function(){
+    			this.model.set({
+    				x: $(this.el).position().left,
+    				y: $(this.el).position().top
+    			});
+    			this.model.save();
+			}.bind(this)
 		}).resizable({
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
-			resize: function(){
-				//console.text($(this).outerWidth());
-			}
+			stop: function(){
+				this.model.set({
+					width: $(this.el).width(),
+					height: $(this.el).height()
+				});
+				this.model.save();
+			}.bind(this)
 		});
     },
     select: function(e){
@@ -168,6 +183,7 @@ $(function(){
 	var pages = new Pages;
 	var pagesView = new PagesView(pages);
 	pagesView.render();
+	
 	/*
 	pages.create({index:1});
 	pages.create({index:2});
