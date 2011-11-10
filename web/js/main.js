@@ -83,6 +83,7 @@ var Hot = Backbone.Model.extend({
 	},
 	select: function(){
 		this.set({selected:true});
+		// deselect all others
 	},
 	deselect: function(){
 		this.set({selected:false});
@@ -137,6 +138,8 @@ var HotView = Backbone.View.extend({
     select: function(e){
 		e.stopPropagation();
 		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)", zIndex: 100});
+		// @todo ctrl/cmd+click
+		this.model.select();
     },
     edit: function(){
     	$('#hot_dialog').dialog({show:'fade'});
@@ -157,6 +160,7 @@ var PageCanvas = Backbone.View.extend({
 		"click": "onClick"
 	},
     initialize: function() {
+		$(document).keypress(this.onKeypress);
 		this.el = $('#page_canvas');
 		this.delegateEvents(); // need be called after el is ready
 		
@@ -187,6 +191,12 @@ var PageCanvas = Backbone.View.extend({
 		});
 		this.hots.add(hot);
 		hot.save();
+	},
+	onKeypress: function(e){
+		e.stopPropagation();
+		console.log(e.which);
+		// @todo on canvas or not
+		return false;
 	},
 	render: function(){
 		return this;
