@@ -1,3 +1,18 @@
+MagendPageBundle:
+    resource: "@MagendPageBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendArticleBundle:
+    resource: "@MagendArticleBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendIssueBundle:
+    resource: "@MagendIssueBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 # Internal routing configuration to handle ESI
 #_internal:
 #   resource: "@FrameworkBundle/Resources/config/routing/internal.xml"
