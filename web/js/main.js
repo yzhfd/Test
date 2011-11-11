@@ -85,14 +85,18 @@ var Hot = Backbone.Model.extend({
 	},
 	select: function() {
 		this.set({selected:true});
-		// deselect all others
 	},
 	deselect: function() {
 		this.set({selected:false});
 	},
 	validate: function(attrs) {
-		if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
-			return 'minsize is limited';
+		if (attrs) {
+			if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
+				return 'minsize is limited';
+			}
+			if (attrs.x < 0 || attrs.x > 1024 || attrs.y < 0 || attrs.y > 768) {
+				return 'no beyond border';
+			}
 		}
 	}
 });
@@ -105,12 +109,16 @@ var Hots = Backbone.Collection.extend({
 var HotView = Backbone.View.extend({
 	tagName: 'li',
     events: {
-      "click": "select",
+      "click": "onClick",
       "dblclick": "edit"
     },
     initialize: function() {
     	this.model.bind('change:width', this.resize, this);
     	this.model.bind('change:height', this.resize, this);
+    	this.model.bind('change:x', this.pos, this);
+    	this.model.bind('change:y', this.pos, this);
+    	this.model.bind('change:selected', this.toggle, this);
+    	this.model.bind('destroy', this.remove, this);
     	
     	var hotel = $(this.el);
     	hotel.addClass('hot');
@@ -146,11 +154,24 @@ var HotView = Backbone.View.extend({
 			}.bind(this)
 		});
     },
-    select: function(e) {
-		e.stopPropagation();
-		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)", zIndex: 100});
+    onClick: function(e) {
+		// e.stopPropagation();
+		
 		// @todo ctrl/cmd+click
-		this.model.select();
+    	if (!this.model.get('selected')) {
+    		this.model.select();
+    		// @todo deselect all others
+    	} else {
+    		this.model.deselect();
+    	}
+    	this.model.save();
+    },
+    toggle: function(){
+    	if (this.model.get('selected')) {
+    		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)"});
+    	} else {
+    		$(this.el).css({backgroundColor: "rgba(255, 255, 255, 0.5)"});
+    	}
     },
     edit: function() {
     	$('#hot_dialog').dialog({show:'fade'});
@@ -161,11 +182,16 @@ var HotView = Backbone.View.extend({
     		height: this.model.get('height')
     	});
     },
+    pos: function(){
+    	$(this.el).css({
+    		left: this.model.get('x'),
+    		top: this.model.get('y')
+    	});
+    },
     remove: function(e) {
     	$(this.el).fadeOut('fast', function() {
     		$(this).remove(); // use detach to support undo/redo etc
     	});
-    	this.model.destroy();
     },
     render: function() {
         return this;
@@ -174,7 +200,7 @@ var HotView = Backbone.View.extend({
 
 var PageCanvas = Backbone.View.extend({
 	events: {
-		//"click": "onClick",
+		"click": "onClick",
 		"mousedown": "beginDraw",
 		"mousemove": "draw",
 		"mouseup": "endDraw"
@@ -182,6 +208,39 @@ var PageCanvas = Backbone.View.extend({
     initialize: function() {
 		$(document).keypress(this.onKeypress);
 		this.el = $('#page_canvas');
+		
+		// canvas img is focusable not canvas itself, for drag and resize handlers might go out of outline
+		var canvasImgEl = $('<div id="page_canvas_img" tabIndex="1"></div');
+		canvasImgEl.insertBefore(this.el);
+		canvasImgEl.css({
+			position: 'absolute',
+			// outline: '1px solid red',
+			width: this.el.width(),
+			height: this.el.height(),
+			backgroundImage: 'url(../../images/page.jpg)'
+		});
+		canvasImgEl.keydown(function(e){
+			if ($(e.target).is('input') || $(e.target).is('textarea')) {
+				// do
+				return;
+			}
+			if (e.which == 8 || e.which == 46) {
+				var delHots = [];
+				this.hots.each(function(hot){
+					if (hot.get('selected')) {
+						delHots.push(hot);
+					}
+				});
+				while (delHots.length) {
+					var hot = delHots.pop();
+					hot.destroy();
+				}
+			}
+			e.stopPropagation();
+			return false;
+		}.bind(this));
+		this.canvasImgEl = canvasImgEl;
+		
 		this.delegateEvents(); // need be called after el is ready
 		
 		this.hots = new Hots;
@@ -200,6 +259,8 @@ var PageCanvas = Backbone.View.extend({
 		this.hots.each(this.addOne, this);
 	},
 	beginDraw: function(e) {
+		//console.log(e.metaKey);
+		
 		if (e.target.id == $(this.el).attr('id')) {
 			this.began = true;
 			this.startX = e.pageX;
@@ -208,51 +269,72 @@ var PageCanvas = Backbone.View.extend({
 	},
 	draw: function(e) {
 		if (this.began) {
-			if ((e.pageX - this.startX) + (e.pageY - this.startY) < 10) {
+			if (Math.abs(e.pageX - this.startX) < 10 || Math.abs(e.pageY - this.startY) < 10) {
 				return;
 			}
 			
 			this.began = false;
 			
-			this.hot = this.hots.create({
-				x: e.pageX - $(this.el).offset().left,
-				y: e.pageY - $(this.el).offset().top,
+			this.ns = e.pageY > this.startY ? 's' : 'n';
+			this.ew = e.pageX > this.startX ? 'e' : 'w';
+			var attrs = {
+				x: this.startX - $(this.el).offset().left,
+				y: this.startY - $(this.el).offset().top,
 				width: 10,
 				height: 10
-			});
+			};
+			
+			if (this.ns == 'n') {
+				attrs.y -= 10;
+			}
+			if (this.ew == 'w') {
+				attrs.x -= 10;
+			}
+			
+			this.hot = this.hots.create(attrs);
 		} else if (this.hot) {
-			this.hot.set({
-				width: e.pageX - this.startX,
-				height: e.pageY - this.startY
-			});
+			var attrs = {
+				x: this.hot.get('x'),
+				y: this.hot.get('y')
+			};
+			var ns = e.pageY > this.startY ? 's' : 'n';
+			var ew = e.pageX > this.startX ? 'e' : 'w';
+			// cannot drag over the original direction
+			if (ew == this.ew) attrs.width = Math.abs(e.pageX - this.startX);
+			if (ns == this.ns) attrs.height = Math.abs(e.pageY - this.startY);
+			if (this.ns == 'n') {
+				attrs.y -= attrs.height - this.hot.get('height');
+			}
+			if (this.ew == 'w') {
+				attrs.x -= attrs.width - this.hot.get('width');
+			}
+			this.hot.set(attrs);
 		}
 	},
 	endDraw: function(e) {
 		this.began = false;
+		this.canvasImgEl.focus();
 		if (this.hot) {
+			this.hot.select();
 			this.hot.save();
 			this.hot = null;
 		}
 	},
 	onClick: function(e) {
+		
+		/*
 		var hot = new Hot();
 		var x = e.pageX - $(this.el).offset().left;
 		var y = e.pageY - $(this.el).offset().top;
 		var w = hot.get('width');
 		var h = hot.get('height');
-		//alert(x+':'+y+':'+w+':'+h);return;
+		
 		hot.set({
 			x: x-w/2,
 			y: y-h/2
 		});
 		this.hots.add(hot);
-		hot.save();
-	},
-	onKeypress: function(e) {
-		//e.stopPropagation();
-		console.log(e.which);
-		// @todo on canvas or not
-		//return false;
+		hot.save();*/
 	},
 	render: function() {
 		return this;
@@ -285,33 +367,4 @@ $(function() {
 	$('#flushall').click(function(){
 		localStorage.clear();
 	});
-	//window.console = $('#info_panel');
-	/*$('#page_editor').click(function(e) {
-		var hotel = $('<li/>', {
-			'class': 'hot'
-		}).appendTo($(this));
-		
-		hotel.draggable({
-			snap: true,
-			containment: 'parent',
-			drag: function() {
-				//console.text($('#page_editor .hot').position().left);
-			}
-		}).resizable({
-			containment: 'parent',
-			handles: 'n, e, s, w, ne, se, sw, nw',
-			resize: function() {
-				console.text($(this).outerWidth());
-			}
-		}).click(function(e) {
-			e.stopPropagation();
-			$(this).css({backgroundColor: "rgba(0, 125, 255, 0.5)", zIndex: 100});
-		});
-		//console.log(e.pageY, $(this).offset().top);
-		hotel.css({
-			left:e.pageX - $(this).offset().left,
-			top:e.pageY - $(this).offset().top
-		});
-	});*/
-
 });

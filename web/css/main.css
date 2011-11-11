@@ -37,10 +37,21 @@ ol, ul { list-style: none; }
 
 /*page editor*/
 #page_canvas {
-	position: relative; /*!important must be positioned for tracking positions of inside elements */
+	position: absolute; /*!important must be positioned for tracking positions of inside elements */
 	width: 1024px;
 	height: 768px;
-	background-image: url('../images/page.jpg');
+	margin: 0; padding: 0;
+}
+#hothelper {
+	position: absolute;
+	width: 10px; height: 10px;
+	background-color: red;
+}
+#hothelper .ui-resizable-handle {
+	cursor: auto !important;
+}
+#hothelper .ui-icon {
+	background-image: none;
 }
 #info_panel {
 	position: absolute;
