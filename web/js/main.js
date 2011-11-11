@@ -110,6 +110,7 @@ var HotView = Backbone.View.extend({
 	tagName: 'li',
     events: {
       "mousedown": "onMousedown",
+      "mouseup": "onMouseup",
       "dblclick": "edit"
     },
     initialize: function() {
@@ -133,38 +134,40 @@ var HotView = Backbone.View.extend({
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
-			stop: function() {
+			stop: _.bind(function() {
     			this.model.set({
     				x: $(this.el).position().left,
     				y: $(this.el).position().top
     			});
     			this.model.save();
-			}.bind(this)
+			}, this)
 		}).resizable({
 			minWidth: this.model.minWidth | 10,
 			minHeight: this.model.minHeight | 10,
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
-			stop: function() {
+			stop: _.bind(function() {
 				this.model.set({
 					width: $(this.el).width(),
 					height: $(this.el).height()
 				});
 				this.model.save();
-			}.bind(this)
+			}, this)
 		});
     },
     onMousedown: function(e) {
-		//e.stopPropagation();
-		
-		// @todo ctrl/cmd+click
-    	if (!this.model.get('selected')) {
+    	this.model.select();
+    	this.model.save();
+    },
+    onMouseup: function(e) {
+    	// not support deselect by clicking on selected element
+    	// if want to, then need check whether its from drag or resize
+    	/*if (!this.model.get('selected')) {
     		this.model.select();
-    		// @todo deselect all others
     	} else {
     		this.model.deselect();
     	}
-    	this.model.save();
+    	this.model.save();*/
     },
     toggle: function(){
     	if (this.model.get('selected')) {
@@ -205,7 +208,6 @@ var PageCanvas = Backbone.View.extend({
 		"mouseup": "mouseup"
 	},
     initialize: function() {
-		$(document).keypress(this.onKeypress);
 		this.el = $('#page_canvas');
 		
 		// canvas img is focusable not canvas itself, for drag and resize handlers might go out of outline
@@ -218,7 +220,7 @@ var PageCanvas = Backbone.View.extend({
 			height: this.el.height(),
 			backgroundImage: 'url(../../images/page.jpg)'
 		});
-		canvasImgEl.keydown(function(e){
+		canvasImgEl.keydown(_.bind(function(e){
 			if ($(e.target).is('input') || $(e.target).is('textarea')) {
 				// do
 				return;
@@ -237,7 +239,7 @@ var PageCanvas = Backbone.View.extend({
 			}
 			e.stopPropagation();
 			return false;
-		}.bind(this));
+		}, this));
 		this.canvasImgEl = canvasImgEl;
 		
 		this.delegateEvents(); // need be called after el is ready
@@ -260,13 +262,17 @@ var PageCanvas = Backbone.View.extend({
 	addAll: function() {		
 		this.hots.each(this.addOne, this);
 	},
-	mousedown: function(e){		
+	mousedown: function(e){
 		var multi = e.metaKey || e.ctrlKey;
 		if (!multi) {
 			var onHot = null;
+			// exclude the hot that mouse is on, as the hot itself will handle it
 			if ($(e.target).is('.hot')) {
 				onHot = $(e.target);
+			} else if ($(e.target).parent().is('.hot')) { // mousedown may be on drag handles
+				onHot = $(e.target).parent();
 			}
+			
 			this.hots.each(function(hot){
 				if (!onHot || hot.cid != onHot.data('cid')) {
 					hot.deselect();
