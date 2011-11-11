@@ -109,7 +109,7 @@ var Hots = Backbone.Collection.extend({
 var HotView = Backbone.View.extend({
 	tagName: 'li',
     events: {
-      "click": "onClick",
+      "mousedown": "onMousedown",
       "dblclick": "edit"
     },
     initialize: function() {
@@ -154,8 +154,8 @@ var HotView = Backbone.View.extend({
 			}.bind(this)
 		});
     },
-    onClick: function(e) {
-		// e.stopPropagation();
+    onMousedown: function(e) {
+		//e.stopPropagation();
 		
 		// @todo ctrl/cmd+click
     	if (!this.model.get('selected')) {
@@ -200,10 +200,9 @@ var HotView = Backbone.View.extend({
 
 var PageCanvas = Backbone.View.extend({
 	events: {
-		"click": "onClick",
-		"mousedown": "beginDraw",
-		"mousemove": "draw",
-		"mouseup": "endDraw"
+		"mousedown": "mousedown",
+		"mousemove": "mousemove",
+		"mouseup": "mouseup"
 	},
     initialize: function() {
 		$(document).keypress(this.onKeypress);
@@ -248,6 +247,9 @@ var PageCanvas = Backbone.View.extend({
 		this.hots.bind('reset', this.addAll, this);
 		
 		this.hots.fetch();
+		this.hots.each(function(hot){
+			hot.deselect();
+		});
 	},
 	addOne: function(hot) {
 	    var hv = new HotView({model:hot});
@@ -258,7 +260,29 @@ var PageCanvas = Backbone.View.extend({
 	addAll: function() {		
 		this.hots.each(this.addOne, this);
 	},
-	beginDraw: function(e) {
+	mousedown: function(e){		
+		var multi = e.metaKey || e.ctrlKey;
+		if (!multi) {
+			var onHot = null;
+			if ($(e.target).is('.hot')) {
+				onHot = $(e.target);
+			}
+			this.hots.each(function(hot){
+				if (!onHot || hot.cid != onHot.data('cid')) {
+					hot.deselect();
+				}
+			});
+		}
+		
+		this._beginDraw(e);
+	},
+	mousemove: function(e){
+		this._draw(e);
+	},
+	mouseup: function(e){
+		this._endDraw(e);
+	},
+	_beginDraw: function(e) {
 		//console.log(e.metaKey);
 		
 		if (e.target.id == $(this.el).attr('id')) {
@@ -267,7 +291,7 @@ var PageCanvas = Backbone.View.extend({
 			this.startY = e.pageY;
 		}
 	},
-	draw: function(e) {
+	_draw: function(e) {
 		if (this.began) {
 			if (Math.abs(e.pageX - this.startX) < 10 || Math.abs(e.pageY - this.startY) < 10) {
 				return;
@@ -275,8 +299,6 @@ var PageCanvas = Backbone.View.extend({
 			
 			this.began = false;
 			
-			this.ns = e.pageY > this.startY ? 's' : 'n';
-			this.ew = e.pageX > this.startX ? 'e' : 'w';
 			var attrs = {
 				x: this.startX - $(this.el).offset().left,
 				y: this.startY - $(this.el).offset().top,
@@ -284,6 +306,8 @@ var PageCanvas = Backbone.View.extend({
 				height: 10
 			};
 			
+			this.ns = e.pageY > this.startY ? 's' : 'n';
+			this.ew = e.pageX > this.startX ? 'e' : 'w';
 			if (this.ns == 'n') {
 				attrs.y -= 10;
 			}
@@ -292,6 +316,7 @@ var PageCanvas = Backbone.View.extend({
 			}
 			
 			this.hot = this.hots.create(attrs);
+			this.hot.select();
 		} else if (this.hot) {
 			var attrs = {
 				x: this.hot.get('x'),
@@ -311,30 +336,13 @@ var PageCanvas = Backbone.View.extend({
 			this.hot.set(attrs);
 		}
 	},
-	endDraw: function(e) {
+	_endDraw: function(e) {
 		this.began = false;
 		this.canvasImgEl.focus();
 		if (this.hot) {
-			this.hot.select();
 			this.hot.save();
 			this.hot = null;
 		}
-	},
-	onClick: function(e) {
-		
-		/*
-		var hot = new Hot();
-		var x = e.pageX - $(this.el).offset().left;
-		var y = e.pageY - $(this.el).offset().top;
-		var w = hot.get('width');
-		var h = hot.get('height');
-		
-		hot.set({
-			x: x-w/2,
-			y: y-h/2
-		});
-		this.hots.add(hot);
-		hot.save();*/
 	},
 	render: function() {
 		return this;
