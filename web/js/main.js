@@ -75,19 +75,21 @@ var Hot = Backbone.Model.extend({
 	minWidth: 10,
 	minHeight: 10,
 	defaults: {
-		index: 0,
-		stackIndex: 1,
+		// index: 0,
+		// stackIndex: 1,
 		x: 0,
 		y: 0,
 		width: 40,
-		height: 40,
-		selected: false
+		height: 40
 	},
+	selected: false, // should not be attribute, as it cannot be persistent
 	select: function() {
-		this.set({selected:true});
+		this.selected = true;
+		this.trigger('select');
 	},
 	deselect: function() {
-		this.set({selected:false});
+		this.selected = false;
+		this.trigger('deselect');
 	},
 	validate: function(attrs) {
 		if (attrs) {
@@ -119,8 +121,9 @@ var HotView = Backbone.View.extend({
     	this.model.bind('change:height', this.resize, this);
     	this.model.bind('change:x', this.pos, this);
     	this.model.bind('change:y', this.pos, this);
-    	this.model.bind('change:selected', this.toggle, this);
-    	this.model.bind('destroy', this.remove, this);
+    	this.model.bind('select', this.toggle, this);
+    	this.model.bind('deselect', this.toggle, this);
+    	this.model.bind('remove', this.remove, this);
     	
     	var hotel = $(this.el);
     	hotel.addClass('hot');
@@ -163,7 +166,7 @@ var HotView = Backbone.View.extend({
     onMouseup: function(e) {
     	// not support deselect by clicking on selected element
     	// if want to, then need check whether its from drag or resize
-    	/*if (!this.model.get('selected')) {
+    	/*if (!this.model.selected) {
     		this.model.select();
     	} else {
     		this.model.deselect();
@@ -171,7 +174,7 @@ var HotView = Backbone.View.extend({
     	this.model.save();*/
     },
     toggle: function(){
-    	if (this.model.get('selected')) {
+    	if (this.model.selected) {
     		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)"});
     	} else {
     		$(this.el).css({backgroundColor: "rgba(255, 255, 255, 0.5)"});
@@ -193,6 +196,7 @@ var HotView = Backbone.View.extend({
     	});
     },
     remove: function(e) {
+    	this.model.destroy();
     	$(this.el).fadeOut('fast', function() {
     		$(this).remove(); // use detach to support undo/redo etc
     	});
@@ -211,6 +215,17 @@ var PageCanvas = Backbone.View.extend({
     initialize: function() {
 		this.el = $('#page_canvas');
 		
+		$(document).mousemove(_.bind(function(e){
+			if (this.drawing) {
+				this.mousemove(e);
+			}
+		}, this));
+		$(document).mouseup(_.bind(function(e){
+			if (this.drawing) {
+				this.mouseup(e);
+			}
+		}, this));
+		
 		// canvas img is focusable not canvas itself, for drag and resize handlers might go out of outline
 		var canvasImgEl = $('<div id="page_canvas_img" tabIndex="1"></div');
 		canvasImgEl.insertBefore(this.el);
@@ -221,6 +236,13 @@ var PageCanvas = Backbone.View.extend({
 			height: this.el.height(),
 			backgroundImage: 'url(../../images/page.jpg)'
 		});
+		canvasImgEl.focus(function(e){
+			// if it was just off
+			console.log('focus on');
+		});
+		canvasImgEl.blur(function(e){
+			console.log('focus off');
+		});
 		canvasImgEl.keydown(_.bind(function(e){
 			if ($(e.target).is('input') || $(e.target).is('textarea')) {
 				// do
@@ -229,14 +251,12 @@ var PageCanvas = Backbone.View.extend({
 			if (e.which == 8 || e.which == 46) {
 				var delHots = [];
 				this.hots.each(function(hot){
-					if (hot.get('selected')) {
+					if (hot.selected) {
 						delHots.push(hot);
 					}
 				});
-				while (delHots.length) {
-					var hot = delHots.pop();
-					hot.destroy();
-				}
+				// destroyed in HotView
+				this.hots.remove(delHots);
 			}
 			e.stopPropagation();
 			return false;
@@ -248,11 +268,9 @@ var PageCanvas = Backbone.View.extend({
 		this.hots = new Hots;
 		this.hots.bind('add', this.addOne, this);
 		this.hots.bind('reset', this.addAll, this);
+		// remove is bound in HotView
 		
 		this.hots.fetch();
-		this.hots.each(function(hot){
-			hot.deselect();
-		});
 	},
 	addOne: function(hot) {
 	    var hv = new HotView({model:hot});
@@ -287,10 +305,12 @@ var PageCanvas = Backbone.View.extend({
 		this._draw(e);
 	},
 	mouseup: function(e){
+		this.drawing = false;
 		this._endDraw(e);
 	},
 	_beginDraw: function(e) {
 		if (e.target.id == $(this.el).attr('id')) {
+			this.drawing = true;
 			this.began = true;
 			this.startX = e.pageX;
 			this.startY = e.pageY;
@@ -329,15 +349,23 @@ var PageCanvas = Backbone.View.extend({
 			};
 			var ns = e.pageY > this.startY ? 's' : 'n';
 			var ew = e.pageX > this.startX ? 'e' : 'w';
+			
+			// no out of canvas border
+			var mouseX = Math.max(e.pageX, this.el.offset().left);
+			mouseX = Math.min(mouseX, this.el.offset().left + this.el.width());
+			var mouseY = Math.max(e.pageY, this.el.offset().top);
+			mouseY = Math.min(mouseY, this.el.offset().top + this.el.height());
+			
 			// cannot drag over the original direction
-			if (ew == this.ew) attrs.width = Math.abs(e.pageX - this.startX);
-			if (ns == this.ns) attrs.height = Math.abs(e.pageY - this.startY);
-			if (this.ns == 'n') {
+			if (ew == this.ew) attrs.width = Math.abs(mouseX - this.startX);
+			if (ns == this.ns) attrs.height = Math.abs(mouseY - this.startY);
+			if (this.ns == 'n' && ns == 'n') {
 				attrs.y -= attrs.height - this.hot.get('height');
 			}
-			if (this.ew == 'w') {
+			if (this.ew == 'w' && ew == 'w') {
 				attrs.x -= attrs.width - this.hot.get('width');
 			}
+			
 			this.hot.set(attrs);
 		}
 	},
@@ -353,6 +381,14 @@ var PageCanvas = Backbone.View.extend({
 		return this;
 	}
 });
+
+var UndoManager = Backbone.Collection.extend({
+	model: Hot,
+	manage: function(models){
+		
+	}
+});
+window.undoManager = new UndoManager();
 
 $(function() {
 	var pages = new Pages;
