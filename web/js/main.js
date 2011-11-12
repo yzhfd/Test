@@ -82,7 +82,8 @@ var Hot = Backbone.Model.extend({
 		width: 40,
 		height: 40
 	},
-	selected: false, // should not be attribute, as it cannot be persistent
+	rendered: false,
+	selected: false, // should not be attribute, as it should be persistent
 	select: function() {
 		this.selected = true;
 		this.trigger('select');
@@ -100,6 +101,8 @@ var Hot = Backbone.Model.extend({
 			if (attrs.x < 0 || attrs.x > 1024 || attrs.y < 0 || attrs.y > 768) {
 				return 'no beyond border';
 			}
+			
+			// @todo type and its data or dialog cannot be closed, nor can be published
 		}
 	}
 });
@@ -117,6 +120,8 @@ var HotView = Backbone.View.extend({
       "dblclick": "edit"
     },
     initialize: function() {
+    	this.model.rendered = true;
+    	
     	this.model.bind('change:width', this.resize, this);
     	this.model.bind('change:height', this.resize, this);
     	this.model.bind('change:x', this.pos, this);
@@ -124,6 +129,7 @@ var HotView = Backbone.View.extend({
     	this.model.bind('select', this.toggle, this);
     	this.model.bind('deselect', this.toggle, this);
     	this.model.bind('remove', this.remove, this);
+    	// this.model.bind('destroy', this.remove, this); // loop as destroy on remove
     	
     	var hotel = $(this.el);
     	hotel.addClass('hot');
@@ -161,7 +167,6 @@ var HotView = Backbone.View.extend({
     },
     onMousedown: function(e) {
     	this.model.select();
-    	this.model.save();
     },
     onMouseup: function(e) {
     	// not support deselect by clicking on selected element
@@ -170,8 +175,7 @@ var HotView = Backbone.View.extend({
     		this.model.select();
     	} else {
     		this.model.deselect();
-    	}
-    	this.model.save();*/
+    	}*/
     },
     toggle: function(){
     	if (this.model.selected) {
@@ -258,6 +262,7 @@ var PageCanvas = Backbone.View.extend({
 				// destroyed in HotView
 				this.hots.remove(delHots);
 			}
+			// @todo if esc, what to do, like cancel the creation of the hot
 			e.stopPropagation();
 			return false;
 		}, this));
@@ -273,6 +278,9 @@ var PageCanvas = Backbone.View.extend({
 		this.hots.fetch();
 	},
 	addOne: function(hot) {
+		if (hot.rendered) {
+			return;
+		}
 	    var hv = new HotView({model:hot});
 	    var hotel = $(hv.render().el);
 		
@@ -340,7 +348,11 @@ var PageCanvas = Backbone.View.extend({
 				attrs.x -= 10;
 			}
 			
-			this.hot = this.hots.create(attrs);
+			// not added to hots, as it's not truly created until mouseup
+			// this also has great impact on undo/redo,
+			// because from add to change attriutes, there are a series of changes
+			this.hot = new Hot(attrs);
+			this.addOne(this.hot);
 			this.hot.select();
 		} else if (this.hot) {
 			var attrs = {
@@ -373,6 +385,7 @@ var PageCanvas = Backbone.View.extend({
 		this.began = false;
 		this.canvasImgEl.focus();
 		if (this.hot) {
+			this.hots.add(this.hot);
 			this.hot.save();
 			this.hot = null;
 		}
@@ -383,9 +396,8 @@ var PageCanvas = Backbone.View.extend({
 });
 
 var UndoManager = Backbone.Collection.extend({
-	model: Hot,
 	manage: function(models){
-		
+		// models.bind('add', this.);
 	}
 });
 window.undoManager = new UndoManager();
