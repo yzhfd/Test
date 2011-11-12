@@ -94,6 +94,7 @@ var Hot = Backbone.Model.extend({
 			if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
 				return 'minsize is limited';
 			}
+			// @todo replace hardwired 1024, 768
 			if (attrs.x < 0 || attrs.x > 1024 || attrs.y < 0 || attrs.y > 768) {
 				return 'no beyond border';
 			}
@@ -289,8 +290,6 @@ var PageCanvas = Backbone.View.extend({
 		this._endDraw(e);
 	},
 	_beginDraw: function(e) {
-		//console.log(e.metaKey);
-		
 		if (e.target.id == $(this.el).attr('id')) {
 			this.began = true;
 			this.startX = e.pageX;
