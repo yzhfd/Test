@@ -200,10 +200,11 @@ var HotView = Backbone.View.extend({
     	});
     },
     remove: function(e) {
-    	this.model.destroy();
+    	// this.model.destroy(); // not really destroyed but garbaged, so can be undone
     	$(this.el).fadeOut('fast', function() {
     		$(this).remove(); // use detach to support undo/redo etc
     	});
+    	this.model.rendered = false;
     },
     render: function() {
         return this;
@@ -283,6 +284,8 @@ var PageCanvas = Backbone.View.extend({
 		if (hot.rendered) {
 			return;
 		}
+		// !important, model might be removed from collection but still stored
+		hot.localStorage = this.hots.localStorage;
 	    var hv = new HotView({model:hot});
 	    var hotel = $(hv.render().el);
 		
@@ -403,6 +406,17 @@ var PageCanvas = Backbone.View.extend({
 window.UndoManager = function(models){
 	this.models = models;
 	
+	var close = _.bind(function(e){
+		var models = _.toArray(this.recycleBin);
+		while (models.length > 0) {
+			var model = models.pop();
+			model.destroy();
+		}
+		this.recycleBin = {};
+	}, this);
+	$(window).unload(close);
+	//$(window).bind('beforeunload', close);
+	
 	models.bind('add', this._add, this);
 	models.bind('remove', this._remove, this);
 	models.bind('change', this._change, this);
@@ -411,10 +425,11 @@ _.extend(UndoManager.prototype, {
 	pointer: -1,
 	states: [],
 	prevTime: 0,
+	recycleBin: {},
 	_save: function(obj) {
 		// triggered by undo/redo
-		if (this.fromHere) {
-			this.fromHere = false;
+		if (this.byUndoredo) {
+			this.byUndoredo = false;
 			return;
 		}
 		
@@ -425,7 +440,10 @@ _.extend(UndoManager.prototype, {
 			objs.push(obj);
 		} else {
 			++this.pointer;
-			this.states.splice(this.pointer, 0, [obj]);
+			while (this.pointer < this.states.length) {
+				this.states.pop();
+			}
+			this.states.push([obj]);
 		}
 		this.prevTime = now;
 	},
@@ -437,6 +455,7 @@ _.extend(UndoManager.prototype, {
 		});
 	},
 	_remove: function(model){
+		this.recycleBin[model.cid] = model;
 		this._save({
 			id: model.id,
 			cid: model.cid,
@@ -450,56 +469,46 @@ _.extend(UndoManager.prototype, {
 			attrs: model.previousAttributes()
 		});
 	},
+	_do: function(){
+		var objs = this.states[this.pointer];
+		_.each(objs, function(obj){
+			var model = this.models.getByCid(obj.cid);
+			if (model) {
+				if (obj.id) {
+					var attrs = $.extend(true, {}, model.attributes); // deep copy
+					model.set(obj.attrs);
+					obj.attrs = attrs;
+					model.save();
+				} else {
+					obj.id = model.id;
+					this.models.remove(model);
+					this.recycleBin[model.cid] = model;
+				}
+			} else {
+				var model = this.recycleBin[obj.cid];
+				delete this.recycleBin[obj.cid]
+				model = this.models.add(model);
+				obj.id = null;
+			}
+		}, this);
+	},
 	undo: function(){
 		if (this.pointer < 0) {
 			return;
 		}
 		
-		this.fromHere = true;
-		
-		var objs = this.states[this.pointer];
-		_.each(objs, function(obj){
-			var model = this.models.getByCid(obj.cid);
-			if (model) {
-				if (model.id) {
-					var attrs = model.attributes;
-					model.set(obj.attrs);
-					obj.attrs = attrs;
-					model.save();
-				} else {
-					// @todo exchange model's id with obj's
-					this.models.remove(model);
-				}
-			} else {
-				model = this.models.create(obj.attrs);
-				model.cid = obj.cid;
-			}
-		}, this);
-		
+		this.byUndoredo = true;
+		this._do();		
 		--this.pointer;
 	},
 	redo: function(){
+		if (this.pointer+1 >= this.states.length) {
+			return;
+		}
 		++this.pointer;
 		
-		this.fromHere = true;
-		
-		var objs = this.states[this.pointer];
-		_.each(objs, function(obj){
-			var model = this.models.getByCid(obj.cid);
-			if (model) {
-				if (model.id) {
-					var attrs = model.attributes();
-					model.set(obj.attrs);
-					obj.attrs = attrs;
-					model.save();
-				} else {
-					this.models.remove(model);
-				}
-			} else {
-				model = this.models.create(obj.attrs);
-				model.cid = obj.cid;
-			}
-		}, this);	
+		this.byUndoredo = true;
+		this._do();
 	}
 });
 
@@ -528,7 +537,13 @@ $(function() {
 		}
 	});*/
 	$('#flushall').click(function(){
+		localStorage.clear();
+	});
+	
+	$('#undo').click(function(){
 		undomanager.undo();
-		//localStorage.clear();
+	});
+	$('#redo').click(function(){
+		undomanager.redo();
 	});
 });
