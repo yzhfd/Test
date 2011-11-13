@@ -276,6 +276,8 @@ var PageCanvas = Backbone.View.extend({
 		// remove is bound in HotView
 		
 		this.hots.fetch();
+		
+		window.undomanager = new UndoManager(this.hots);
 	},
 	addOne: function(hot) {
 		if (hot.rendered) {
@@ -395,12 +397,110 @@ var PageCanvas = Backbone.View.extend({
 	}
 });
 
-var UndoManager = Backbone.Collection.extend({
-	manage: function(models){
-		// models.bind('add', this.);
+/**
+ * UndoManager class
+ */
+window.UndoManager = function(models){
+	this.models = models;
+	
+	models.bind('add', this._add, this);
+	models.bind('remove', this._remove, this);
+	models.bind('change', this._change, this);
+};
+_.extend(UndoManager.prototype, {
+	pointer: -1,
+	states: [],
+	prevTime: 0,
+	_save: function(obj) {
+		// triggered by undo/redo
+		if (this.fromHere) {
+			this.fromHere = false;
+			return;
+		}
+		
+		var now = new Date().getTime();
+		if (now - this.prevTime < 20) { // in milliseconds
+			// this action takes place at the same time as the previous one
+			var objs = _.last(this.states);
+			objs.push(obj);
+		} else {
+			++this.pointer;
+			this.states.splice(this.pointer, 0, [obj]);
+		}
+		this.prevTime = now;
+	},
+	_add: function(model){
+		this._save({
+			id: null, // model.id is undefined
+			cid: model.cid,
+			attrs: model.attributes
+		});
+	},
+	_remove: function(model){
+		this._save({
+			id: model.id,
+			cid: model.cid,
+			attrs: model.attributes
+		});
+	},
+	_change: function(model){
+		this._save({
+			id: model.id,
+			cid: model.cid,
+			attrs: model.previousAttributes()
+		});
+	},
+	undo: function(){
+		if (this.pointer < 0) {
+			return;
+		}
+		
+		this.fromHere = true;
+		
+		var objs = this.states[this.pointer];
+		_.each(objs, function(obj){
+			var model = this.models.getByCid(obj.cid);
+			if (model) {
+				if (model.id) {
+					var attrs = model.attributes;
+					model.set(obj.attrs);
+					obj.attrs = attrs;
+					model.save();
+				} else {
+					this.models.remove(model);
+				}
+			} else {
+				model = this.models.create(obj.attrs);
+				model.cid = obj.cid;
+			}
+		}, this);
+		
+		--this.pointer;
+	},
+	redo: function(){
+		++this.pointer;
+		
+		this.fromHere = true;
+		
+		var objs = this.states[this.pointer];
+		_.each(objs, function(obj){
+			var model = this.models.getByCid(obj.cid);
+			if (model) {
+				if (model.id) {
+					var attrs = model.attributes();
+					model.set(obj.attrs);
+					obj.attrs = attrs;
+					model.save();
+				} else {
+					this.models.remove(model);
+				}
+			} else {
+				model = this.models.create(obj.attrs);
+				model.cid = obj.cid;
+			}
+		}, this);	
 	}
 });
-window.undoManager = new UndoManager();
 
 $(function() {
 	var pages = new Pages;
@@ -413,7 +513,8 @@ $(function() {
 	pages.create({index:3});
 	pages.create({index:4});
 	*/
-
+	// console.log(_.uniqueId('fk'));
+	
 	$('#addpage').click(function() {
 		pages.create({index:5});
 	});
@@ -426,6 +527,7 @@ $(function() {
 		}
 	});*/
 	$('#flushall').click(function(){
-		localStorage.clear();
+		undomanager.undo();
+		//localStorage.clear();
 	});
 });
