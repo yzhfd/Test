@@ -467,6 +467,7 @@ _.extend(UndoManager.prototype, {
 					obj.attrs = attrs;
 					model.save();
 				} else {
+					// @todo exchange model's id with obj's
 					this.models.remove(model);
 				}
 			} else {
