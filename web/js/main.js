@@ -156,7 +156,14 @@ var HotView = Backbone.View.extend({
 			minHeight: this.model.minHeight | 10,
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
+			// support shift fixed aspectRatio
+			start: function(e) {
+				if (e.shiftKey) {
+					$(this).resizable('option', 'aspectRatio', true);
+				}
+			},
 			stop: _.bind(function() {
+				$(this.el).resizable('option', 'aspectRatio', false);
 				this.model.set({
 					width: $(this.el).width(),
 					height: $(this.el).height()
@@ -421,20 +428,24 @@ window.UndoManager = function(models){
 	models.bind('remove', this._remove, this);
 	models.bind('change', this._change, this);
 };
+
 _.extend(UndoManager.prototype, {
 	pointer: -1,
 	states: [],
-	prevTime: 0,
+	prevOpTime: 0,
+	undoTime: 0,
 	recycleBin: {},
 	_save: function(obj) {
+		var now = new Date().getTime();
 		// triggered by undo/redo
-		if (this.byUndoredo) {
-			this.byUndoredo = false;
+		if (now - this.undoTime < 40) {
+			// still in undo
+			// delete multiple models will trigger this multiple times
+			this.undoTime = now;
 			return;
 		}
 		
-		var now = new Date().getTime();
-		if (now - this.prevTime < 20) { // in milliseconds
+		if (now - this.prevOpTime < 20) { // in milliseconds
 			// this action takes place at the same time as the previous one
 			var objs = _.last(this.states);
 			objs.push(obj);
@@ -445,7 +456,7 @@ _.extend(UndoManager.prototype, {
 			}
 			this.states.push([obj]);
 		}
-		this.prevTime = now;
+		this.prevOpTime = now;
 	},
 	_add: function(model){
 		this._save({
@@ -497,7 +508,7 @@ _.extend(UndoManager.prototype, {
 			return;
 		}
 		
-		this.byUndoredo = true;
+		this.undoTime = new Date().getTime();
 		this._do();		
 		--this.pointer;
 	},
@@ -507,7 +518,7 @@ _.extend(UndoManager.prototype, {
 		}
 		++this.pointer;
 		
-		this.byUndoredo = true;
+		this.undoTime = new Date().getTime();
 		this._do();
 	}
 });
