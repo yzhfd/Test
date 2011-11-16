@@ -483,6 +483,8 @@ _.extend(UndoManager.prototype, {
 	_do: function(){
 		var objs = this.states[this.pointer];
 		_.each(objs, function(obj){
+			// undo/redo is like swap between things on stage and in undo stack
+			// think this way will help you understand the code
 			var model = this.models.getByCid(obj.cid);
 			if (model) {
 				if (obj.id) {
@@ -497,7 +499,7 @@ _.extend(UndoManager.prototype, {
 				}
 			} else {
 				var model = this.recycleBin[obj.cid];
-				delete this.recycleBin[obj.cid]
+				delete this.recycleBin[obj.cid];
 				model = this.models.add(model);
 				obj.id = null;
 			}
@@ -512,6 +514,7 @@ _.extend(UndoManager.prototype, {
 		this._do();		
 		--this.pointer;
 	},
+	// redo is actually reversed undo
 	redo: function(){
 		if (this.pointer+1 >= this.states.length) {
 			return;
