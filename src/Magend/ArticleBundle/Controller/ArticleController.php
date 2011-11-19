@@ -19,6 +19,6 @@ class ArticleController extends Controller
      */
     public function indexAction()
     {
-        
+        return array();
     }
 }

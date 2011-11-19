@@ -3,6 +3,8 @@
 namespace Magend\IssueBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Magend\ArticleBundle\Entity\Article;
 
 /**
  * Magend\IssueBundle\Entity\Issue
@@ -53,22 +55,35 @@ class Issue
     private $cover;
 
     /**
-     * Serialized array of article ids
+     * Serialized $articleIdsArray
+     * used to maitain the order of articles in this issue
      * 
-     * @var string $articles
+     * @var string $articleIds
      *
-     * @ORM\Column(name="articles", type="text")
+     * @ORM\Column(name="article_ids", type="text")
+     */
+    private $articleIds;
+    
+    /**
+     * Now it's OneToMany, it can be changed to ManyToMany
+     * if one article can be in more than one issues.
+     * 
+     * cascade will not happen unless you define it
+     * cascade={"persist", "remove"}
+     * 
+     * @ORM\OneToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="issue")
      */
     private $articles;
-
+    
     /**
-     * @var integer $nbArticles
-     *
-     * @ORM\Column(name="nb_articles", type="integer")
+     * array of article ids
+     * 
+     * @var array
      */
-    private $nbArticles = 0;
+    private $articleIdsArray;
 
     /**
+     * @todo use a field or compute from articles
      * @var integer $nbPages
      *
      * @ORM\Column(name="nb_pages", type="integer")
@@ -118,6 +133,12 @@ class Issue
     private $nbDownloaded = 0;
 
 
+    public function __construct()
+    {
+        $this->articleIdsArray = array();
+        $this->articles = new ArrayCollection();
+    }
+    
     /**
      * Get id
      *
@@ -131,19 +152,27 @@ class Issue
     /**
      * 
      * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
     public function prePersist()
     {
-        $this->createdAt = new \DateTime;
+        $now = new \DateTime;
+        if (null === $this->createdAt) {
+            $this->createdAt = $now;
+        }
+        $this->updatedAt = $now;
+        
+        $sArticleIds = serialize($this->articleIdsArray);
     }
     
     /**
      * 
-     * @ORM\PreUpdate()
+     * @ORM\PostRemove()
      */
-    public function preUpdate()
+    public function postRemove()
     {
-        $this->updatedAt = new \DateTime;
+        // @todo delete cover
+        // @todo delete issue_id in articles
     }
 
     /**
@@ -227,33 +256,42 @@ class Issue
     }
 
     /**
-     * Set articles
+     * Set articles(array)
      *
-     * @param string $articles
+     * @param array $articles
      */
-    public function setArticles($articles)
+    public function setArticleIds(Array $articles)
     {
-        $this->articles = $articles;
+        $this->articleIdsArray = $articles;
+    }
+    
+    /**
+     * 
+     * @param int|Article $article
+     */
+    public function addArticle(Article $article)
+    {
+        if (is_object($article)) {
+            $articleId = $article->getId();
+        } else {
+            $articleId = $article;
+        }
+        $this->articleIdsArray[] = $articleId;
     }
 
     /**
-     * Get articles
+     * Get articles(array)
      *
      * @return string 
      */
+    public function getArticleIds()
+    {
+        return $this->articleIdsArray;
+    }
+    
     public function getArticles()
     {
-        return $this->articles;
-    }
-
-    /**
-     * Set nbArticles
-     *
-     * @param integer $nbArticles
-     */
-    public function setNbArticles($nbArticles)
-    {
-        $this->nbArticles = $nbArticles;
+        return $this->articles;        
     }
 
     /**
@@ -263,7 +301,7 @@ class Issue
      */
     public function getNbArticles()
     {
-        return $this->nbArticles;
+        return count($this->articlesArray);
     }
 
     /**

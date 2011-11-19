@@ -28,8 +28,9 @@ var PageView = Backbone.View.extend({
 });
 
 var PagesView = Backbone.View.extend({
-	el: $('#units'),
     initialize: function(pages) {
+		this.el = $('#units');
+		
 		this.pages = pages;
 		pages.bind('add', this.addOne, this);
 		pages.bind('reset', this.addAll, this);
@@ -531,12 +532,12 @@ $(function() {
 	var pagesView = new PagesView(pages);
 	pagesView.render();
 	
-	/*
-	pages.create({index:1});
+	
+	/*pages.create({index:1});
 	pages.create({index:2});
 	pages.create({index:3});
-	pages.create({index:4});
-	*/
+	pages.create({index:4});*/
+	
 	// console.log(_.uniqueId('fk'));
 	
 	$('#addpage').click(function() {

@@ -14,11 +14,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class IssueController extends Controller
 {
     /**
-     * @Route("/hello/{name}")
+     * @Route("/")
      * @Template()
      */
-    public function indexAction($name)
+    public function indexAction()
     {
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issues = $repo->findAll();
+        
+        $articles = $issues[0]->getArticles();
+        $name = $articles[0]->getTitle();
+        
         return array('name' => $name);
     }
 }
