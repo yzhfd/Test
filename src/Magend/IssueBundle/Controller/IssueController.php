@@ -19,11 +19,15 @@ class IssueController extends Controller
      */
     public function indexAction()
     {
+        $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issues = $repo->findAll();
         
         $articles = $issues[0]->getArticles();
         $name = $articles[0]->getTitle();
+        
+        //$em->remove($issues[0]);
+        //$em->flush();
         
         return array('name' => $name);
     }

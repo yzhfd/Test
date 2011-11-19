@@ -65,22 +65,23 @@ class Issue
     private $articleIds;
     
     /**
+     * array of article ids
+     * 
+     * @var array
+     */
+    private $articleIdsArray;
+    
+    /**
      * Now it's OneToMany, it can be changed to ManyToMany
      * if one article can be in more than one issues.
      * 
      * cascade will not happen unless you define it
      * cascade={"persist", "remove"}
      * 
-     * @ORM\OneToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="issue")
+     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article")
+     * @ORM\JoinTable(name="mag_issue_article")
      */
     private $articles;
-    
-    /**
-     * array of article ids
-     * 
-     * @var array
-     */
-    private $articleIdsArray;
 
     /**
      * @todo use a field or compute from articles

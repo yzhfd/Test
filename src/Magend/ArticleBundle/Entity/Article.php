@@ -23,13 +23,6 @@ class Article
     private $id;
 
     /**
-     * The issue this article belongs to
-     * 
-     * @ORM\ManyToOne(targetEntity="Magend\IssueBundle\Entity\Issue", inversedBy="articles")
-     */
-    private $issue;
-
-    /**
      * @var string $title
      *
      * @ORM\Column(name="title", type="string", length=255)
