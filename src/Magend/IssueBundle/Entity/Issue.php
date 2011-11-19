@@ -55,7 +55,7 @@ class Issue
     private $cover;
 
     /**
-     * Serialized $articleIdsArray
+     * Comma separated article ids
      * used to maitain the order of articles in this issue
      * 
      * @var string $articleIds
@@ -65,20 +65,13 @@ class Issue
     private $articleIds;
     
     /**
-     * array of article ids
-     * 
-     * @var array
-     */
-    private $articleIdsArray;
-    
-    /**
-     * Now it's OneToMany, it can be changed to ManyToMany
-     * if one article can be in more than one issues.
+     * Normally one article can only belong to one issue
+     * But we don't need limit this
      * 
      * cascade will not happen unless you define it
      * cascade={"persist", "remove"}
      * 
-     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article")
+     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", inversedBy="issues", indexBy="id")
      * @ORM\JoinTable(name="mag_issue_article")
      */
     private $articles;
@@ -101,7 +94,7 @@ class Issue
     /**
      * @var datetime $updatedAt
      *
-     * @ORM\Column(name="updated_at", type="datetime")
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -136,7 +129,6 @@ class Issue
 
     public function __construct()
     {
-        $this->articleIdsArray = array();
         $this->articles = new ArrayCollection();
     }
     
@@ -160,10 +152,16 @@ class Issue
         $now = new \DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
+        } else {
+            $this->updatedAt = $now;
         }
-        $this->updatedAt = $now;
         
-        $sArticleIds = serialize($this->articleIdsArray);
+        /*if (!$this->articles->isEmpty()) {
+            foreach ($this->articles as $article) {
+                $this->articleIds .= $article->getId();
+                //echo $article->getId();
+            }
+        }*/
     }
     
     /**
@@ -257,42 +255,66 @@ class Issue
     }
 
     /**
-     * Set articles(array)
+     * Set articleIds
      *
-     * @param array $articles
+     * @param array $articleIds
      */
-    public function setArticleIds(Array $articles)
+    public function setArticleIds(Array $articleIds)
     {
-        $this->articleIdsArray = $articles;
+        // if consistency is important, then fetch articles and check
+        $this->articleIds = implode(',', $articleIds);
     }
     
     /**
+     * The usual way is create article first, and then
+     * attach it to one issue(and reorder)
      * 
-     * @param int|Article $article
+     * @param Article $article
      */
     public function addArticle(Article $article)
     {
-        if (is_object($article)) {
-            $articleId = $article->getId();
-        } else {
-            $articleId = $article;
+        if ($this->articles->contains($article)) {
+            return;
         }
-        $this->articleIdsArray[] = $articleId;
+        
+        $articleId = $article->getId();
+        if ($articleId === null) {
+            throw new \Exception('Please persist article first');
+        }
+        
+        $this->articles->add($article);
+        
+        $idArray = $this->getArticleIds();
+        $idArray[] = $articleId;
+        $this->setArticleIds($idArray);
     }
 
     /**
-     * Get articles(array)
+     * Get articleIds(array)
      *
      * @return string 
      */
     public function getArticleIds()
     {
-        return $this->articleIdsArray;
+        if (empty($this->articleIds)) {
+            return array();
+        }
+        return explode(',', $this->articleIds);
     }
     
-    public function getArticles()
+    /**
+     * 
+     * @param bool $withOrder the order specified in $articleIds
+     */
+    public function getArticles($withOrder = true)
     {
-        return $this->articles;        
+        $articles = array();
+        $articleIds = $this->getArticleIds();
+        foreach ($articleIds as $articleId) {
+            $articles[$articleId] = $this->articles[$articleId];
+        }
+        
+        return $articles;
     }
 
     /**
@@ -302,7 +324,7 @@ class Issue
      */
     public function getNbArticles()
     {
-        return count($this->articlesArray);
+        return count($this->getArticleIds());
     }
 
     /**
