@@ -73,6 +73,8 @@ class Article
      */
     private $updatedAt;
 
+    
+    // @todo postRemove
 
     /**
      * Get id
