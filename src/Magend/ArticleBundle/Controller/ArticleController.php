@@ -19,6 +19,15 @@ class ArticleController extends Controller
      */
     public function indexAction()
     {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find(10);
+        // $pages = $article->getPages();
+        // echo count($pages);exit;
+        
+        //$em->remove($article);
+        //$em->flush();
+        
         return array();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Magend\ArticleBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -46,20 +47,22 @@ class Article
     private $keywords;
     
     /**
-     * array of ordered page ids
+     * Comma separated text of page ids
      * 
      * @var string $pages
      *
-     * @ORM\Column(name="pages", type="text", nullable=true)
+     * @ORM\Column(name="page_ids", type="text", nullable=true)
      */
     private $pageIds;
     
     /**
-     * array of page ids
+     * @var ArrayCollection
      * 
-     * @var array
+     * 
+     * @ORM\OneToMany(targetEntity="Magend\PageBundle\Entity\Page", mappedBy="article", indexBy="id", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="mag_article_page")
      */
-    private $pagesArray;
+    private $pages;
     
     /**
      * @var integer $nbShared
@@ -84,6 +87,11 @@ class Article
 
     
     // @todo postRemove
+    
+    public function __construct()
+    {
+        $this->pages = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -210,18 +218,13 @@ class Article
         return $this->updatedAt;
     }
     
-    public function getPages()
-    {
-        return $this->pagesArray;
-    }
-    
-    public function setPages(Array $pages)
-    {
-        $this->pagesArray = $pages;
-    }
-    
     public function getIssue()
     {
         return $this->issues->first();
+    }
+    
+    public function getPages()
+    {
+        return $this->pages;
     }
 }

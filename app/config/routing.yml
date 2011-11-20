@@ -1,3 +1,13 @@
+MagendKeywordBundle:
+    resource: "@MagendKeywordBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendArchitectBundle:
+    resource: "@MagendArchitectBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendPageBundle:
     resource: "@MagendPageBundle/Controller/"
     type:     annotation

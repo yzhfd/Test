@@ -20,6 +20,8 @@ class AppKernel extends Kernel
             new Magend\IssueBundle\MagendIssueBundle(),
             new Magend\ArticleBundle\MagendArticleBundle(),
             new Magend\PageBundle\MagendPageBundle(),
+            new Magend\ArchitectBundle\MagendArchitectBundle(),
+            new Magend\KeywordBundle\MagendKeywordBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
