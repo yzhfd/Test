@@ -21,7 +21,11 @@ class ArticleController extends Controller
     {
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find(10);
+        $articles = $repo->findAll();
+        
+        
+        
+        $artciles->getPages();
         // $pages = $article->getPages();
         // echo count($pages);exit;
         
