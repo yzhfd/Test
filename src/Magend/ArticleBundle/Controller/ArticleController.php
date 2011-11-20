@@ -36,7 +36,20 @@ class ArticleController extends Controller
         
         $article->addKeyword($kwEntity);
         $em->persist($article);
-        $em->flush();
+        
+        try {
+            // ...
+            $em->flush();
+        } catch( \PDOException $e ) {
+            if( $e->getCode() === '23000' )
+            {
+                echo $e->getMessage();
+
+            // Will output an SQLSTATE[23000] message, similar to:
+            // Integrity constraint violation: 1062 Duplicate entry 'x'
+            // ... for key 'UNIQ_BB4A8E30E7927C74'
+            } else throw $e;
+        }
         
         return array();
     }
