@@ -5,6 +5,7 @@ namespace Magend\ArticleBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Magend\KeywordBundle\Entity\Keyword;
 
 /**
  * 
@@ -21,16 +22,21 @@ class ArticleController extends Controller
     {
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $articles = $repo->findAll();
+        $article = $repo->find(13);
         
+        $keyword = 'awesome';
+        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
+        $kwEntity = $kwRepo->findOneBy(array(
+            'keyword' => $keyword
+        ));
         
+        if ($kwEntity == null) {
+            $kwEntity = new Keyword($keyword);            
+        }
         
-        $artciles->getPages();
-        // $pages = $article->getPages();
-        // echo count($pages);exit;
-        
-        //$em->remove($article);
-        //$em->flush();
+        $article->addKeyword($kwEntity);
+        $em->persist($article);
+        $em->flush();
         
         return array();
     }

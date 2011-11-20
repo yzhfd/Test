@@ -4,6 +4,7 @@ namespace Magend\ArticleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Magend\KeywordBundle\Entity\Keyword;
 
 /**
  * Magend\ArticleBundle\Entity\Article
@@ -40,11 +41,18 @@ class Article
     private $title;
     
     /**
-     * @var string $keywords
-     *
-     * @ORM\Column(name="keywords", type="string", length=255, nullable=true)
+     * 
+     * @ORM\ManyToMany(targetEntity="Magend\KeywordBundle\Entity\Keyword", inversedBy="articles", cascade={"persist"})
+     * @ORM\JoinTable(name="mag_article_keyword")
      */
     private $keywords;
+    
+    /**
+     * 
+     * @ORM\ManyToMany(targetEntity="Magend\ArchitectBundle\Entity\Architect", inversedBy="articles", cascade={"persist"})
+     * @ORM\JoinTable(name="mag_article_architect")
+     */
+    private $architects;
     
     /**
      * Comma separated text of page ids
@@ -91,6 +99,8 @@ class Article
     public function __construct()
     {
         $this->pages = new ArrayCollection();
+        $this->keywords = new ArrayCollection();
+        $this->architects = new ArrayCollection();
     }
 
     /**
@@ -117,15 +127,27 @@ class Article
             $this->updatedAt = $now;
         }
     }
-
-    /**
-     * Set keywords
-     *
-     * @param string $keywords
-     */
-    public function setKeywords($keywords)
+    
+    public function setPageIds($pageIds)
     {
-        $this->keywords = $keywords;
+        
+    }
+    
+    public function getPageIds()
+    {
+        
+    }
+    
+    /**
+     * 
+     * @param string|Keyword $keyword
+     */
+    public function addKeyword($keyword)
+    {
+        if (is_string($keyword)) {
+            $keyword = new Keyword($keyword);
+        }
+        $this->keywords->add($keyword);
     }
 
     /**
@@ -136,6 +158,16 @@ class Article
     public function getKeywords()
     {
         return $this->keywords;
+    }
+    
+    public function addArchitect($architect)
+    {
+        $this->architects->add($architect);
+    }
+    
+    public function getArchitects()
+    {
+        return $this->architects;
     }
 
     /**
