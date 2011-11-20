@@ -29,6 +29,34 @@ class Page
      * @ORM\ManyToOne(targetEntity="Magend\ArticleBundle\Entity\Article", inversedBy="pages")
      */
     private $article;
+    
+    /**
+     * 
+     * @var string
+     * @ORM\Column(name="landscape_img", type="string", length=255, nullable=true)
+     */
+    private $landscapeImg;
+    
+    /**
+     * 
+     * @var serialized array
+     * @ORM\Column(name="landscape_hots", type="text", nullable=true)
+     */
+    private $landscapeHots;
+    
+    /**
+     * 
+     * @var string
+     * @ORM\Column(name="portrait_img", type="string", length=255, nullable=true)
+     */
+    private $portraitImg;
+    
+    /**
+     * 
+     * @var serialized array
+     * @ORM\Column(name="portrait_hots", type="text", nullable=true)
+     */
+    private $portraitHots;
 
     /**
      * Get id
@@ -38,5 +66,105 @@ class Page
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set landscapeImg
+     *
+     * @param string $landscapeImg
+     */
+    public function setLandscapeImg($landscapeImg)
+    {
+        $this->landscapeImg = $landscapeImg;
+    }
+
+    /**
+     * Get landscapeImg
+     *
+     * @return string 
+     */
+    public function getLandscapeImg()
+    {
+        return $this->landscapeImg;
+    }
+
+    /**
+     * Set landscapeHots
+     *
+     * @param text $landscapeHots
+     */
+    public function setLandscapeHots($landscapeHots)
+    {
+        $this->landscapeHots = $landscapeHots;
+    }
+
+    /**
+     * Get landscapeHots
+     *
+     * @return text 
+     */
+    public function getLandscapeHots()
+    {
+        return $this->landscapeHots;
+    }
+
+    /**
+     * Set portraitImg
+     *
+     * @param string $portraitImg
+     */
+    public function setPortraitImg($portraitImg)
+    {
+        $this->portraitImg = $portraitImg;
+    }
+
+    /**
+     * Get portraitImg
+     *
+     * @return string 
+     */
+    public function getPortraitImg()
+    {
+        return $this->portraitImg;
+    }
+
+    /**
+     * Set portraitHots
+     *
+     * @param text $portraitHots
+     */
+    public function setPortraitHots($portraitHots)
+    {
+        $this->portraitHots = $portraitHots;
+    }
+
+    /**
+     * Get portraitHots
+     *
+     * @return text 
+     */
+    public function getPortraitHots()
+    {
+        return $this->portraitHots;
+    }
+
+    /**
+     * Set article
+     *
+     * @param Magend\ArticleBundle\Entity\Article $article
+     */
+    public function setArticle(\Magend\ArticleBundle\Entity\Article $article)
+    {
+        $this->article = $article;
+    }
+
+    /**
+     * Get article
+     *
+     * @return Magend\ArticleBundle\Entity\Article 
+     */
+    public function getArticle()
+    {
+        return $this->article;
     }
 }
