@@ -5,6 +5,8 @@ namespace Magend\ArticleBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Magend\KeywordBundle\Entity\Keyword;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 
 /**
  * Magend\ArticleBundle\Entity\Article

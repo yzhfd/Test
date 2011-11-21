@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
+use Magend\IssueBundle\Form\IssueType;
+use Magend\IssueBundle\Entity\Issue;
 
 /**
  * 
@@ -16,7 +18,35 @@ use Magend\ArticleBundle\Entity\Article;
 class IssueController extends Controller
 {
     /**
-     * @Route("/")
+     * 
+     * @Route("/new", name="issue_new")
+     * @Template()
+     */
+    public function newAction()
+    {
+        $issue = new Issue();
+        $req   = $this->getRequest();
+        $form  = $this->createForm(new IssueType(), $issue);
+        
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getEntityManager();
+                $em->persist($issue);
+                $em->flush();
+                
+                return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+            }
+        }
+        
+        return array(
+            'issue' => $issue,
+            'form'  => $form->createView()
+        );
+    }
+    
+    /**
+     * @Route("/", name="issue_show")
      * @Template()
      */
     public function indexAction()
@@ -24,6 +54,10 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
         $article = $repo->find(1);
+        
+        if ($article == null) {
+            return array('name' => 'v');
+        }
         
         $name = $article->getTitle();
         $issue = $article->getIssue();

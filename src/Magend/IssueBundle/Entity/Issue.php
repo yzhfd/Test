@@ -5,6 +5,8 @@ namespace Magend\IssueBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Magend\ArticleBundle\Entity\Article;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 
 /**
  * Magend\IssueBundle\Entity\Issue
@@ -30,6 +32,7 @@ class Issue
      * @var string $serial
      *
      * @ORM\Column(name="serial", type="string", length=255)
+     * @Assert\NotBlank
      */
     private $serial;
 
