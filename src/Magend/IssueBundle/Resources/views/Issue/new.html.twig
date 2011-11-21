@@ -6,9 +6,16 @@
 
 {% block content %}
 <div class="span12 well">
+    <div class="alert-message block-message info">
+        <a href="#" class="close">×</a>
+        <strong>提示：</strong>
+        <p>期刊号一般为1101, 11A, 10B，将会决定期刊呈现在客户端的顺序</p>
+    </div>
+    
     <div class="page-header">
         <h2>创建新期刊<small>上一期为1101</small></h2>
     </div>
+
     <form id="issue_form" action="{{ path('issue_new') }}" method="post" {{ form_enctype(form) }}>
         <div class="clearfix">
             {{ form_label(form.serial, '期刊号') }}

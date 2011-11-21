@@ -46,32 +46,18 @@ class IssueController extends Controller
     }
     
     /**
-     * @Route("/", name="issue_show")
+     * @Route("/show/{id}", name="issue_show")
      * @Template()
      */
-    public function indexAction()
+    public function showAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find(1);
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
         
-        if ($article == null) {
-            return array('name' => 'v');
-        }
-        
-        $name = $article->getTitle();
-        $issue = $article->getIssue();
-        $issue->setArticleIds(array(1,4,2));
-        //$issue->getArticleIds();
-        //$issues = $article->getIssues();
-        //echo $issue->getTitle();exit;
-        //$articles = $issue->getArticles();
-        //$issues->removeElement($article->getIssue());
-        $issue->setTitle('fuck vanesa');
-        $em->persist($issue);
-        $em->flush();
-        
-        return array('name' => $name);
+        return array(
+            'issue' => $issue
+        );
     }
     
     /**

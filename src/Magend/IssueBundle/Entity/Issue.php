@@ -63,7 +63,7 @@ class Issue
      * 
      * @var string $articleIds
      *
-     * @ORM\Column(name="article_ids", type="text")
+     * @ORM\Column(name="article_ids", type="text", nullable=true)
      */
     private $articleIds;
     
@@ -106,14 +106,14 @@ class Issue
      *
      * @ORM\Column(name="publish", type="boolean")
      */
-    private $publish;
+    private $publish = false;
 
     /**
      * @var integer $publisher
      *
      * @ORM\Column(name="publisher", type="integer")
      */
-    private $publisher;
+    private $publisher = 0;
 
     /**
      * @var integer $nbFaved

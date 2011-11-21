@@ -561,4 +561,6 @@ $(function() {
 	$('#redo').click(function(){
 		undomanager.redo();
 	});
+	
+	$(".alert-message").alert();
 });
