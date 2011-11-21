@@ -18,6 +18,11 @@
 
 <form id="article_form" action="{{ path('article_new') }}" method="post" {{ form_enctype(form) }}>
     <div class="clearfix">
+        <label>所属杂志</label>
+        <div class="input"><a style="line-height:30px;" href="xx">1101期</a></div>
+    </div class="clearfix">
+
+    <div class="clearfix">
         {{ form_label(form.title, '标题') }}
         <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
     </div class="clearfix">
