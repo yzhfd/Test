@@ -2,35 +2,51 @@
 
 {% block title %}创建新文章{% endblock %}
 
+{% block breadcrumb %}
+    {{ parent() }}
+    {% if isEdit is defined and isEdit %}
+       <li><a href="{{ path('article_show', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a> <span class="divider">/</span></li>
+       <li class="active">编辑文章（2 of 1101）</li>
+    {% else %}
+       <li class="active">创建新文章</li>
+    {% endif %}
+{% endblock %}
+
 {% form_theme form '::fields.html.twig' %}
 
-{% block content %}
-<div class="span12 well">
-    <div class="page-header">
-        <h2>创建新文章</h2>
-    </div>
+{% block main %}
 
-    <form id="article_form" action="{{ path('article_new') }}" method="post" {{ form_enctype(form) }}>
-        <div class="clearfix">
-            {{ form_label(form.title, '标题') }}
-            <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
-        </div class="clearfix">
-        
-        <div class="clearfix">
-            {{ form_label(form.architects, '建筑师') }}
-            <div class="input">{{ form_errors(form.architects) }}{{ form_widget(form.architects, { 'attr':{'class':'small'} }) }}</div>
-        </div class="clearfix">
-        
-        <div class="clearfix">
-            {{ form_label(form.keywords, '关键词') }}
-            <div class="input">{{ form_errors(form.keywords) }}{{ form_widget(form.keywords, { 'attr':{'class':'small'} }) }}</div>
-        </div class="clearfix">
-        
-        {{ form_rest(form) }}
-        
-        <div class="actions">
-            <button class="btn primary" type="submit">提交</button>
+<form id="article_form" action="{{ path('article_new') }}" method="post" {{ form_enctype(form) }}>
+    <div class="clearfix">
+        {{ form_label(form.title, '标题') }}
+        <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
+    </div class="clearfix">
+    
+    <div class="clearfix">
+        <label>标签</label>
+        <div class="input">
+            <ul class="tags span5">
+                <!-- Existing list items will be pre-added to the tags -->
+                <li>Tag1</li>
+            </ul>
         </div>
-    </form>
-</div>
+    </div class="clearfix">
+    
+    <div class="clearfix">
+        {{ form_label(form.architects, '建筑师') }}
+        <div class="input">{{ form_errors(form.architects) }}{{ form_widget(form.architects, { 'attr':{'class':'small'} }) }}</div>
+    </div class="clearfix">
+    
+    <div class="clearfix">
+        {{ form_label(form.keywords, '关键词') }}
+        <div class="input">{{ form_errors(form.keywords) }}{{ form_widget(form.keywords, { 'attr':{'class':'small'} }) }}</div>
+    </div class="clearfix">
+    
+    {{ form_rest(form) }}
+    
+    <div class="actions">
+        <button class="btn primary" type="submit">提交</button>
+    </div>
+</form>
+
 {% endblock %}

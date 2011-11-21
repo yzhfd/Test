@@ -20,6 +20,19 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+    
+services:
+    twig.extension.txt:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+    pagerfanta.view.magend:
+        class: Pagerfanta\View\OptionableView
+        arguments:
+            - @pagerfanta.view.twitter_bootstrap_translated
+            - { proximity: 3, prev_message: ←, next_message: → }
+        public: false
+        tags: [{ name: pagerfanta.view, alias: magend }]
 
 # Assetic Configuration
 assetic:

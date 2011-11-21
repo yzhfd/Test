@@ -563,4 +563,12 @@ $(function() {
 	});
 	
 	$(".alert-message").alert();
+	
+	$('.tags').tagit({
+		allowSpaces: true,
+		caseSensitive: false,
+		fieldName: "tags",
+		//tagSource: function
+		availableTags: ['sex', 'girl']
+	});
 });
