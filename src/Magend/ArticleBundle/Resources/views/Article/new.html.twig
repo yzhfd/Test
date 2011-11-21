@@ -17,10 +17,6 @@
 {% block main %}
 
 <form id="article_form" action="{{ path('article_new') }}" method="post" {{ form_enctype(form) }}>
-    <div class="clearfix">
-        <label>所属杂志</label>
-        <div class="input"><a style="line-height:30px;" href="xx">1101期</a></div>
-    </div class="clearfix">
 
     <div class="clearfix">
         {{ form_label(form.title, '标题') }}
@@ -50,7 +46,7 @@
     {{ form_rest(form) }}
     
     <div class="actions">
-        <button class="btn primary" type="submit">提交</button>
+        <button class="btn primary" type="submit">提交</button> <a class="btn">返回1101期</a>
     </div>
 </form>
 
