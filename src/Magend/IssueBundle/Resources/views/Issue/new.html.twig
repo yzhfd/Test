@@ -4,32 +4,37 @@
 
 {% form_theme form '::fields.html.twig' %}
 
-{% block body %}
-<form id="issue_form" action="{{ path('issue_new') }}" method="post" {{ form_enctype(form) }}>
-    <div class="clearfix">
-        {{ form_label(form.serial, '期刊号') }}
-        <div class="input">{{ form_errors(form.serial) }}{{ form_widget(form.serial, { 'attr':{'class':'small'} }) }}</div>
-    </div class="clearfix">
-    
-    <div class="clearfix">
-        {{ form_label(form.title, '标题') }}
-        <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
-    </div class="clearfix">
-    
-    <div class="clearfix">
-        {{ form_label(form.priceLevel, '价格') }}
-        <div class="input">{{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}</div>
-    </div class="clearfix">
-    
-    <div class="clearfix">
-        {{ form_label(form.cover, '封面') }}
-        <div class="input">{{ form_errors(form.cover) }}{{ form_widget(form.cover, { 'attr':{'class':'small'} }) }}</div>
-    </div class="clearfix">
-    
-    {{ form_rest(form) }}
-    
-    <div class="actions">
-        <button class="btn primary" type="submit">提交</button>
+{% block content %}
+<div class="span12 well">
+    <div class="page-header">
+        <h2>创建新期刊<small>上一期为1101</small></h2>
     </div>
-</form>
+    <form id="issue_form" action="{{ path('issue_new') }}" method="post" {{ form_enctype(form) }}>
+        <div class="clearfix">
+            {{ form_label(form.serial, '期刊号') }}
+            <div class="input">{{ form_errors(form.serial) }}{{ form_widget(form.serial, { 'attr':{'class':'small'} }) }}</div>
+        </div class="clearfix">
+        
+        <div class="clearfix">
+            {{ form_label(form.title, '标题') }}
+            <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
+        </div class="clearfix">
+        
+        <div class="clearfix">
+            {{ form_label(form.priceLevel, '价格') }}
+            <div class="input">{{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}</div>
+        </div class="clearfix">
+        
+        <div class="clearfix">
+            {{ form_label(form.cover, '封面') }}
+            <div class="input">{{ form_errors(form.cover) }}{{ form_widget(form.cover, { 'attr':{'class':'small'} }) }}</div>
+        </div class="clearfix">
+        
+        {{ form_rest(form) }}
+        
+        <div class="actions">
+            <button class="btn primary" type="submit">提交</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
