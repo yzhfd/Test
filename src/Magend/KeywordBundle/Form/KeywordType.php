@@ -11,9 +11,14 @@ class KeywordType extends AbstractType
     {
         $builder
             ->add('keyword')
-            ->add('createdAt')
-            ->add('articles')
         ;
+    }
+    
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Magend\KeywordBundle\Entity\Keyword',
+        );
     }
 
     public function getName()

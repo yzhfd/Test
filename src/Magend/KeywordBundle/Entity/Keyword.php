@@ -52,7 +52,7 @@ class Keyword
      * 
      * @param string $keyword
      */
-    public function __construct($keyword)
+    public function __construct($keyword = null)
     {
         $this->articles = new ArrayCollection();
         $this->setKeyword($keyword);
@@ -127,5 +127,10 @@ class Keyword
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+    
+    public function __toString()
+    {
+        return $this->getKeyword();
     }
 }

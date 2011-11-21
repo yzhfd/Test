@@ -4,6 +4,7 @@ namespace Magend\ArticleBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
+use Magend\KeywordBundle\Form\KeywordType;
 
 class ArticleType extends AbstractType
 {
@@ -11,8 +12,12 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('keywords', 'text')
-            ->add('architects', 'text')
+            ->add('keywords', 'collection', array(
+                'type'=>new KeywordType,
+                'allow_add' => true,
+                'allow_delete' => true
+            ))
+            ->add('architects', 'collection')
         ;
     }
 

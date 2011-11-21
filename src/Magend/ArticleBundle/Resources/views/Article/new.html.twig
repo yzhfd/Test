@@ -24,23 +24,25 @@
     </div class="clearfix">
     
     <div class="clearfix">
-        <label>标签</label>
-        <div class="input">
-            <ul class="tags span5">
-                <!-- Existing list items will be pre-added to the tags -->
-                <li>Tag1</li>
-            </ul>
-        </div>
-    </div class="clearfix">
-    
-    <div class="clearfix">
         {{ form_label(form.architects, '建筑师') }}
         <div class="input">{{ form_errors(form.architects) }}{{ form_widget(form.architects, { 'attr':{'class':'small'} }) }}</div>
     </div class="clearfix">
     
     <div class="clearfix">
         {{ form_label(form.keywords, '关键词') }}
-        <div class="input">{{ form_errors(form.keywords) }}{{ form_widget(form.keywords, { 'attr':{'class':'small'} }) }}</div>
+        <div class="input">
+            <select id="tagsel" class="medium" style="margin-bottom:5px;">
+                <option value=""></option>
+                <option value="Vanesa">Vanesa</option>
+            </select>
+            
+            {{ form_widget(form.keywords.get('prototype')) }}
+            <ul class="" data-prototype="{{ form_widget(form.keywords.get('prototype')) | e }}">
+            {% for kw in form.keywords %}
+                <li>{{ form_widget(kw.keyword) }}</li>
+            {% endfor %}
+            </ul>
+        </div>
     </div class="clearfix">
     
     {{ form_rest(form) }}

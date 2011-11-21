@@ -147,9 +147,12 @@ class Article
     public function addKeyword($keyword)
     {
         if (is_string($keyword)) {
+            // @todo find it first
             $keyword = new Keyword($keyword);
         }
         $this->keywords->add($keyword);
+        
+        return $this;
     }
 
     /**
@@ -162,6 +165,18 @@ class Article
         return $this->keywords;
     }
     
+    public function setKeywords($keywords)
+    {
+        if (is_string($keywords)) {
+            $keywords = explode(',', $keywords);
+            foreach ($keywords as $keyword) {
+                $this->addArchitect($keyword);
+            }
+            return;
+        }
+        $this->keywords = new ArrayCollection($keywords);
+    }
+    
     public function addArchitect($architect)
     {
         $this->architects->add($architect);
@@ -170,6 +185,18 @@ class Article
     public function getArchitects()
     {
         return $this->architects;
+    }
+    
+    public function setArchitects($architects)
+    {
+        if (is_string($architects)) {
+            $architects = explode(',', $architects);
+            foreach ($architects as $architect) {
+                $this->addArchitect($architect);
+            }
+            return;
+        }
+        $this->architects = new ArrayCollection($architects);
     }
 
     /**

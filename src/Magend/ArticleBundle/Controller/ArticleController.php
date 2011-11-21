@@ -24,8 +24,10 @@ class ArticleController extends Controller
     public function newAction()
     {
         $article = new Article();
-        $req   = $this->getRequest();
-        $form  = $this->createForm(new ArticleType(), $article);
+        $article->addKeyword(new Keyword('mmml'));
+        $article->addKeyword(new Keyword('koolll'));
+        $req  = $this->getRequest();
+        $form = $this->createForm(new ArticleType(), $article);
         
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);

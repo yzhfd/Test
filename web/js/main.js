@@ -564,10 +564,10 @@ $(function() {
 	
 	$(".alert-message").alert();
 	
-	$('.tags').tagit({
+	$('.taggable').tagit({
 		allowSpaces: true,
 		caseSensitive: false,
-		fieldName: "tags",
+		//fieldName: "tags",
 		//tagSource: function
 		availableTags: ['sex', 'girl']
 	});
