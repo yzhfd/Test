@@ -35,6 +35,9 @@ class PageController extends Controller
         $req = $this->getRequest();
         if ($req->isXmlHTTPRequest() && $req->getMethod() == 'POST') {
             $file = $req->files->get('file');
+            // move it
+            $rootDir = $this->container->getParameter('kernel.root_dir');
+            $file->move($rootDir . '/../web/uploads/', uniqid('page_') . '.jpg');
             return new Response($file->getClientOriginalName());
         }
         
