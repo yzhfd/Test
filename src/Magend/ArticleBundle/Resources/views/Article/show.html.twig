@@ -1,8 +1,34 @@
 {% extends '::base.html.twig' %}
 
-{%block main %}
-    {{ article.title }}
-    {% for keyword in article.keywords %}
-        <a href="#">{{ keyword }}</a>
-    {% endfor %}
+{% block title %}{{ article.title|truncate(10) }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="active">{{ article.title|truncate(10) }}</li>
+{% endblock %}
+
+{% block main %}
+
+<table class="bordered-table zebra-striped">
+    <tbody>
+        <tr>
+            <th>标题</th>
+            <td>{{ article.title }}</td>
+        </tr>
+        <tr>
+            <th>关键词</th>
+            <td>
+                {% for keyword in article.keywords %}
+                    <a href="#{{ keyword.id }}" title="点击查看含有{{ keyword }}的所有文章">{{ keyword }}</a>
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="well">
+    <a class="btn" href="#">返回列表</a>
+    <a class="primary btn" href="{{ path('article_show', { 'id': article.id }) }}">编辑</a>
+    <a class="danger btn" style="float:right;" href="{{ path('article_show', { 'id': article.id }) }}">删除</a>
+</div>
 {% endblock %}
