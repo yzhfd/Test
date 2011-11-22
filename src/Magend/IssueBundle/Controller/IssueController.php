@@ -74,6 +74,7 @@ class IssueController extends Controller
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE :issueId MEMBER  x.issues');
          */
         
+        /*
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find(1);
@@ -96,7 +97,7 @@ class IssueController extends Controller
             $em->persist($issue);
             $em->flush();
         }
-        
+        */
         return array();
     }
 }

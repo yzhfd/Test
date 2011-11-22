@@ -526,7 +526,7 @@ _.extend(UndoManager.prototype, {
 		this._do();
 	}
 });
-
+jQuery.event.props.push("dataTransfer");
 $(function() {
 	var pages = new Pages;
 	var pagesView = new PagesView(pages);
@@ -571,4 +571,49 @@ $(function() {
 		//tagSource: function
 		availableTags: ['sex', 'girl']
 	});
+	
+	
+	
+	
+	/* HTML5 file DnD */
+	$('#droparea').bind('dragenter', function(evt){
+		evt.stopPropagation();
+		evt.preventDefault();
+	}).bind('dragexit', function(evt){
+		evt.stopPropagation();
+		evt.preventDefault();
+	}).bind('dragover', function(evt){
+		evt.stopPropagation();
+		evt.preventDefault();
+	}).bind('drop', function(evt){
+		evt.stopPropagation();
+		evt.preventDefault();
+		
+		var files = evt.dataTransfer.files;
+		var count = files.length;
+        var img = $('<img src="" class="uploadPic" title="" alt="" />');
+        for (var i = 0; i < count; i++) {
+            (function (i) {
+                // Loop through our files with a closure so each of our FileReader's are isolated.
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var newImg = img.clone();
+                    newImg.load(function(){
+                    	console.log($(this).width());
+                    });
+                    newImg.attr({
+                        src: e.target.result,
+                        title: (files[i].name),
+                        alt: (files[i].name)
+                    });
+                    $('#droparea').append(newImg);
+                };
+                reader.readAsDataURL(files[i]);
+            })(i);
+        }
+	});
+	
+	
+	
+	
 });
