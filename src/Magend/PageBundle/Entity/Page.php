@@ -4,6 +4,7 @@ namespace Magend\PageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Magend\PageBundle\Entity\Page
@@ -57,6 +58,13 @@ class Page
      * @ORM\Column(name="portrait_hots", type="text", nullable=true)
      */
     private $portraitHots;
+    
+    /**
+     * The image file
+     * 
+     * @var UploadedFile
+     */
+    public $file;
 
     /**
      * Get id

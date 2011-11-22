@@ -2,9 +2,12 @@
 
 namespace Magend\PageBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+use Magend\PageBundle\Entity\Page;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * 
@@ -20,5 +23,23 @@ class PageController extends Controller
     public function indexAction()
     {
         return array();
+    }
+    
+    /**
+     * 
+     * @Route("/new", name="page_new")
+     * @Template()
+     */
+    public function newAction()
+    {
+        $req = $this->getRequest();
+        if ($req->isXmlHTTPRequest() && $req->getMethod() == 'POST') {
+            $file = $req->files->get('file');
+            return new Response($file->getClientOriginalName());
+        }
+        
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

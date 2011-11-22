@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}创建新页面{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+{% endblock %}
+
+{% form_theme form '::fields.html.twig' %}
+
+{% block main %}
+<form id="page_form" action="{{ path('page_new') }}" method="post" {{ form_enctype(form) }}>
+    {{ form_widget(form) }}
+</form>
+{% endblock %}
