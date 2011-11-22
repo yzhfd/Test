@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  *
  * @ORM\Table(name="mag_architect")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Magend\ArchitectBundle\Entity\ArchitectRepository")
  */
 class Architect
 {
@@ -48,6 +49,16 @@ class Architect
     {
         return $this->id;
     }
+    
+    /**
+     *  
+     * @param string $name
+     */
+    public function __construct($name = null)
+    {
+        $this->articles = new ArrayCollection();
+        $this->setName($name);
+    }
 
     /**
      * Set name
@@ -65,6 +76,11 @@ class Architect
      * @return string 
      */
     public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function __toString()
     {
         return $this->name;
     }

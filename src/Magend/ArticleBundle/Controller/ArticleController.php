@@ -23,6 +23,8 @@ class ArticleController extends Controller
      */
     public function newAction()
     {
+
+        
         $article = new Article();
         $article->addKeyword(new Keyword('mmml'));
         $article->addKeyword(new Keyword('koolll'));
@@ -32,6 +34,20 @@ class ArticleController extends Controller
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
+                $kwText = trim($article->getKeywordsText());
+                if (!empty($kwText)) {
+                    $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
+                    $keywords = $kwRepo->toEntities(explode(',', $kwText));
+                    $article->setKeywords($keywords);
+                }
+                
+                $atText = trim($article->getArchitectsText());
+                if (!empty($atText)) {
+                    $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
+                    $architects = $atRepo->toEntities(explode(',', $atText));
+                    $article->setArchitects($architects);
+                }
+        
                 $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($article);
                 $em->flush();

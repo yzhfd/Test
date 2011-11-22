@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  *
  * @ORM\Table(name="mag_keyword")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Magend\KeywordBundle\Entity\KeywordRepository")
  * @ORM\HasLifecycleCallbacks
  * @DoctrineAssert\UniqueEntity("keyword")
  */

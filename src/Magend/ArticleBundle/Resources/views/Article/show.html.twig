@@ -1,5 +1,8 @@
 {% extends '::base.html.twig' %}
 
-{%block content %}
-    {{ issue.title }}
+{%block main %}
+    {{ article.title }}
+    {% for keyword in article.keywords %}
+        <a href="#">{{ keyword }}</a>
+    {% endfor %}
 {% endblock %}

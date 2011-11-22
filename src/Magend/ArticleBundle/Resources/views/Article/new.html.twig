@@ -24,24 +24,26 @@
     </div class="clearfix">
     
     <div class="clearfix">
-        {{ form_label(form.architects, '建筑师') }}
-        <div class="input">{{ form_errors(form.architects) }}{{ form_widget(form.architects, { 'attr':{'class':'small'} }) }}</div>
-    </div class="clearfix">
-    
-    <div class="clearfix">
-        {{ form_label(form.keywords, '关键词') }}
+        {{ form_label(form.architectsText, '建筑师') }}
         <div class="input">
-            <select id="tagsel" class="medium" style="margin-bottom:5px;">
+            <select id="architectsel" class="medium" style="margin-bottom:5px;">
                 <option value=""></option>
                 <option value="Vanesa">Vanesa</option>
             </select>
-            
-            {{ form_widget(form.keywords.get('prototype')) }}
-            <ul class="" data-prototype="{{ form_widget(form.keywords.get('prototype')) | e }}">
-            {% for kw in form.keywords %}
-                <li>{{ form_widget(kw.keyword) }}</li>
-            {% endfor %}
-            </ul>
+            {{ form_errors(form.architectsText) }}
+            <div class="span5">{{ form_widget(form.architectsText, { 'attr':{'class':'taggable'} }) }}</div>
+        </div>
+    </div class="clearfix">
+    
+    <div class="clearfix">
+        {{ form_label(form.keywordsText, '关键词') }}
+        <div class="input">
+            <select id="keywordsel" class="medium" style="margin-bottom:5px;">
+                <option value=""></option>
+                <option value="Vanesa">Vanesa</option>
+            </select>
+            {{ form_errors(form.keywordsText) }}
+            <div class="span5">{{ form_widget(form.keywordsText, { 'attr': {'class':'taggable'} }) }}</div>
         </div>
     </div class="clearfix">
     

@@ -50,11 +50,25 @@ class Article
     private $keywords;
     
     /**
+     * Comma separated keywords chunk
+     * 
+     * @var string
+     */
+    public $keywordsText;
+    
+    /**
      * 
      * @ORM\ManyToMany(targetEntity="Magend\ArchitectBundle\Entity\Architect", inversedBy="articles", cascade={"persist"})
      * @ORM\JoinTable(name="mag_article_architect")
      */
     private $architects;
+    
+    /**
+     * Comma separated architects chunk
+     * 
+     * @var string
+     */
+    public $architectsText;
     
     /**
      * Comma separated text of page ids
@@ -146,13 +160,12 @@ class Article
      */
     public function addKeyword($keyword)
     {
+        $keyword = trim($keyword);
         if (is_string($keyword)) {
             // @todo find it first
             $keyword = new Keyword($keyword);
         }
         $this->keywords->add($keyword);
-        
-        return $this;
     }
 
     /**
@@ -167,14 +180,17 @@ class Article
     
     public function setKeywords($keywords)
     {
-        if (is_string($keywords)) {
-            $keywords = explode(',', $keywords);
-            foreach ($keywords as $keyword) {
-                $this->addArchitect($keyword);
-            }
-            return;
-        }
         $this->keywords = new ArrayCollection($keywords);
+    }
+    
+    public function getKeywordsText()
+    {
+        return $this->keywordsText;
+    }
+    
+    public function getArchitectsText()
+    {
+        return $this->architectsText;
     }
     
     public function addArchitect($architect)

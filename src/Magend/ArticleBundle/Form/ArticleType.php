@@ -12,12 +12,8 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('keywords', 'collection', array(
-                'type'=>new KeywordType,
-                'allow_add' => true,
-                'allow_delete' => true
-            ))
-            ->add('architects', 'collection')
+            ->add('keywordsText')
+            ->add('architectsText')
         ;
     }
 
