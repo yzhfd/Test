@@ -16,11 +16,24 @@
             <td>{{ article.title }}</td>
         </tr>
         <tr>
+            <th>建筑师</th>
+            <td>
+                {% for architect in article.architects %}
+                    <a href="#{{ architect.id }}" title="点击查看{{ architect }}的所有文章">{{ architect }}</a>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
             <th>关键词</th>
             <td>
                 {% for keyword in article.keywords %}
                     <a href="#{{ keyword.id }}" title="点击查看含有{{ keyword }}的所有文章">{{ keyword }}</a>
                 {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2>
+                <div style="padding:2px;border: 2px solid gray;width:98%;height:100px;line-height:100px;font-size:28px;color:gray;text-align:center;">拖拽图片到这里</div>
             </td>
         </tr>
     </tbody>
