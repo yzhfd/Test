@@ -2,15 +2,36 @@
  * Page
  */
 var Page = Backbone.Model.extend({
+	url: '/Magend/web/app_dev.php/page/new',
+	file: null, // the HTML5 local file object
 	defaults: {
 		index: 0,
-		img: 1
+		img: 'http://placehold.it/128x96'
 	}
 });
 
 var Pages = Backbone.Collection.extend({
 	model: Page,
-	localStorage: new Store('pages')
+	localStorage: new Store('pages'),
+	saveToRemote: function() {
+		// switch to ajax
+		Backbone.sync = Backbone.ajaxSync;
+		this.each(function(page){
+			var attrs = page.toJSON();
+			delete attrs.file;
+			$('#units')
+			.fileupload({
+				paramName: 'file',
+				formData: attrs,
+				url: page.url
+			})
+			.fileupload('send', { files:[page.file] })
+			.success(function(result, textStatus, jqXHR){
+				console.log(result);
+			});
+		});
+		Backbone.sync = Backbone.localSync;
+	}
 });
 
 var PageView = Backbone.View.extend({
@@ -22,7 +43,8 @@ var PageView = Backbone.View.extend({
     	this.model.bind('change:index', this.render, this);
     },
     render: function() {
-    	$(this.el).html('<a href="#1"><img src="../../images/thumb' + this.model.get('img') + '.jpg" /></a><span>' + this.model.get('index') + '</span>');
+    	// ../../images/thumb
+    	$(this.el).html('<a href="#1"><img width="128" height="96" src="' + this.model.get('img') + '" /></a><span>' + this.model.get('index') + '</span>');
         return this;
     }
 });
@@ -582,36 +604,27 @@ $(function() {
 		.bind('fileuploadadd', function (e, data) {
 			var files = data.files;
 			var count = files.length;
-	        var img = $('<img src="" class="uploadPic" title="" alt="" />');
 	        for (var i = 0; i < count; i++) {
-	        	pages.create({index:i});
-	        	/*
 	            (function (i) {
 	                // Loop through our files with a closure so each of our FileReader's are isolated.
 	                var reader = new FileReader();
 	                reader.onload = function (e) {
-	                    var newImg = img.clone();
-	                    newImg.load(function(){
-	                    	console.log($(this).width());
-	                    });
-	                    newImg.attr({
-	                        src: e.target.result,
-	                        title: (files[i].name),
-	                        alt: (files[i].name)
-	                    }).css({
-	                    	width: 120,
-	                    	height: 90
-	                    });
-	                    $('#droparea').append(newImg);
+	                	// files[i].name
+	                	var page = pages.create({index:i, img:e.target.result});
+	                	page.file = files[i];
 	                };
 	                reader.readAsDataURL(files[i]);
-	            })(i);*/
+	            })(i);
 	        }
 			
 		})
 		.bind('fileuploadsubmit', function (e, data) {
 			// no upload immediately
-			//e.stopPropagation();
-			//e.preventDefault();
+			e.stopPropagation();
+			e.preventDefault();
 		});
+	
+	$('#saveremote').click(function(){
+		pages.saveToRemote();
+	});
 });

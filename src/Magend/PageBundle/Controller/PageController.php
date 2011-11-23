@@ -33,7 +33,7 @@ class PageController extends Controller
     public function newAction()
     {
         $req = $this->getRequest();
-        if ($req->isXmlHTTPRequest() && $req->getMethod() == 'POST') {
+        if ($req->isXmlHTTPRequest() && ($req->getMethod() == 'POST' || $req->getMethod() == 'PUT')) {
             $file = $req->files->get('file');
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
