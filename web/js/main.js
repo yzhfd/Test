@@ -7,6 +7,21 @@ var Page = Backbone.Model.extend({
 	defaults: {
 		index: 0,
 		img: 'http://placehold.it/128x96'
+	},
+	saveToRemote: function(options) {
+		// options success, error, complete, etc
+		var attrs = this.toJSON();
+		delete attrs.file;
+		$('#units')
+		.fileupload({
+			paramName: 'file',
+			formData: attrs,
+			url: this.url
+		})
+		.fileupload('send', { files:[this.file] })
+		.success(function(result, textStatus, jqXHR){
+			console.log(result);
+		});
 	}
 });
 
@@ -17,18 +32,7 @@ var Pages = Backbone.Collection.extend({
 		// switch to ajax
 		Backbone.sync = Backbone.ajaxSync;
 		this.each(function(page){
-			var attrs = page.toJSON();
-			delete attrs.file;
-			$('#units')
-			.fileupload({
-				paramName: 'file',
-				formData: attrs,
-				url: page.url
-			})
-			.fileupload('send', { files:[page.file] })
-			.success(function(result, textStatus, jqXHR){
-				console.log(result);
-			});
+			page.saveToRemote();
 		});
 		Backbone.sync = Backbone.localSync;
 	}
