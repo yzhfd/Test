@@ -32,13 +32,21 @@ var Article = Backbone.Model.extend({
 		// add pages finally
 	},
 	saveToRemote: function (options) {
-		
+		var pages = this.get('pages');
+		if (pages) {
+			pages.saveToRemote();
+		}
 	}
 });
 
 var Articles = Backbone.Collection.extend({
 	model: Article,
-	localStorage: new Store('articles')
+	localStorage: new Store('articles'),
+	saveToRemote: function () {
+		_.each(this.models, function (article) {
+			article.saveToRemote();
+		});
+	}
 });
 
 var ArticleView = Backbone.View.extend({
@@ -47,53 +55,70 @@ var ArticleView = Backbone.View.extend({
 	className: 'article',
     events: {
         //"click": ""
+		'dragenter': 'dragEnter',
+		'dragexit': 'dragExit',
+		'drop': 'drop',
+		'mouseover': 'mouseOver',
+		'mouseout': 'mouseOut'
     },
     initialize: function () {
     	var pages = this.model.get('pages');
     	
     	pages.bind('add', this.addPage, this);
     	pages.bind('reset', this.addPages, this);
+    	pages.bind('all', this.render, this);
     	
     	this.model.bind('change:index', this.render, this);
     	
     	this.el = $(this.el);
-    	this.el.droppable({
+    	/*this.el.droppable({
     		accept: '.page, .article',
     		activeClass: '',
     		hoverClass: 'highlighted',
     		over: function (e, ui) {
-    			//console.log($(this).hasClass('ui-sortable-placeholder'));
+    			if (e.originalEvent.pageX > $(this).offset().left && e.originalEvent.pageX < $(this).offset().left + $(this).width()) {
+    				//$(this).addClass('highlighted');
+    			}
     		}
-    	});
-    	this.el.bind('dragenter', function (e) {
-    		e.stopPropagation();
-    		e.preventDefault();
-    		var hoverClass = $(this).droppable('option', 'hoverClass');
-    		$(this).addClass(hoverClass);
-    	}).bind('dragexit', function (e) {
-    		var hoverClass = $(this).droppable('option', 'hoverClass');
-    		$(this).removeClass(hoverClass);
-    	});
-    	// droppable's or html5 file's
-    	this.el.bind('drop', _.bind(function (e, ui) {
-    		e.stopPropagation();
-    		e.preventDefault();
-    		
-    		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
-    		
-    		// ui is from droppable's drop
-    		if (ui == undefined) {
-    			var files = e.dataTransfer.files;
-    			var count = files.length;
-    			for (var i = 0; i < count; ++i) {
-    				this.model.add(new Page({'file':files[i]}));
-    			};
-    		} else {
-    			
-    		}
-    		// @todo create a page and put it into the article
-    	}, this));
+    	});*/
     },
+    mouseOver: function (e) {
+		var firstpage = this.el.find('.page:first');
+		var cover = firstpage.find('img');
+		cover.attr('src', firstpage.data('img'));
+	},
+	mouseOut: function (e) {
+		var firstpage = this.el.find('.page:first');
+		var cover = firstpage.find('img');
+		cover.attr('src', 'http://placehold.it/128x96');	
+	},
+    dragEnter: function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		//var hoverClass = $(this).droppable('option', 'hoverClass');
+		this.el.addClass('highlighted');
+    },
+    dragExit: function (e) {
+    	this.el.removeClass('highlighted');
+    },
+    drop: function (e, ui) {
+		e.stopPropagation();
+		e.preventDefault();
+		
+		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
+		
+		// ui is from droppable's drop
+		if (ui == undefined) {
+			var files = e.dataTransfer.files;
+			var count = files.length;
+			for (var i = 0; i < count; ++i) {
+				this.model.add(new Page({'file':files[i]}));
+			};
+		} else {
+			
+		}
+		// @todo create a page and put it into the article
+	},
     addPage: function (page) {
     	var pv = new PageView({model:page});
     	this.el.find('.pages').append(pv.el);
@@ -103,14 +128,17 @@ var ArticleView = Backbone.View.extend({
     		this.addPage(page);
     	});
     },
-    drop: function (e) {
-    	console.log(e);
-    },
     render: function () {
     	// number of pages, index and cover
-    	var html = $.mustache(this.template, {title:'文章', pages:10});
-    	$(this.el).html(html);
-    	
+    	// get page list, set html and restore page list will have data lost
+    	var pages = this.model.get('pages');
+    	if (this.el.html() != '') {
+    		var footer = this.el.find('.footer');
+    		footer.text(pages.length);
+    	} else {
+        	var html = $.mustache(this.template, {title:'文章', pages:1});
+        	this.el.html(html);    		
+    	}    	
         return this;
     }
 });

@@ -14,6 +14,7 @@ var Page = Backbone.Model.extend({
 	},
 	saveToRemote: function (options) {
 		// options success, error, complete, etc
+		var file = this.get('file');
 		var attrs = this.toJSON();
 		delete attrs.file;
 		editarea.fileupload({
@@ -21,7 +22,7 @@ var Page = Backbone.Model.extend({
 			formData: attrs,
 			url: this.url
 		})
-		.fileupload('send', { files:[this.file] })
+		.fileupload('send', { files:[file] })
 		.success(function (result, textStatus, jqXHR) {
 			console.log(result);
 		});
@@ -68,9 +69,9 @@ var PageView = Backbone.View.extend({
             	// files[i].name
             	this.img = e.target.result;
             	this.imgName = file.name;
-            	
+            	this.el.data('img', this.img);
         		this.el.find('img').attr({
-        			'src': this.img,
+        			//'src': this.img,
         			'title': this.imgName
         		});
             }, this);

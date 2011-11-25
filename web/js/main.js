@@ -51,6 +51,40 @@ var EditArea = Backbone.View.extend({
 					var article = articles.getByCid(cid);
 					article.set({index:index+1});
 				});*/
+			},
+			// make article view droppable not work properly, so need hard check here
+			// but this does have its own advantage - more flexible
+			// @todo hover duration
+			sort: function (e, ui) {
+				var px = e.originalEvent.pageX;
+				var py = e.originalEvent.pageY;
+				var ats = $(this).find('.article');
+				var c = ats.length;			
+				for (var i = 0; i < c; ++i) {
+					var at = $(ats[i]);
+					if (at.is(ui.item) || at.is(ui.placeholder) || at.is(ui.helper)) {
+						continue;
+					}
+					
+					// @todo optimize this to only check articleviews near mouse
+					if (( px > at.offset().left && px < at.offset().left + at.width() )
+					&& ( py > at.offset().top && py < at.offset().top + at.height() )) {
+						if (!at.is(this.overArticle)) {
+							at.trigger('dragenter');
+							if (this.overArticle) {
+								this.overArticle.trigger('dragexit');
+							}
+						}
+						this.overArticle = at;
+						break;
+					}
+				}
+				
+				// not inside any article view
+				if (i == c && this.overArticle) {
+					this.overArticle.trigger('dragexit');
+					this.overArticle = null;
+				}
 			}
 		});
 	},
@@ -66,6 +100,9 @@ var EditArea = Backbone.View.extend({
 	},
 	render: function () {
 		// @todo move to initialize but if empty, sortable will be wrong
+	},
+	saveToRemote: function () {
+		this.articles.saveToRemote();
 	}
 });
 
@@ -147,6 +184,6 @@ $(function () {
 	// editarea.render();
 	
 	$('#saveremote').click(function () {
-		pages.saveToRemote();
+		editarea.saveToRemote();
 	});
 });
