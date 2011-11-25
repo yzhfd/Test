@@ -1,5 +1,9 @@
 jQuery.event.props.push("dataTransfer");
 
+
+// @todo Add a 'new' mark!
+// @todo Prompt not stored on server
+
 /**
  * EditArea
  * 
