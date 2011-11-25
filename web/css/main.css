@@ -105,6 +105,50 @@ body {
 	-moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 	box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 }
+
+
+
+li.highlighted {
+	background-color: #FFFFAA;
+}
+li.very-highlighted {
+    background-color: #FFCC33;
+}
+li.article {
+    float: left;
+    padding: 4px;
+    margin: 0 0 16px 18px;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+/* change width, height if necessary */
+li.article ol.pages {
+	width: 128px;
+	height: 96px;
+	overflow: hidden;
+	background-color: gray; /* indicate no page inside */
+	border: 1px solid #333;
+}
+li.article li.page {
+	float: left;
+}
+li.article .footer {
+	width: 100%;
+	display: inline-block;
+	text-align: right;
+}
+li.page a, li.page img {
+	display: block;
+}
+
+
+
+
 ol, ul { list-style: none; }
 	/*page editor*/
 #page_canvas {

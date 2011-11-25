@@ -1,5 +1,7 @@
 /**
  * Hot
+ * 
+ * use UndoManager
  */
 // @todo extend Hot for link, video, gallery, etc
 var Hot = Backbone.Model.extend({
@@ -15,15 +17,15 @@ var Hot = Backbone.Model.extend({
 	},
 	rendered: false,
 	selected: false, // should not be attribute, as it should be persistent
-	select: function() {
+	select: function () {
 		this.selected = true;
 		this.trigger('select');
 	},
-	deselect: function() {
+	deselect: function () {
 		this.selected = false;
 		this.trigger('deselect');
 	},
-	validate: function(attrs) {
+	validate: function (attrs) {
 		if (attrs) {
 			if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
 				return 'minsize is limited';
@@ -50,7 +52,7 @@ var HotView = Backbone.View.extend({
       "mouseup": "onMouseup",
       "dblclick": "edit"
     },
-    initialize: function() {
+    initialize: function () {
     	this.model.rendered = true;
     	
     	this.model.bind('change:width', this.resize, this);
@@ -75,7 +77,7 @@ var HotView = Backbone.View.extend({
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
-			stop: _.bind(function() {
+			stop: _.bind(function () {
     			this.model.set({
     				x: $(this.el).position().left,
     				y: $(this.el).position().top
@@ -88,12 +90,12 @@ var HotView = Backbone.View.extend({
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
 			// support shift fixed aspectRatio
-			start: function(e) {
+			start: function (e) {
 				if (e.shiftKey) {
 					$(this).resizable('option', 'aspectRatio', true);
 				}
 			},
-			stop: _.bind(function() {
+			stop: _.bind(function () {
 				$(this.el).resizable('option', 'aspectRatio', false);
 				this.model.set({
 					width: $(this.el).width(),
@@ -103,10 +105,10 @@ var HotView = Backbone.View.extend({
 			}, this)
 		});
     },
-    onMousedown: function(e) {
+    onMousedown: function (e) {
     	this.model.select();
     },
-    onMouseup: function(e) {
+    onMouseup: function (e) {
     	// not support deselect by clicking on selected element
     	// if want to, then need check whether its from drag or resize
     	/*if (!this.model.selected) {
@@ -115,36 +117,36 @@ var HotView = Backbone.View.extend({
     		this.model.deselect();
     	}*/
     },
-    toggle: function(){
+    toggle: function () {
     	if (this.model.selected) {
     		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)"});
     	} else {
     		$(this.el).css({backgroundColor: "rgba(255, 255, 255, 0.5)"});
     	}
     },
-    edit: function() {
+    edit: function () {
     	$('#hot_dialog').dialog({show:'fade'});
     },
-    resize: function(){
+    resize: function () {
     	$(this.el).css({
     		width: this.model.get('width'),
     		height: this.model.get('height')
     	});
     },
-    pos: function(){
+    pos: function () {
     	$(this.el).css({
     		left: this.model.get('x'),
     		top: this.model.get('y')
     	});
     },
-    remove: function(e) {
+    remove: function (e) {
     	// this.model.destroy(); // not really destroyed but garbaged, so can be undone
-    	$(this.el).fadeOut('fast', function() {
+    	$(this.el).fadeOut('fast', function () {
     		$(this).remove(); // use detach to support undo/redo etc
     	});
     	this.model.rendered = false;
     },
-    render: function() {
+    render: function () {
         return this;
     }
 });
@@ -155,15 +157,15 @@ var PageCanvas = Backbone.View.extend({
 		"mousemove": "mousemove",
 		"mouseup": "mouseup"
 	},
-    initialize: function() {
+    initialize: function () {
 		this.el = $('#page_canvas');
 		
-		$(document).mousemove(_.bind(function(e){
+		$(document).mousemove(_.bind(function (e) {
 			if (this.drawing) {
 				this.mousemove(e);
 			}
 		}, this));
-		$(document).mouseup(_.bind(function(e){
+		$(document).mouseup(_.bind(function (e) {
 			if (this.drawing) {
 				this.mouseup(e);
 			}
@@ -179,21 +181,21 @@ var PageCanvas = Backbone.View.extend({
 			height: this.el.height(),
 			backgroundImage: 'url(../../images/page.jpg)'
 		});
-		canvasImgEl.focus(function(e){
+		canvasImgEl.focus(function (e) {
 			// if it was just off
 			console.log('focus on');
 		});
-		canvasImgEl.blur(function(e){
+		canvasImgEl.blur(function (e) {
 			console.log('focus off');
 		});
-		canvasImgEl.keydown(_.bind(function(e){
+		canvasImgEl.keydown(_.bind(function (e) {
 			if ($(e.target).is('input') || $(e.target).is('textarea')) {
 				// do
 				return;
 			}
 			if (e.which == 8 || e.which == 46) {
 				var delHots = [];
-				this.hots.each(function(hot){
+				this.hots.each(function (hot) {
 					if (hot.selected) {
 						delHots.push(hot);
 					}
@@ -218,7 +220,7 @@ var PageCanvas = Backbone.View.extend({
 		
 		window.undomanager = new UndoManager(this.hots);
 	},
-	addOne: function(hot) {
+	addOne: function (hot) {
 		if (hot.rendered) {
 			return;
 		}
@@ -229,10 +231,10 @@ var PageCanvas = Backbone.View.extend({
 		
 	    $(this.el).append(hotel);
 	},
-	addAll: function() {		
+	addAll: function () {		
 		this.hots.each(this.addOne, this);
 	},
-	mousedown: function(e){
+	mousedown: function (e) {
 		var multi = e.metaKey || e.ctrlKey;
 		if (!multi) {
 			var onHot = null;
@@ -243,7 +245,7 @@ var PageCanvas = Backbone.View.extend({
 				onHot = $(e.target).parent();
 			}
 			
-			this.hots.each(function(hot){
+			this.hots.each(function (hot) {
 				if (!onHot || hot.cid != onHot.data('cid')) {
 					hot.deselect();
 				}
@@ -252,14 +254,14 @@ var PageCanvas = Backbone.View.extend({
 		
 		this._beginDraw(e);
 	},
-	mousemove: function(e){
+	mousemove: function (e) {
 		this._draw(e);
 	},
-	mouseup: function(e){
+	mouseup: function (e) {
 		this.drawing = false;
 		this._endDraw(e);
 	},
-	_beginDraw: function(e) {
+	_beginDraw: function (e) {
 		if (e.target.id == $(this.el).attr('id')) {
 			this.drawing = true;
 			this.began = true;
@@ -267,7 +269,7 @@ var PageCanvas = Backbone.View.extend({
 			this.startY = e.pageY;
 		}
 	},
-	_draw: function(e) {
+	_draw: function (e) {
 		if (this.began) {
 			if (Math.abs(e.pageX - this.startX) < 10 || Math.abs(e.pageY - this.startY) < 10) {
 				return;
@@ -324,7 +326,7 @@ var PageCanvas = Backbone.View.extend({
 			this.hot.set(attrs);
 		}
 	},
-	_endDraw: function(e) {
+	_endDraw: function (e) {
 		this.began = false;
 		this.canvasImgEl.focus();
 		if (this.hot) {
@@ -333,127 +335,7 @@ var PageCanvas = Backbone.View.extend({
 			this.hot = null;
 		}
 	},
-	render: function() {
+	render: function () {
 		return this;
 	}
 });
-
-/**
- * UndoManager class
- */
-window.UndoManager = function(models){
-	this.models = models;
-	
-	var close = _.bind(function(e){
-		var models = _.toArray(this.recycleBin);
-		while (models.length > 0) {
-			var model = models.pop();
-			model.destroy();
-		}
-		this.recycleBin = {};
-	}, this);
-	$(window).unload(close);
-	//$(window).bind('beforeunload', close);
-	
-	models.bind('add', this._add, this);
-	models.bind('remove', this._remove, this);
-	models.bind('change', this._change, this);
-};
-
-_.extend(UndoManager.prototype, {
-	pointer: -1,
-	states: [],
-	prevOpTime: 0,
-	undoTime: 0,
-	recycleBin: {},
-	_save: function(obj) {
-		var now = new Date().getTime();
-		// triggered by undo/redo
-		if (now - this.undoTime < 40) {
-			// still in undo
-			// delete multiple models will trigger this multiple times
-			this.undoTime = now;
-			return;
-		}
-		
-		if (now - this.prevOpTime < 20) { // in milliseconds
-			// this action takes place at the same time as the previous one
-			var objs = _.last(this.states);
-			objs.push(obj);
-		} else {
-			++this.pointer;
-			while (this.pointer < this.states.length) {
-				this.states.pop();
-			}
-			this.states.push([obj]);
-		}
-		this.prevOpTime = now;
-	},
-	_add: function(model){
-		this._save({
-			id: null, // model.id is undefined
-			cid: model.cid,
-			attrs: model.attributes
-		});
-	},
-	_remove: function(model){
-		this.recycleBin[model.cid] = model;
-		this._save({
-			id: model.id,
-			cid: model.cid,
-			attrs: model.attributes
-		});
-	},
-	_change: function(model){
-		this._save({
-			id: model.id,
-			cid: model.cid,
-			attrs: model.previousAttributes()
-		});
-	},
-	_do: function(){
-		var objs = this.states[this.pointer];
-		_.each(objs, function(obj){
-			// undo/redo is like swap between things on stage and in undo stack
-			// think this way will help you understand the code
-			var model = this.models.getByCid(obj.cid);
-			if (model) {
-				if (obj.id) {
-					var attrs = $.extend(true, {}, model.attributes); // deep copy
-					model.set(obj.attrs);
-					obj.attrs = attrs;
-					model.save();
-				} else {
-					obj.id = model.id;
-					this.models.remove(model);
-					this.recycleBin[model.cid] = model;
-				}
-			} else {
-				var model = this.recycleBin[obj.cid];
-				delete this.recycleBin[obj.cid];
-				model = this.models.add(model);
-				obj.id = null;
-			}
-		}, this);
-	},
-	undo: function(){
-		if (this.pointer < 0) {
-			return;
-		}
-		
-		this.undoTime = new Date().getTime();
-		this._do();		
-		--this.pointer;
-	},
-	// redo is actually reversed undo
-	redo: function(){
-		if (this.pointer+1 >= this.states.length) {
-			return;
-		}
-		++this.pointer;
-		
-		this.undoTime = new Date().getTime();
-		this._do();
-	}
-});
-jQuery.event.props.push("dataTransfer");

@@ -1,69 +1,86 @@
 /**
  * Page
  */
+
 var Page = Backbone.Model.extend({
+	url: '/Magend/web/app_dev.php/page/new', // @todo used to fetch model
 	defaults: {
 		index: 0,
-		img: 1
+		// img: 'http://placehold.it/128x96',
+		file: null // the HTML5 local file object
+	},
+	initialize: function () {
+		
+	},
+	saveToRemote: function (options) {
+		// options success, error, complete, etc
+		var attrs = this.toJSON();
+		delete attrs.file;
+		editarea.fileupload({
+			paramName: 'file',
+			formData: attrs,
+			url: this.url
+		})
+		.fileupload('send', { files:[this.file] })
+		.success(function (result, textStatus, jqXHR) {
+			console.log(result);
+		});
 	}
 });
 
 var Pages = Backbone.Collection.extend({
 	model: Page,
-	localStorage: new Store('pages')
+	localStorage: new Store('pages'),
+	initialize: function (pages) {
+		if (pages instanceof FileList) {
+			_.each(pages, function (file) {
+				this.create({'file':file});
+			});
+		}
+	},
+	saveToRemote: function () {
+		// switch to ajax
+		Backbone.sync = Backbone.ajaxSync;
+		this.each(function (page) {
+			page.saveToRemote();
+		});
+		Backbone.sync = Backbone.localSync;
+	}
 });
 
 var PageView = Backbone.View.extend({
 	tagName: 'li',
+	className: 'page',
+	template: '<a href="#1"><img width="128" height="96" src="{{img}}" /></a>',
     events: {
       //"click": ""
     },
-    initialize: function() {
-    	this.model.bind('change:index', this.render, this);
+    initialize: function () {
+    	//this.model.bind('change:index', this.render, this);
+    	this.el = $(this.el);
+    	
+    	this.render();
+    	
+		var file = this.model.get('file');
+		if (file) {
+            var reader = new FileReader();
+            reader.onload = _.bind(function (e) {
+            	// files[i].name
+            	this.img = e.target.result;
+            	this.imgName = file.name;
+            	
+        		this.el.find('img').attr({
+        			'src': this.img,
+        			'title': this.imgName
+        		});
+            }, this);
+            reader.readAsDataURL(file);
+		}
     },
-    render: function() {
-    	$(this.el).html('<a href="#1"><img src="../../images/thumb' + this.model.get('img') + '.jpg" /></a><span>' + this.model.get('index') + '</span>');
+    render: function () {
+    	// ../../images/thumb
+    	var html = $.mustache(this.template, {img:'http://placehold.it/128x96'});
+    	this.el.html(html);
         return this;
-    }
-});
-
-var PagesView = Backbone.View.extend({
-    initialize: function(pages) {
-		this.el = $('#units');
-		
-		this.pages = pages;
-		pages.bind('add', this.addOne, this);
-		pages.bind('reset', this.addAll, this);
-		
-		pages.fetch();
-    },
-    addOne: function(page) {
-	    var pv = new PageView({model:page});
-	    var pvel = $(pv.render().el);
-	    pvel.data('cid', page.cid);
-		
-	    $(this.el).append(pvel);
-    },
-    addAll: function() {		
-    	this.pages.each(this.addOne, this);
-    },
-    render: function() {
-    	// @todo move to initialize but if empty, sortable will be wrong
-	    var pages = this.pages;
-		$(this.el).sortable({
-			opacity: 0.6,
-			start: function(event, ui) {
-				var cid = $(ui.item).data('cid');
-				var page = pages.getByCid(cid);
-				//page.set('index', 2);
-			},
-			stop: function(event, ui) {
-			    $(this).find('li').each(function(index, li) {
-					var cid = $(li).data('cid');
-					var page = pages.getByCid(cid);
-					page.set({index:index+1});
-				});
-			}
-		});
     }
 });
