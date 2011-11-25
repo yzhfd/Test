@@ -34,6 +34,8 @@ var EditArea = Backbone.View.extend({
 		
 		this.el.sortable({
 			opacity: 0.6,
+			// helper: 'clone',
+			// tolerance: 'pointer',
 			start: function (event, ui) {
 				var cid = $(ui.item).data('cid');
 				var article = articles.getByCid(cid);

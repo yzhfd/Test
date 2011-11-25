@@ -79,12 +79,6 @@ var ArticleView = Backbone.View.extend({
     		e.stopPropagation();
     		e.preventDefault();
     		
-    		var dragel = ui.draggable;
-    		console.log(dragel);
-    		if (dragel.css('visibility') == 'hidden') {
-    			return;
-    		}
-    		
     		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
     		
     		// ui is from droppable's drop
