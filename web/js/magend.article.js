@@ -59,7 +59,8 @@ var ArticleView = Backbone.View.extend({
 		'dragexit': 'dragExit',
 		'drop': 'drop',
 		'mouseover': 'mouseOver',
-		'mouseout': 'mouseOut'
+		'mouseout': 'mouseOut',
+		'dblclick': 'dblclick'
     },
     initialize: function () {
     	var pages = this.model.get('pages');
@@ -81,6 +82,15 @@ var ArticleView = Backbone.View.extend({
     			}
     		}
     	});*/
+    },
+    showPages: function () {
+    	// @todo will also be triggered by pages change
+    	var pagelis = this.el.find('.pages li').clone();
+    	$('#article-pages .pages').html(pagelis);
+    	$('#article-pages').dialog({width:466});
+    },
+    dblclick: function (e) {
+    	this.showPages();
     },
     mouseOver: function (e) {
     	// return;

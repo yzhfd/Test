@@ -19,6 +19,16 @@ var EditArea = Backbone.View.extend({
 		
 		this.el = $('#editarea');
 		
+		
+		
+		// area to show pages of one article
+		$('#article-pages .pages').sortable({
+			//connectWith: this.el
+			containment: $('#article-pages')
+		});
+		
+		
+		
 		// @todo if editarea is empty, then sortable will misbehave
 		this.articles.add(new Article);
 		
@@ -93,22 +103,16 @@ var EditArea = Backbone.View.extend({
 				}
 			},
 			change: _.bind(function (e, ui) {
-				var atlis = this.el.find('.article');
-				
-				var drEl = $(ui.item);
-				var drCid = drEl.data('cid');
-				var drAt = this.articles.getByCid(drCid);
-				drAt.set({'index':atlis.index(ui.placeholder)});
-				
+				var atlis = this.el.find('.article').not(ui.item);
 				var count = atlis.length;
 				for (var i = 0, index = 0; i < count; ++i) {
 					var atli = $(atlis[i]);
+					if (atli.is(ui.placeholder)) {
+						atli = $(ui.item);
+					}
+					
 					var cid = atli.data('cid');
 					if (cid == undefined) {
-						continue;
-					}
-					if (atli.is(ui.item)) {
-						++index;
 						continue;
 					}
 					

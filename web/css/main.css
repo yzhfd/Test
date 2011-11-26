@@ -9,6 +9,7 @@ body {
 	text-align: center; /* center align it with the container */
 }
 .container {
+	margin-left: 240px;
 	width: 820px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
 }
 	/* The white background content wrapper */
@@ -106,7 +107,9 @@ body {
 	box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 }
 
-
+#editarea {
+	min-height: 500px;
+}
 
 li.highlighted {
 	background-color: #FFFFAA;
@@ -154,6 +157,34 @@ li.article .progressbar-wrapper {
 li.article .progressbar {
 	width: 60%; height: 100%;
 	background-color: green;
+}
+
+#article-pages {
+	/*
+	position: absolute;
+	left: 72px;
+	width: 138px;
+	padding: 10px 4px 4px 4px;
+	*/
+	display: none;
+	padding: 8px 20px 0px 20px;
+	background-color: white;
+}
+#article-pages li.page, li.page.ui-sortable-helper {
+	margin: 0px 4px 4px 0px;
+	
+	width: 128px;
+	float: left;
+	list-style: none;
+	
+    padding: 4px;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 
