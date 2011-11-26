@@ -81,7 +81,8 @@ var EditArea = Backbone.View.extend({
 					if (( px > at.offset().left && px < at.offset().left + at.width() )
 					&& ( py > at.offset().top && py < at.offset().top + at.height() )) {
 						if (!at.is(this.overArticle)) {
-							at.trigger('dragenter');
+							e.dragging = ui.item;
+							at.trigger('dragenter', e);
 							if (this.overArticle) {
 								this.overArticle.trigger('dragexit');
 							}
@@ -99,7 +100,8 @@ var EditArea = Backbone.View.extend({
 			},
 			stop: function (e, ui) {
 				if (this.overArticle) {
-					this.overArticle.trigger('drop', e, ui);
+					e.dropping = ui.item;
+					this.overArticle.trigger('drop', e);
 				}
 			},
 			change: _.bind(function (e, ui) {
@@ -126,7 +128,6 @@ var EditArea = Backbone.View.extend({
 	addOne: function (article) {
 	    var at = new ArticleView({model:article});
 	    var atel = $(at.render().el);
-	    atel.data('cid', article.cid);
 		
 	    article.set({'index': this.articles.length});
 	    
@@ -217,7 +218,7 @@ $(function () {
 		availableTags: ['sex', 'girl']
 	});
 	
-	var editarea = new EditArea(new Articles);
+	window.editarea = new EditArea(new Articles);
 	// editarea.render();
 	
 	$('#saveremote').click(function () {

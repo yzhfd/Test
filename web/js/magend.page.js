@@ -59,6 +59,7 @@ var PageView = Backbone.View.extend({
     initialize: function () {
     	//this.model.bind('change:index', this.render, this);
     	this.el = $(this.el);
+    	this.el.data('cid', this.model.cid);
     	
     	this.render();
     	

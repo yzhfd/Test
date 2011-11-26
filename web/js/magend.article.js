@@ -66,12 +66,16 @@ var ArticleView = Backbone.View.extend({
     	var pages = this.model.get('pages');
     	
     	pages.bind('add', this.addPage, this);
+    	// pages.bind('remove', this.removePage, this);
     	pages.bind('reset', this.addPages, this);
     	pages.bind('all', this.render, this);
     	
     	this.model.bind('change:index', this.render, this);
     	
     	this.el = $(this.el);
+    	this.el.data('cid', this.model.cid);
+    	
+    	// droppable not work well as placeholder will make position calculated wrong
     	/*this.el.droppable({
     		accept: '.page, .article',
     		activeClass: '',
@@ -83,14 +87,31 @@ var ArticleView = Backbone.View.extend({
     		}
     	});*/
     },
-    showPages: function () {
-    	// @todo will also be triggered by pages change
-    	var pagelis = this.el.find('.pages li').clone();
-    	$('#article-pages .pages').html(pagelis);
-    	$('#article-pages').dialog({width:466});
+    expand: function () {
+    	if (window.expandedArticleView) {
+    		window.expandedArticleView.collapse();
+    	}
+    	
+    	this.el.addClass('expanded');
+    	window.expandedArticleView = this;
+    	
+    	var pagelis = this.el.find('.pages li').addClass('editing-page');
+    	this.el.after(pagelis);    	
+    },
+    collapse: function () {
+    	this.el.removeClass('expanded');
+    	window.expandedArticleView = null;
+    	
+    	var editingPages = this.el.siblings('.editing-page');
+    	this.el.find('.pages').append(editingPages);
+    	editingPages.removeClass('editing-page');
     },
     dblclick: function (e) {
-    	this.showPages();
+    	if (this.el.hasClass('expanded')) {
+    		this.collapse();
+    	} else {
+    		this.expand();
+    	}
     },
     mouseOver: function (e) {
     	// return;
@@ -106,23 +127,30 @@ var ArticleView = Backbone.View.extend({
 		var cover = firstpage.find('img');
 		cover.attr('src', 'http://placehold.it/128x96');	
 	},
-    dragEnter: function (e) {
+    dragEnter: function (e, sorte) {
 		e.stopPropagation();
 		e.preventDefault();
+		
+		if (sorte) {
+			var dragging = sorte.dragging;
+			// no page drop to its article
+			if (dragging && $(dragging).is('.editing-page') && this.el.hasClass('expanded')) {
+				return;
+			} 
+		}
+		
 		//var hoverClass = $(this).droppable('option', 'hoverClass');
 		this.el.addClass('highlighted');
     },
     dragExit: function (e) {
     	this.el.removeClass('highlighted');
     },
-    drop: function (e, ui) {
+    drop: function (e, sorte) {
 		e.stopPropagation();
 		e.preventDefault();
 		
-		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
-		
 		// ui is from droppable's drop
-		if (ui == undefined) {
+		if (sorte == undefined) {
 			var files = e.dataTransfer.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
@@ -130,12 +158,42 @@ var ArticleView = Backbone.View.extend({
 			};
 		} else {
 			// @todo delete amd merge
+			
+			var dropping = sorte.dropping;
+			// no page drop to its own article
+			if (dropping && $(dropping).is('.editing-page') && this.el.hasClass('expanded')) {
+				return;
+			}
+			
+			var pages = this.model.get('pages');
+			var expandedArticle = window.expandedArticleView.model;
+			var fromPages = expandedArticle.get('pages');
+			var cid = dropping.data('cid');
+			var droppingPage = fromPages.getByCid(cid);
+			pages.add(droppingPage);
+			fromPages.remove(droppingPage);
+			
+			dropping.remove();
 		}
+		
+		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
+		
 		// @todo create a page and put it into the article
 	},
     addPage: function (page) {
     	var pv = new PageView({model:page});
     	this.el.find('.pages').append(pv.el);
+    },
+    removePage: function (page) {
+    	var pagelis = this.el.find('.pages li.page');
+    	var pageli = null;
+    	for (var i = 0, c = pagelis.length; i < c; ++i) {
+    		pageli = pagelis[i];
+    		if (pageli.data('cid') == page.cid) {
+    			break;
+    		}    		
+    	}
+    	pageli.remove();
     },
     addPages: function (pages) {
     	_.each(pages, function (page) {

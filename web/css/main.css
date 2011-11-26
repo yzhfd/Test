@@ -36,24 +36,24 @@ body {
 	padding-left: 19px;
 	border-left: 1px solid #eee;
 }
-	.topbar .btn {
+.topbar .btn {
 	border: 0;
 }
-	#ui-datepicker-div {
+#ui-datepicker-div {
 	z-index: 100 !important;
 }
-	.ui-state-highlight {
+.ui-state-highlight {
 	background-color: #F4F8FD !important;
 }
-	.mybread {
+.mybread {
 	list-style: none outside none;
 	margin: 0; padding: 0;
 }
-	.mybread li {
+.mybread li {
 	display: inline;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
-	.mybread .divider {
+.mybread .divider {
 	color: #BFBFBF;
 	padding: 0 5px;
 }
@@ -107,6 +107,9 @@ body {
 	box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 }
 
+
+
+
 #editarea {
 	min-height: 500px;
 }
@@ -158,6 +161,11 @@ li.article .progressbar {
 	width: 60%; height: 100%;
 	background-color: green;
 }
+li.editing-page {
+	float: left;
+	margin: 0px 0px 0px 18px;
+	padding: 42px 0px 40px 0px; /* important affect sortable layout */
+}
 
 #article-pages {
 	/*
@@ -170,7 +178,7 @@ li.article .progressbar {
 	padding: 8px 20px 0px 20px;
 	background-color: white;
 }
-#article-pages li.page, li.page.ui-sortable-helper {
+#article-pages li.page { /*, li.page.ui-sortable-helper*/
 	margin: 0px 4px 4px 0px;
 	
 	width: 128px;

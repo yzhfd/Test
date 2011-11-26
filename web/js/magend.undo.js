@@ -1,5 +1,6 @@
 /**
  * UndoManager
+ * for hots on single page
  */
 window.UndoManager = function (models) {
 	this.models = models;
