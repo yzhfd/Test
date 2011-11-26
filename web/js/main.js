@@ -104,12 +104,14 @@ var EditArea = Backbone.View.extend({
 				for (var i = 0, index = 0; i < count; ++i) {
 					var atli = $(atlis[i]);
 					var cid = atli.data('cid');
-					if (cid == undefined || atli.is(ui.item)) {
-						if (atlis.is(ui.placeholder)) {
-							++index;
-						}
+					if (cid == undefined) {
 						continue;
 					}
+					if (atli.is(ui.item)) {
+						++index;
+						continue;
+					}
+					
 					++index;
 					var article = this.articles.getByCid(cid);
 					article.set({'index':index});

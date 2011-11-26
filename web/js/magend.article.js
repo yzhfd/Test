@@ -50,7 +50,7 @@ var Articles = Backbone.Collection.extend({
 });
 
 var ArticleView = Backbone.View.extend({
-	template: '<h5>{{title}}</h5><ol class="pages"></ol><span class="footer">{{pages}}</span>',
+	template: '<h5>文章 {{title}}</h5><ol class="pages"></ol><span class="footer">{{pages}}</span>',
 	tagName: 'li',
 	className: 'article',
     events: {
@@ -141,7 +141,7 @@ var ArticleView = Backbone.View.extend({
     		var footer = this.el.find('.footer');
     		footer.text(pages.length);
     		var header = this.el.find('h5');
-    		header.text(index);
+    		header.text('文章 ' + index);
     	} else {
         	var html = $.mustache(this.template, {title:index, pages:1});
         	this.el.html(html);    		
