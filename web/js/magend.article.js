@@ -66,7 +66,7 @@ var ArticleView = Backbone.View.extend({
     	var pages = this.model.get('pages');
     	
     	pages.bind('add', this.addPage, this);
-    	// pages.bind('remove', this.removePage, this);
+    	pages.bind('remove', this.removePage, this);
     	pages.bind('reset', this.addPages, this);
     	pages.bind('all', this.render, this);
     	
@@ -173,7 +173,7 @@ var ArticleView = Backbone.View.extend({
 			pages.add(droppingPage);
 			fromPages.remove(droppingPage);
 			
-			dropping.remove();
+			// dropping.remove();
 		}
 		
 		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
@@ -185,10 +185,13 @@ var ArticleView = Backbone.View.extend({
     	this.el.find('.pages').append(pv.el);
     },
     removePage: function (page) {
-    	var pagelis = this.el.find('.pages li.page');
+    	var pagelis = this.el.hasClass('expanded')
+    				? this.el.siblings('.editing-page')
+    				: this.el.find('.pages li.page');
+    	
     	var pageli = null;
     	for (var i = 0, c = pagelis.length; i < c; ++i) {
-    		pageli = pagelis[i];
+    		pageli = $(pagelis[i]);
     		if (pageli.data('cid') == page.cid) {
     			break;
     		}    		
