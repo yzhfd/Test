@@ -12,11 +12,15 @@ jQuery.event.props.push("dataTransfer");
 var EditArea = Backbone.View.extend({
 	initialize: function (articles) {
 		this.articles = articles;
+		
 		articles.bind('add', this.addOne, this);
 		articles.bind('reset', this.addAll, this);
 		// articles.fetch();
 		
 		this.el = $('#editarea');
+		
+		// @todo if editarea is empty, then sortable will misbehave
+		this.articles.add(new Article);
 		
 		/* HTML5 file DnD */
 		window.editarea = this.el;
@@ -32,9 +36,6 @@ var EditArea = Backbone.View.extend({
 			e.stopPropagation();
 			e.preventDefault();
 		});
-		
-		// @todo if editarea is empty, then sortable will misbehave
-		this.articles.add(new Article);
 		
 		this.el.sortable({
 			opacity: 0.6,
@@ -85,14 +86,44 @@ var EditArea = Backbone.View.extend({
 					this.overArticle.trigger('dragexit');
 					this.overArticle = null;
 				}
-			}
+			},
+			stop: function (e, ui) {
+				if (this.overArticle) {
+					this.overArticle.trigger('drop', e, ui);
+				}
+			},
+			change: _.bind(function (e, ui) {
+				var atlis = this.el.find('.article');
+				
+				var drEl = $(ui.item);
+				var drCid = drEl.data('cid');
+				var drAt = this.articles.getByCid(drCid);
+				drAt.set({'index':atlis.index(ui.placeholder)});
+				
+				var count = atlis.length;
+				for (var i = 0, index = 0; i < count; ++i) {
+					var atli = $(atlis[i]);
+					var cid = atli.data('cid');
+					if (cid == undefined || atli.is(ui.item)) {
+						if (atlis.is(ui.placeholder)) {
+							++index;
+						}
+						continue;
+					}
+					++index;
+					var article = this.articles.getByCid(cid);
+					article.set({'index':index});
+				}
+			}, this)// update
 		});
 	},
 	addOne: function (article) {
 	    var at = new ArticleView({model:article});
 	    var atel = $(at.render().el);
-	    atel.data('cid', at.cid);
+	    atel.data('cid', article.cid);
 		
+	    article.set({'index': this.articles.length});
+	    
 	    $(this.el).append(atel);
 	},
 	addAll: function () {		

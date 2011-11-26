@@ -83,11 +83,15 @@ var ArticleView = Backbone.View.extend({
     	});*/
     },
     mouseOver: function (e) {
+    	// return;
+    	
 		var firstpage = this.el.find('.page:first');
 		var cover = firstpage.find('img');
 		cover.attr('src', firstpage.data('img'));
 	},
 	mouseOut: function (e) {
+		// return;
+		
 		var firstpage = this.el.find('.page:first');
 		var cover = firstpage.find('img');
 		cover.attr('src', 'http://placehold.it/128x96');	
@@ -115,7 +119,7 @@ var ArticleView = Backbone.View.extend({
 				this.model.add(new Page({'file':files[i]}));
 			};
 		} else {
-			
+			// @todo delete amd merge
 		}
 		// @todo create a page and put it into the article
 	},
@@ -131,12 +135,15 @@ var ArticleView = Backbone.View.extend({
     render: function () {
     	// number of pages, index and cover
     	// get page list, set html and restore page list will have data lost
+    	var index = this.model.get('index');
     	var pages = this.model.get('pages');
     	if (this.el.html() != '') {
     		var footer = this.el.find('.footer');
     		footer.text(pages.length);
+    		var header = this.el.find('h5');
+    		header.text(index);
     	} else {
-        	var html = $.mustache(this.template, {title:'文章', pages:1});
+        	var html = $.mustache(this.template, {title:index, pages:1});
         	this.el.html(html);    		
     	}    	
         return this;

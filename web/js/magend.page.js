@@ -71,7 +71,7 @@ var PageView = Backbone.View.extend({
             	this.imgName = file.name;
             	this.el.data('img', this.img);
         		this.el.find('img').attr({
-        			//'src': this.img,
+        			'src': this.img,
         			'title': this.imgName
         		});
             }, this);
