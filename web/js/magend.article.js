@@ -75,6 +75,8 @@ var ArticleView = Backbone.View.extend({
     	this.el = $(this.el);
     	this.el.data('cid', this.model.cid);
     	
+    	// this.model.view = this;
+    	
     	// droppable not work well as placeholder will make position calculated wrong
     	/*this.el.droppable({
     		accept: '.page, .article',
@@ -99,6 +101,11 @@ var ArticleView = Backbone.View.extend({
     	this.el.after(pagelis);    	
     },
     collapse: function () {
+    	if (!this.el.hasClass('expanded')) {
+    		// already collapsed
+    		return;
+    	}
+    	
     	this.el.removeClass('expanded');
     	window.expandedArticleView = null;
     	
@@ -165,13 +172,16 @@ var ArticleView = Backbone.View.extend({
 				return;
 			}
 			
-			var pages = this.model.get('pages');
-			var expandedArticle = window.expandedArticleView.model;
-			var fromPages = expandedArticle.get('pages');
-			var cid = dropping.data('cid');
-			var droppingPage = fromPages.getByCid(cid);
-			pages.add(droppingPage);
-			fromPages.remove(droppingPage);
+			if ($(dropping).is('.editing-page')) {
+			
+				var pages = this.model.get('pages');
+				var expandedArticle = window.expandedArticleView.model;
+				var fromPages = expandedArticle.get('pages');
+				var cid = dropping.data('cid');
+				var droppingPage = fromPages.getByCid(cid);
+				pages.add(droppingPage);
+				fromPages.remove(droppingPage);
+			}
 			
 			// dropping.remove();
 		}
@@ -180,8 +190,9 @@ var ArticleView = Backbone.View.extend({
 		
 		// @todo create a page and put it into the article
 	},
+	// @todo specify index that the page will be added to
     addPage: function (page) {
-    	var pv = new PageView({model:page});
+    	var pv = new PageView({model:page}); 
     	this.el.find('.pages').append(pv.el);
     },
     removePage: function (page) {

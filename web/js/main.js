@@ -15,6 +15,8 @@ var EditArea = Backbone.View.extend({
 		
 		articles.bind('add', this.addOne, this);
 		articles.bind('reset', this.addAll, this);
+		
+		// @todo remove, update index
 		// articles.fetch();
 		
 		this.el = $('#editarea');
@@ -55,6 +57,11 @@ var EditArea = Backbone.View.extend({
 				var cid = $(ui.item).data('cid');
 				var article = articles.getByCid(cid);
 				//page.set('index', 2);
+		    	if (window.expandedArticleView) {
+		    		window.expandedArticleView.collapse();
+		    	}
+				
+				// article.view.collapse();
 			},
 			stop: function (event, ui) {
 			    /*$(this).find('li').each(function (index, li) {
