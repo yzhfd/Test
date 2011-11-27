@@ -50,103 +50,25 @@ var EditArea = Backbone.View.extend({
 			e.preventDefault();
 		});
 		
-		this.el.droppable({
-			accept: 'li.page',
-			drop: function (e) {
-				console.log('drop');
-			}
-		});
-		
 		this.el.sortable({
 			opacity: 0.6,
 			axis: 'y',
 			helper: 'clone',
-			containment: $('#editarea'),
+			containment: '#editarea',
 			//appendTo: 'body',
 			tolerance: 'pointer',
 			start: function (event, ui) {
 				var cid = $(ui.item).data('cid');
 				var article = articles.getByCid(cid);
-				//page.set('index', 2);
-		    	if (!$(ui.item).hasClass('editing-page') && window.expandedArticleView) {
-		    		window.expandedArticleView.collapse();
-		    	}
-			},
-			// make article view droppable not work properly, so need hard check here
-			// but this does have its own advantage - more flexible
-			// @todo hover duration
-			sort: function (e, ui) {
-				var px = e.originalEvent.pageX;
-				var py = e.originalEvent.pageY;
-				var ats = $(this).find('.article');
-				var c = ats.length;			
-				for (var i = 0; i < c; ++i) {
-					var at = $(ats[i]);
-					if (at.is(ui.item) || at.is(ui.placeholder) || at.is(ui.helper)) {
-						continue;
-					}
-					
-					// @todo optimize this to only check articleviews near mouse
-					if (( px > at.offset().left && px < at.offset().left + at.width() )
-					&& ( py > at.offset().top && py < at.offset().top + at.height() )) {
-						if (!at.is(this.overArticle)) {
-							e.dragging = ui.item;
-							at.trigger('dragenter', e);
-							if (this.overArticle) {
-								this.overArticle.trigger('dragexit');
-							}
-						}
-						this.overArticle = at;
-						break;
-					}
-				}
-				
-				// not inside any article view
-				if (i == c && this.overArticle) {
-					this.overArticle.trigger('dragexit');
-					this.overArticle = null;
-				}
 			},
 			stop: function (e, ui) {
-				if (this.overArticle) {
-					e.dropping = ui.item;
-					this.overArticle.trigger('drop', e);
-				} else if ($(ui.item).hasClass('editing-page')) {
-					var pageli = $(ui.item);
-					var prevEl = pageli.prev();
-					if (!prevEl || prevEl.length == 0 || prevEl.is('li.article:not(.expanded)')) {
-						var expandedArticle = window.expandedArticleView.model;
-						var page = expandedArticle.get('pages').getByCid(pageli.data('cid'));
-						var index = $(this).find('li:not(.ui-sortable-placeholder)').index(pageli) + 1;
-						var article = articles.create({index:index});
-						// remove first then add, or page.collection will be undefined
-						page.collection.remove(page);
-						article.add(page);
-					} else {
-						// @todo change index of page
-						console.log('here');
-					}
-				}
+				// ui.item
+				// restore article's expanded state
+				console.log('stop');
 			},
-			change: _.bind(function (e, ui) {
-				var atlis = this.el.find('.article').not(ui.item);
-				var count = atlis.length;
-				for (var i = 0, index = 0; i < count; ++i) {
-					var atli = $(atlis[i]);
-					if (atli.is(ui.placeholder)) {
-						atli = $(ui.item);
-					}
-					
-					var cid = atli.data('cid');
-					if (cid == undefined) {
-						continue;
-					}
-					
-					++index;
-					var article = this.articles.getByCid(cid);
-					article.set({'index':index});
-				}
-			}, this)// update
+			update: function (e, ui) {
+				// update index
+			}
 		});
 	},
 	updateIndex: function () {

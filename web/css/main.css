@@ -111,8 +111,9 @@ body {
 
 
 #editarea {
-	width: 160px;
-	min-height: 500px;
+	width: 190px;
+	padding: 20px 0px 100px 0px;
+	height: 500px;
 	overflow-y: auto; /*super important for sortable*/
 }
 li.highlighted {
@@ -146,11 +147,14 @@ li.article .cover {
 }
 li.article ol.pages {
 	width: 128px;
-	min-height: 96px;
-	/*height: 96px;*/
-	/*overflow: hidden;*/
+	/*min-height: 96px;*/
+	height: 100px;/* consider border */
+	overflow: hidden;
 	background-color: gray; /* indicate no page inside */
 	border: 1px solid #333;
+}
+.expanded ol.pages {
+	overflow: visible !important;
 }
 li.page {
 	float: left;

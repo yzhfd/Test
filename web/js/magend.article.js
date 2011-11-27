@@ -63,8 +63,6 @@ var ArticleView = Backbone.View.extend({
 		'dragenter': 'dragEnter',
 		'dragexit': 'dragExit',
 		'drop': 'drop',
-		'mouseover': 'mouseOver',
-		'mouseout': 'mouseOut',
 		'dblclick': 'dblclick'
     },
     initialize: function () {
@@ -95,50 +93,14 @@ var ArticleView = Backbone.View.extend({
     	});*/
     },
     expand: function () {
-    	if (window.expandedArticleView) {
-    		window.expandedArticleView.collapse();
-    	}
-    	
-    	this.el.addClass('expanded');
-    	window.expandedArticleView = this;
-    	
-    	var pagelis = this.el.find('.pages li').addClass('editing-page');
-    	this.el.after(pagelis);    	
+    	this.el.addClass('expanded', 'fast');
     },
     collapse: function () {
-    	if (!this.el.hasClass('expanded')) {
-    		// already collapsed
-    		return;
-    	}
-    	
-    	this.el.removeClass('expanded');
-    	window.expandedArticleView = null;
-    	
-    	var editingPages = this.el.siblings('.editing-page');
-    	this.el.find('.pages').append(editingPages);
-    	editingPages.removeClass('editing-page');
+    	this.el.removeClass('expanded', 'fast');
     },
     dblclick: function (e) {
-    	if (this.el.hasClass('expanded')) {
-    		this.collapse();
-    	} else {
-    		this.expand();
-    	}
+    	this.el.toggleClass('expanded', 'fast');
     },
-    mouseOver: function (e) {
-    	// return;
-    	
-		var firstpage = this.el.find('.page:first');
-		var cover = firstpage.find('img');
-		cover.attr('src', firstpage.data('img'));
-	},
-	mouseOut: function (e) {
-		// return;
-		
-		var firstpage = this.el.find('.page:first');
-		var cover = firstpage.find('img');
-		cover.attr('src', 'http://placehold.it/128x96');	
-	},
     dragEnter: function (e, sorte) {
 		e.stopPropagation();
 		e.preventDefault();
@@ -248,7 +210,15 @@ var ArticleView = Backbone.View.extend({
         		containment: $('#editarea'),
         		connectWith:'ol.pages',
         		axis: 'y',
-        		tolerance: 'pointer'
+        		tolerance: 'pointer',
+				over: function (e, ui) {
+					$(this).parent().addClass('highlighted');
+				},
+				receive: function (e, ui) {
+					$(this).parent().switchClass('highlighted', 'very-highlighted', 'fast')
+									.removeClass('very-highlighted', 'fast');
+				}
+				// beforeStop to alert user no-page article
         	});
     	}    	
         return this;
