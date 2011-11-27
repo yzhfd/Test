@@ -111,9 +111,10 @@ body {
 
 
 #editarea {
+	width: 160px;
 	min-height: 500px;
+	overflow-y: auto; /*super important for sortable*/
 }
-
 li.highlighted {
 	background-color: #FFFFAA;
 }
@@ -122,6 +123,8 @@ li.very-highlighted {
 }
 li.article {
     float: left;
+    width: 130px;
+    
     padding: 4px;
     margin: 0 0 16px 18px;
     border: 1px solid #ddd;
@@ -143,13 +146,22 @@ li.article .cover {
 }
 li.article ol.pages {
 	width: 128px;
-	height: 96px;
-	overflow: hidden;
+	min-height: 96px;
+	/*height: 96px;*/
+	/*overflow: hidden;*/
 	background-color: gray; /* indicate no page inside */
 	border: 1px solid #333;
 }
-li.article li.page {
+li.page {
 	float: left;
+    margin-left: 18px;
+}
+li.article li.page {
+	/*float: left;*/
+	margin-bottom: 4px;
+	margin-left: 0px !important;
+	width: 128px;
+	height: 96px;
 }
 li.article .footer {
 	width: 100%;

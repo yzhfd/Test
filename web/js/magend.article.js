@@ -54,7 +54,8 @@ var Articles = Backbone.Collection.extend({
 });
 
 var ArticleView = Backbone.View.extend({
-	template: '<h5>文章 {{title}}</h5><div class="cover"></div><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
+	//<div class="cover"></div>
+	template: '<h5>文章 {{title}}</h5><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
 	tagName: 'li',
 	className: 'article',
     events: {
@@ -157,11 +158,12 @@ var ArticleView = Backbone.View.extend({
     	this.el.removeClass('highlighted');
     },
     drop: function (e, sorte) {
+    	console.log('x');
 		e.stopPropagation();
 		e.preventDefault();
 		
-		// ui is from droppable's drop
 		if (sorte == undefined) {
+			// file drop
 			var files = e.dataTransfer.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
@@ -172,12 +174,12 @@ var ArticleView = Backbone.View.extend({
 			
 			var dropping = sorte.dropping;
 			// no page drop to its own article
-			if (dropping && $(dropping).is('.editing-page') && this.el.hasClass('expanded')) {
+			/*if (dropping && $(dropping).is('.editing-page') && this.el.hasClass('expanded')) {
 				return;
-			}
-			
+			}*/
+			return;
 			var cid = dropping.data('cid');
-			if ($(dropping).is('.editing-page')) {
+			if ($(dropping).is('.page')) {
 				var pages = this.model.get('pages');
 				var expandedArticle = window.expandedArticleView.model;
 				var fromPages = expandedArticle.get('pages');
@@ -241,7 +243,13 @@ var ArticleView = Backbone.View.extend({
     		header.text('文章 ' + index);
     	} else {
         	var html = $.mustache(this.template, {title:index, pages:1});
-        	this.el.html(html);    		
+        	this.el.html(html);
+        	this.el.find('.pages').sortable({
+        		containment: $('#editarea'),
+        		connectWith:'ol.pages',
+        		axis: 'y',
+        		tolerance: 'pointer'
+        	});
     	}    	
         return this;
     }

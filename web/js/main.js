@@ -50,10 +50,20 @@ var EditArea = Backbone.View.extend({
 			e.preventDefault();
 		});
 		
+		this.el.droppable({
+			accept: 'li.page',
+			drop: function (e) {
+				console.log('drop');
+			}
+		});
+		
 		this.el.sortable({
 			opacity: 0.6,
-			// helper: 'clone',
-			// tolerance: 'pointer',
+			axis: 'y',
+			helper: 'clone',
+			containment: $('#editarea'),
+			//appendTo: 'body',
+			tolerance: 'pointer',
 			start: function (event, ui) {
 				var cid = $(ui.item).data('cid');
 				var article = articles.getByCid(cid);
@@ -61,13 +71,6 @@ var EditArea = Backbone.View.extend({
 		    	if (!$(ui.item).hasClass('editing-page') && window.expandedArticleView) {
 		    		window.expandedArticleView.collapse();
 		    	}
-			},
-			stop: function (event, ui) {
-			    /*$(this).find('li').each(function (index, li) {
-					var cid = $(li).data('cid');
-					var article = articles.getByCid(cid);
-					article.set({index:index+1});
-				});*/
 			},
 			// make article view droppable not work properly, so need hard check here
 			// but this does have its own advantage - more flexible
@@ -202,46 +205,7 @@ var EditArea = Backbone.View.extend({
 	}
 });
 
-var PagesView = Backbone.View.extend({
-    initialize: function (pages) {
-		this.el = $('#units');
-		
-		this.pages = pages;
-		pages.bind('add', this.addOne, this);
-		pages.bind('reset', this.addAll, this);
-		
-		pages.fetch();
-    },
-    addOne: function (page) {
-	    var pv = new PageView({model:page});
-	    var pvel = $(pv.render().el);
-	    pvel.data('cid', page.cid);
-		
-	    $(this.el).append(pvel);
-    },
-    addAll: function () {		
-    	this.pages.each(this.addOne, this);
-    },
-    render: function () {
-    	// @todo move to initialize but if empty, sortable will be wrong
-	    var pages = this.pages;
-		$(this.el).sortable({
-			opacity: 0.6,
-			start: function (event, ui) {
-				var cid = $(ui.item).data('cid');
-				var page = pages.getByCid(cid);
-				//page.set('index', 2);
-			},
-			stop: function (event, ui) {
-			    $(this).find('li').each(function (index, li) {
-					var cid = $(li).data('cid');
-					var page = pages.getByCid(cid);
-					page.set({index:index+1});
-				});
-			}
-		});
-    }
-});
+
 
 $(function () {
 	$('#addpage').click(function () {
