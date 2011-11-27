@@ -108,6 +108,19 @@ var EditArea = Backbone.View.extend({
 				if (this.overArticle) {
 					e.dropping = ui.item;
 					this.overArticle.trigger('drop', e);
+				} else if ($(ui.item).hasClass('editing-page')) {
+					var pageli = $(ui.item);
+					var prevEl = pageli.prev();
+					console.log(prevEl);
+					if (!prevEl || prevEl.length == 0 || prevEl.is('li.article:not(.expanded)')) {
+						var expandedArticle = window.expandedArticleView.model;
+						var page = expandedArticle.get('pages').getByCid(pageli.data('cid'));
+						var index = $(this).find('li:not(.ui-sortable-placeholder)').index(pageli) + 1;
+						var article = articles.create({index:index});
+						// remove first then add, or page.collection will be undefined
+						page.collection.remove(page);
+						article.add(page);
+					}
 				}
 			},
 			change: _.bind(function (e, ui) {
@@ -131,13 +144,37 @@ var EditArea = Backbone.View.extend({
 			}, this)// update
 		});
 	},
+	updateIndex: function () {
+		var atlis = this.el.find('.article');
+		var count = atlis.length;
+		for (var i = 0, index = 0; i < count; ++i) {
+			var atli = $(atlis[i]);
+			var cid = atli.data('cid');
+			if (cid == undefined) {
+				continue;
+			}
+			
+			++index;
+			var article = this.articles.getByCid(cid);
+			article.set({'index':index});
+		}
+	},
 	addOne: function (article) {
 	    var at = new ArticleView({model:article});
 	    var atel = $(at.render().el);
-		
-	    article.set({'index': this.articles.length});
-	    
-	    $(this.el).append(atel);
+		var index = article.get('index');
+		if (index == 0) {
+			index = this.articles.length;
+			article.set({'index': index});
+			this.el.append(atel);
+		} else {
+			var pagelis = this.el.find('li.article:not(.ui-sortable-placeholder)');
+			if (pagelis.length >= index) {
+				$(pagelis[index-1]).before(atel);
+			} else {
+				this.el.append(atel);
+			}
+		}
 	},
 	removeOne: function (article) {
 		var cid = article.cid;
@@ -149,6 +186,8 @@ var EditArea = Backbone.View.extend({
 				break;
 			}
 		}
+		
+		this.updateIndex();
 	},
 	addAll: function () {		
 		this.articles.each(this.addOne, this);
@@ -239,6 +278,7 @@ $(function () {
 	// editarea.render();
 	
 	$('#saveremote').click(function () {
-		editarea.saveToRemote();
+		console.log(localStorage.getItem('articles').length);
+		// editarea.saveToRemote();
 	});
 });

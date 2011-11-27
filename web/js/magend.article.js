@@ -42,6 +42,9 @@ var Article = Backbone.Model.extend({
 var Articles = Backbone.Collection.extend({
 	model: Article,
 	localStorage: new Store('articles'),
+	comparator: function (article) {
+		return article.get('index');
+	},
 	saveToRemote: function () {
 		_.each(this.models, function (article) {
 			article.saveToRemote();
@@ -212,6 +215,11 @@ var ArticleView = Backbone.View.extend({
     		}    		
     	}
     	pageli.remove();
+    	
+    	// @todo forbid drag out page from its article if it's the only one
+    	if (c == 1 && this.el.hasClass('expanded')) {
+    		this.collapse();
+    	}
     },
     addPages: function (pages) {
     	_.each(pages, function (page) {

@@ -39,6 +39,9 @@ var Pages = Backbone.Collection.extend({
 			});
 		}
 	},
+	comparator: function (page) {
+		return page.get('index');
+	},
 	saveToRemote: function () {
 		// switch to ajax
 		Backbone.sync = Backbone.ajaxSync;
