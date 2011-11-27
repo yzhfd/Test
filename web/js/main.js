@@ -111,7 +111,6 @@ var EditArea = Backbone.View.extend({
 				} else if ($(ui.item).hasClass('editing-page')) {
 					var pageli = $(ui.item);
 					var prevEl = pageli.prev();
-					console.log(prevEl);
 					if (!prevEl || prevEl.length == 0 || prevEl.is('li.article:not(.expanded)')) {
 						var expandedArticle = window.expandedArticleView.model;
 						var page = expandedArticle.get('pages').getByCid(pageli.data('cid'));
@@ -120,6 +119,8 @@ var EditArea = Backbone.View.extend({
 						// remove first then add, or page.collection will be undefined
 						page.collection.remove(page);
 						article.add(page);
+					} else {
+						// @todo change index of page
 					}
 				}
 			},

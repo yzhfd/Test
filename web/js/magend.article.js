@@ -214,11 +214,13 @@ var ArticleView = Backbone.View.extend({
     			break;
     		}    		
     	}
-    	pageli.remove();
-    	
-    	// @todo forbid drag out page from its article if it's the only one
-    	if (c == 1 && this.el.hasClass('expanded')) {
-    		this.collapse();
+    	if (pageli) {
+	    	pageli.remove();
+	    	
+	    	// the article now has no page, so collapse it
+	    	if (c == 1 && this.el.hasClass('expanded')) {
+	    		this.collapse();
+	    	}
     	}
     },
     addPages: function (pages) {
