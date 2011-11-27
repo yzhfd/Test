@@ -14,6 +14,7 @@ var EditArea = Backbone.View.extend({
 		this.articles = articles;
 		
 		articles.bind('add', this.addOne, this);
+		articles.bind('remove', this.removeOne, this);
 		articles.bind('reset', this.addAll, this);
 		
 		// @todo remove, update index
@@ -57,11 +58,9 @@ var EditArea = Backbone.View.extend({
 				var cid = $(ui.item).data('cid');
 				var article = articles.getByCid(cid);
 				//page.set('index', 2);
-		    	if (window.expandedArticleView) {
+		    	if (!$(ui.item).hasClass('editing-page') && window.expandedArticleView) {
 		    		window.expandedArticleView.collapse();
 		    	}
-				
-				// article.view.collapse();
 			},
 			stop: function (event, ui) {
 			    /*$(this).find('li').each(function (index, li) {
@@ -139,6 +138,17 @@ var EditArea = Backbone.View.extend({
 	    article.set({'index': this.articles.length});
 	    
 	    $(this.el).append(atel);
+	},
+	removeOne: function (article) {
+		var cid = article.cid;
+		var atels = this.el.find('li.article');
+		for (var i = 0, c = atels.length; i < c; ++i) {
+			var atel = $(atels[i]);
+			if (atel.data('cid') == cid) {
+				atel.remove();
+				break;
+			}
+		}
 	},
 	addAll: function () {		
 		this.articles.each(this.addOne, this);

@@ -23,7 +23,7 @@ var Article = Backbone.Model.extend({
 		if (obj instanceof Page) {
 			pages.add(obj);
 		} else if (obj instanceof Pages) {
-			_.each(obj, function (page) {
+			obj.each(function (page) {
 				pages.add(page);
 			});
 			delete obj;
@@ -50,7 +50,7 @@ var Articles = Backbone.Collection.extend({
 });
 
 var ArticleView = Backbone.View.extend({
-	template: '<h5>文章 {{title}}</h5><ol class="pages"></ol><span class="footer">{{pages}}</span>',
+	template: '<h5>文章 {{title}}</h5><div class="cover"></div><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
 	tagName: 'li',
 	className: 'article',
     events: {
@@ -172,15 +172,19 @@ var ArticleView = Backbone.View.extend({
 				return;
 			}
 			
+			var cid = dropping.data('cid');
 			if ($(dropping).is('.editing-page')) {
-			
 				var pages = this.model.get('pages');
 				var expandedArticle = window.expandedArticleView.model;
 				var fromPages = expandedArticle.get('pages');
-				var cid = dropping.data('cid');
 				var droppingPage = fromPages.getByCid(cid);
 				pages.add(droppingPage);
 				fromPages.remove(droppingPage);
+			} else {
+				var arts = this.model.collection;
+				var drArticle = arts.getByCid(cid);
+				this.model.add(drArticle.get('pages'));
+				arts.remove(drArticle);
 			}
 			
 			// dropping.remove();

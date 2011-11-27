@@ -131,8 +131,16 @@ li.article {
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    
+    position: relative;
 }
 /* change width, height if necessary */
+li.article .cover {
+	width: 128px;
+	height: 96px;
+	position: absolute;
+	left: 5px; top: 41px;
+}
 li.article ol.pages {
 	width: 128px;
 	height: 96px;
