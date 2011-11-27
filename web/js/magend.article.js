@@ -32,6 +32,7 @@ var Article = Backbone.Model.extend({
 		// add pages finally
 	},
 	saveToRemote: function (options) {
+		// @todo collapse if not yet
 		var pages = this.get('pages');
 		if (pages) {
 			pages.saveToRemote();

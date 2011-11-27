@@ -121,6 +121,7 @@ var EditArea = Backbone.View.extend({
 						article.add(page);
 					} else {
 						// @todo change index of page
+						console.log('here');
 					}
 				}
 			},
