@@ -2,6 +2,7 @@
 
 namespace Magend\ArticleBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -55,6 +56,8 @@ class ArticleController extends Controller
                 }
             }
             
+            // necessary for bidirectional associations
+            $pageEntity->setArticle($article);
             $pageEntites[] = $pageEntity;
         }
         
@@ -62,7 +65,7 @@ class ArticleController extends Controller
         $em->persist($article);
         $em->flush();
         
-        print_r($article->getId()); exit;
+        return new Response('');
     }
     
     /**
