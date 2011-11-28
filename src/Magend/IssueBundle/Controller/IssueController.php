@@ -72,10 +72,19 @@ class IssueController extends Controller
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE x.issues IS EMPTY');
          * 
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE :issueId MEMBER  x.issues');
+        
+        
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT a, p FROM MagendArticleBundle:Article a INDEX BY a.id JOIN a.pages p WHERE a.id IN (1,2,3,4,5)');
+        $res = $query->getArrayResult();
+        echo '<pre>';
+        print_r($res);
+        echo '</pre>';
          */
         
+        
         /*
-        $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find(1);
         

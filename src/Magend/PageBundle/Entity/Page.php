@@ -34,6 +34,13 @@ class Page
     /**
      * 
      * @var string
+     * @ORM\Column(name="label", type="string", length=255, nullable=true)
+     */
+    private $label;
+    
+    /**
+     * 
+     * @var string
      * @ORM\Column(name="landscape_img", type="string", length=255, nullable=true)
      */
     private $landscapeImg;
@@ -174,5 +181,25 @@ class Page
     public function getArticle()
     {
         return $this->article;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string 
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 }

@@ -26,19 +26,22 @@ class PageController extends Controller
     }
     
     /**
+     * Upload image
+     * @todo landscape or portrait
      * 
-     * @Route("/new", name="page_new")
+     * @Route("/upload", name="page_upload")
      * @Template()
      */
-    public function newAction()
+    public function uploadAction()
     {
         $req = $this->getRequest();
         if ($req->isXmlHTTPRequest() && ($req->getMethod() == 'POST' || $req->getMethod() == 'PUT')) {
             $file = $req->files->get('file');
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
-            $file->move($rootDir . '/../web/uploads/', uniqid('page_') . '.jpg');
-            return new Response($file->getClientOriginalName());
+            $imgName = uniqid('page_') . '.' . $file->guessExtension();
+            $file->move($rootDir . '/../web/uploads/', $imgName);
+            return new Response($imgName);
         }
         
         return array(

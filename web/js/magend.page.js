@@ -3,14 +3,46 @@
  */
 
 var Page = Backbone.Model.extend({
+	uploadUrl: '/Magend/web/app_dev.php/page/upload',
 	url: '/Magend/web/app_dev.php/page/new', // @todo used to fetch model
+	index: -1,
+	file: null, //File
 	defaults: {
-		index: 0,
+		articleId: null,
 		// img: 'http://placehold.it/128x96',
-		file: null // the HTML5 local file object
+		landscapeImg: null,
+		portraitImg: null,
+		portraitHots: null,
+		label: null
 	},
 	initialize: function () {
+		// make sure there is cid
+		if (!this.cid && this.id) {
+			this.cid = 'page_' + this.id;
+		}
+	},
+	// @todo landscape or portrait
+	uploadImage: function () {
+		if (!this.file) {
+			return;
+		}
 		
+		var uploader = $('<div/>');
+		uploader.fileupload({
+			paramName: 'file',
+			url: this.uploadUrl,
+		    add: _.bind(function (e, data) {
+		        var jqXHR = data.submit()
+		            .success(_.bind(function (result, textStatus, jqXHR) {
+		    			this.set({landscapeImg:result});
+		    			this.trigger('uploaded', this);
+		    			this.file = null;
+		            }, this))
+		            .error(function (jqXHR, textStatus, errorThrown) {
+		            	
+		            });
+		    }, this)
+		}).fileupload('add', { files:[this.file] });
 	},
 	saveToRemote: function (options) {
 		// options success, error, complete, etc
@@ -39,9 +71,9 @@ var Pages = Backbone.Collection.extend({
 			});
 		}
 	},
-	/*comparator: function (page) {
-		return page.get('index');
-	},*/
+	comparator: function (page) {
+		return page.index;
+	},
 	saveToRemote: function () {
 		// switch to ajax
 		Backbone.sync = Backbone.ajaxSync;
@@ -66,8 +98,8 @@ var PageView = Backbone.View.extend({
     	
     	this.render();
     	
-		var file = this.model.get('file');
-		if (file) {
+		var file = this.model.file;
+		if (file instanceof File) {
             var reader = new FileReader();
             reader.onload = _.bind(function (e) {
             	// files[i].name
@@ -81,6 +113,9 @@ var PageView = Backbone.View.extend({
             }, this);
             reader.readAsDataURL(file);
 		}
+    },
+    add: function (model) {
+    	console.log(model.collection);
     },
     render: function () {
     	// ../../images/thumb

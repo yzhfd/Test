@@ -127,7 +127,7 @@ li.article {
     width: 130px;
     
     padding: 4px;
-    margin: 0 0 16px 18px;
+    margin: 0 0 16px 18px; /* no margin-bottom if use article-placeholder*/
     border: 1px solid #ddd;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -137,6 +137,15 @@ li.article {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
     
     position: relative;
+}
+li.article-placeholder {
+	float: left;
+	margin: 0 0 0 18px;
+}
+li.article-placeholder ol.pages {
+    width: 138px;
+    /*min-height: 96px;*/
+    height: 16px;/* consider border */
 }
 /* change width, height if necessary */
 li.article .cover {

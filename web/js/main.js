@@ -11,6 +11,8 @@ jQuery.event.props.push("dataTransfer");
  */
 var EditArea = Backbone.View.extend({
 	initialize: function (articles) {
+		this.el = $('#editarea');
+		
 		this.articles = articles;
 		
 		articles.bind('add', this.addOne, this);
@@ -18,32 +20,34 @@ var EditArea = Backbone.View.extend({
 		articles.bind('reset', this.addAll, this);
 		
 		// @todo remove, update index
-		// articles.fetch();
+		articles.fetch();
 		
-		this.el = $('#editarea');
-		
-		
-		
-		// area to show pages of one article
-		$('#article-pages .pages').sortable({
-			//connectWith: this.el
-			containment: $('#article-pages')
-		});
-		
-		
+		// set their index if not set yet
+		for (var i = 0; i < articles.length; ++i) {
+			articles.at(i).setIndex(i);
+		}
 		
 		// @todo if editarea is empty, then sortable will misbehave
-		this.articles.add(new Article);
+		//this.articles.create();
 		
 		/* HTML5 file DnD */
 		window.editarea = this.el;
-		this.el.fileupload().bind('fileuploadadd', function (e, data) {
+		this.el.fileupload({
+			paramName: 'file',
+			url: '/Magend/web/app_dev.php/page/upload',
+			singleFileUploads: true,
+			sequentialUploads: true
+		}).bind('fileuploaddrop', function (e, data) {
 			var files = data.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
 				var article = articles.create();
-				article.add(new Page({'file':files[i]}));
+				var p = new Page;
+				p.file = files[i];
+				article.add(p);
 			}
+			
+			// $('#modal-from-dom').modal({backdrop:true, show:true});
 		}).bind('fileuploadsubmit', function (e, data) {
 			// no upload immediately
 			e.stopPropagation();
@@ -58,17 +62,22 @@ var EditArea = Backbone.View.extend({
 			//appendTo: 'body',
 			tolerance: 'pointer',
 			start: function (event, ui) {
-				var cid = $(ui.item).data('cid');
-				var article = articles.getByCid(cid);
+				// collapse if need
 			},
 			stop: function (e, ui) {
 				// ui.item
 				// restore article's expanded state
-				console.log('stop');
 			},
-			update: function (e, ui) {
-				// update index
-			}
+			update: _.bind(function (e, ui) {
+				this.updateIndex();
+			}, this)
+		});
+	},
+	uploadImages: function () {
+		var allPages = [];
+		var allFiles = [];
+		this.articles.each(function (article) {
+			article.uploadImages();
 		});
 	},
 	updateIndex: function () {
@@ -77,31 +86,36 @@ var EditArea = Backbone.View.extend({
 		for (var i = 0, index = 0; i < count; ++i) {
 			var atli = $(atlis[i]);
 			var cid = atli.data('cid');
-			if (cid == undefined) {
+			if (cid == undefined) { // might be placeholder
 				continue;
 			}
 			
-			++index;
 			var article = this.articles.getByCid(cid);
-			article.set({'index':index});
+			article.setIndex(index);
+			
+			++index;
 		}
 	},
 	addOne: function (article) {
-	    var at = new ArticleView({model:article});
-	    var atel = $(at.render().el);
-		var index = article.get('index');
-		if (index == 0) {
-			index = this.articles.length;
-			article.set({'index': index});
-			this.el.append(atel);
-		} else {
-			var pagelis = this.el.find('li.article:not(.ui-sortable-placeholder)');
-			if (pagelis.length >= index) {
-				$(pagelis[index-1]).before(atel);
-			} else {
-				this.el.append(atel);
-			}
+		this.el = $(this.el);
+		
+		if (article.index < 0) {
+			article.setIndex(this.articles.length - 1);
 		}
+		
+	    var at = new ArticleView({model:article});
+	    var atel = $(at.render().el);			
+		this.el.append(atel);
+		/*
+		var articleholder = $('<li class="article-placeholder"><ol class="pages"></ol></li>');
+		this.el.append(articleholder)
+		articleholder.find('.pages').sortable({
+    		distance: 3,
+    		containment: $('#editarea'),
+    		connectWith:'ol.pages',
+    		axis: 'y',
+    		tolerance: 'pointer'
+		});*/
 	},
 	removeOne: function (article) {
 		var cid = article.cid;
@@ -166,7 +180,6 @@ $(function () {
 	// editarea.render();
 	
 	$('#saveremote').click(function () {
-		console.log(localStorage.getItem('articles').length);
-		// editarea.saveToRemote();
+		editarea.uploadImages();
 	});
 });

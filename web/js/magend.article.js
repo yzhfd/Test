@@ -4,38 +4,71 @@
  */
 
 var Article = Backbone.Model.extend({
-	url: '/Magend/web/app_dev.php/article/new',
+	url: '/Magend/web/app_dev.php/article',
+	index: -1,
 	defaults: {
-		index: 0,
+		issueId: null,
+		title: '',
 		cover: 'http://placehold.it/128x96', // or thumbnail in navigation
 		pages: null // can't new Pages here, it'll be shared by all articles
 	},
 	initialize: function () {
+		// make sure there is cid
+		if (!this.cid && this.id) {
+			this.cid = 'article_' + this.id;
+		}
+		
 		var pages = this.get('pages');
 		if (pages == null) {
 			pages = new Pages;
-			this.set({'pages':pages});
+			this.set({'pages':new Pages});
+		} else if (!(pages instanceof Pages)) {
+			var pagesCollection = new Pages(pages);
+			this.set({'pages':pagesCollection});
 		}
 	},
-	// can add Page, Pages, HTML5's files
-	add: function (obj) {
+	add: function (page) {
 		var pages = this.get('pages');		
-		if (obj instanceof Page) {
-			pages.add(obj);
-		} else if (obj instanceof Pages) {
-			obj.each(function (page) {
-				pages.add(page);
-			});
-			delete obj;
-		}
-		
-		// add pages finally
+		pages.add(page);
 	},
-	saveToRemote: function (options) {
-		// @todo collapse if not yet
+	remove: function (page) {
+		var pages = this.get('pages');		
+		pages.remove(page);
+	},
+	setIndex: function (index) {
+		this.index = index;
+		this.trigger('change');
+	},
+	getPageByCid: function (cid) {
 		var pages = this.get('pages');
-		if (pages) {
-			pages.saveToRemote();
+		return pages.getByCid(cid);
+	},
+	sync: function(method, model, options) {
+		if(method=='GET'){
+			options.url = model.url; 
+		}else{
+		     options.url = model.url + '/save'; 
+		  }
+		 return Backbone.sync(method, model, options);
+	},
+	uploadImages: function () {
+		// @todo forbid update pages here
+		
+		var pages = this.get('pages');
+		pages.bind('uploaded', this.imgUploaded, this);
+		
+		this.uploadingIndex = 0;
+		this._uploadImage();
+	},
+	imgUploaded: function (page) {
+		++this.uploadingIndex;
+		this._uploadImage();
+	},
+	_uploadImage: function () {
+		var pages = this.get('pages');
+		var page = pages.at(this.uploadingIndex);
+		if (page) {
+			page.uploadImage();
 		}
 	}
 });
@@ -44,7 +77,7 @@ var Articles = Backbone.Collection.extend({
 	model: Article,
 	localStorage: new Store('articles'),
 	comparator: function (article) {
-		return article.get('index');
+		return article.index;
 	},
 	saveToRemote: function () {
 		_.each(this.models, function (article) {
@@ -55,7 +88,7 @@ var Articles = Backbone.Collection.extend({
 
 var ArticleView = Backbone.View.extend({
 	//<div class="cover"></div>
-	template: '<h5>文章 {{title}}</h5><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
+	template: '<h5>{{title}}</h5><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
 	tagName: 'li',
 	className: 'article',
     events: {
@@ -71,26 +104,15 @@ var ArticleView = Backbone.View.extend({
     	pages.bind('add', this.addPage, this);
     	pages.bind('remove', this.removePage, this);
     	pages.bind('reset', this.addPages, this);
-    	pages.bind('all', this.render, this);
     	
-    	this.model.bind('change:index', this.render, this);
+    	this.model.bind('all', this.render, this);
+    	
+    	// this.model.bind('change:index', this.render, this);
     	
     	this.el = $(this.el);
     	this.el.data('cid', this.model.cid);
     	
     	// this.model.view = this;
-    	
-    	// droppable not work well as placeholder will make position calculated wrong
-    	/*this.el.droppable({
-    		accept: '.page, .article',
-    		activeClass: '',
-    		hoverClass: 'highlighted',
-    		over: function (e, ui) {
-    			if (e.originalEvent.pageX > $(this).offset().left && e.originalEvent.pageX < $(this).offset().left + $(this).width()) {
-    				//$(this).addClass('highlighted');
-    			}
-    		}
-    	});*/
     },
     expand: function () {
     	this.el.addClass('expanded', 'fast');
@@ -105,22 +127,12 @@ var ArticleView = Backbone.View.extend({
 		e.stopPropagation();
 		e.preventDefault();
 		
-		if (sorte) {
-			var dragging = sorte.dragging;
-			// no page drop to its article
-			if (dragging && $(dragging).is('.editing-page') && this.el.hasClass('expanded')) {
-				return;
-			} 
-		}
-		
-		//var hoverClass = $(this).droppable('option', 'hoverClass');
 		this.el.addClass('highlighted');
     },
     dragExit: function (e) {
     	this.el.removeClass('highlighted');
     },
     drop: function (e, sorte) {
-    	console.log('x');
 		e.stopPropagation();
 		e.preventDefault();
 		
@@ -131,93 +143,110 @@ var ArticleView = Backbone.View.extend({
 			for (var i = 0; i < count; ++i) {
 				this.model.add(new Page({'file':files[i]}));
 			};
-		} else {
-			// @todo delete amd merge
-			
-			var dropping = sorte.dropping;
-			// no page drop to its own article
-			/*if (dropping && $(dropping).is('.editing-page') && this.el.hasClass('expanded')) {
-				return;
-			}*/
-			return;
-			var cid = dropping.data('cid');
-			if ($(dropping).is('.page')) {
-				var pages = this.model.get('pages');
-				var expandedArticle = window.expandedArticleView.model;
-				var fromPages = expandedArticle.get('pages');
-				var droppingPage = fromPages.getByCid(cid);
-				pages.add(droppingPage);
-				fromPages.remove(droppingPage);
-			} else {
-				var arts = this.model.collection;
-				var drArticle = arts.getByCid(cid);
-				this.model.add(drArticle.get('pages'));
-				arts.remove(drArticle);
-			}
-			
-			// dropping.remove();
-		}
+		} // else can be triggered during sort, not implemented yet
 		
-		this.el.switchClass('highlighted', 'very-highlighted', 'fast').removeClass('very-highlighted', 'fast');
-		
-		// @todo create a page and put it into the article
+		this.el.switchClass('highlighted', 'very-highlighted', 'fast')
+		       .removeClass('very-highlighted', 'fast');
 	},
 	// @todo specify index that the page will be added to
+	initPages: function () {
+		var pages = this.model.get('pages');
+		this.addPages(pages);
+	},
     addPage: function (page) {
+		var pagelis = this.el.find('.' + PageView.prototype.className);
+		for (var i = 0, c = pagelis.length; i < c; ++i) {
+			if ($(pagelis[i]).data('cid') == page.cid) {
+				// already there
+				return;
+			}
+		}
+		
     	var pv = new PageView({model:page}); 
     	this.el.find('.pages').append(pv.el);
     },
     removePage: function (page) {
-    	var pagelis = this.el.hasClass('expanded')
-    				? this.el.siblings('.editing-page')
-    				: this.el.find('.pages li.page');
-    	
+    	var pagelis = this.el.find('.pages li.page');
     	var pageli = null;
     	for (var i = 0, c = pagelis.length; i < c; ++i) {
-    		pageli = $(pagelis[i]);
-    		if (pageli.data('cid') == page.cid) {
+    		if ($(pagelis[i]).data('cid') == page.cid) {
+    			pageli = $(pagelis[i]);
     			break;
     		}    		
     	}
+    	
     	if (pageli) {
 	    	pageli.remove();
 	    	
-	    	// the article now has no page, so collapse it
-	    	if (c == 1 && this.el.hasClass('expanded')) {
+	    	// the article now has 0/1 page, so collapse it
+	    	if (c <= 2 && this.el.hasClass('expanded')) {
 	    		this.collapse();
 	    	}
     	}
     },
     addPages: function (pages) {
-    	_.each(pages, function (page) {
+    	pages.each(_.bind(function (page) {
     		this.addPage(page);
-    	});
+    	}, this));
     },
     render: function () {
-    	// number of pages, index and cover
-    	// get page list, set html and restore page list will have data lost
-    	var index = this.model.get('index');
+    	this.el = $(this.el);
+    	
+    	var index = this.model.index + 1;
     	var pages = this.model.get('pages');
     	if (this.el.html() != '') {
     		var footer = this.el.find('.footer');
     		footer.text(pages.length);
     		var header = this.el.find('h5');
-    		header.text('文章 ' + index);
+    		header.text(index);
     	} else {
         	var html = $.mustache(this.template, {title:index, pages:1});
         	this.el.html(html);
+        	
+        	this.initPages();
+        	
         	this.el.find('.pages').sortable({
-        		containment: $('#editarea'),
+        		distance: 3,
         		connectWith:'ol.pages',
         		axis: 'y',
         		tolerance: 'pointer',
+        		start: _.bind(function (e, ui) {
+					var pageli = $(ui.item);
+					window.editingPage = this.model.getPageByCid(pageli.data('cid'));
+        		}, this),
+        		stop: _.bind(function (e, ui) {
+        			window.editingPage = null;
+        		}, this),
 				over: function (e, ui) {
 					$(this).parent().addClass('highlighted');
 				},
-				receive: function (e, ui) {
-					$(this).parent().switchClass('highlighted', 'very-highlighted', 'fast')
-									.removeClass('very-highlighted', 'fast');
-				}
+				out:  function (e, ui) {
+					$(this).parent().removeClass('highlighted');
+				},
+				receive: _.bind(function (e, ui) {
+					this.el.switchClass('highlighted', 'very-highlighted', 'fast')
+						   .removeClass('very-highlighted', 'fast');
+				}, this),
+				update: _.bind(function (e, ui) {					
+					var pageli = $(ui.item);
+					var pagelis = this.el.find('li.page');
+					
+					var index = pagelis.index(pageli);
+					var page = this.model.getPageByCid(window.editingPage.cid);
+					if (index >= 0) {
+						if (!page) {
+							this.model.add(window.editingPage);
+						}
+					} else if (page) {
+						this.model.remove(page);
+					}
+					
+					var count =  pagelis.length;
+					for (var i = 0; i < count; ++i) {
+						var page = this.model.getPageByCid($(pagelis[i]).data('cid'));
+						page.index = i;
+					}
+				}, this)
 				// beforeStop to alert user no-page article
         	});
     	}    	
