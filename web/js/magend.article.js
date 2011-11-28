@@ -104,6 +104,7 @@ var ArticleView = Backbone.View.extend({
     	pages.bind('add', this.addPage, this);
     	pages.bind('remove', this.removePage, this);
     	pages.bind('reset', this.addPages, this);
+    	pages.bind('all', this.updateNbPages, this);
     	
     	this.model.bind('all', this.render, this);
     	
@@ -152,6 +153,9 @@ var ArticleView = Backbone.View.extend({
 	initPages: function () {
 		var pages = this.model.get('pages');
 		this.addPages(pages);
+	},
+	updateNbPages: function () {
+		this.el.find('.footer').text(this.model.get('pages').length);
 	},
     addPage: function (page) {
 		var pagelis = this.el.find('.' + PageView.prototype.className);
