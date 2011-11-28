@@ -178,8 +178,10 @@ $(function () {
 	
 	window.editarea = new EditArea(new Articles);
 	// editarea.render();
-	
+	Backbone.sync = Backbone.ajaxSync;
 	$('#saveremote').click(function () {
-		editarea.uploadImages();
+		//editarea.uploadImages();
+		var article = editarea.articles.at(0);
+		article.save();
 	});
 });

@@ -37,19 +37,11 @@ var Article = Backbone.Model.extend({
 	},
 	setIndex: function (index) {
 		this.index = index;
-		this.trigger('change');
+		this.change();
 	},
 	getPageByCid: function (cid) {
 		var pages = this.get('pages');
 		return pages.getByCid(cid);
-	},
-	sync: function(method, model, options) {
-		if(method=='GET'){
-			options.url = model.url; 
-		}else{
-		     options.url = model.url + '/save'; 
-		  }
-		 return Backbone.sync(method, model, options);
 	},
 	uploadImages: function () {
 		// @todo forbid update pages here
