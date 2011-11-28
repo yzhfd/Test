@@ -84,7 +84,6 @@ class Article
      * 
      * 
      * @ORM\OneToMany(targetEntity="Magend\PageBundle\Entity\Page", mappedBy="article", indexBy="id", cascade={"persist", "remove"})
-     * @ORM\JoinTable(name="mag_article_page")
      */
     private $pages;
     
