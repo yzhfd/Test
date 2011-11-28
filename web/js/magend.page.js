@@ -24,7 +24,7 @@ var Page = Backbone.Model.extend({
 	// @todo landscape or portrait
 	uploadImage: function () {
 		if (!this.file) {
-			return;
+			return false;
 		}
 		
 		var uploader = $('<div/>');
@@ -43,6 +43,8 @@ var Page = Backbone.Model.extend({
 		            });
 		    }, this)
 		}).fileupload('add', { files:[this.file] });
+		
+		return true;
 	},
 	saveToRemote: function (options) {
 		// options success, error, complete, etc
@@ -98,6 +100,8 @@ var PageView = Backbone.View.extend({
     	
     	this.render();
     	
+    	this.model.bind('change', this.render, this);
+    	
 		var file = this.model.file;
 		if (file instanceof File) {
             var reader = new FileReader();
@@ -118,8 +122,14 @@ var PageView = Backbone.View.extend({
     	console.log(model.collection);
     },
     render: function () {
-    	// ../../images/thumb
-    	var html = $.mustache(this.template, {img:'http://placehold.it/128x96'});
+    	var landscapeImg = this.model.get('landscapeImg');
+    	if (!landscapeImg) {
+    		landscapeImg = 'http://placehold.it/128x96';
+    	} else {
+    		landscapeImg = '../media/cache/landscapeThumb/uploads/' + landscapeImg;
+    	}
+    	
+    	var html = $.mustache(this.template, {img:landscapeImg});
     	this.el.html(html);
         return this;
     }

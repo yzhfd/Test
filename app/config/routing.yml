@@ -27,3 +27,7 @@ MagendIssueBundle:
 #_internal:
 #   resource: "@FrameworkBundle/Resources/config/routing/internal.xml"
 #   prefix:   /_internal
+
+_imagine:
+    resource: .
+    type:     imagine

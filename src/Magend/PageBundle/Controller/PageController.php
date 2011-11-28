@@ -41,6 +41,7 @@ class PageController extends Controller
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
             $file->move($rootDir . '/../web/uploads/', $imgName);
+            $this->get('imagine.templating.helper')->filter("uploads/$imgName", 'landscapeThumb');
             return new Response($imgName);
         }
         
