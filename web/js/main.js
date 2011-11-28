@@ -20,7 +20,7 @@ var EditArea = Backbone.View.extend({
 		articles.bind('reset', this.addAll, this);
 		
 		// @todo remove, update index
-		articles.fetch();
+		// articles.fetch();
 		
 		// set their index if not set yet
 		for (var i = 0; i < articles.length; ++i) {
@@ -41,10 +41,11 @@ var EditArea = Backbone.View.extend({
 			var files = data.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
-				var article = articles.create();
+				var article = new Article;
 				var p = new Page;
 				p.file = files[i];
 				article.add(p);
+				articles.add(article);
 			}
 			
 			// $('#modal-from-dom').modal({backdrop:true, show:true});
@@ -182,6 +183,6 @@ $(function () {
 	$('#saveremote').click(function () {
 		//editarea.uploadImages();
 		var article = editarea.articles.at(0);
-		article.save();
+		article.save({title:'good', pages: []});
 	});
 });

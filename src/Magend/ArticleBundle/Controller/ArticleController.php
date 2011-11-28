@@ -4,6 +4,7 @@ namespace Magend\ArticleBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
@@ -70,10 +71,35 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route("/new", name="article_new")
-     * @Template()
+     * @Route("/", name="article_new")
      */
     public function newAction()
+    {
+        $article = new Article();
+        $req = $this->getRequest();
+        $title = $req->get('title');
+        if ($title) {
+            $article->setTitle($title);
+        }
+        
+        if ($req->getMethod() == 'POST') {
+            echo 'oo';exit;
+        }
+        
+        return new Response('??');
+        /*$em = $this->getDoctrine()->getEntityManager();
+        $em->persist($article);
+        $em->flush();
+        
+        return new Response($article->getId());*/
+    }
+    
+    /**
+     * 
+     * @Route("/{id}/edit", name="article_edit")
+     * @Template()
+     */
+    public function eidtAction($id)
     {
         $article = new Article();
         $article->addKeyword(new Keyword('mmml'));
@@ -111,9 +137,26 @@ class ArticleController extends Controller
             'form'    => $form->createView()
         );
     }
+
+    /**
+     * @Route("/{id}", name="article_update")
+     * @Method("post")
+     * @Template()
+     */
+    public function updateAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find($id);
+        
+        if ($article) {
+            // @todo update
+        }
+        return new Response('');
+    }
     
     /**
-     * @Route("/show/{id}", name="article_show")
+     * @Route("/{id}", name="article_show")
      * @Template()
      */
     public function showAction($id)
