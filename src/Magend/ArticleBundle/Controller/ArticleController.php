@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
+use Magend\PageBundle\Entity\Page;
 use Magend\ArticleBundle\Form\ArticleType;
 use Magend\KeywordBundle\Entity\Keyword;
 
@@ -17,14 +18,60 @@ use Magend\KeywordBundle\Entity\Keyword;
 class ArticleController extends Controller
 {
     /**
+     * // , requirements={"id" = "\d+"}, defaults={"id" = null}
+     * 
+     * @Route("/new_pages", name="article_new_pages")
+     * @Template()
+     */
+    public function newPagesAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $req = $this->getRequest();
+        $articleId = $req->get('id');
+        if (!empty($articleId)) {
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($articleId);
+        } else {
+            $article = new Article();
+        }
+        
+        $pageRepo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $pages = $req->get('pages');
+        $pageEntites = array();
+        foreach ($pages as $page) {
+            $pageEntity = null;
+            if (isset($page['id'])) {
+                $pageEntity = $pageRepo->find($page['id']);
+                unset($page['id']);
+            }
+            if (empty($pageEntity)) {
+                $pageEntity = new Page();
+            }
+            
+            foreach ($page as $key=>$val) {
+                if (method_exists($pageEntity, "set$key")) {
+                    $method = "set$key";
+                    $pageEntity->$method($val);
+                }
+            }
+            
+            $pageEntites[] = $pageEntity;
+        }
+        
+        $article->setPages($pageEntites);
+        $em->persist($article);
+        $em->flush();
+        
+        print_r($article->getId()); exit;
+    }
+    
+    /**
      * 
      * @Route("/new", name="article_new")
      * @Template()
      */
     public function newAction()
     {
-
-        
         $article = new Article();
         $article->addKeyword(new Keyword('mmml'));
         $article->addKeyword(new Keyword('koolll'));

@@ -304,4 +304,12 @@ class Article
     {
         return $this->pages;
     }
+    
+    public function setPages($pages)
+    {
+        if (is_array($pages)) {
+            $pages = new ArrayCollection($pages);
+        }
+        $this->pages = $pages;
+    }
 }

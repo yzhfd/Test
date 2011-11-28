@@ -9,7 +9,6 @@ var Page = Backbone.Model.extend({
 	file: null, //File
 	defaults: {
 		articleId: null,
-		// img: 'http://placehold.it/128x96',
 		landscapeImg: null,
 		portraitImg: null,
 		portraitHots: null,
