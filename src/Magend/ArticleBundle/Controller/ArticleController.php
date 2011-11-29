@@ -71,31 +71,6 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route("/", name="article_new")
-     */
-    public function newAction()
-    {
-        $article = new Article();
-        $req = $this->getRequest();
-        $title = $req->get('title');
-        if ($title) {
-            $article->setTitle($title);
-        }
-        
-        if ($req->getMethod() == 'POST') {
-            echo 'oo';exit;
-        }
-        
-        return new Response('??');
-        /*$em = $this->getDoctrine()->getEntityManager();
-        $em->persist($article);
-        $em->flush();
-        
-        return new Response($article->getId());*/
-    }
-    
-    /**
-     * 
      * @Route("/{id}/edit", name="article_edit")
      * @Template()
      */
@@ -168,6 +143,32 @@ class ArticleController extends Controller
         return array(
             'article' => $article
         );
+    }
+    
+    /**
+     * 
+     * New the article, just itself
+     * 
+     * Must be put below /{id}, or 301 to this
+     * and all requests will be GET
+     * 
+     * @Route("", name="article_new", defaults={"_format" = "json"})
+     */
+    public function newAction()
+    {
+        $article = new Article();
+        $req = $this->getRequest();
+        $json = $req->getContent();
+        $paramsObj = json_decode($json);
+        if (isset($paramsObj->title)) {
+            $article->setTitle($paramsObj->title);
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($article);
+        $em->flush();
+        
+        return new Response($article->getId());
     }
     
     /**

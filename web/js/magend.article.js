@@ -6,11 +6,11 @@
 var Article = Backbone.Model.extend({
 	url: '/Magend/web/app_dev.php/article',
 	index: -1,
+	pages: null,
 	defaults: {
 		issueId: null,
 		title: '',
-		cover: 'http://placehold.it/128x96', // or thumbnail in navigation
-		pages: null // can't new Pages here, it'll be shared by all articles
+		cover: 'http://placehold.it/128x96' // or thumbnail in navigation
 	},
 	initialize: function () {
 		// make sure there is cid
@@ -18,36 +18,27 @@ var Article = Backbone.Model.extend({
 			this.cid = 'article_' + this.id;
 		}
 		
-		var pages = this.get('pages');
-		if (pages == null) {
-			pages = new Pages;
-			this.set({'pages':new Pages});
-		} else if (!(pages instanceof Pages)) {
-			var pagesCollection = new Pages(pages);
-			this.set({'pages':pagesCollection});
+		if (this.pages == null) {
+			this.pages = new Pages;
 		}
 	},
 	add: function (page) {
-		var pages = this.get('pages');		
-		pages.add(page);
+		this.pages.add(page);
 	},
-	remove: function (page) {
-		var pages = this.get('pages');		
-		pages.remove(page);
+	remove: function (page) {	
+		this.pages.remove(page);
 	},
 	setIndex: function (index) {
 		this.index = index;
 		this.change();
 	},
 	getPageByCid: function (cid) {
-		var pages = this.get('pages');
-		return pages.getByCid(cid);
+		return this.pages.getByCid(cid);
 	},
 	uploadImages: function () {
 		// @todo forbid update pages here
 		
-		var pages = this.get('pages');
-		pages.bind('uploaded', this.imgUploaded, this);
+		this.pages.bind('uploaded', this.imgUploaded, this);
 		
 		this.uploadingIndex = 0;
 		this._uploadImage();
@@ -57,8 +48,7 @@ var Article = Backbone.Model.extend({
 		this._uploadImage();
 	},
 	_uploadImage: function () {
-		var pages = this.get('pages');
-		var page = pages.at(this.uploadingIndex);
+		var page = this.pages.at(this.uploadingIndex);
 		if (page) {
 			page.uploadImage();
 		}
@@ -91,8 +81,7 @@ var ArticleView = Backbone.View.extend({
 		'dblclick': 'dblclick'
     },
     initialize: function () {
-    	var pages = this.model.get('pages');
-    	
+    	var pages = this.model.pages;
     	pages.bind('add', this.addPage, this);
     	pages.bind('remove', this.removePage, this);
     	pages.bind('reset', this.addPages, this);
@@ -134,7 +123,9 @@ var ArticleView = Backbone.View.extend({
 			var files = e.dataTransfer.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
-				this.model.add(new Page({'file':files[i]}));
+				var page = new Page;
+				page.file = files[i];
+				this.model.add(page);
 			};
 		} // else can be triggered during sort, not implemented yet
 		
@@ -143,11 +134,10 @@ var ArticleView = Backbone.View.extend({
 	},
 	// @todo specify index that the page will be added to
 	initPages: function () {
-		var pages = this.model.get('pages');
-		this.addPages(pages);
+		this.addPages(this.model.pages);
 	},
 	updateNbPages: function () {
-		this.el.find('.footer').text(this.model.get('pages').length);
+		this.el.find('.footer').text(this.model.pages.length);
 	},
     addPage: function (page) {
 		var pagelis = this.el.find('.' + PageView.prototype.className);
@@ -188,8 +178,8 @@ var ArticleView = Backbone.View.extend({
     render: function () {
     	this.el = $(this.el);
     	
+    	var pages = this.model.pages;
     	var index = this.model.index + 1;
-    	var pages = this.model.get('pages');
     	if (this.el.html() != '') {
     		var footer = this.el.find('.footer');
     		footer.text(pages.length);
