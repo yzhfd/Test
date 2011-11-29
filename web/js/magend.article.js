@@ -41,19 +41,19 @@ var Article = Backbone.Model.extend({
 	save: function (attrs, opts) {
 		if (!opts) opts = {};
 		var success = opts.success;
-		opts.success = function (model, response) {
+		opts.success = _.bind(function (model, response) {
 			if (!model.id) {
 				model.id = response.id;
 			}
 			
 			if (this.pages) {
-				this.pages.each(function (page) {
+				_.each(this.pages, function (page) {
 					page.save({articleId:model.id});
 				});
 			}
 			
 			if (success) success(model, response);
-		};
+		}, this);
 		
 		Backbone.Model.prototype.save.call(this, attrs, opts);
 	},

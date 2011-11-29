@@ -22,9 +22,9 @@ var EditArea = Backbone.View.extend({
 		// @todo remove, update index
 		// articles.fetch();
 		
-		/*articles.add(new Article);
 		articles.add(new Article);
-		articles.add(new Article);*/
+		//articles.add(new Article);
+		//articles.add(new Article);
 		
 		
 		// @todo if editarea is empty, then sortable will misbehave
@@ -192,6 +192,14 @@ $(function () {
 	// Backbone.emulateJSON = true
 	$('#saveremote').click(function () {
 		editarea.articles.fetch();
+		$.ajaxQueue({
+			url: 'http://www.baidu.com'
+		});
+		editarea.save();
+		$.ajaxQueue({
+			url: 'http://www.baidu.com'
+		});
+		editarea.save();
 		//editarea.uploadImages();
 	});
 });

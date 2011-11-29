@@ -15,10 +15,10 @@
 	    var jqXHR,
 	        dfd = $.Deferred(),
 	        promise = dfd.promise();
-	
+	    
 	    // queue our ajax request
 	    ajaxQueue.queue( doRequest );
-	
+	    
 	    // add the abort method
 	    promise.abort = function( statusText ) {
 	        // proxy abort to the jqXHR if it is active
