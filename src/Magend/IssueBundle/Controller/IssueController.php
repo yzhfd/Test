@@ -71,7 +71,7 @@ class IssueController extends Controller
     public function articlesAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT a, p FROM MagendArticleBundle:Article a INDEX BY a.id LEFT JOIN a.pages p WHERE :issueId MEMBER OF a.issues')
+        $query = $em->createQuery('SELECT partial a.{id, title, pageIds}, partial p.{id, landscapeImg, portraitImg} FROM MagendArticleBundle:Article a INDEX BY a.id LEFT JOIN a.pages p WHERE :issueId MEMBER OF a.issues')
                     ->setParameter('issueId', $id);
         
         $arr = $query->getArrayResult();

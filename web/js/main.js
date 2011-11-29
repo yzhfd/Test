@@ -17,15 +17,15 @@ var EditArea = Backbone.View.extend({
 		
 		articles.bind('add', this.addOne, this);
 		articles.bind('remove', this.removeOne, this);
-		articles.bind('reset', this.addAll, this);
+		articles.bind('reset', this.reset, this);
 		
 		// @todo remove, update index
-		articles.fetch();
+		// articles.fetch();
 		
-		// set their index if not set yet
-		for (var i = 0; i < articles.length; ++i) {
-			articles.at(i).setIndex(i);
-		}
+		/*articles.add(new Article);
+		articles.add(new Article);
+		articles.add(new Article);*/
+		
 		
 		// @todo if editarea is empty, then sortable will misbehave
 		//this.articles.create();
@@ -127,7 +127,9 @@ var EditArea = Backbone.View.extend({
 		this.updateIndex();
 	},
 	// on fetch
-	addAll: function () {
+	reset: function () {
+		$(this.el).empty();
+		
 		var count = this.articles.length;
 		for (var i = 0; i < count; ++i) {
 			var article = this.articles.at(i);
@@ -136,20 +138,26 @@ var EditArea = Backbone.View.extend({
 		}
 	},
 	render: function () {
-		// @todo move to initialize but if empty, sortable will be wrong
+		// @todo render all articles, like update
 	},
-	saveToRemote: function () {
-		this.articles.saveToRemote();
+	// now just save articles
+	save: function () {
+		var articles = this.articles;
+		if (articles) {
+			articles.each(function (article) {
+				article.save();
+			});
+		}
 	}
 });
 
-
+Backbone.sync = Backbone.ajaxSync;
 
 $(function () {
 	$('#addpage').click(function () {
 		pages.create({index:5});
 	});
-	window.pageCanvas = new PageCanvas;
+	// window.pageCanvas = new PageCanvas;
 	/*$('#selenable').change(function () {
 		if ($(this).attr('checked')) {
 			$(pageCanvas.el).selectable({disabled:false});
@@ -175,16 +183,15 @@ $(function () {
 		caseSensitive: false,
 		//fieldName: "tags",
 		//tagSource: function
-		availableTags: ['sex', 'girl']
+		availableTags: ['sexy', 'girl']
 	});
-	Backbone.sync = Backbone.ajaxSync;
+	//Backbone.sync = Backbone.ajaxSync;
 	window.editarea = new EditArea(new Articles);
 	// editarea.render();
 	
 	// Backbone.emulateJSON = true
 	$('#saveremote').click(function () {
+		editarea.articles.fetch();
 		//editarea.uploadImages();
-		var article = editarea.articles.at(0);
-		article.save({title:'shit'});
 	});
 });

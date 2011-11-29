@@ -83,12 +83,17 @@ var Articles = Backbone.Collection.extend({
 	localStorage: new Store('articles'),
 	comparator: function (article) {
 		return article.index;
-	},
-	saveToRemote: function () {
-		_.each(this.models, function (article) {
-			article.saveToRemote();
-		});
 	}
+	/*
+	parse: function(response) {
+		if (response) {
+			_.each (response, function (obj) {
+				delete obj.createdAt;
+				delete obj.updatedAt;				
+			});
+		}
+		console.log(response);
+	}*/
 });
 
 var ArticleView = Backbone.View.extend({
