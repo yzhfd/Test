@@ -1,3 +1,8 @@
+/**
+ * The only one line of code changed is the last one.
+ * = =
+ */
+
 // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
 var methodMap = {
 	'create': 'POST',
