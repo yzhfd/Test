@@ -152,23 +152,32 @@ class ArticleController extends Controller
      * Must be put below /{id}, or 301 to this
      * and all requests will be GET
      * 
-     * @Route("", name="article_new", defaults={"_format" = "json"})
+     * @Route("", name="article_new_update", defaults={"_format" = "json"})
      */
-    public function newAction()
+    public function newUpdateAction()
     {
-        $article = new Article();
         $req = $this->getRequest();
         $json = $req->getContent();
         $paramsObj = json_decode($json);
+        $em = $this->getDoctrine()->getEntityManager();
+        if (isset($paramsObj->id)) {
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($paramsObj->id);
+        } else {
+            $article = new Article();
+        }
+
         if (isset($paramsObj->title)) {
             $article->setTitle($paramsObj->title);
         }
         
-        $em = $this->getDoctrine()->getEntityManager();
         $em->persist($article);
         $em->flush();
         
-        return new Response($article->getId());
+        $response = json_encode(array(
+            'id' => $article->getId()
+        ));
+        return new Response($response);
     }
     
     /**

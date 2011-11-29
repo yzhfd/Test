@@ -20,6 +20,19 @@ var Page = Backbone.Model.extend({
 			this.cid = 'page_' + this.id;
 		}
 	},
+	save: function (attrs, opts) {
+		if (!opts) opts = {};
+		var success = opts.success;
+		opts.success = function (model, response) {
+			if (!model.id) {
+				model.id = response.id;
+			}
+			
+			if (success) success(model, response);
+		};
+		
+		Backbone.Model.prototype.save.call(this, attrs, opts);
+	},
 	// @todo landscape or portrait
 	uploadImage: function () {
 		if (!this.file) {
@@ -44,21 +57,6 @@ var Page = Backbone.Model.extend({
 		}).fileupload('add', { files:[this.file] });
 		
 		return true;
-	},
-	saveToRemote: function (options) {
-		// options success, error, complete, etc
-		var file = this.get('file');
-		var attrs = this.toJSON();
-		delete attrs.file;
-		editarea.fileupload({
-			paramName: 'file',
-			formData: attrs,
-			url: this.url
-		})
-		.fileupload('send', { files:[file] })
-		.success(function (result, textStatus, jqXHR) {
-			console.log(result);
-		});
 	}
 });
 

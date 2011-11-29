@@ -2,11 +2,13 @@
 
 namespace Magend\IssueBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
+use Magend\PageBundle\Entity\Page;
 use Magend\IssueBundle\Form\IssueType;
 use Magend\IssueBundle\Entity\Issue;
 
@@ -61,6 +63,38 @@ class IssueController extends Controller
     }
     
     /**
+     * Get issue's articles with article's pages, 
+     * ordered according to ids text
+     * 
+     * @Route("/{id}/articles", name="issue_articles", defaults={"_format"="json"})
+     */
+    public function articlesAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT a, p FROM MagendArticleBundle:Article a INDEX BY a.id LEFT JOIN a.pages p WHERE :issueId MEMBER OF a.issues')
+                    ->setParameter('issueId', $id);
+        
+        $arr = $query->getArrayResult();
+        $result = array();
+        // order articles according to article_ids, order 
+        foreach ($arr as $articleId=>$articleArr) {
+            $pages = array_values($articleArr['pages']);
+            $articleArr['pages'] = $pages;
+            $result[] = $articleArr;
+        }
+        
+        /*
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if ($issue == null) {
+            return new Response('');
+        }
+        */
+        return new Response(json_encode($result));
+        
+    }
+    
+    /**
      * @Route("/test")
      * @Template()
      */
@@ -71,9 +105,7 @@ class IssueController extends Controller
          * find articles that belong to no issue
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE x.issues IS EMPTY');
          * 
-         * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE :issueId MEMBER  x.issues');
-        
-        
+         * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE :issueId MEMBER OF x.issues');
         
         $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery('SELECT a, p FROM MagendArticleBundle:Article a INDEX BY a.id JOIN a.pages p WHERE a.id IN (1,2,3,4,5)');

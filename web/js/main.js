@@ -20,7 +20,7 @@ var EditArea = Backbone.View.extend({
 		articles.bind('reset', this.addAll, this);
 		
 		// @todo remove, update index
-		// articles.fetch();
+		articles.fetch();
 		
 		// set their index if not set yet
 		for (var i = 0; i < articles.length; ++i) {
@@ -32,12 +32,7 @@ var EditArea = Backbone.View.extend({
 		
 		/* HTML5 file DnD */
 		window.editarea = this.el;
-		this.el.fileupload({
-			paramName: 'file',
-			url: '/Magend/web/app_dev.php/page/upload',
-			singleFileUploads: true,
-			sequentialUploads: true
-		}).bind('fileuploaddrop', function (e, data) {
+		this.el.fileupload().bind('fileuploaddrop', function (e, data) {
 			var files = data.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
@@ -131,8 +126,14 @@ var EditArea = Backbone.View.extend({
 		
 		this.updateIndex();
 	},
-	addAll: function () {		
-		this.articles.each(this.addOne, this);
+	// on fetch
+	addAll: function () {
+		var count = this.articles.length;
+		for (var i = 0; i < count; ++i) {
+			var article = this.articles.at(i);
+			article.index = i;
+			this.addOne(article);
+		}
 	},
 	render: function () {
 		// @todo move to initialize but if empty, sortable will be wrong
@@ -176,14 +177,14 @@ $(function () {
 		//tagSource: function
 		availableTags: ['sex', 'girl']
 	});
-	
+	Backbone.sync = Backbone.ajaxSync;
 	window.editarea = new EditArea(new Articles);
 	// editarea.render();
-	Backbone.sync = Backbone.ajaxSync;
+	
 	// Backbone.emulateJSON = true
 	$('#saveremote').click(function () {
 		//editarea.uploadImages();
 		var article = editarea.articles.at(0);
-		article.save();
+		article.save({title:'shit'});
 	});
 });

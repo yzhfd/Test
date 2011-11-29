@@ -18,7 +18,10 @@ var Article = Backbone.Model.extend({
 			this.cid = 'article_' + this.id;
 		}
 		
-		if (this.pages == null) {
+		pages = this.get('pages');
+		if (pages) {
+			this.pages = new Pages(pages);
+		} else if (this.pages == null) {
 			this.pages = new Pages;
 		}
 	},
@@ -34,6 +37,25 @@ var Article = Backbone.Model.extend({
 	},
 	getPageByCid: function (cid) {
 		return this.pages.getByCid(cid);
+	},
+	save: function (attrs, opts) {
+		if (!opts) opts = {};
+		var success = opts.success;
+		opts.success = function (model, response) {
+			if (!model.id) {
+				model.id = response.id;
+			}
+			
+			if (this.pages) {
+				this.pages.each(function (page) {
+					page.save({articleId:model.id});
+				});
+			}
+			
+			if (success) success(model, response);
+		};
+		
+		Backbone.Model.prototype.save.call(this, attrs, opts);
 	},
 	uploadImages: function () {
 		// @todo forbid update pages here
@@ -56,6 +78,7 @@ var Article = Backbone.Model.extend({
 });
 
 var Articles = Backbone.Collection.extend({
+	url: '/Magend/web/app_dev.php/issue/1/articles',
 	model: Article,
 	localStorage: new Store('articles'),
 	comparator: function (article) {
@@ -181,12 +204,12 @@ var ArticleView = Backbone.View.extend({
     	var pages = this.model.pages;
     	var index = this.model.index + 1;
     	if (this.el.html() != '') {
-    		var footer = this.el.find('.footer');
-    		footer.text(pages.length);
     		var header = this.el.find('h5');
     		header.text(index);
+    		var footer = this.el.find('.footer');
+    		footer.text(pages.length);
     	} else {
-        	var html = $.mustache(this.template, {title:index, pages:1});
+        	var html = $.mustache(this.template, {title:index, pages:pages.length});
         	this.el.html(html);
         	
         	this.initPages();
