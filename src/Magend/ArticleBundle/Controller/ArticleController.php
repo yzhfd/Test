@@ -168,6 +168,7 @@ class ArticleController extends Controller
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($paramsObj->id);
         } else {
+            // @todo might not need issue id
             if (!isset($paramsObj->issueId)) {
                 return new Response(json_encode(array(
                     'error' => 'Issue Id is required'
@@ -183,6 +184,21 @@ class ArticleController extends Controller
 
         if (isset($paramsObj->title)) {
             $article->setTitle($paramsObj->title);
+        }
+        
+        if (isset($paramsObj->pageIds)) {
+            $pageIds = $paramsObj->pageIds;
+            // do associate in page controller
+            /*
+            $pageRefs = array();
+            foreach ($pageIds as $pageId) {
+                $pageRef = $em->getReference('MagendPageBundle:Page', $pageId);
+                $pageRef->setArticle($article);
+                $pageRefs[] = $pageRef;
+            }
+            
+            $article->setPages($pageRefs);
+            $article->setPageIds($pageIds);*/
         }
         
         $em->persist($article);

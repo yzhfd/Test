@@ -145,12 +145,15 @@ class Article
     
     public function setPageIds($pageIds)
     {
-        
+        if (is_array($pageIds)) {
+            $pageIds = implode(',', $pageIds);
+        }
+        $this->pageIds = $pageIds;
     }
     
     public function getPageIds()
     {
-        
+        return explode(',', $this->pageIds);
     }
     
     /**

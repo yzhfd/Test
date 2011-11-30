@@ -9,6 +9,7 @@ var Article = Backbone.Model.extend({
 	defaults: {
 		issueId: 1, // @todo dummy
 		title: '',
+		pageIds: [],
 		cover: 'http://placehold.it/128x96' // or thumbnail in navigation
 	},
 	initialize: function () {
@@ -27,6 +28,7 @@ var Article = Backbone.Model.extend({
 			this.pages = new Pages;
 		}
 		
+		this.unset('pages');
 		this.remoteAttributes = $.extend(true, {}, this.attributes);
 	},
 	add: function (page) {
@@ -59,7 +61,8 @@ var Article = Backbone.Model.extend({
 		
 		return nbTasks;
 	},
-	savePages: function (dfd) {
+	savePages: function () {
+		var dfd = $.Deferred();
 		if (this.pages && this.pages.length > 0) {
 			var articleId = this.id;
 			var promise; // last page's promise
@@ -72,32 +75,28 @@ var Article = Backbone.Model.extend({
 		} else {
 			dfd.resolve();
 		}
+		return dfd.promise();
 	},
 	// article is created first, then its pages
-	save: function (attrs, opts) {
-		console.log(this.isOutOfSync());
-		
+	save: function (attrs, opts) {		
 		var dfd = $.Deferred();
+		
+		// article won't save if savePages fail
+		this.savePages().then(_.bind(function(){
+			// @todo compute pageIds
+			var pageIds = [];
+			this.pages.each(function(page){
+				pageIds.push(page.id);
+			});
+			this.set({pageIds:pageIds});
+			return Backbone.Model.prototype.save.call(this, attrs, opts);
+		}, this)).done(_.bind(function(response){
+			this.id = response.id;
+			console.log(this.id);
+			dfd.resolve();
+		}, this)).fail(dfd.reject);
+		
 		var promise = dfd.promise();
-		if (!(this.isNew() || this.hasChanged())) {
-			// may need save pages
-			this.savePages(dfd);
-			return promise;
-		}
-		
-		if (!opts) opts = {};
-		var success = opts.success;
-		opts.success = _.bind(function (model, response) {
-			if (!model.id) {
-				model.id = response.id;
-			}
-			
-			this.savePages(dfd);
-			
-			if (success) success(model, response);
-		}, this);
-		
-		Backbone.Model.prototype.save.call(this, attrs, opts);
 		return promise;
 	},
 	uploadImages: function () {

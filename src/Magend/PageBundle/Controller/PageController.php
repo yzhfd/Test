@@ -44,16 +44,19 @@ class PageController extends Controller
             $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
             $page = $repo->find($paramsObj->id);
         } else {
+            $page = new Page();
+            /*
             if (!isset($paramsObj->articleId)) {
                 return new Response(json_encode(array(
                     'error' => 'Article Id is required'
                 )));
+            }*/
+            if (isset($paramsObj->articleId)) {
+                $articleId = $paramsObj->articleId;
+                $articleRef = $em->getReference('MagendArticleBundle:Article', $articleId);
+                
+                $page->setArticle($articleRef);
             }
-            
-            $articleId = $paramsObj->articleId;
-            $articleRef = $em->getReference('MagendArticleBundle:Article', $articleId);
-            $page = new Page();
-            $page->setArticle($articleRef);
         }
         
         // set
