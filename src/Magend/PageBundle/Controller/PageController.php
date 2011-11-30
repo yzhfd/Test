@@ -43,6 +43,7 @@ class PageController extends Controller
         if (isset($paramsObj->id)) {
             $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
             $page = $repo->find($paramsObj->id);
+            $articleId = $page->getArticle()->getId();
         } else {
             $page = new Page();
             /*
@@ -51,12 +52,12 @@ class PageController extends Controller
                     'error' => 'Article Id is required'
                 )));
             }*/
-            if (isset($paramsObj->articleId)) {
-                $articleId = $paramsObj->articleId;
-                $articleRef = $em->getReference('MagendArticleBundle:Article', $articleId);
-                
-                $page->setArticle($articleRef);
-            }
+        }
+        
+        if ($paramsObj->articleId != $articleId) {
+            $articleId = $paramsObj->articleId;
+            $articleRef = $em->getReference('MagendArticleBundle:Article', $articleId);
+            $page->setArticle($articleRef);
         }
         
         // set

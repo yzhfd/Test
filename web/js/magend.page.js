@@ -40,22 +40,18 @@ var Page = Backbone.Model.extend({
 			return promise;
 		}
 		
-		if (!(this.isNew() || this.hasChanged())) {
-			dfd.resolve();
-			return promise;
-		}
+		//if (!(this.isNew() || this.hasChanged())) {
+		//	dfd.resolve();
+		//	return promise;
+		//}
 		
-		if (!opts) opts = {};
-		var success = opts.success;
-		opts.success = function (model, response) {
-			if (!model.id) {
-				model.id = response.id;
+		Backbone.Model.prototype.save.call(this, attrs, opts).done(_.bind(function(){
+			if (!this.id) {
+				this.id = response.id;
 			}
-			
-			if (success) success(model, response);
-		};
+			dfd.resolve();
+		},this)).fail(dfd.reject);
 		
-		$.when(Backbone.Model.prototype.save.call(this, attrs, opts)).done(dfd.resolve).fail(dfd.reject);
 		return promise;
 	},
 	// @todo landscape or portrait
