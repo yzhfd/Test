@@ -184,7 +184,7 @@ class ArticleController extends Controller
         
         $em->persist($article);
         $em->flush();
-        
+        sleep(2);
         $response = json_encode(array(
             'id' => $article->getId()
         ));

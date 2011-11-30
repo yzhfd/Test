@@ -95,6 +95,26 @@ class IssueController extends Controller
     }
     
     /**
+     * For test, delete all articles and pages belong to this issue
+     * 
+     * @Route("/{id}/flush", defaults={"_format"="json"})
+     */
+    public function flushAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT partial a.{id} FROM MagendArticleBundle:Article a WHERE :issueId MEMBER OF a.issues')
+                    ->setParameter('issueId', $id);
+        $arts = $query->getResult();
+        foreach ($arts as $art) {
+            $em->remove($art);
+        }
+        $em->flush();
+        
+        return new Response(json_encode(array(
+            'result' => 'success'
+        )));
+    }
+    /**
      * @Route("/test")
      * @Template()
      */

@@ -159,12 +159,30 @@ var EditArea = Backbone.View.extend({
 	},
 	// now just save articles
 	save: function () {
+		var dfd = $.Deferred();
 		var articles = this.articles;
 		if (articles) {
-			articles.each(function (article, index) {
-				article.save();
-			});
+			var pointer = 0;
+			var articles = this.articles;
+			var saveArticle = function () {
+				if (pointer == articles.length) {
+					dfd.resolve();
+					return;
+				}
+				var article = articles.at(pointer);
+				if (article) {
+					article.save().then( saveArticle, saveArticle ).fail( dfd.reject );
+				}
+				
+				++pointer;
+			};
+			
+			saveArticle();
+		} else {
+			dfd.resolve;
 		}
+		
+		return dfd.promise();
 	}
 });
 
@@ -210,14 +228,22 @@ $(function () {
 	
 	// @todo which request is the last one, observe it!
 	
+	$('#flushbtn').click(function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		
+		$.ajax({
+			url: $(this).attr('href')
+		});
+	});
+	
 	$('#saveremote').click(function () {
 		console.log(editarea.getNbTasks());
 		$('#saveAlert').modal({show:true, backdrop:true});
-		$('#saveremote').button('loading').delay(1200).queue(function(){
+		$.when(editarea.save()).done(function () {
 			$('#saveremote').button('reset');
 			$('#saveAlert').modal('hide');
 		});
-		editarea.save();
 		//editarea.uploadImages();
 	});
 });

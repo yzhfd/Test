@@ -57,19 +57,25 @@ var Article = Backbone.Model.extend({
 		
 		return nbTasks;
 	},
-	savePages: function () {
+	savePages: function (dfd) {
 		if (this.pages) {
 			var articleId = this.id;
+			var promise;
 			this.pages.each(function (page) {
-				page.save({articleId:articleId});
+				promise = page.save({articleId:articleId});
 			});
+			$.when(promise).done(dfd.resolve).fail(dfd.reject);
+		} else {
+			dfd.resolve;
 		}
 	},
 	save: function (attrs, opts) {
+		var dfd = $.Deferred();
+		var promise = dfd.promise();
 		if (!(this.isNew() || this.hasChanged())) {
 			// may need save pages
-			this.savePages();
-			return;
+			this.savePages(dfd);
+			return promise;
 		}
 		
 		if (!opts) opts = {};
@@ -79,12 +85,14 @@ var Article = Backbone.Model.extend({
 				model.id = response.id;
 			}
 			
-			this.savePages();
+			this.savePages(dfd);
 			
 			if (success) success(model, response);
 		}, this);
 		
 		Backbone.Model.prototype.save.call(this, attrs, opts);
+		
+		return promise;
 	},
 	uploadImages: function () {
 		// @todo forbid update pages here

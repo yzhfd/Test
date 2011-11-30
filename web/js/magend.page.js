@@ -28,13 +28,20 @@ var Page = Backbone.Model.extend({
 		return nbTasks;
 	},
 	save: function (attrs, opts) {
+		if (!opts) opts = {};
+		if (!opts.deferred) {
+			opts.deferred = $.Deferred();
+		}
+		var dfd = opts.deferred;
+		var promise = dfd.promise();
 		if (this.file) {
-			this.uploadImage(true, attrs, opts);
-			return;
+			this.uploadImage(true, attrs, opts); // will call save when done
+			return promise;
 		}
 		
 		if (!(this.isNew() || this.hasChanged())) {
-			return;
+			dfd.resolve;
+			return promise;
 		}
 		
 		if (!opts) opts = {};
@@ -47,7 +54,8 @@ var Page = Backbone.Model.extend({
 			if (success) success(model, response);
 		};
 		
-		Backbone.Model.prototype.save.call(this, attrs, opts);
+		$.when(Backbone.Model.prototype.save.call(this, attrs, opts)).done(dfd.resolve).fail(dfd.reject);
+		return promise;
 	},
 	// @todo landscape or portrait
 	uploadImage: function (isFromSave, attrs, opts) {
@@ -55,26 +63,28 @@ var Page = Backbone.Model.extend({
 			return false;
 		}
 		
-		var uploader = $('<div/>');
-		uploader.fileupload({
+		$.ajaxQueue({
+			fileupload: true,
 			paramName: 'file',
 			url: this.uploadUrl,
-		    add: _.bind(function (e, data) {
-		        var jqXHR = data.submit()
-		            .success(_.bind(function (result, textStatus, jqXHR) {
-		    			this.set({landscapeImg:result});
-		    			this.trigger('uploaded', this);
-		    			this.file = null;
-		    			
-		    			if (isFromSave == true) {
-		    				this.save(attrs, opts);
-		    			}
-		            }, this))
-		            .error(function (jqXHR, textStatus, errorThrown) {
-		            	// @tood what to do
-		            });
-		    }, this)
-		}).fileupload('add', { files:[this.file] });
+			file: this.file,
+			success: _.bind(function (result) {
+				this.set({landscapeImg:result});
+				this.trigger('uploaded', this);
+				this.file = null;
+				
+				if (isFromSave == true) {
+					this.save(attrs, opts);
+				}
+	        }, this),
+			error: _.bind(function (jqXHR, textStatus, errorThrown) {
+				// @tood what to do
+				// ignore
+				if (isFromSave == true) {
+					this.save(attrs, opts);
+				}
+			})
+		});
 		
 		return true;
 	}

@@ -43,8 +43,21 @@
 	    
 	    // run the actual query
 	    function doRequest( next ) {
-	        jqXHR = $.ajax( ajaxOpts )
-	            .then( next, next )
+	    	if (ajaxOpts.fileupload == true) {
+	    		// paramName, url, and file, [success], [error]
+				var uploader = $('<div/>');
+				
+				jqXHR = uploader.fileupload({
+					paramName: ajaxOpts.paramName,
+					url: ajaxOpts.url,
+					success: ajaxOpts.success,
+					error: ajaxOpts.error
+				}).fileupload('send', { files:[ajaxOpts.file] }); // only send one file
+	    	} else {
+	    		jqXHR = $.ajax( ajaxOpts );
+	    	}
+	    	
+	        jqXHR.then( next, next )
 	            .done( dfd.resolve )
 	            .fail( dfd.reject );
 	    }
