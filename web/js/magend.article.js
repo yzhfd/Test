@@ -8,7 +8,7 @@ var Article = Backbone.Model.extend({
 	index: -1,
 	pages: null,
 	defaults: {
-		issueId: null,
+		issueId: 1, // @todo dummy
 		title: '',
 		cover: 'http://placehold.it/128x96' // or thumbnail in navigation
 	},
@@ -19,16 +19,23 @@ var Article = Backbone.Model.extend({
 		}
 		
 		pages = this.get('pages');
-		if (pages) {
+		if (_.isArray(pages)) {
+			_.each(pages, _.bind(function (page) {
+				page.articleId = this.id;
+			}, this));
 			this.pages = new Pages(pages);
 		} else if (this.pages == null) {
 			this.pages = new Pages;
 		}
 	},
 	add: function (page) {
+		if (this.id) {
+			page.set({ articleId:this.id });
+		}
 		this.pages.add(page);
 	},
-	remove: function (page) {	
+	remove: function (page) {
+		// not unset articleId, still needed to sync with remote
 		this.pages.remove(page);
 	},
 	setIndex: function (index) {
@@ -38,7 +45,33 @@ var Article = Backbone.Model.extend({
 	getPageByCid: function (cid) {
 		return this.pages.getByCid(cid);
 	},
+	// return the number of requests that need be issued
+	getNbTasks: function () {
+		var nbTasks = 0;
+		if (this.isNew() || this.hasChanged()) ++nbTasks;
+		if (this.pages) {
+			this.pages.each(function (page) {
+				nbTasks += page.getNbTasks();
+			});
+		}
+		
+		return nbTasks;
+	},
+	savePages: function () {
+		if (this.pages) {
+			var articleId = this.id;
+			this.pages.each(function (page) {
+				page.save({articleId:articleId});
+			});
+		}
+	},
 	save: function (attrs, opts) {
+		if (!(this.isNew() || this.hasChanged())) {
+			// may need save pages
+			this.savePages();
+			return;
+		}
+		
 		if (!opts) opts = {};
 		var success = opts.success;
 		opts.success = _.bind(function (model, response) {
@@ -46,11 +79,7 @@ var Article = Backbone.Model.extend({
 				model.id = response.id;
 			}
 			
-			if (this.pages) {
-				_.each(this.pages, function (page) {
-					page.save({articleId:model.id});
-				});
-			}
+			this.savePages();
 			
 			if (success) success(model, response);
 		}, this);
@@ -98,7 +127,7 @@ var Articles = Backbone.Collection.extend({
 
 var ArticleView = Backbone.View.extend({
 	//<div class="cover"></div>
-	template: '<h5>{{title}}</h5><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
+	template: '<h5>{{title}}</h5><a class="del" href="#">×</a></div><ol class="pages"></ol><span class="footer" title="页数">{{pages}}</span>',
 	tagName: 'li',
 	className: 'article',
     events: {
@@ -216,6 +245,15 @@ var ArticleView = Backbone.View.extend({
     	} else {
         	var html = $.mustache(this.template, {title:index, pages:pages.length});
         	this.el.html(html);
+        	
+        	this.el.find('.del').click(function (e) {
+        		e.stopPropagation();
+        		e.preventDefault();
+        		
+        		if (confirm('确定删除该文章及其所有页面吗？')) {
+        			console.log('deleted');
+        		}
+        	});
         	
         	this.initPages();
         	

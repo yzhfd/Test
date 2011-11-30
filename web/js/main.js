@@ -23,9 +23,12 @@ var EditArea = Backbone.View.extend({
 		articles.bind('reset', this.reset, this);
 		
 		// @todo remove, update index
-		// articles.fetch();
+		articles.fetch({
+			success: function (collection, response) {
+			}
+		});
 		
-		articles.add(new Article);
+		//articles.add(new Article);
 		//articles.add(new Article);
 		//articles.add(new Article);
 		
@@ -40,6 +43,7 @@ var EditArea = Backbone.View.extend({
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
 				var article = new Article;
+				article.index = articles.length;
 				var p = new Page;
 				p.file = files[i];
 				article.add(p);
@@ -98,13 +102,10 @@ var EditArea = Backbone.View.extend({
 	addOne: function (article) {
 		this.el = $(this.el);
 		
-		if (article.index < 0) {
-			article.setIndex(this.articles.length - 1);
-		}
-		
 	    var at = new ArticleView({model:article});
 	    var atel = $(at.render().el);			
 		this.el.append(atel);
+		
 		/*
 		var articleholder = $('<li class="article-placeholder"><ol class="pages"></ol></li>');
 		this.el.append(articleholder)
@@ -130,12 +131,13 @@ var EditArea = Backbone.View.extend({
 		this.updateIndex();
 	},
 	// on fetch
-	reset: function () {
+	// sort will also call this
+	reset: function (good) {
 		$(this.el).empty();
 		
 		var count = this.articles.length;
 		for (var i = 0; i < count; ++i) {
-			var article = this.articles.at(i);
+			var article = this.articles.at(count - i - 1); // @todo set index according to issue's
 			article.index = i;
 			this.addOne(article);
 		}
@@ -143,11 +145,23 @@ var EditArea = Backbone.View.extend({
 	render: function () {
 		// @todo render all articles, like update
 	},
+	getNbTasks: function () {
+		var nbTasks = 0;
+		// @todo issue itself
+		var articles = this.articles;
+		if (articles) {
+			articles.each(function (article, index) {
+				nbTasks += article.getNbTasks();
+			});
+		}
+		
+		return nbTasks;
+	},
 	// now just save articles
 	save: function () {
 		var articles = this.articles;
 		if (articles) {
-			articles.each(function (article) {
+			articles.each(function (article, index) {
 				article.save();
 			});
 		}
@@ -193,14 +207,15 @@ $(function () {
 	// editarea.render();
 	
 	// Backbone.emulateJSON = true
+	
+	// @todo which request is the last one, observe it!
+	
 	$('#saveremote').click(function () {
-		editarea.articles.fetch();
-		$.ajaxQueue({
-			url: 'http://www.baidu.com'
-		});
-		editarea.save();
-		$.ajaxQueue({
-			url: 'http://www.baidu.com'
+		console.log(editarea.getNbTasks());
+		$('#saveAlert').modal({show:true, backdrop:true});
+		$('#saveremote').button('loading').delay(1200).queue(function(){
+			$('#saveremote').button('reset');
+			$('#saveAlert').modal('hide');
 		});
 		editarea.save();
 		//editarea.uploadImages();

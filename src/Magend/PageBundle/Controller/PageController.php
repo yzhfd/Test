@@ -26,6 +26,57 @@ class PageController extends Controller
     }
     
     /**
+     * 
+     * 
+     * @Route("", name="page_new_update", defaults={"_format" = "json"})
+     */
+    public function newUpdateAction()
+    {
+        $req = $this->getRequest();
+        if (!$req->isXmlHTTPRequest()) {
+            throw new \ Exception("Not allowed to access this page");
+        }
+        
+        $json = $req->getContent();
+        $paramsObj = json_decode($json);
+        $em = $this->getDoctrine()->getEntityManager();
+        if (isset($paramsObj->id)) {
+            $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+            $page = $repo->find($paramsObj->id);
+        } else {
+            if (!isset($paramsObj->articleId)) {
+                return new Response(json_encode(array(
+                    'error' => 'Article Id is required'
+                )));
+            }
+            
+            $articleId = $paramsObj->articleId;
+            $articleRef = $em->getReference('MagendArticleBundle:Article', $articleId);
+            $page = new Page();
+            $page->setArticle($articleRef);
+        }
+        
+        // set
+        if (isset($paramsObj->label)) {
+            $page->setLabel($paramsObj->label);
+        }
+        if (isset($paramsObj->landscapeImg)) {
+            $page->setLandscapeImg($paramsObj->landscapeImg);
+        }
+        if (isset($paramsObj->portraitImg)) {
+            $page->setPortraitImg($paramsObj->portraitImg);
+        }
+        
+        $em->persist($page);
+        $em->flush();
+        
+        $response = json_encode(array(
+            'id' => $page->getId()
+        ));
+        return new Response($response);
+    }
+    
+    /**
      * Upload image
      * @todo landscape or portrait
      * 

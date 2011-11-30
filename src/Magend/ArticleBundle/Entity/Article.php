@@ -299,6 +299,11 @@ class Article
         return $this->issues->first();
     }
     
+    public function setIssue($issue)
+    {
+        $this->issues = new ArrayCollection(array($issue));
+    }
+    
     public function getPages()
     {
         return $this->pages;

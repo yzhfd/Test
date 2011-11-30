@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
 use Magend\PageBundle\Entity\Page;
+use Magend\IssueBundle\Entity\Issue;
 use Magend\ArticleBundle\Form\ArticleType;
 use Magend\KeywordBundle\Entity\Keyword;
 
@@ -164,7 +165,17 @@ class ArticleController extends Controller
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($paramsObj->id);
         } else {
+            if (!isset($paramsObj->issueId)) {
+                return new Response(json_encode(array(
+                    'error' => 'Issue Id is required'
+                )));
+            }
+            
+            $issueId = $paramsObj->issueId;
             $article = new Article();
+            $issueRef = $em->getReference('MagendIssueBundle:Issue', $issueId);
+            $issueRef->addArticle($article);
+            $article->setIssue($issueRef);
         }
 
         if (isset($paramsObj->title)) {
@@ -173,7 +184,7 @@ class ArticleController extends Controller
         
         $em->persist($article);
         $em->flush();
-        sleep(2);
+        
         $response = json_encode(array(
             'id' => $article->getId()
         ));

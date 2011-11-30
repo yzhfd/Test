@@ -280,16 +280,17 @@ class Issue
             return;
         }
         
-        $articleId = $article->getId();
+        /*$articleId = $article->getId();
         if ($articleId === null) {
-            throw new \Exception('Please persist article first');
-        }
+            throw new \ Exception('Please persist article first');
+        }*/
         
         $this->articles->add($article);
         
-        $idArray = $this->getArticleIds();
-        $idArray[] = $articleId;
-        $this->setArticleIds($idArray);
+        // update idArray separately
+        // $idArray = $this->getArticleIds();
+        // $idArray[] = $articleId;
+        // $this->setArticleIds($idArray);
     }
 
     /**

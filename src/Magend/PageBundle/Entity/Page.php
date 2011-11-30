@@ -5,6 +5,7 @@ namespace Magend\PageBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Magend\ArticleBundle\Entity\Article;
 
 /**
  * Magend\PageBundle\Entity\Page
@@ -65,6 +66,20 @@ class Page
      * @ORM\Column(name="portrait_hots", type="text", nullable=true)
      */
     private $portraitHots;
+
+    /**
+     * @var datetime $createdAt
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var datetime $updatedAt
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
     
     /**
      * The image file
@@ -81,6 +96,21 @@ class Page
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * 
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function prePersist()
+    {
+        $now = new \DateTime;
+        if (null === $this->createdAt) {
+            $this->createdAt = $now;
+        } else {
+            $this->updatedAt = $now;
+        }
     }
 
     /**
@@ -166,9 +196,9 @@ class Page
     /**
      * Set article
      *
-     * @param Magend\ArticleBundle\Entity\Article $article
+     * @param Article $article
      */
-    public function setArticle(\Magend\ArticleBundle\Entity\Article $article)
+    public function setArticle($article)
     {
         $this->article = $article;
     }
@@ -176,7 +206,7 @@ class Page
     /**
      * Get article
      *
-     * @return Magend\ArticleBundle\Entity\Article 
+     * @return Article 
      */
     public function getArticle()
     {
@@ -201,5 +231,45 @@ class Page
     public function getLabel()
     {
         return $this->label;
+    }
+    
+    /**
+     * Set createdAt
+     *
+     * @param datetime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return datetime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param datetime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return datetime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

@@ -4,7 +4,7 @@
 
 var Page = Backbone.Model.extend({
 	uploadUrl: '/Magend/web/app_dev.php/page/upload',
-	url: '/Magend/web/app_dev.php/page/new', // @todo used to fetch model
+	url: '/Magend/web/app_dev.php/page', // @todo used to fetch model
 	index: -1,
 	file: null, //File
 	defaults: {
@@ -20,7 +20,23 @@ var Page = Backbone.Model.extend({
 			this.cid = 'page_' + this.id;
 		}
 	},
+	getNbTasks: function () {
+		var nbTasks = 0;
+		if (this.file) ++nbTasks;
+		if (this.isNew() || this.hasChanged()) ++nbTasks;
+		
+		return nbTasks;
+	},
 	save: function (attrs, opts) {
+		if (this.file) {
+			this.uploadImage(true, attrs, opts);
+			return;
+		}
+		
+		if (!(this.isNew() || this.hasChanged())) {
+			return;
+		}
+		
 		if (!opts) opts = {};
 		var success = opts.success;
 		opts.success = function (model, response) {
@@ -34,7 +50,7 @@ var Page = Backbone.Model.extend({
 		Backbone.Model.prototype.save.call(this, attrs, opts);
 	},
 	// @todo landscape or portrait
-	uploadImage: function () {
+	uploadImage: function (isFromSave, attrs, opts) {
 		if (!this.file) {
 			return false;
 		}
@@ -49,9 +65,13 @@ var Page = Backbone.Model.extend({
 		    			this.set({landscapeImg:result});
 		    			this.trigger('uploaded', this);
 		    			this.file = null;
+		    			
+		    			if (isFromSave == true) {
+		    				this.save(attrs, opts);
+		    			}
 		            }, this))
 		            .error(function (jqXHR, textStatus, errorThrown) {
-		            	
+		            	// @tood what to do
 		            });
 		    }, this)
 		}).fileupload('add', { files:[this.file] });
@@ -86,7 +106,7 @@ var Pages = Backbone.Collection.extend({
 var PageView = Backbone.View.extend({
 	tagName: 'li',
 	className: 'page',
-	template: '<a href="#1"><img width="128" height="96" src="{{img}}" /></a>',
+	template: '<div class="close"></div><a href="#1" title={{label}}><img width="128" height="96" src="{{img}}" /></a>',
     events: {
       //"click": ""
     },
@@ -97,19 +117,17 @@ var PageView = Backbone.View.extend({
     	
     	this.render();
     	
-    	this.model.bind('change', this.render, this);
+    	this.model.bind('change:label', this.render, this);
+    	this.model.bind('change:landscapeImg', this.render, this);
+    	this.model.bind('change:portraitImg', this.render, this);
     	
 		var file = this.model.file;
 		if (file instanceof File) {
             var reader = new FileReader();
             reader.onload = _.bind(function (e) {
-            	// files[i].name
-            	this.img = e.target.result;
-            	this.imgName = file.name;
-            	this.el.data('img', this.img);
+            	this.model.set({ label:file.name });
         		this.el.find('img').attr({
-        			'src': this.img,
-        			'title': this.imgName
+        			'src': e.target.result
         		});
             }, this);
             reader.readAsDataURL(file);
@@ -119,6 +137,7 @@ var PageView = Backbone.View.extend({
     	console.log(model.collection);
     },
     render: function () {
+    	var label = this.model.get('label');
     	var landscapeImg = this.model.get('landscapeImg');
     	if (!landscapeImg) {
     		landscapeImg = 'http://placehold.it/128x96';
@@ -126,7 +145,7 @@ var PageView = Backbone.View.extend({
     		landscapeImg = '../media/cache/landscapeThumb/uploads/' + landscapeImg;
     	}
     	
-    	var html = $.mustache(this.template, {img:landscapeImg});
+    	var html = $.mustache(this.template, {label:label, img:landscapeImg});
     	this.el.html(html);
         return this;
     }
