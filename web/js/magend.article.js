@@ -81,16 +81,19 @@ var Article = Backbone.Model.extend({
 	save: function (attrs, opts) {		
 		var dfd = $.Deferred();
 		
-		if (this.isNew()) {
-			Backbone.Model.prototype.save.call(this, attrs, opts).then(_.bind(function(response){
-				// @todo compute pageIds
+		var promiseId = this.isNew() 
+					? Backbone.Model.prototype.save.call(this, attrs, opts)
+					: $.Deferred().resolve();
+		promiseId.then(_.bind(function(response){
+			// @todo compute pageIds
+			if (!this.id) {
 				this.id = response.id;
-				this.savePages().then(_.bind(function(){
-					// @todo update pageIds
-					console.log('set page ids here');
-				}, this)).done( dfd.resolve ).fail( dfd.reject );
-			}, this));
-		}
+			}
+			this.savePages().then(_.bind(function(){
+				// @todo update pageIds
+				console.log('set page ids here if changed');
+			}, this)).done( dfd.resolve ).fail( dfd.reject );
+		}, this));
 		
 		
 		// article won't save if savePages fail
