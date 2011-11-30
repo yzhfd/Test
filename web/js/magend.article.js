@@ -2,7 +2,6 @@
  * Article
  * depends on cluster of Page classes
  */
-
 var Article = Backbone.Model.extend({
 	url: '/Magend/web/app_dev.php/article',
 	index: -1,
@@ -27,11 +26,14 @@ var Article = Backbone.Model.extend({
 		} else if (this.pages == null) {
 			this.pages = new Pages;
 		}
+		
+		this.remoteAttributes = $.extend(true, {}, this.attributes);
 	},
 	add: function (page) {
 		if (this.id) {
 			page.set({ articleId:this.id });
 		}
+		
 		this.pages.add(page);
 	},
 	remove: function (page) {
@@ -58,7 +60,7 @@ var Article = Backbone.Model.extend({
 		return nbTasks;
 	},
 	savePages: function (dfd) {
-		if (this.pages) {
+		if (this.pages && this.pages.length > 0) {
 			var articleId = this.id;
 			var promise; // last page's promise
 			this.pages.each(function (page) {
@@ -73,6 +75,8 @@ var Article = Backbone.Model.extend({
 	},
 	// article is created first, then its pages
 	save: function (attrs, opts) {
+		console.log(this.isOutOfSync());
+		
 		var dfd = $.Deferred();
 		var promise = dfd.promise();
 		if (!(this.isNew() || this.hasChanged())) {
@@ -143,7 +147,9 @@ var ArticleView = Backbone.View.extend({
     events: {
         //"click": ""
 		'dragenter': 'dragEnter',
-		'dragexit': 'dragExit',
+		'dragover': 'dragOver',
+		//'dragexit': 'dragExit', //deprecated
+		'dragleave': 'dragLeave',
 		'drop': 'drop',
 		'dblclick': 'dblclick'
     },
@@ -178,7 +184,11 @@ var ArticleView = Backbone.View.extend({
 		
 		this.el.addClass('highlighted');
     },
-    dragExit: function (e) {
+    dragOver: function (e, sorte) {
+    	this.el.addClass('highlighted');
+    },
+    dragLeave: function (e) {
+    	//console.log(e.target);
     	this.el.removeClass('highlighted');
     },
     drop: function (e, sorte) {

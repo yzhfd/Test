@@ -70,7 +70,7 @@ var Page = Backbone.Model.extend({
 			url: this.uploadUrl,
 			file: this.file,
 			success: _.bind(function (result) {
-				this.set({landscapeImg:result});
+				this.set({ landscapeImg:result });
 				this.trigger('uploaded', this);
 				this.file = null;
 				
@@ -141,6 +141,7 @@ var PageView = Backbone.View.extend({
         			'src': e.target.result
         		});
             }, this);
+            
             reader.readAsDataURL(file);
 		}
     },
