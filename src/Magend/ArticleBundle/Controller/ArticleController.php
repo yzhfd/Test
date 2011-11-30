@@ -42,15 +42,18 @@ class ArticleController extends Controller
         $pages = $req->get('pages');
         $pageEntites = array();
         foreach ($pages as $page) {
-            $pageEntity = null;
-            if (isset($page['id'])) {
-                $pageEntity = $pageRepo->find($page['id']);
-                unset($page['id']);
+            if (!isset($page['id'])) {
+                throw new \ Exception('Page need be persisted first');
             }
+            
+            $pageEntity = null;
+            $pageEntity = $pageRepo->find($page['id']);
+            unset($page['id']);
             if (empty($pageEntity)) {
                 $pageEntity = new Page();
             }
             
+            // no hots
             foreach ($page as $key=>$val) {
                 if (method_exists($pageEntity, "set$key")) {
                     $method = "set$key";
