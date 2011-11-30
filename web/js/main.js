@@ -169,17 +169,17 @@ var EditArea = Backbone.View.extend({
 					dfd.resolve();
 					return;
 				}
-				var article = articles.at(pointer);
+				var article = articles.at(pointer++);
 				if (article) {
 					article.save().then( saveArticle, saveArticle ).fail( dfd.reject );
 				}
 				
-				++pointer;
+				// ++pointer here will cause infinite loop
 			};
 			
 			saveArticle();
 		} else {
-			dfd.resolve;
+			dfd.resolve();
 		}
 		
 		return dfd.promise();

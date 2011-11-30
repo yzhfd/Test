@@ -60,15 +60,18 @@ var Article = Backbone.Model.extend({
 	savePages: function (dfd) {
 		if (this.pages) {
 			var articleId = this.id;
-			var promise;
+			var promise; // last page's promise
 			this.pages.each(function (page) {
 				promise = page.save({articleId:articleId});
 			});
-			$.when(promise).done(dfd.resolve).fail(dfd.reject);
+			if (promise) {
+				promise.done(dfd.resolve).fail(dfd.reject);
+			}
 		} else {
-			dfd.resolve;
+			dfd.resolve();
 		}
 	},
+	// article is created first, then its pages
 	save: function (attrs, opts) {
 		var dfd = $.Deferred();
 		var promise = dfd.promise();
@@ -91,7 +94,6 @@ var Article = Backbone.Model.extend({
 		}, this);
 		
 		Backbone.Model.prototype.save.call(this, attrs, opts);
-		
 		return promise;
 	},
 	uploadImages: function () {

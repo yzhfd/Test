@@ -32,6 +32,7 @@ var Page = Backbone.Model.extend({
 		if (!opts.deferred) {
 			opts.deferred = $.Deferred();
 		}
+		
 		var dfd = opts.deferred;
 		var promise = dfd.promise();
 		if (this.file) {
@@ -40,7 +41,7 @@ var Page = Backbone.Model.extend({
 		}
 		
 		if (!(this.isNew() || this.hasChanged())) {
-			dfd.resolve;
+			dfd.resolve();
 			return promise;
 		}
 		
