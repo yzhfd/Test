@@ -175,6 +175,7 @@ var EditArea = Backbone.View.extend({
 				}
 				
 				// ++pointer here will cause infinite loop
+				// Because if save done at once then execution won't even reach here
 			};
 			
 			saveArticle();
