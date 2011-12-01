@@ -93,7 +93,7 @@ var Article = Backbone.Model.extend({
 				// @todo update pageIds
 				console.log('set page ids here if changed');
 			}, this)).done( dfd.resolve ).fail( dfd.reject );
-		}, this));
+		}, this)).fail( dfd.reject );
 		
 		
 		// article won't save if savePages fail

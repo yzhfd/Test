@@ -28,36 +28,32 @@ var Page = Backbone.Model.extend({
 		return nbTasks;
 	},
 	save: function (attrs, opts) {
-		if (!opts) opts = {};
-		if (!opts.deferred) {
-			opts.deferred = $.Deferred();
-		}
-		
-		var dfd = opts.deferred;
+		var dfd = $.Deferred();
 		var promise = dfd.promise();
-		if (this.file) {
-			this.uploadImage(true, attrs, opts); // will call save when done
-			return promise;
-		}
 		
 		//if (!(this.isNew() || this.hasChanged())) {
 		//	dfd.resolve();
 		//	return promise;
 		//}
 		
-		Backbone.Model.prototype.save.call(this, attrs, opts).done(_.bind(function(){
-			if (!this.id) {
-				this.id = response.id;
-			}
-			dfd.resolve();
-		},this)).fail(dfd.reject);
+		this.uploadImage().then(_.bind(function(){
+			return Backbone.Model.prototype.save.call(this, attrs, opts).done(_.bind(function(){
+				if (!this.id) {
+					this.id = response.id;
+				}
+				dfd.resolve();
+			},this)).fail( dfd.reject );
+		}, this)).fail( dfd.reject );
 		
 		return promise;
 	},
 	// @todo landscape or portrait
-	uploadImage: function (isFromSave, attrs, opts) {
+	uploadImage: function () {
+		var dfd = $.Deferred();
+		var promise = dfd.promise();
 		if (!this.file) {
-			return false;
+			dfd.resolve();
+			return promise;
 		}
 		
 		$.ajaxQueue({
@@ -69,21 +65,13 @@ var Page = Backbone.Model.extend({
 				this.set({ landscapeImg:result });
 				this.trigger('uploaded', this);
 				this.file = null;
-				
-				if (isFromSave == true) {
-					this.save(attrs, opts);
-				}
 	        }, this),
 			error: _.bind(function (jqXHR, textStatus, errorThrown) {
-				// @tood what to do
-				// ignore
-				if (isFromSave == true) {
-					this.save(attrs, opts);
-				}
+				
 			})
-		});
+		}).done( dfd.resolve ).fail( dfd.reject );
 		
-		return true;
+		return promise;
 	}
 });
 

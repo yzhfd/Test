@@ -38,6 +38,7 @@ class PageController extends Controller
         }
         
         $json = $req->getContent();
+        $articleId = null;
         $paramsObj = json_decode($json);
         $em = $this->getDoctrine()->getEntityManager();
         if (isset($paramsObj->id)) {
