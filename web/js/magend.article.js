@@ -109,6 +109,7 @@ var Article = Backbone.Model.extend({
 				}
 				if (!_.isEqual(_pageIds, pageIds)) {
 					this.set({ pageIds:pageIds });
+					// not use save, because of may-be side effect
 					return $.ajaxQueue({
 						type: 'POST',
 						url: this.pageIdsUrl,

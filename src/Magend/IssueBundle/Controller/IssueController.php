@@ -120,7 +120,6 @@ class IssueController extends Controller
      */
     public function testAction()
     {
-        
         /*
          * find articles that belong to no issue
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE x.issues IS EMPTY');
