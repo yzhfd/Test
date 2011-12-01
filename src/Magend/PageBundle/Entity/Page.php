@@ -112,6 +112,20 @@ class Page
             $this->updatedAt = $now;
         }
     }
+    
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeImgs()
+    {
+        if ($this->getLandscapeImg() != null) {
+            unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
+        }
+        
+        if ($this->getPortraitImg() != null) {
+            unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
+        }
+    }
 
     /**
      * Set landscapeImg

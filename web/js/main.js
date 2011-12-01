@@ -158,27 +158,17 @@ var EditArea = Backbone.View.extend({
 		return nbTasks;
 	},
 	// now just save articles
-	save: function () {
+	save: function () {	
 		var dfd = $.Deferred();
-		var articles = this.articles;
-		if (articles) {
-			var pointer = 0;
-			var articles = this.articles;
-			var saveArticle = function () {
-				if (pointer == articles.length) {
-					dfd.resolve();
-					return;
-				}
-				var article = articles.at(pointer++);
-				if (article) {
-					article.save().then( saveArticle, saveArticle ).fail( dfd.reject );
-				}
-				
-				// ++pointer here will cause infinite loop
-				// Because if save done at once then execution won't even reach here
-			};
-			
-			saveArticle();
+		if (this.articles) {
+			var when = $.when({});
+			// pipe will pass arguments!
+			this.articles.each(function (article) {
+				when = when.pipe(function(){
+					return article.save();
+				});
+			});
+			when.done( dfd.resolve ).fail( dfd.reject );
 		} else {
 			dfd.resolve();
 		}
@@ -244,6 +234,9 @@ $(function () {
 		$.when(editarea.save()).done(function () {
 			$('#saveremote').button('reset');
 			$('#saveAlert').modal('hide');
+		}).fail(function () {
+			$('#saveremote').button('reset');
+			$('#saveAlert').find('.modal-body p').text('出现错误');
 		});
 		//editarea.uploadImages();
 	});

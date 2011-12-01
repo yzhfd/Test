@@ -4,12 +4,13 @@
  */
 var Article = Backbone.Model.extend({
 	url: '/Magend/web/app_dev.php/article',
+	pageIdsUrl: '/Magend/web/app_dev.php/article/orderpages', // same prefix with url may cause problem on save
 	index: -1,
 	pages: null,
 	defaults: {
 		issueId: 1, // @todo dummy
 		title: '',
-		pageIds: [],
+		pageIds: '', // comma separated
 		cover: 'http://placehold.it/128x96' // or thumbnail in navigation
 	},
 	initialize: function () {
@@ -63,40 +64,65 @@ var Article = Backbone.Model.extend({
 	},
 	savePages: function () {
 		var dfd = $.Deferred();
+		var promise = dfd.promise();
+		if (this.id) {
+			this.pages.each(_.bind(function (page) {
+				page.set({ articleId: this.id});
+			}, this));
+		} else {
+			dfd.reject();
+			return promise;
+		}
+		
 		if (this.pages && this.pages.length > 0) {
 			var articleId = this.id;
-			var promise; // last page's promise
+			var when = $.when({});
 			this.pages.each(function (page) {
-				promise = page.save({articleId:articleId});
+				when = when.pipe(function(){
+					return page.save();
+				});// NO _.bind(page.save, page)), as pipe will pass arguments
 			});
-			if (promise) {
-				promise.done(dfd.resolve).fail(dfd.reject);
-			}
+			when.done( dfd.resolve ).fail( dfd.reject );
 		} else {
 			dfd.resolve();
 		}
-		return dfd.promise();
+		return promise;
 	},
 	// article is created first, then its pages
-	save: function (attrs, opts) {		
+	save: function (attrs, opts) {	
 		var dfd = $.Deferred();
 		
-		var promiseId = this.isNew() 
+		var when = this.isNew() 
 					? Backbone.Model.prototype.save.call(this, attrs, opts)
-					: $.Deferred().resolve();
-		promiseId.then(_.bind(function(response){
-			// @todo compute pageIds
-			if (!this.id) {
-				this.id = response.id;
-			}
-			this.savePages().then(_.bind(function(){
-				// @todo update pageIds
-				console.log('set page ids here if changed');
-			}, this)).done( dfd.resolve ).fail( dfd.reject );
-		}, this)).fail( dfd.reject );
+					: $.when({});
+		when.pipe(_.bind(this.savePages, this))
+			.pipe(_.bind(function () {
+				var pageIds = [];
+				this.pages.sort();
+				this.pages.each(function (page) {
+					pageIds.push(page.id);
+				});
+				
+				var _pageIds = this.get('pageIds');
+				if (!_.isArray(_pageIds)) {
+					pageIds = pageIds.join(',');
+				}
+				if (!_.isEqual(_pageIds, pageIds)) {
+					this.set({ pageIds:pageIds });
+					return $.ajaxQueue({
+						type: 'POST',
+						url: this.pageIdsUrl,
+						data: { id: this.id, pageIds: pageIds }
+					});	
+				} else {
+					return $.when({});
+				}
+			}, this))
+			.done( dfd.resolve ).fail( dfd.reject );
 		
 		
 		// article won't save if savePages fail
+		// save pages together with article will need track page ids unless fetch after save
 		/*this.savePages().then(_.bind(function(){
 			// @todo compute pageIds
 			var pageIds = [];
@@ -111,8 +137,7 @@ var Article = Backbone.Model.extend({
 			dfd.resolve();
 		}, this)).fail(dfd.reject);*/
 		
-		var promise = dfd.promise();
-		return promise;
+		return dfd.promise();
 	},
 	uploadImages: function () {
 		// @todo forbid update pages here

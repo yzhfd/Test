@@ -75,6 +75,29 @@ class ArticleController extends Controller
     
     /**
      * 
+     * @Route("/orderpages", name="article_orderpages", defaults={"_format" = "json"})
+     */
+    public function orderPagesAction()
+    {
+        $req = $this->getRequest();
+        $articleId = $req->get('id');
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find($articleId);
+        if (!$article || !$req->get('pageIds')) {
+            return new Response(json_encode(array('result'=>0)));
+        }
+        $pageIds = $req->get('pageIds');
+        $article->setPageIds($pageIds);
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($article);
+        $em->flush();
+        
+        return new Response('');
+    }
+    
+    /**
+     * 
      * @Route("/{id}/edit", name="article_edit")
      * @Template()
      */
@@ -167,6 +190,7 @@ class ArticleController extends Controller
         if (isset($paramsObj->id)) {
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($paramsObj->id);
+            throw new \ Exception('article ' . $paramsObj->id . ' not found');
         } else {
             // @todo might not need issue id
             if (!isset($paramsObj->issueId)) {
@@ -188,7 +212,8 @@ class ArticleController extends Controller
         
         if (isset($paramsObj->pageIds)) {
             $pageIds = $paramsObj->pageIds;
-            // do associate in page controller
+            $article->setPageIds($pageIds);
+            // did associate in page controller
             /*
             $pageRefs = array();
             foreach ($pageIds as $pageId) {
@@ -203,12 +228,18 @@ class ArticleController extends Controller
         
         $em->persist($article);
         $em->flush();
-        sleep(2);
-        $response = json_encode(array(
-            'id' => $article->getId()
-        ));
+        
+        if (isset($paramsObj->id)) {
+            $response = '{}';
+        } else {
+            $response = json_encode(array(
+                'id' => $article->getId()
+            ));
+        }
         return new Response($response);
     }
+    
+
     
     /**
      * @Route("/index")

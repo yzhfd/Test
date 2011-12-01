@@ -47,12 +47,12 @@ class PageController extends Controller
             $articleId = $page->getArticle()->getId();
         } else {
             $page = new Page();
-            /*
+            
             if (!isset($paramsObj->articleId)) {
                 return new Response(json_encode(array(
                     'error' => 'Article Id is required'
                 )));
-            }*/
+            }
         }
         
         if ($paramsObj->articleId != $articleId) {
@@ -74,7 +74,7 @@ class PageController extends Controller
         
         $em->persist($page);
         $em->flush();
-        
+        sleep(1);
         $response = json_encode(array(
             'id' => $page->getId()
         ));
