@@ -190,7 +190,9 @@ class ArticleController extends Controller
         if (isset($paramsObj->id)) {
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($paramsObj->id);
-            throw new \ Exception('article ' . $paramsObj->id . ' not found');
+            if (empty($article)) {
+                throw new \ Exception('article ' . $paramsObj->id . ' not found');
+            }
         } else {
             // @todo might not need issue id
             if (!isset($paramsObj->issueId)) {

@@ -19,6 +19,8 @@ var Page = Backbone.Model.extend({
 		if (!this.cid && this.id) {
 			this.cid = 'page_' + this.id;
 		}
+		
+		this.synced();
 	},
 	getNbTasks: function () {
 		var nbTasks = 0;
@@ -27,20 +29,24 @@ var Page = Backbone.Model.extend({
 		
 		return nbTasks;
 	},
+	// Disallow change image in this mode
+	// Page's image can be changed in its own edit mode
 	save: function (attrs, opts) {
 		var dfd = $.Deferred();
 		var promise = dfd.promise();
 		
-		//if (!(this.isNew() || this.hasChanged())) {
-		//	dfd.resolve();
-		//	return promise;
-		//}
+		if (!(this.isNew() || this.isOutOfSync())) {
+			dfd.resolve();
+			return promise;
+		}
 		
 		this.uploadImage().then(_.bind(function(){
 			return Backbone.Model.prototype.save.call(this, attrs, opts).done(_.bind(function(){
 				if (!this.id) {
 					this.id = response.id;
 				}
+				
+				this.synced();
 				dfd.resolve();
 			},this)).fail( dfd.reject );
 		}, this)).fail( dfd.reject );

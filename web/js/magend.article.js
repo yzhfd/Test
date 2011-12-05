@@ -25,12 +25,23 @@ var Article = Backbone.Model.extend({
 				page.articleId = this.id;
 			}, this));
 			this.pages = new Pages(pages);
+			var pageIds = this.get('pageIds');
+			if (pageIds) {
+				pageIds = pageIds.split(',');
+				// actually, pageIds MUST exist
+				for (var i = 0, c = pageIds.length; i < c; ++i) {
+					var page = this.pages.get(pageIds[i]);
+					page.index = i;
+				}
+				
+				this.pages.sort();
+			}
 		} else if (this.pages == null) {
 			this.pages = new Pages;
 		}
 		
 		this.unset('pages');
-		this.remoteAttributes = $.extend(true, {}, this.attributes);
+		this.synced();
 	},
 	add: function (page) {
 		if (this.id) {
@@ -92,9 +103,11 @@ var Article = Backbone.Model.extend({
 	save: function (attrs, opts) {	
 		var dfd = $.Deferred();
 		
-		var when = this.isNew() 
-					? Backbone.Model.prototype.save.call(this, attrs, opts)
-					: $.when({});
+		var when = $.when({});
+		if (this.isNew() || this.isOutOfSync()) {
+			when = Backbone.Model.prototype.save.call(this, attrs, opts).done(_.bind(this.synced, this));
+		}
+		
 		when.pipe(_.bind(this.savePages, this))
 			.pipe(_.bind(function () {
 				var pageIds = [];
@@ -113,7 +126,8 @@ var Article = Backbone.Model.extend({
 					return $.ajaxQueue({
 						type: 'POST',
 						url: this.pageIdsUrl,
-						data: { id: this.id, pageIds: pageIds }
+						data: { id: this.id, pageIds: pageIds },
+						success: _.bind(this.synced, this)
 					});	
 				} else {
 					return $.when({});
