@@ -5,9 +5,9 @@
 var Page = Backbone.Model.extend({
 	uploadUrl: '/Magend/web/app_dev.php/page/upload',
 	url: '/Magend/web/app_dev.php/page', // @todo used to fetch model
-	index: -1,
 	file: null, //File
 	defaults: {
+		index: -1,
 		articleId: null,
 		landscapeImg: null,
 		portraitImg: null,
@@ -92,7 +92,7 @@ var Pages = Backbone.Collection.extend({
 		}
 	},
 	comparator: function (page) {
-		return page.index;
+		return page.get('index');
 	},
 	saveToRemote: function () {
 		// switch to ajax

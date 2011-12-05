@@ -43,7 +43,7 @@ var EditArea = Backbone.View.extend({
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
 				var article = new Article;
-				article.index = articles.length;
+				article.set({ index:articles.length });
 				var p = new Page;
 				p.file = files[i];
 				article.add(p);
@@ -94,7 +94,7 @@ var EditArea = Backbone.View.extend({
 			}
 			
 			var article = this.articles.getByCid(cid);
-			article.setIndex(index);
+			article.set({ index:index });
 			
 			++index;
 		}
@@ -138,7 +138,8 @@ var EditArea = Backbone.View.extend({
 		var count = this.articles.length;
 		for (var i = 0; i < count; ++i) {
 			var article = this.articles.at(count - i - 1); // @todo set index according to issue's
-			article.index = i;
+			article.set({ index:i });
+			article.synced(); // @todo
 			this.addOne(article);
 		}
 	},

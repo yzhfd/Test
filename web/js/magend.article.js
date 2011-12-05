@@ -5,9 +5,9 @@
 var Article = Backbone.Model.extend({
 	url: '/Magend/web/app_dev.php/article',
 	pageIdsUrl: '/Magend/web/app_dev.php/article/orderpages', // same prefix with url may cause problem on save
-	index: -1,
 	pages: null,
 	defaults: {
+		index: -1,
 		issueId: 1, // @todo dummy
 		title: '',
 		pageIds: '', // comma separated
@@ -21,21 +21,13 @@ var Article = Backbone.Model.extend({
 		
 		pages = this.get('pages');
 		if (_.isArray(pages)) {
+			var pageIds = this.get('pageIds').split(',');
 			_.each(pages, _.bind(function (page) {
 				page.articleId = this.id;
+				page.index = pageIds.indexOf(page.id + "");
 			}, this));
+			
 			this.pages = new Pages(pages);
-			var pageIds = this.get('pageIds');
-			if (pageIds) {
-				pageIds = pageIds.split(',');
-				// actually, pageIds MUST exist
-				for (var i = 0, c = pageIds.length; i < c; ++i) {
-					var page = this.pages.get(pageIds[i]);
-					page.index = i;
-				}
-				
-				this.pages.sort();
-			}
 		} else if (this.pages == null) {
 			this.pages = new Pages;
 		}
@@ -53,10 +45,6 @@ var Article = Backbone.Model.extend({
 	remove: function (page) {
 		// not unset articleId, still needed to sync with remote
 		this.pages.remove(page);
-	},
-	setIndex: function (index) {
-		this.index = index;
-		this.change();
 	},
 	getPageByCid: function (cid) {
 		return this.pages.getByCid(cid);
@@ -179,7 +167,7 @@ var Articles = Backbone.Collection.extend({
 	model: Article,
 	localStorage: new Store('articles'),
 	comparator: function (article) {
-		return article.index;
+		return article.get('index');
 	}
 	/*
 	parse: function(response) {
@@ -310,7 +298,7 @@ var ArticleView = Backbone.View.extend({
     	this.el = $(this.el);
     	
     	var pages = this.model.pages;
-    	var index = this.model.index + 1;
+    	var index = this.model.get('index') + 1;
     	if (this.el.html() != '') {
     		var header = this.el.find('h5');
     		header.text(index);
@@ -370,7 +358,7 @@ var ArticleView = Backbone.View.extend({
 					var count =  pagelis.length;
 					for (var i = 0; i < count; ++i) {
 						var page = this.model.getPageByCid($(pagelis[i]).data('cid'));
-						page.index = i;
+						page.set({ index:i });
 					}
 				}, this)
 				// beforeStop to alert user no-page article
