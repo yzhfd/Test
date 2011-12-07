@@ -184,7 +184,8 @@ $(function () {
 	$('#addpage').click(function () {
 		pages.create({index:5});
 	});
-	// window.pageCanvas = new PageCanvas;
+	Backbone.sync = Backbone.localSync;
+	window.pageCanvas = new PageCanvas;
 	/*$('#selenable').change(function () {
 		if ($(this).attr('checked')) {
 			$(pageCanvas.el).selectable({disabled:false});

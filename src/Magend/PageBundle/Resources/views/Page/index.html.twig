@@ -4,19 +4,19 @@
 	单页编辑
 {% endblock %}
 
-{% block body %}
-<input type="checkbox" id="selenable" />
-<div id="info_panel">
-
-</div>
-<button id="flushall" class="btn">清空</button>
-<button id="undo" class="btn">Undo</button>
-<button id="redo" class="btn">Redo</button>
-<div id="hot_dialog">
-	Hot
-</div>
-<div class="container">
-	<ul id="page_canvas">
-	</ul>
-</div>
+{% block main %}
+    <input type="checkbox" id="selenable" />
+    <div id="info_panel">
+    
+    </div>
+    <button id="flushall" class="btn">清空</button>
+    <button id="undo" class="btn">Undo</button>
+    <button id="redo" class="btn">Redo</button>
+    <div id="hot_dialog">
+    	Hot
+    </div>
+    <div class="">
+    	<ul id="page_canvas">
+    	</ul>
+    </div>
 {% endblock %}
