@@ -140,7 +140,9 @@ var IssueView = Backbone.View.extend({
 			},
 			update: _.bind(function (e, ui) {
 				// adjust placeholders
+				console.log('wat');
 				var placeholder = $($(ui.item).data('placeholder'));
+				
 				if ($(ui.item).prev().is('.article')) {
 					$(ui.item).next().insertBefore($(ui.item));
 				}
@@ -242,11 +244,11 @@ var IssueView = Backbone.View.extend({
 	    	atel.insertAfter(this.el.find('li.article-placeholder')[index]);
 	    }
 		
-		this.el.css({width:this.model.articles.length*160});
+		this.el.css({width:this.model.articles.length*180});
 		
 		var placeholder = this._createArticlePlaceHolder();
+		placeholder.insertAfter(atel);
 		atel.data('placeholder', placeholder);
-		this.el.append(placeholder);
 		
 		this.updateIndex();
 	
@@ -258,6 +260,7 @@ var IssueView = Backbone.View.extend({
 			var atel = $(atels[i]);
 			if (atel.data('cid') == cid) {
 				atel.remove();
+				// @todo also remove placeholder behind it
 				break;
 			}
 		}
