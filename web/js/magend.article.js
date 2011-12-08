@@ -8,12 +8,23 @@ var Article = Backbone.Model.extend({
 	pages: null,
 	defaults: {
 		index: -1,
-		issueId: 1, // @todo dummy
+		issueId: -1,
 		title: '',
 		pageIds: '', // comma separated
 		cover: 'http://placehold.it/128x96' // or thumbnail in navigation
 	},
 	initialize: function () {
+		if (this.collection) {
+			var issue = this.collection.issue;
+			if (issue) {
+				var index = issue.get('articleIds').split(',').indexOf(this.id + '');
+				this.set({
+					index:index,
+					issueId:issue.id
+				});
+			}
+		}
+		
 		// make sure there is cid
 		if (!this.cid && this.id) {
 			this.cid = 'article_' + this.id;
@@ -164,6 +175,7 @@ var Article = Backbone.Model.extend({
 // url will be from issue
 var Articles = Backbone.Collection.extend({
 	model: Article,
+	issue: null,
 	localStorage: new Store('articles'),
 	comparator: function (article) {
 		return article.get('index');

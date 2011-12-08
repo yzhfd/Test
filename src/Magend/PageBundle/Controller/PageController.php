@@ -38,7 +38,7 @@ class PageController extends Controller
     
     /**
      * 
-     * @Route("/{id}", name="page_update", defaults={"_format" = "json"})
+     * @Route("/{id}", name="page_update", defaults={"_format" = "json"}, requirements={"id"="\d+"})
      * @Method({"put", "post"})
      */
     public function updateAction($id)

@@ -297,16 +297,13 @@ class Issue
     }
 
     /**
-     * Get articleIds(array)
+     * Get articleIds
      *
      * @return string 
      */
     public function getArticleIds()
     {
-        if (empty($this->articleIds)) {
-            return array();
-        }
-        return explode(',', $this->articleIds);
+        return $this->articleIds;
     }
     
     /**

@@ -14,6 +14,7 @@ var Issue = Backbone.Model.extend({
 	},
 	initialize: function () {
 		this.articles = new Articles;
+		this.articles.issue = this;
 		this.articles.url = this.urlRoot + '/' + this.id + '/articles';
 	},
 	getNbTasks: function () {
@@ -31,6 +32,7 @@ var Issue = Backbone.Model.extend({
 	// just save articles
 	saveArticles: function () {	
 		var dfd = $.Deferred();
+		
 		if (this.articles) {
 			var when = $.when({});
 			// pipe will pass arguments!
@@ -59,7 +61,6 @@ var Issue = Backbone.Model.extend({
 				
 				articleIds = articleIds.join(',');
 				var _articleIds = this.get('articleIds');
-				
 				if (!_.isEqual(_articleIds, articleIds)) {
 					this.set({ articleIds:articleIds });
 					// not use save, because of may-be side effect
@@ -230,6 +231,8 @@ var IssueView = Backbone.View.extend({
 			this.el.append(this._createArticlePlaceHolder());
 		}
 		
+		article.set({ issueId:this.model.id });
+		
 	    var at = new ArticleView({model:article});
 	    var atel = $(at.render().el);
 	    var index = article.get('index');
@@ -263,16 +266,12 @@ var IssueView = Backbone.View.extend({
 	},
 	// on fetch
 	// sort will also call this
-	resetArticles: function (good) {
+	resetArticles: function () {
 		$(this.el).empty();
 		
-		var count = this.model.articles.length;
-		for (var i = 0; i < count; ++i) {
-			var article = this.model.articles.at(count - i - 1); // @todo set index according to issue's
-			article.set({ index:i });
-			article.synced(); // @todo
+		this.model.articles.each(_.bind(function (article) {
 			this.addArticle(article);
-		}
+		}, this));
 	},
 	render: function () {
 		// @todo render all articles, like update

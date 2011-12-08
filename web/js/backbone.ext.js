@@ -1,6 +1,6 @@
 {
 	_.extend(Backbone.Model.prototype, {
-		remoteArributes: {},
+		remoteAttributes: {},
 		isOutOfSync: function () {
 			// no compare index
 			var remoteAttrs = $.extend(true, {}, this.remoteAttributes);
