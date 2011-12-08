@@ -4,7 +4,7 @@
 
 var Page = Backbone.Model.extend({
 	uploadUrl: '/Magend/web/app_dev.php/page/upload',
-	url: '/Magend/web/app_dev.php/page', // @todo used to fetch model
+	urlRoot: '/Magend/web/app_dev.php/page', // @todo used to fetch model
 	file: null, //File
 	defaults: {
 		index: -1,
@@ -107,7 +107,7 @@ var Pages = Backbone.Collection.extend({
 var PageView = Backbone.View.extend({
 	tagName: 'li',
 	className: 'page',
-	template: '<div class="close"></div><a href="#1" title={{label}}><img width="128" height="96" src="{{img}}" /></a>',
+	template: '<a href="#" class="pagedel"></a><a href="#1" title={{label}}><img width="128" height="96" src="{{img}}" /></a>',
     events: {
       //"click": ""
     },
@@ -116,7 +116,9 @@ var PageView = Backbone.View.extend({
     	this.el = $(this.el);
     	this.el.data('cid', this.model.cid);
     	
-    	this.render();
+    	if (this.el.find('img').length == 0) {
+    		this.render();
+    	}
     	
     	this.model.bind('change:label', this.render, this);
     	this.model.bind('change:landscapeImg', this.render, this);
@@ -149,6 +151,14 @@ var PageView = Backbone.View.extend({
     	
     	var html = $.mustache(this.template, {label:label, img:landscapeImg});
     	this.el.html(html);
+    	this.el.find('.pagedel').click(_.bind( function(e) {
+    		e.stopPropagation();
+    		e.preventDefault();
+    		
+    		if (confirm('删除本页也将删除其所有的热点')) {
+    			this.model.destroy();
+    		}
+    	}, this));
         return this;
     }
 });

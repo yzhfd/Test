@@ -162,8 +162,8 @@ var Article = Backbone.Model.extend({
 	}
 });
 
+// url will be from issue
 var Articles = Backbone.Collection.extend({
-	url: '/Magend/web/app_dev.php/issue/1/articles',
 	model: Article,
 	localStorage: new Store('articles'),
 	comparator: function (article) {
@@ -322,7 +322,7 @@ var ArticleView = Backbone.View.extend({
         	this.el.find('.pages').sortable({
         		distance: 3,
         		connectWith:'ol.pages',
-        		axis: 'y',
+        		//axis: 'y',
         		tolerance: 'pointer',
         		start: _.bind(function (e, ui) {
 					var pageli = $(ui.item);
@@ -341,7 +341,7 @@ var ArticleView = Backbone.View.extend({
 					this.el.switchClass('highlighted', 'very-highlighted', 'fast')
 						   .removeClass('very-highlighted', 'fast');
 				}, this),
-				update: _.bind(function (e, ui) {					
+				update: _.bind(function (e, ui) {
 					var pageli = $(ui.item);
 					var pagelis = this.el.find('li.page');
 					

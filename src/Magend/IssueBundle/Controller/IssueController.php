@@ -48,14 +48,19 @@ class IssueController extends Controller
     }
     
     /**
-     * @Route("/show/{id}", name="issue_show")
+     * @Route("/{id}", name="issue_show", requirements={"id"="\d+"})
      * @Template()
      */
     public function showAction($id)
-    {
+    {        
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
+        
+        $req = $this->getRequest();
+        if ($req->isXmlHTTPRequest()) {
+            return new Response();
+        }
         
         return array(
             'issue' => $issue

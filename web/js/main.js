@@ -28,7 +28,7 @@ var EditArea = Backbone.View.extend({
 			}
 		});
 		
-		//articles.add(new Article);
+		articles.add(new Article);
 		//articles.add(new Article);
 		//articles.add(new Article);
 		
@@ -59,9 +59,10 @@ var EditArea = Backbone.View.extend({
 		
 		this.el.sortable({
 			opacity: 0.6,
-			axis: 'y',
+			axis: 'x',
 			helper: 'clone',
-			containment: '#editarea',
+			items: 'li.article',
+			//containment: '#editarea',
 			//appendTo: 'body',
 			tolerance: 'pointer',
 			start: function (event, ui) {
@@ -72,6 +73,13 @@ var EditArea = Backbone.View.extend({
 				// restore article's expanded state
 			},
 			update: _.bind(function (e, ui) {
+				// adjust placeholders
+				var placeholder = $($(ui.item).data('placeholder'));
+				if ($(ui.item).prev().is('.article')) {
+					$(ui.item).next().insertBefore($(ui.item));
+				}
+				placeholder.insertAfter($(ui.item));
+				
 				this.updateIndex();
 			}, this)
 		});
@@ -99,23 +107,81 @@ var EditArea = Backbone.View.extend({
 			++index;
 		}
 	},
-	addOne: function (article) {
-		this.el = $(this.el);
-		
-	    var at = new ArticleView({model:article});
-	    var atel = $(at.render().el);			
-		this.el.append(atel);
-		
-		/*
+	_createArticlePlaceHolder: function () {
 		var articleholder = $('<li class="article-placeholder"><ol class="pages"></ol></li>');
-		this.el.append(articleholder)
+		var articles = this.articles;
 		articleholder.find('.pages').sortable({
     		distance: 3,
     		containment: $('#editarea'),
     		connectWith:'ol.pages',
     		axis: 'y',
-    		tolerance: 'pointer'
-		});*/
+    		tolerance: 'pointer',
+			over: function (e, ui) {
+				$(this).parent().addClass('highlighted');
+			},
+			out:  function (e, ui) {
+				$(this).parent().removeClass('highlighted');
+			},
+			receive: function (e, ui) {
+				$(this).switchClass('highlighted', 'very-highlighted', 'fast')
+					   .removeClass('very-highlighted', 'fast');
+				
+				var placeholder = $(this).parent();
+				var index = placeholder.parent().find('li.article-placeholder').index(placeholder);
+				var newArticle = new Article({ index:index });
+				articles.add(newArticle);
+				newArticle.add(window.editingPage);
+				
+				$(ui.item).remove();
+			}
+		});
+		
+		articleholder.bind({
+			'dragenter': function (e, sorte) {
+				e.stopPropagation();
+				e.preventDefault();
+				
+				$(this).addClass('highlighted');
+		    },
+		    'dragover': function (e, sorte) {
+		    	$(this).addClass('highlighted');
+		    },
+		    'dragleave': function (e) {
+		    	//console.log(e.target);
+		    	$(this).removeClass('highlighted');
+		    },
+		    'drop': function (e) {
+		    	//console.log(e.target);
+		    	console.log('xxx');
+		    }
+		});
+		
+	    return articleholder;
+	},
+	addOne: function (article) {
+		this.el = $(this.el);
+	    
+		if (this.el.children().length == 0) {
+			this.el.append(this._createArticlePlaceHolder());
+		}
+		
+	    var at = new ArticleView({model:article});
+	    var atel = $(at.render().el);
+	    var index = article.get('index');
+	    if (index < 0) {
+	    	this.el.append(atel);
+	    } else {
+	    	atel.insertAfter(this.el.find('li.article-placeholder')[index]);
+	    }
+		
+		this.el.css({width:this.articles.length*160});
+		
+		var placeholder = this._createArticlePlaceHolder();
+		atel.data('placeholder', placeholder);
+		this.el.append(placeholder);
+		
+		this.updateIndex();
+
 	},
 	removeOne: function (article) {
 		var cid = article.cid;
@@ -184,8 +250,8 @@ $(function () {
 	$('#addpage').click(function () {
 		pages.create({index:5});
 	});
-	Backbone.sync = Backbone.localSync;
-	window.pageCanvas = new PageCanvas;
+	//Backbone.sync = Backbone.localSync;
+	//window.pageCanvas = new PageCanvas;
 	/*$('#selenable').change(function () {
 		if ($(this).attr('checked')) {
 			$(pageCanvas.el).selectable({disabled:false});
@@ -214,7 +280,10 @@ $(function () {
 		availableTags: ['sexy', 'girl']
 	});
 	//Backbone.sync = Backbone.ajaxSync;
-	window.editarea = new EditArea(new Articles);
+	//window.editarea = new EditArea(new Articles);
+	var issue = new Issue({ id:1 });
+	var issueView = new IssueView({ model:issue} );
+	
 	// editarea.render();
 	
 	// Backbone.emulateJSON = true
@@ -231,9 +300,9 @@ $(function () {
 	});
 	
 	$('#saveremote').click(function () {
-		console.log(editarea.getNbTasks());
+		console.log(issueView.getNbTasks());
 		$('#saveAlert').modal({show:true, backdrop:true});
-		$.when(editarea.save()).done(function () {
+		$.when(issueView.save()).done(function () {
 			$('#saveremote').button('reset');
 			$('#saveAlert').modal('hide');
 		}).fail(function () {

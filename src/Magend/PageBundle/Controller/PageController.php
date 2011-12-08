@@ -3,6 +3,7 @@
 namespace Magend\PageBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Magend\PageBundle\Entity\Page;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,6 +24,26 @@ class PageController extends Controller
     public function indexAction()
     {
         return array();
+    }
+    
+    /**
+     * 
+     * @Route("/{id}", name="page_del", defaults={"_format" = "json"})
+     * @Method("delete")
+     */
+    public function delAction($id)
+    {
+        return new Response('xx'.$id);
+    }
+    
+    /**
+     * 
+     * @Route("/{id}", name="page_update", defaults={"_format" = "json"})
+     * @Method({"put", "post"})
+     */
+    public function updateAction($id)
+    {
+        return $this->forward('MagendPageBundle:Page:newUpdate');
     }
     
     /**

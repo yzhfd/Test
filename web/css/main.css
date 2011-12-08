@@ -65,21 +65,14 @@ body {
 	min-height: 600px;
 }
 
-
-#editarea {
-	width: 190px;
+.issue_articles {
+    overflow-x: auto;
+}
+.articles {
 	padding: 20px 0px 100px 0px;
-	height: 500px;
-	overflow-y: auto; /*super important for sortable*/
+	width: 200px;
+	/*super important for sortable*/
 }
-/*
-.close {
-	width: 16px; height: 16px;
-	background: #000 url('../images/closebtn.png') no-repeat center center;
-}
-.close:hover {
-    background-image: url('../images/closebtn_h.png');
-}*/
 li.highlighted {
 	background-color: #FFFFAA;
 }
@@ -91,7 +84,7 @@ li.article {
     width: 130px;
     
     padding: 4px;
-    margin: 0 0 16px 18px; /* no margin-bottom if use article-placeholder*/
+    margin: 0 0 16px 0px; /* article-placeholder holds margins */
     border: 1px solid #ddd;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -119,12 +112,12 @@ li.article .del:hover {
 }
 li.article-placeholder {
 	float: left;
-	margin: 0 0 0 18px;
+	
 }
 li.article-placeholder ol.pages {
-    width: 138px;
+    width: 18px;
     /*min-height: 96px;*/
-    height: 16px;/* consider border */
+    height: 160px;/* consider border */
 }
 /* change width, height if necessary */
 li.article .cover {
@@ -147,7 +140,21 @@ li.article ol.pages {
 li.page {
 	float: left;
     margin-left: 18px;
+    position: relative;
 }
+li.page:hover .pagedel {
+	visibility: visible;
+}
+.pagedel {
+	display: block;
+	visibility: hidden;
+    width: 22px; height: 22px;
+    position: absolute; top: 2px; left: 2px;
+    background: transparent url('../images/close.png') no-repeat center center;
+}/*
+.close:hover {
+    background-image: url('../images/closebtn_h.png');
+}*/
 li.article li.page {
 	/*float: left;*/
 	margin-bottom: 4px;
