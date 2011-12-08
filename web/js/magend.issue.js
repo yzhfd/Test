@@ -105,6 +105,12 @@ var IssueView = Backbone.View.extend({
 		
 		/* HTML5 file DnD */
 		this.el.fileupload().bind('fileuploaddrop', function (e, data) {
+			var index = null;
+			if ($(e.target).parent().is('.article-placeholder')) {
+				var placeholder = $(e.target).parent();
+				index = placeholder.parent().find('li.article-placeholder').index(placeholder);
+			}
+			
 			var files = data.files;
 			var count = files.length;
 			for (var i = 0; i < count; ++i) {
@@ -113,6 +119,9 @@ var IssueView = Backbone.View.extend({
 				var p = new Page;
 				p.file = files[i];
 				article.add(p);
+				if (index != null) {
+					article.set({ index:index+i });
+				}
 				articles.add(article);
 			}
 			
@@ -219,8 +228,8 @@ var IssueView = Backbone.View.extend({
 		    	$(this).removeClass('highlighted');
 		    },
 		    'drop': function (e) {
-		    	//console.log(e.target);
-		    	console.log('xxx');
+				$(this).switchClass('highlighted', 'very-highlighted', 'fast')
+				   	   .removeClass('very-highlighted', 'fast');
 		    }
 		});
 		
@@ -244,7 +253,7 @@ var IssueView = Backbone.View.extend({
 	    	atel.insertAfter(this.el.find('li.article-placeholder')[index]);
 	    }
 		
-		this.el.css({width:this.model.articles.length*180});
+		this.el.css({width:20 + this.model.articles.length*160});
 		
 		var placeholder = this._createArticlePlaceHolder();
 		placeholder.insertAfter(atel);
