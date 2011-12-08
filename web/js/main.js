@@ -299,10 +299,14 @@ $(function () {
 		});
 	});
 	
+	$('#loadremote').click(function () {
+		issue.fetch();
+	});
+	
 	$('#saveremote').click(function () {
-		console.log(issueView.getNbTasks());
+		console.log(issue.getNbTasks());
 		$('#saveAlert').modal({show:true, backdrop:true});
-		$.when(issueView.save()).done(function () {
+		$.when(issue.save()).done(function () {
 			$('#saveremote').button('reset');
 			$('#saveAlert').modal('hide');
 		}).fail(function () {

@@ -7,13 +7,80 @@
  */
 var Issue = Backbone.Model.extend({
 	urlRoot: '/Magend/web/app_dev.php/issue',
+	articleIdsUrl: '/Magend/web/app_dev.php/issue/update_articleIds',
 	articles: null,
 	defaults: {
 		articleIds: '' // comma separated
 	},
 	initialize: function () {
 		this.articles = new Articles;
-		this.articles.url = this.urlRoot + this.id + '/articles';
+		this.articles.url = this.urlRoot + '/' + this.id + '/articles';
+	},
+	getNbTasks: function () {
+		var nbTasks = 0;
+		// @todo issue itself
+		var articles = this.articles;
+		if (articles) {
+			articles.each(function (article, index) {
+				nbTasks += article.getNbTasks();
+			});
+		}
+		
+		return nbTasks;
+	},
+	// just save articles
+	saveArticles: function () {	
+		var dfd = $.Deferred();
+		if (this.articles) {
+			var when = $.when({});
+			// pipe will pass arguments!
+			this.articles.each(function (article) {
+				when = when.pipe(function(){
+					return article.save();
+				});
+			});
+			when.done( dfd.resolve ).fail( dfd.reject );
+		} else {
+			dfd.resolve();
+		}
+		
+		return dfd.promise();
+	},
+	save: function (attrs, opts) {	
+		var dfd = $.Deferred();
+		
+		this.saveArticles()
+			.pipe(_.bind(function () {
+				var articleIds = [];
+				this.articles.sort();
+				this.articles.each(function (article) {
+					articleIds.push(article.id);
+				});
+				
+				articleIds = articleIds.join(',');
+				var _articleIds = this.get('articleIds');
+				
+				if (!_.isEqual(_articleIds, articleIds)) {
+					this.set({ articleIds:articleIds });
+					// not use save, because of may-be side effect
+					return $.ajaxQueue({
+						type: 'POST',
+						url: this.articleIdsUrl,
+						data: { id: this.id, articleIds: articleIds },
+						success: _.bind(this.synced, this)
+					});	
+				} else {
+					return $.when({});
+				}
+			}, this))
+			.done( dfd.resolve ).fail( dfd.reject );
+		
+		return dfd.promise();
+	},
+	fetch: function (opts) {
+		return Backbone.Model.prototype.fetch.call(this, opts).pipe(_.bind( function() {
+			this.articles.fetch();
+		}, this));
 	}
 });
 
@@ -30,19 +97,12 @@ var IssueView = Backbone.View.extend({
 		articles.bind('remove', this.removeArticle, this);
 		articles.bind('reset', this.resetArticles, this);
 		
-		// @todo remove, update index
-		articles.fetch({
-			success: function (collection, response) {
-			}
-		});
-		
 		articles.add(new Article);
 		
 		// @todo if editarea is empty, then sortable will misbehave
 		//this.model.articles.create();
 		
 		/* HTML5 file DnD */
-		
 		this.el.fileupload().bind('fileuploaddrop', function (e, data) {
 			var files = data.files;
 			var count = files.length;
@@ -66,6 +126,7 @@ var IssueView = Backbone.View.extend({
 			opacity: 0.6,
 			axis: 'x',
 			helper: 'clone',
+			items: 'li.article',
 			//containment: '#editarea',
 			//appendTo: 'body',
 			tolerance: 'pointer',
@@ -77,6 +138,13 @@ var IssueView = Backbone.View.extend({
 				// restore article's expanded state
 			},
 			update: _.bind(function (e, ui) {
+				// adjust placeholders
+				var placeholder = $($(ui.item).data('placeholder'));
+				if ($(ui.item).prev().is('.article')) {
+					$(ui.item).next().insertBefore($(ui.item));
+				}
+				placeholder.insertAfter($(ui.item));
+				
 				this.updateIndex();
 			}, this)
 		});
@@ -172,9 +240,10 @@ var IssueView = Backbone.View.extend({
 	    }
 		
 		this.el.css({width:this.model.articles.length*160});
-		console.log(this.el.css('width'));
 		
-		this.el.append(this._createArticlePlaceHolder());
+		var placeholder = this._createArticlePlaceHolder();
+		atel.data('placeholder', placeholder);
+		this.el.append(placeholder);
 		
 		this.updateIndex();
 	
@@ -207,35 +276,5 @@ var IssueView = Backbone.View.extend({
 	},
 	render: function () {
 		// @todo render all articles, like update
-	},
-	getNbTasks: function () {
-		var nbTasks = 0;
-		// @todo issue itself
-		var articles = this.articles;
-		if (articles) {
-			articles.each(function (article, index) {
-				nbTasks += article.getNbTasks();
-			});
-		}
-		
-		return nbTasks;
-	},
-	// now just save articles
-	save: function () {	
-		var dfd = $.Deferred();
-		if (this.articles) {
-			var when = $.when({});
-			// pipe will pass arguments!
-			this.articles.each(function (article) {
-				when = when.pipe(function(){
-					return article.save();
-				});
-			});
-			when.done( dfd.resolve ).fail( dfd.reject );
-		} else {
-			dfd.resolve();
-		}
-		
-		return dfd.promise();
 	}
 });

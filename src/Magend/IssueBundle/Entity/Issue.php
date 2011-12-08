@@ -260,12 +260,15 @@ class Issue
     /**
      * Set articleIds
      *
-     * @param array $articleIds
+     * @param array|string $articleIds
      */
-    public function setArticleIds(Array $articleIds)
+    public function setArticleIds($articleIds)
     {
         // if consistency is important, then fetch articles and check
-        $this->articleIds = implode(',', $articleIds);
+        if (is_array($articleIds)) {
+            $articleIds = implode(',', $articleIds);
+        }
+        $this->articleIds = $articleIds;
     }
     
     /**

@@ -104,10 +104,9 @@ var Article = Backbone.Model.extend({
 					pageIds.push(page.id);
 				});
 				
+				pageIds = pageIds.join(',');
 				var _pageIds = this.get('pageIds');
-				if (!_.isArray(_pageIds)) {
-					pageIds = pageIds.join(',');
-				}
+				
 				if (!_.isEqual(_pageIds, pageIds)) {
 					this.set({ pageIds:pageIds });
 					// not use save, because of may-be side effect

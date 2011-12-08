@@ -4,6 +4,7 @@ namespace Magend\IssueBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityNotFoundException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -56,15 +57,41 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
         
         $req = $this->getRequest();
         if ($req->isXmlHTTPRequest()) {
-            return new Response();
+            return new Response(json_encode(array(
+                'articleIds' => $issue->getArticleIds()
+            )));
         }
         
         return array(
             'issue' => $issue
         );
+    }
+    
+    /**
+     * @Route("/update_articleIds", name="issue_update_articleIds", defaults={"_format"="json"})
+     * @Method("post")
+     */
+    public function updateArticleIdsAction()
+    {
+        $req = $this->getRequest();
+        $id = $req->get('id');
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+        
+        $issue->setArticleIds($req->get('articleIds'));
+        $em->flush();
+        return new Response();
     }
     
     /**
