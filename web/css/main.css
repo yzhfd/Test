@@ -65,6 +65,15 @@ body {
 	min-height: 600px;
 }
 
+
+#issue_cover {
+	width: 120px;
+	height: 160px;
+	display: block;
+	background-color: #ccc;
+}
+
+
 .issue_articles {
     overflow-x: auto;
 }

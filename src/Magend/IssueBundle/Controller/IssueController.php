@@ -25,9 +25,6 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
-        if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
-        }
         
         return $issue;
     }
@@ -40,27 +37,11 @@ class IssueController extends Controller
     public function newAction()
     {
         $issue = new Issue();
-        $req   = $this->getRequest();
         $form  = $this->createForm(new IssueType(), $issue);
-        
-        if ($req->getMethod() == 'POST') {
-            $form->bindRequest($req);
-            if ($form->isValid()) {                
-                $em = $this->getDoctrine()->getEntityManager();
-                $em->persist($issue);
-                $em->flush();
-                
-                if ($req->isXmlHTTPRequest()) {
-                    $id = $issue->getId();
-                    $response = new Response(json_encode(array(
-                        'id'        => $id,
-                        'editorUrl' => $this->generateUrl('issue_editor', array('id' => $id))
-                    )));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
-                }
+        if ($this->getRequest()->getMethod() == 'POST') {
+            $ret = $this->submit($form, $issue);
+            if ($ret) {
+                return $ret;
             }
         }
         
@@ -73,32 +54,16 @@ class IssueController extends Controller
     /**
      * 
      * @Route("/{id}/edit", name="issue_edit")
-     * @Template()
+     * @Template("MagendIssueBundle:issue:new.html.twig")
      */
     public function editAction($id)
     {
         $issue = $this->_findIssue($id);
-        $req   = $this->getRequest();
         $form  = $this->createForm(new IssueType(), $issue);
-        
-        if ($req->getMethod() == 'POST') {
-            $form->bindRequest($req);
-            if ($form->isValid()) {                
-                $em = $this->getDoctrine()->getEntityManager();
-                $em->persist($issue);
-                $em->flush();
-                
-                if ($req->isXmlHTTPRequest()) {
-                    $id = $issue->getId();
-                    $response = new Response(json_encode(array(
-                        'id'        => $id,
-                        'editorUrl' => $this->generateUrl('issue_editor', array('id' => $id))
-                    )));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
-                }
+        if ($this->getRequest()->getMethod() == 'POST') {
+            $ret = $this->submit($form, $issue);
+            if ($ret) {
+                return $ret;
             }
         }
         
@@ -106,6 +71,35 @@ class IssueController extends Controller
             'issue' => $issue,
             'form'  => $form->createView()
         );
+    }
+    
+    /**
+     * For new and edit
+     * 
+     */
+    private function submit($form, $issue)
+    {
+        $req = $this->getRequest();
+        $form->bindRequest($req);
+        if ($form->isValid()) {                
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->persist($issue);
+            $em->flush();
+            
+            if ($req->isXmlHTTPRequest()) {
+                $id = $issue->getId();
+                $response = new Response(json_encode(array(
+                    'id'        => $id,
+                    'editorUrl' => $this->generateUrl('issue_editor', array('id' => $id))
+                )));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            } else {
+                return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -216,6 +210,10 @@ class IssueController extends Controller
     public function editorAction($id)
     {
         $issue = $this->_findIssue($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+        
         
         /*
          * find articles that belong to no issue

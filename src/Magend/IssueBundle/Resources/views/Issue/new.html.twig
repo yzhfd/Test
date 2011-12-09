@@ -4,9 +4,9 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    {% if isEdit is defined and isEdit %}
+    {% if issue.id is not null %}
        <li><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title|truncate(10) }}</a> <span class="divider">/</span></li>
-       <li class="active">编辑期刊（1101）</li>
+       <li class="active">编辑</li>
     {% else %}
        <li class="active">创建新期刊</li>
     {% endif %}
@@ -22,7 +22,7 @@
     <p>期刊号一般为1101, 11A, 10B，将会决定期刊呈现在客户端的顺序</p>
 </div>
 
-<form id="issue_form" action="{{ path('issue_new') }}" method="post" {{ form_enctype(form) }}>
+<form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     <div class="clearfix">
         {{ form_label(form.serial, '期刊号') }}
         <div class="input">{{ form_errors(form.serial) }}{{ form_widget(form.serial, { 'attr':{'class':'small'} }) }}</div>
@@ -42,7 +42,7 @@
         {{ form_label(form.coverImage, '封面') }}
         <div class="input">
             <a href="#" title="拖拽图片到这里上传" id="issue_cover">
-                <img width="120" height="160" src="{% if issue.cover is not null %}{{ asset('uploads/' ~ issue.cover) }}{% else %}http://placehold.it/120x160{% endif %}" />
+                <img width="120" height="160" src="{% if issue.cover is not null %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" />
             </a>
             <div id="cover_input" style="display:none;">{{ form_errors(form.coverImage) }}{{ form_widget(form.coverImage, { 'attr':{'class':'small'} }) }}</div>
         </div>
@@ -52,7 +52,7 @@
     
     <div class="actions">
         <button class="btn primary" type="submit" data-loading-text="提交中...">提交</button>
-        <a id="issue_next" class="btn" href="#">上传图片、创建文章</a>
+        <a id="issue_next" class="btn" href="{% if issue.id is not null %}{{ url('issue_editor', { 'id':issue.id }) }}{% else %}#{% endif %}">上传图片、创建文章</a>
     </div>
 </form>
 {% endblock %}

@@ -297,9 +297,14 @@ $(function () {
 		
 		issueForm.submit( function(e) {
 			var cover = issueForm.data('cover');
+			var coverSrc = $('#issue_cover').find('img').attr('src');
 			if (!cover) {
-				alert('请上传封面');
-				return false;
+				if (coverSrc == '') {
+					alert('请上传封面');
+					return false;
+				} else {
+					return true;
+				}
 			}
 			
 			var submitBtn = $(this).find('button[type="submit"]');
