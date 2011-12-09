@@ -146,7 +146,7 @@ var PageView = Backbone.View.extend({
     	if (!landscapeImg) {
     		landscapeImg = 'http://placehold.it/128x96';
     	} else {
-    		landscapeImg = '../media/cache/landscapeThumb/uploads/' + landscapeImg;
+    		landscapeImg = '../../media/cache/landscapeThumb/uploads/' + landscapeImg;
     	}
     	
     	var html = $.mustache(this.template, {label:label, img:landscapeImg});

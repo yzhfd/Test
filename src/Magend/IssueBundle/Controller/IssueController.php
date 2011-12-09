@@ -20,6 +20,18 @@ use Magend\IssueBundle\Entity\Issue;
  */
 class IssueController extends Controller
 {
+    private function _findIssue($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+        
+        return $issue;
+    }
+    
     /**
      * 
      * @Route("/new", name="issue_new")
@@ -33,12 +45,22 @@ class IssueController extends Controller
         
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
-            if ($form->isValid()) {
+            if ($form->isValid()) {                
                 $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($issue);
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+                if ($req->isXmlHTTPRequest()) {
+                    $id = $issue->getId();
+                    $response = new Response(json_encode(array(
+                        'id'        => $id,
+                        'editorUrl' => $this->generateUrl('issue_editor', array('id' => $id))
+                    )));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                } else {
+                    return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+                }
             }
         }
         
@@ -49,6 +71,46 @@ class IssueController extends Controller
     }
     
     /**
+     * 
+     * @Route("/{id}/edit", name="issue_edit")
+     * @Template()
+     */
+    public function editAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        $req   = $this->getRequest();
+        $form  = $this->createForm(new IssueType(), $issue);
+        
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {                
+                $em = $this->getDoctrine()->getEntityManager();
+                $em->persist($issue);
+                $em->flush();
+                
+                if ($req->isXmlHTTPRequest()) {
+                    $id = $issue->getId();
+                    $response = new Response(json_encode(array(
+                        'id'        => $id,
+                        'editorUrl' => $this->generateUrl('issue_editor', array('id' => $id))
+                    )));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                } else {
+                    return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+                }
+            }
+        }
+        
+        return array(
+            'issue' => $issue,
+            'form'  => $form->createView()
+        );
+    }
+    
+    /**
+     * Only return articleIds if by ajax
+     * 
      * @Route("/{id}", name="issue_show", requirements={"id"="\d+"})
      * @Template()
      */
@@ -146,12 +208,21 @@ class IssueController extends Controller
             'result' => 'success'
         )));
     }
+    
     /**
-     * @Route("/test")
+     * @Route("/{id}/editor", name="issue_editor")
      * @Template()
      */
-    public function testAction()
+    public function editorAction($id)
     {
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+        
         /*
          * find articles that belong to no issue
          * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE x.issues IS EMPTY');
@@ -190,6 +261,8 @@ class IssueController extends Controller
             $em->flush();
         }
         */
-        return array();
+        return array(
+            'issue' => $issue
+        );
     }
 }

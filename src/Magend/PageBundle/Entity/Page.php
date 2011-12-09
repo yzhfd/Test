@@ -119,11 +119,11 @@ class Page
     public function removeImgs()
     {
         if ($this->getLandscapeImg() != null) {
-            unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
         }
         
         if ($this->getPortraitImg() != null) {
-            unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
         }
     }
 

@@ -15,7 +15,7 @@ class IssueType extends AbstractType
             ->add('priceLevel', 'choice', array(
                 'choices' => array('0'=>'免费', '1'=>'1', '2'=>'2', '3'=>'3')
             ))
-            ->add('cover')
+            ->add('coverImage', 'file', array('required'=>false))
         ;
     }
 

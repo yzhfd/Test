@@ -53,7 +53,7 @@ class Issue
     /**
      * @var string $cover
      *
-     * @ORM\Column(name="cover", type="string", length=255)
+     * @ORM\Column(name="cover", type="string", length=255, nullable=true)
      */
     private $cover;
 
@@ -128,6 +128,12 @@ class Issue
      * @ORM\Column(name="nb_downloaded", type="integer")
      */
     private $nbDownloaded = 0;
+    
+    /**
+     * 
+     * @var File
+     */
+    public $coverImage;
 
 
     public function __construct()
@@ -159,12 +165,16 @@ class Issue
             $this->updatedAt = $now;
         }
         
-        /*if (!$this->articles->isEmpty()) {
-            foreach ($this->articles as $article) {
-                $this->articleIds .= $article->getId();
-                //echo $article->getId();
+        if ($this->coverImage) {
+            $imgName = uniqid('issue_') . '.' . $this->coverImage->guessExtension();
+            $this->coverImage->move(__DIR__.'/../../../../web/uploads/', $imgName);
+            
+            if ($this->getCover()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
             }
-        }*/
+            
+            $this->setCover($imgName);
+        }
     }
     
     /**
@@ -173,8 +183,9 @@ class Issue
      */
     public function postRemove()
     {
-        // @todo delete cover
-        // @todo delete issue_id in articles
+        if ($this->getCover()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
+        }
     }
 
     /**

@@ -1,0 +1,64 @@
+{% extends '::base.html.twig' %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li><a title="编辑期刊" href="{{ url('issue_edit', { 'id':issue.id }) }}">{{ issue.serial }}</a> <span class="divider">/</span></li>
+    <li class="active">上传图片创建文章</li>
+{% endblock %}
+
+{%block main %}
+    <div class="well">
+        <button id="loadremote" class="btn success" data-loading-text="加载中...">重新加载</button>
+        <button id="saveremote" class="btn primary" data-loading-text="保存中...">保存</button>
+        <a href="/Magend/web/app_dev.php/issue/{{ issue.id }}/flush" id="flushbtn" class="btn danger" style="float:right;">清空</a>
+    </div>
+    
+    <div id="article-pages">
+        <ol class="pages">
+            <li class="page"><a href="#"><img src="http://placehold.it/128x96" /></a></li>
+            <li class="page"><a href="#"><img src="http://placehold.it/128x96" /></a></li>
+        </ol>
+    </div>
+    
+    <div id="saveAlert" class="modal hide fade">
+        <div class="modal-header">
+          <a href="#" class="close">&times;</a>
+          <h3>保存内容至服务器</h3>
+        </div>
+        <div class="modal-body">
+          <p>同步中，请勿关闭</p>
+        </div>
+        <!--<div class="modal-footer">
+          <a href="#" class="btn primary">Primary</a>
+          <a href="#" class="btn secondary">Secondary</a>
+        </div>-->
+    </div>
+    
+    <div id="issue_{{ issue.id }}" class="issue_articles">
+        <ol class="articles">
+            <!--<li class="article">
+                <h5>文章一</h5>
+                <div style="position:relative;">
+                    <ol class="pages">
+                        <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        <li class="page"><img src="http://placehold.it/128x96" /></li>
+                    </ol>
+                    <div class="progressbar-wrapper" style="">
+                        <div class="progressbar"></div>
+                    </div>
+                </div>
+                <span class="footer">1</span>
+            </li>
+            <li class="article">
+                <h5>文章二</h5>
+                <div class="cover"></div>
+                <ol class="pages">
+                    <li class="page"><img src="http://placehold.it/128x96" /></li>
+                    <li class="page"><img src="http://placehold.it/128x96" /></li>
+                </ol>
+                <span class="footer">2</span>
+            </li>-->
+        </ol>
+    </div>
+{% endblock %}

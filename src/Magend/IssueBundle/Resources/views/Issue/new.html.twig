@@ -39,14 +39,20 @@
     </div class="clearfix">
     
     <div class="clearfix">
-        {{ form_label(form.cover, '封面') }}
-        <div class="input">{{ form_errors(form.cover) }}{{ form_widget(form.cover, { 'attr':{'class':'small'} }) }}</div>
+        {{ form_label(form.coverImage, '封面') }}
+        <div class="input">
+            <a href="#" title="拖拽图片到这里上传" id="issue_cover">
+                <img width="120" height="160" src="{% if issue.cover is not null %}{{ asset('uploads/' ~ issue.cover) }}{% else %}http://placehold.it/120x160{% endif %}" />
+            </a>
+            <div id="cover_input" style="display:none;">{{ form_errors(form.coverImage) }}{{ form_widget(form.coverImage, { 'attr':{'class':'small'} }) }}</div>
+        </div>
     </div class="clearfix">
     
     {{ form_rest(form) }}
     
     <div class="actions">
-        <button class="btn primary" type="submit">提交</button>
+        <button class="btn primary" type="submit" data-loading-text="提交中...">提交</button>
+        <a id="issue_next" class="btn" href="#">上传图片、创建文章</a>
     </div>
 </form>
 {% endblock %}

@@ -247,11 +247,90 @@ var EditArea = Backbone.View.extend({
 Backbone.sync = Backbone.ajaxSync;
 
 $(function () {
-	$('#addpage').click(function () {
-		pages.create({index:5});
-	});
-	//Backbone.sync = Backbone.localSync;
-	//window.pageCanvas = new PageCanvas;
+	
+	if ($('#issue_form').length > 0) {
+		$('#issue_cover').click( function (e) {
+			e.stopPropagation();
+			e.preventDefault();
+			
+			// @todo show large
+		});
+		
+		var issueForm = $('#issue_form');
+		issueForm.fileupload({
+			// maxFilesize, minFileSize
+			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			dropZone: $('#issue_cover')
+		}).bind('fileuploaddrop', function (e, data) {
+			var files = data.files;
+			var imgFile = files[0];
+			 
+			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+			if (!(acceptFileTypes.test(imgFile.type) ||
+                    acceptFileTypes.test(imgFile.name))) {
+				alert('请上传有效的图片文件');
+                return;
+            }
+			
+			// @todo validate image size and dimension
+            var reader = new FileReader();
+            reader.onload = function (e) {
+            	$('#issue_cover').find('img').attr({
+        			'src': e.target.result
+        		});
+            };
+            $(this).data('cover', imgFile);
+            reader.readAsDataURL(imgFile);
+		}).bind('fileuploadsubmit', function (e, data) {
+			// no upload immediately
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		
+		$('#issue_next').click( function (e) {
+			var href = $(this).attr('href');
+			if (href == '#') {
+				alert('请先提交期刊信息');
+				return false;
+			}
+		});
+		
+		issueForm.submit( function(e) {
+			var cover = issueForm.data('cover');
+			if (!cover) {
+				alert('请上传封面');
+				return false;
+			}
+			
+			var submitBtn = $(this).find('button[type="submit"]');
+			submitBtn.button('loading');
+			
+			$('<div/>').fileupload({
+				paramName: $('#cover_input').find('input').attr('name'),
+				url: $(this).attr('action'),
+				formData: $(this).serializeArray(),
+				success: function (result) {
+					submitBtn.button('reset');
+					if (!result.id) {
+						alert('提交失败');
+						return;
+					}
+					
+					alert('提交成功');
+					$('#issue_next').attr('href', result.editorUrl);
+					// $('#issue_next').removeClass('disabled');
+				},
+				error: null
+			}).fileupload('send', { files:[cover] }); // only send one file
+			
+			return false;
+		});
+	}
+	
+	if ($('#page_canvas').length) {
+		Backbone.sync = Backbone.localSync;
+		window.pageCanvas = new PageCanvas;
+	}
 	/*$('#selenable').change(function () {
 		if ($(this).attr('checked')) {
 			$(pageCanvas.el).selectable({disabled:false});
@@ -279,9 +358,10 @@ $(function () {
 		//tagSource: function
 		availableTags: ['sexy', 'girl']
 	});
+	
 	//Backbone.sync = Backbone.ajaxSync;
 	//window.editarea = new EditArea(new Articles);
-	var issue = new Issue({ id:1 });
+	var issue = new Issue({ id:13 });
 	var issueView = new IssueView({ model:issue} );
 	
 	// editarea.render();

@@ -88,7 +88,9 @@ var Issue = Backbone.Model.extend({
 var IssueView = Backbone.View.extend({
 	initialize: function () {
 		var viewId = 'issue_' + this.model.id;
-		if ($('#'+viewId) == undefined) return;
+		if ($('#'+viewId).length == 0) {
+			return;
+		}
 		
 		this.el = $('#' + viewId + ' .articles');
 		
@@ -149,7 +151,6 @@ var IssueView = Backbone.View.extend({
 			},
 			update: _.bind(function (e, ui) {
 				// adjust placeholders
-				console.log('wat');
 				var placeholder = $($(ui.item).data('placeholder'));
 				
 				if ($(ui.item).prev().is('.article')) {
