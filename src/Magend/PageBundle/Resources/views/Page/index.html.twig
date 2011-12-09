@@ -5,18 +5,21 @@
 {% endblock %}
 
 {% block main %}
+<div id="page_editor">
     <input type="checkbox" id="selenable" />
     <div id="info_panel">
-    
+        
     </div>
     <button id="flushall" class="btn">清空</button>
     <button id="undo" class="btn">Undo</button>
     <button id="redo" class="btn">Redo</button>
+    <p/>
     <div id="hot_dialog">
     	Hot
     </div>
-    <div class="">
+    <div>
     	<ul id="page_canvas">
     	</ul>
     </div>
+</div>
 {% endblock %}

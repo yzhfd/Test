@@ -30,8 +30,11 @@ var Hot = Backbone.Model.extend({
 			if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
 				return 'minsize is limited';
 			}
-			// @todo replace hardwired 1024, 768
-			if (attrs.x < 0 || attrs.x > 1024 || attrs.y < 0 || attrs.y > 768) {
+			
+			// @todo use a config object to switch these settings
+			var wlimit = $('#page_canvas').width();
+			var hlimit = $('#page_canvas').height();
+			if (attrs.x < 0 || attrs.x > wlimit || attrs.y < 0 || attrs.y > hlimit) {
 				return 'no beyond border';
 			}
 			
@@ -178,9 +181,10 @@ var PageCanvas = Backbone.View.extend({
 			position: 'absolute',
 			// outline: '1px solid red',
 			width: this.el.width(),
-			height: this.el.height(),
-			backgroundImage: 'url(../../images/page.jpg)'
+			height: this.el.height()
+			//backgroundImage: 'url(../../images/page.jpg)',
 		});
+		canvasImgEl.html('<img src="../../images/page.jpg" width="' + this.el.width() + '" height="' + this.el.height() + '" />');
 		canvasImgEl.focus(function (e) {
 			// if it was just off
 			console.log('focus on');

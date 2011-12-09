@@ -215,13 +215,7 @@ class IssueController extends Controller
      */
     public function editorAction($id)
     {
-        
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        $issue = $repo->find($id);
-        if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
-        }
+        $issue = $this->_findIssue($id);
         
         /*
          * find articles that belong to no issue

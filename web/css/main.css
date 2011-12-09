@@ -217,11 +217,15 @@ li.editing-page {
 ol, ul { list-style: none; }
 
 
-	/*page editor*/
+/*page editor*/
+#page_editor {
+	height: 640px;
+	padding-left: 30px;
+}
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
-	width: 1024px;
-	height: 768px;
+	width: 768px;
+	height: 576px;
 	margin: 0; padding: 0;
 }
 #hothelper {
