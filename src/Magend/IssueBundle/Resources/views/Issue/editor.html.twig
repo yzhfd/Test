@@ -34,31 +34,16 @@
         </div>-->
     </div>
     
-    <div id="issue_{{ issue.id }}" class="issue_articles">
+    <div id="issue_editor" class="issue_articles">
+        请拖拽图片到这里创建文章及其内页<span id="issue_id" style="display:none;">{{ issue.id }}</span>
         <ol class="articles">
-            <!--<li class="article">
-                <h5>文章一</h5>
-                <div style="position:relative;">
-                    <ol class="pages">
-                        <li class="page"><img src="http://placehold.it/128x96" /></li>
-                        <li class="page"><img src="http://placehold.it/128x96" /></li>
-                        <li class="page"><img src="http://placehold.it/128x96" /></li>
-                    </ol>
-                    <div class="progressbar-wrapper" style="">
-                        <div class="progressbar"></div>
-                    </div>
-                </div>
-                <span class="footer">1</span>
-            </li>
-            <li class="article">
-                <h5>文章二</h5>
-                <div class="cover"></div>
+            <li class="article" style="visibility:hidden">
+                <h5>占位</h5>
                 <ol class="pages">
                     <li class="page"><img src="http://placehold.it/128x96" /></li>
-                    <li class="page"><img src="http://placehold.it/128x96" /></li>
                 </ol>
-                <span class="footer">2</span>
-            </li>-->
+                <span class="footer">1</span>
+            </li>
         </ol>
     </div>
 {% endblock %}

@@ -87,23 +87,18 @@ var Issue = Backbone.Model.extend({
 
 var IssueView = Backbone.View.extend({
 	initialize: function () {
-		var viewId = 'issue_' + this.model.id;
+		/*var viewId = 'issue_' + this.model.id;
 		if ($('#'+viewId).length == 0) {
 			return;
-		}
+		}*/
 		
-		this.el = $('#' + viewId + ' .articles');
+		this.el = $('#issue_editor .articles');
 		
 		articles = this.model.articles;
 		
 		articles.bind('add', this.addArticle, this);
 		articles.bind('remove', this.removeArticle, this);
 		articles.bind('reset', this.resetArticles, this);
-		
-		articles.add(new Article);
-		
-		// @todo if editarea is empty, then sortable will misbehave
-		//this.model.articles.create();
 		
 		/* HTML5 file DnD */
 		this.el.fileupload().bind('fileuploaddrop', function (e, data) {
@@ -161,6 +156,8 @@ var IssueView = Backbone.View.extend({
 				this.updateIndex();
 			}, this)
 		});
+		
+		this.el.empty();
 	},
 	uploadImages: function () {
 		var allPages = [];

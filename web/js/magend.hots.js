@@ -80,6 +80,19 @@ var HotView = Backbone.View.extend({
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
+			drag: function () {
+	    		// @todo use a config object to switch these settings
+				/*var wlimit = $('#page_canvas').width();
+				var hlimit = $('#page_canvas').height();
+				var x = $(this).position().left;
+				var y = $(this).position().top;
+				var w = $(this).width();
+				var h = $(this).height();
+				if (x < 0 || x + w > wlimit || y < 0 || y + h > hlimit) {
+					return false;
+				}
+				return true;*/
+	    	},
 			stop: _.bind(function () {
     			this.model.set({
     				x: $(this.el).position().left,

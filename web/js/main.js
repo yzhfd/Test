@@ -366,14 +366,19 @@ $(function () {
 	
 	//Backbone.sync = Backbone.ajaxSync;
 	//window.editarea = new EditArea(new Articles);
-	var issue = new Issue({ id:13 });
-	var issueView = new IssueView({ model:issue} );
 	
 	// editarea.render();
 	
 	// Backbone.emulateJSON = true
 	
 	// @todo which request is the last one, observe it!
+	var issue, issueView;
+	if ($('#issue_editor .articles').length) {
+		issue = new Issue({ id:$('#issue_id').text() });
+		issueView = new IssueView({ model:issue} );
+		
+		issue.fetch();
+	}
 	
 	$('#flushbtn').click(function(e){
 		e.stopPropagation();
