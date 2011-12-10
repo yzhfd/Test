@@ -95,17 +95,26 @@ class ArticleController extends Controller
         
         return new Response('');
     }
-    
+
     /**
      * 
-     * @Route("/{id}/edit", name="article_edit")
-     * @Template()
+     * @Route("/{id}/edit", name="article_edit", requirements={"id" = "\d+"})
+     * @Template("MagendArticleBundle:Article:new.html.twig")
      */
-    public function eidtAction($id)
+    public function editAction($id)
     {
-        $article = new Article();
-        $article->addKeyword(new Keyword('mmml'));
-        $article->addKeyword(new Keyword('koolll'));
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find($id);
+        if (empty($article)) {
+            throw new \ Exception('Article not found');
+        }
+        
+        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
+        $kws = $kwRepo->findAll();
+        $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
+        $ats = $atRepo->findAll();
+        
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
         
@@ -114,19 +123,76 @@ class ArticleController extends Controller
             if ($form->isValid()) {
                 $kwText = trim($article->getKeywordsText());
                 if (!empty($kwText)) {
-                    $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
                     $keywords = $kwRepo->toEntities(explode(',', $kwText));
                     $article->setKeywords($keywords);
                 }
                 
                 $atText = trim($article->getArchitectsText());
                 if (!empty($atText)) {
-                    $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
                     $architects = $atRepo->toEntities(explode(',', $atText));
                     $article->setArchitects($architects);
                 }
+                
+                $em->persist($article);
+                $em->flush();
+                
+                return $this->redirect($this->generateUrl('article_show', array('id' => $article->getId())));
+            }
+        }
         
-                $em = $this->getDoctrine()->getEntityManager();
+        $issue = $article->getIssue();
+        $issue->getId();
+        return array(
+            'architects' => $ats,
+            'keywords' => $kws,
+            'issue'   => $issue,
+            'article' => $article,
+            'form'    => $form->createView()
+        );
+    }
+    
+    /**
+     * 
+     * @Route("/issue_{id}/new", name="article_new", requirements={"id" = "\d+"})
+     * @Template()
+     */
+    public function newAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (empty($issue)) {
+            throw new \ Exception('Issue not found');
+        }
+        
+        $article = new Article();
+        
+        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
+        $kws = $kwRepo->findAll();
+        $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
+        $ats = $atRepo->findAll();
+                
+        $req  = $this->getRequest();
+        $form = $this->createForm(new ArticleType(), $article);
+        
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $kwText = trim($article->getKeywordsText());
+                if (!empty($kwText)) {
+                    $keywords = $kwRepo->toEntities(explode(',', $kwText));
+                    $article->setKeywords($keywords);
+                }
+                
+                $atText = trim($article->getArchitectsText());
+                if (!empty($atText)) {
+                    $architects = $atRepo->toEntities(explode(',', $atText));
+                    $article->setArchitects($architects);
+                }
+                
+                $issue->addArticle($article);
+                $article->setIssue($issue);
+                $em->persist($issue);
                 $em->persist($article);
                 $em->flush();
                 
@@ -135,13 +201,16 @@ class ArticleController extends Controller
         }
         
         return array(
+            'architects' => $ats,
+            'keywords' => $kws,
+            'issue'   => $issue,
             'article' => $article,
             'form'    => $form->createView()
         );
     }
 
     /**
-     * @Route("/{id}", name="article_update")
+     * @Route("/{id}", name="article_update", requirements={"id" = "\d+"})
      * @Method("post")
      * @Template()
      */
@@ -158,7 +227,7 @@ class ArticleController extends Controller
     }
     
     /**
-     * @Route("/{id}", name="article_show")
+     * @Route("/{id}", name="article_show", requirements={"id" = "\d+"})
      * @Template()
      */
     public function showAction($id)

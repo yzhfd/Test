@@ -12,7 +12,7 @@
 <table class="bordered-table zebra-striped">
     <tbody>
         <tr>
-            <th>标题</th>
+            <th width="60">标题</th>
             <td>{{ article.title }}</td>
         </tr>
         <tr>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td colspan=2>
-                <div style="padding:2px;border: 2px solid gray;width:98%;height:100px;line-height:100px;font-size:28px;color:gray;text-align:center;">拖拽图片到这里</div>
+                <div style="padding:2px;width:98%;height:200px;line-height:200px;font-size:38px;color:#EEE;text-align:center;">拖拽图片到这里</div>
             </td>
         </tr>
     </tbody>
@@ -41,7 +41,7 @@
 
 <div class="well">
     <a class="btn" href="#">返回列表</a>
-    <a class="primary btn" href="{{ path('article_show', { 'id': article.id }) }}">编辑</a>
+    <a class="primary btn" href="{{ path('article_edit', { 'id': article.id }) }}">编辑</a>
     <a class="danger btn" style="float:right;" href="{{ path('article_show', { 'id': article.id }) }}">删除</a>
 </div>
 {% endblock %}

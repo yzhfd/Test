@@ -325,11 +325,14 @@ class Issue
     {
         $articles = array();
         $articleIds = $this->getArticleIds();
-        foreach ($articleIds as $articleId) {
-            $articles[$articleId] = $this->articles[$articleId];
+        if (!empty($articleIds)) {
+            $articleIds = explode(',', $articleIds);
+            foreach ($articleIds as $articleId) {
+                $articles[$articleId] = $this->articles[$articleId];
+            }
         }
         
-        return $articles;
+        return !empty($articles) ? $articles : $this->articles;
     }
 
     /**

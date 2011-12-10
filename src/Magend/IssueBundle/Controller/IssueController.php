@@ -12,6 +12,9 @@ use Magend\ArticleBundle\Entity\Article;
 use Magend\PageBundle\Entity\Page;
 use Magend\IssueBundle\Form\IssueType;
 use Magend\IssueBundle\Entity\Issue;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 
 /**
  * 
@@ -126,6 +129,34 @@ class IssueController extends Controller
         
         return array(
             'issue' => $issue
+        );
+    }
+    
+    /**
+     * 
+     * @Route("/list", name="issue_list")
+     * @Template()
+     */
+    public function listAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $qb = $em->createQueryBuilder()->select('s')->from('MagendIssueBundle:Issue', 's')->orderBy('s.createdAt', 'desc');
+        $adapter = new DoctrineORMAdapter($qb);
+        $pager = new Pagerfanta($adapter);
+        
+        $page = $this->getRequest()->get('page', 1);
+        $issues = array();
+        try {
+            $pager->setMaxPerPage(13);
+            $pager->setCurrentPage($page);
+            $issues = $pager->getCurrentPageResults();
+        } catch (OutOfRangeCurrentPageException $e) {
+            // simply no entities
+        }
+        
+        return array(
+            'pager' => $pager,
+            'issues' => $issues
         );
     }
     

@@ -187,12 +187,31 @@ class Article
     
     public function getKeywordsText()
     {
-        return $this->keywordsText;
+        if (!empty($this->keywordsText)) {
+            return $this->keywordsText;
+        }
+        
+        $keywords = $this->getKeywords();
+        $kws = array();
+        foreach ($keywords as $keyword) {
+            $kws[] = $keyword->getKeyword();
+        }
+        return implode(',', $kws);
     }
     
     public function getArchitectsText()
     {
-        return $this->architectsText;
+        if (!empty($this->architectsText)) {
+            return $this->architectsText;
+        }
+        
+        $arts = $this->getArchitects();
+        $artNames = array();
+        foreach ($arts as $art) {
+            $artNames[] = $art->getName();
+        }
+        
+        return implode(',', $artNames);
     }
     
     public function addArchitect($architect)
@@ -318,5 +337,23 @@ class Article
             $pages = new ArrayCollection($pages);
         }
         $this->pages = $pages;
+    }
+    
+    public function getNbPages()
+    {
+        $pageIds = $this->getPageIds();
+        return count($pageIds);
+    }
+    
+    public function getThumbnail()
+    {
+        $pages = $this->getPages();
+        if (empty($pages)) {
+            return null;
+        }
+        
+        $pageIds = $this->getPageIds();
+        $firstPage = $pages[$pageIds[0]];
+        return $firstPage->getLandscapeImg();
     }
 }

@@ -73,6 +73,16 @@ body {
 	background-color: #ccc;
 }
 
+.show_articles {
+	width:720px;
+	overflow-x: auto;
+}
+.show_articles .article {
+	margin-right: 10px;
+}
+.show_articles .article a {
+	display: block;
+}
 
 .issue_articles {
     overflow-x: auto;

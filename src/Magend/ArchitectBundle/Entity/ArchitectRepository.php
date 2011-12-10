@@ -23,8 +23,9 @@ class ArchitectRepository extends EntityRepository
         $entities = $this->findBy(array('name'=>$architects));
         $existingAts = array();
         foreach ($entities as $entity) {
-            $existingAts[] = $entity->getArchitect();
+            $existingAts[] = $entity->getName();
         }
+        
         foreach ($architects as $at) {
             if (!in_array($at, $existingAts)) {
                 $entities[] = new Architect($at);
