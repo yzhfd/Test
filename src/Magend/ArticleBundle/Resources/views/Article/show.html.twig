@@ -4,6 +4,7 @@
 
 {% block breadcrumb %}
     {{ parent() }}
+    <li><a title="期刊列表" href="{{ url('issue_show', { 'id':article.issue.id }) }}">{{ article.issue.title }}</a> <span class="divider">/</span></li>
     <li class="active">{{ article.title|truncate(10) }}</li>
 {% endblock %}
 
@@ -32,8 +33,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan=2>
-                <div style="padding:2px;width:98%;height:200px;line-height:200px;font-size:38px;color:#EEE;text-align:center;">拖拽图片到这里</div>
+            <th>页面</th>
+            <td style="height: 200px;">
+                <div><a class="btn info" href="#">保存</a>  拖拽图片到下面创建页面</div>
+                <div id="article_pages" style="border: 1px solid #CCC; height: 100%; margin-top: 8px; ">
+                    <span id="article_id" style="display:none">{{ article.id }}</span>
+                    <ol class="pages"></ol>
+                </div>
             </td>
         </tr>
     </tbody>
@@ -41,7 +47,7 @@
 
 <div class="well">
     <a class="btn" href="#">返回列表</a>
-    <a class="primary btn" href="{{ path('article_edit', { 'id': article.id }) }}">编辑</a>
+    <a class="primary btn" href="{{ path('article_edit', { 'id': article.id }) }}">编辑文字信息</a>
     <a class="danger btn" style="float:right;" href="{{ path('article_show', { 'id': article.id }) }}">删除</a>
 </div>
 {% endblock %}

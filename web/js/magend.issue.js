@@ -92,8 +92,6 @@ var IssueView = Backbone.View.extend({
 			return;
 		}*/
 		
-		this.el = $('#issue_editor .articles');
-		
 		articles = this.model.articles;
 		
 		articles.bind('add', this.addArticle, this);

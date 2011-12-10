@@ -336,6 +336,16 @@ $(function () {
 		Backbone.sync = Backbone.localSync;
 		window.pageCanvas = new PageCanvas;
 	}
+	
+	
+	if ($('#article_pages').length) {
+		var articleId = $('#article_pages').find('#article_id');
+		var article = new Article({ id:articleId.text() });
+		var articleView = new ArticleView({ model:article, el:$('#article_pages') });
+		article.fetch();
+	}
+	
+	
 	/*$('#selenable').change(function () {
 		if ($(this).attr('checked')) {
 			$(pageCanvas.el).selectable({disabled:false});
@@ -375,9 +385,9 @@ $(function () {
 	var issue, issueView;
 	if ($('#issue_editor .articles').length) {
 		issue = new Issue({ id:$('#issue_id').text() });
-		issueView = new IssueView({ model:issue} );
+		issueView = new IssueView({ model:issue, el:$('#issue_editor .articles') } );
 		
-		issue.fetch();
+		//issue.fetch();
 	}
 	
 	$('#flushbtn').click(function(e){

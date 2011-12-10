@@ -3,7 +3,7 @@
  * depends on cluster of Page classes
  */
 var Article = Backbone.Model.extend({
-	url: '/Magend/web/app_dev.php/article',
+	urlRoot: '/Magend/web/app_dev.php/article',
 	pageIdsUrl: '/Magend/web/app_dev.php/article/orderpages', // same prefix with url may cause problem on save
 	pages: null,
 	defaults: {
@@ -30,21 +30,33 @@ var Article = Backbone.Model.extend({
 			this.cid = 'article_' + this.id;
 		}
 		
-		pages = this.get('pages');
-		if (_.isArray(pages)) {
+		this.setPages();
+	},
+	setPages: function () {
+		var pages = this.get('pages');
+		if (_.isArray(pages) && this.get('pageIds')) {
 			var pageIds = this.get('pageIds').split(',');
 			_.each(pages, _.bind(function (page) {
 				page.articleId = this.id;
 				page.index = pageIds.indexOf(page.id + "");
 			}, this));
 			
-			this.pages = new Pages(pages);
-		} else if (this.pages == null) {
+			if (this.pages) {
+				this.pages.add(pages);
+			} else {
+				this.pages = new Pages(pages);
+			}
+		} else {
 			this.pages = new Pages;
 		}
 		
 		this.unset('pages');
 		this.synced();
+	},
+	fetch: function (opts) {
+		return Backbone.Model.prototype.fetch.call(this, opts).pipe(_.bind( function() {
+			this.setPages();
+		}, this));
 	},
 	add: function (page) {
 		if (this.id) {

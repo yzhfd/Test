@@ -233,8 +233,21 @@ class ArticleController extends Controller
     public function showAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find($id);
+        
+        if ($this->getRequest()->isXmlHTTPRequest()) {
+            $query = $em->createQuery('SELECT partial a.{id, title, pageIds}, partial p.{id, landscapeImg, portraitImg, label} FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a.id = :articleId')
+                        ->setParameter('articleId', $id);
+        
+            $arr = $query->getArrayResult();
+            $article = array_pop($arr);
+            $article['pages'] = array_values($article['pages']);
+            $response = new Response(json_encode($article));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        } else {
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($id);
+        }
         
         return array(
             'article' => $article
