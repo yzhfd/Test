@@ -43,6 +43,7 @@ var Article = Backbone.Model.extend({
 			
 			if (this.pages) {
 				this.pages.add(pages);
+				this.pages.sort();
 			} else {
 				this.pages = new Pages(pages);
 			}
@@ -222,7 +223,8 @@ var ArticleView = Backbone.View.extend({
     	var pages = this.model.pages;
     	pages.bind('add', this.addPage, this);
     	pages.bind('remove', this.removePage, this);
-    	pages.bind('reset', this.addPages, this);
+    	pages.bind('reset', this.resetPages, this);
+    	// pages.bind('reset', this.addPages, this);
     	pages.bind('all', this.updateNbPages, this);
     	
     	this.model.bind('all', this.render, this);
@@ -277,6 +279,51 @@ var ArticleView = Backbone.View.extend({
 	// @todo specify index that the page will be added to
 	initPages: function () {
 		this.addPages(this.model.pages);
+		
+    	this.el.find('.pages').sortable({
+    		distance: 3,
+    		connectWith:'ol.pages',
+    		//axis: 'y',
+    		tolerance: 'pointer',
+    		start: _.bind(function (e, ui) {
+				var pageli = $(ui.item);
+				window.editingPage = this.model.getPageByCid(pageli.data('cid'));
+    		}, this),
+    		stop: _.bind(function (e, ui) {
+    			window.editingPage = null;
+    		}, this),
+			over: function (e, ui) {
+				$(this).parent().addClass('highlighted');
+			},
+			out:  function (e, ui) {
+				$(this).parent().removeClass('highlighted');
+			},
+			receive: _.bind(function (e, ui) {
+				this.el.switchClass('highlighted', 'very-highlighted', 'fast')
+					   .removeClass('very-highlighted', 'fast');
+			}, this),
+			update: _.bind(function (e, ui) {
+				var pageli = $(ui.item);
+				var pagelis = this.el.find('li.page');
+				
+				var index = pagelis.index(pageli);
+				var page = this.model.getPageByCid(window.editingPage.cid);
+				if (index >= 0) {
+					if (!page) {
+						this.model.add(window.editingPage);
+					}
+				} else if (page) {
+					this.model.remove(page);
+				}
+				
+				var count =  pagelis.length;
+				for (var i = 0; i < count; ++i) {
+					var page = this.model.getPageByCid($(pagelis[i]).data('cid'));
+					page.set({ index:i });
+				}
+			}, this)
+			// beforeStop to alert user no-page article
+    	});
 	},
 	updateNbPages: function () {
 		this.el.find('.footer').text(this.model.pages.length);
@@ -292,6 +339,13 @@ var ArticleView = Backbone.View.extend({
 		
     	var pv = new PageView({model:page}); 
     	this.el.find('.pages').append(pv.el);
+    	
+    	// @todo 
+    	if (this.el.is('#article_pages')) {
+    		this.el.find('.pages').css({
+    			width: (pagelis.length + 1) * 150
+    		});
+    	}
     },
     removePage: function (page) {
     	var pagelis = this.el.find('.pages li.page');
@@ -311,6 +365,10 @@ var ArticleView = Backbone.View.extend({
 	    		this.collapse();
 	    	}
     	}
+    },
+    resetPages: function (pages) {
+    	this.el.find('.pages').empty();
+    	this.addPages(pages);
     },
     addPages: function (pages) {
     	pages.each(_.bind(function (page) {
@@ -341,52 +399,7 @@ var ArticleView = Backbone.View.extend({
         	});
         	
         	this.initPages();
-        	
-        	this.el.find('.pages').sortable({
-        		distance: 3,
-        		connectWith:'ol.pages',
-        		//axis: 'y',
-        		tolerance: 'pointer',
-        		start: _.bind(function (e, ui) {
-					var pageli = $(ui.item);
-					window.editingPage = this.model.getPageByCid(pageli.data('cid'));
-        		}, this),
-        		stop: _.bind(function (e, ui) {
-        			window.editingPage = null;
-        		}, this),
-				over: function (e, ui) {
-					$(this).parent().addClass('highlighted');
-				},
-				out:  function (e, ui) {
-					$(this).parent().removeClass('highlighted');
-				},
-				receive: _.bind(function (e, ui) {
-					this.el.switchClass('highlighted', 'very-highlighted', 'fast')
-						   .removeClass('very-highlighted', 'fast');
-				}, this),
-				update: _.bind(function (e, ui) {
-					var pageli = $(ui.item);
-					var pagelis = this.el.find('li.page');
-					
-					var index = pagelis.index(pageli);
-					var page = this.model.getPageByCid(window.editingPage.cid);
-					if (index >= 0) {
-						if (!page) {
-							this.model.add(window.editingPage);
-						}
-					} else if (page) {
-						this.model.remove(page);
-					}
-					
-					var count =  pagelis.length;
-					for (var i = 0; i < count; ++i) {
-						var page = this.model.getPageByCid($(pagelis[i]).data('cid'));
-						page.set({ index:i });
-					}
-				}, this)
-				// beforeStop to alert user no-page article
-        	});
-    	}    	
+    	}
         return this;
     }
 });

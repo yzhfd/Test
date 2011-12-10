@@ -4,6 +4,11 @@
 	单页编辑
 {% endblock %}
 
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="active">编辑热点</li>
+{% endblock %}
+
 {% block main %}
 <div id="page_editor">
     <input type="checkbox" id="selenable" />
@@ -15,9 +20,15 @@
     <button id="redo" class="btn">Redo</button>
     <p/>
     <div id="hot_dialog">
-    	Hot
+    	<select class="span2" id="hottype">
+    	   <option value="0">链接</option>
+    	   <option value="1">视频</option>
+    	</select>
     </div>
     <div>
+        <div id="page_canvas_img" tabIndex="1">
+            <img src="{{ asset('images/page.jpg') }}" />
+        </div>
     	<ul id="page_canvas">
     	</ul>
     </div>

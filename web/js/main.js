@@ -339,10 +339,23 @@ $(function () {
 	
 	
 	if ($('#article_pages').length) {
-		var articleId = $('#article_pages').find('#article_id');
-		var article = new Article({ id:articleId.text() });
+		$('#article_pages').fileupload().bind('fileuploaddrop', function (e, data) {
+			// $('#modal-from-dom').modal({backdrop:true, show:true});
+		}).bind('fileuploadsubmit', function (e, data) {
+			// no upload immediately
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		
+		var articleId = $('#article_id').text();
+		var article = new Article({ id:articleId });
 		var articleView = new ArticleView({ model:article, el:$('#article_pages') });
 		article.fetch();
+		articleView.initPages();
+		
+		$('#save_pages').click( function (e) {
+			article.save();
+		});
 	}
 	
 	

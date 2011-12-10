@@ -51,7 +51,7 @@
     
     <div class="well">
         <a class="btn" href="{{ path('issue_list') }}">返回列表</a>
-        <a class="primary btn" href="{{ path('issue_edit', { 'id': issue.id }) }}">编辑文本信息</a>
+        <a class="primary btn" href="{{ path('issue_edit', { 'id': issue.id }) }}">编辑基本信息</a>
         <a class="primary btn" href="{{ path('article_new', { 'id': issue.id }) }}">添加文章</a>
         <a class="danger btn" style="float:right;" href="{# path('issue_delete', { 'id': issue.id }) #}">删除</a>
     </div>

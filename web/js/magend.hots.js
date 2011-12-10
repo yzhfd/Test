@@ -188,16 +188,17 @@ var PageCanvas = Backbone.View.extend({
 		}, this));
 		
 		// canvas img is focusable not canvas itself, for drag and resize handlers might go out of outline
-		var canvasImgEl = $('<div id="page_canvas_img" tabIndex="1"></div');
-		canvasImgEl.insertBefore(this.el);
+		var canvasImgEl = $('#page_canvas_img');
 		canvasImgEl.css({
-			position: 'absolute',
 			// outline: '1px solid red',
 			width: this.el.width(),
 			height: this.el.height()
 			//backgroundImage: 'url(../../images/page.jpg)',
 		});
-		canvasImgEl.html('<img src="../../images/page.jpg" width="' + this.el.width() + '" height="' + this.el.height() + '" />');
+		canvasImgEl.find('img').css({
+			width: this.el.width(),
+			height: this.el.height()
+		});
 		canvasImgEl.focus(function (e) {
 			// if it was just off
 			console.log('focus on');

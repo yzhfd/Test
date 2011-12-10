@@ -65,6 +65,10 @@ body {
 	min-height: 600px;
 }
 
+#article_pages {
+	padding-top: 20px;
+}
+
 
 #issue_cover {
 	width: 120px;
@@ -162,15 +166,17 @@ li.page {
     position: relative;
 }
 li.page:hover .pagedel {
-	visibility: visible;
+	/*visibility: visible;*/
 }
 .pagedel {
-	display: block;
+	display: none;
+	/*display: block;*/
 	visibility: hidden;
     width: 22px; height: 22px;
     position: absolute; top: 2px; left: 2px;
     background: transparent url('../images/close.png') no-repeat center center;
-}/*
+}
+/*
 .close:hover {
     background-image: url('../images/closebtn_h.png');
 }*/
@@ -246,6 +252,9 @@ ol, ul { list-style: none; }
 	width: 768px;
 	height: 576px;
 	margin: 0; padding: 0;
+}
+#page_canvas_img {
+	position: absolute;
 }
 #hothelper {
 	position: absolute;

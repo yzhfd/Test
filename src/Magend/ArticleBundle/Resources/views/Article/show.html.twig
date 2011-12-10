@@ -34,10 +34,10 @@
         </tr>
         <tr>
             <th>页面</th>
-            <td style="height: 200px;">
-                <div><a class="btn info" href="#">保存</a>  拖拽图片到下面创建页面</div>
-                <div id="article_pages" style="border: 1px solid #CCC; height: 100%; margin-top: 8px; ">
-                    <span id="article_id" style="display:none">{{ article.id }}</span>
+            <td style="height: 180px;">
+                <div><a class="btn info" id="save_pages" href="#">保存</a>  拖拽图片到下面创建页面</div>
+                <span id="article_id" style="display:none">{{ article.id }}</span>
+                <div id="article_pages" style="width: 720px; overflow-x: auto; border: 1px solid #CCC; height: 100%; margin-top: 8px; ">
                     <ol class="pages"></ol>
                 </div>
             </td>
