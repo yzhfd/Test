@@ -18,12 +18,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class PageController extends Controller
 {
     /**
-     * @Route("/index")
+     * @Route("/{id}/edit", name="page_edit")
      * @Template()
      */
-    public function indexAction()
+    public function editAction($id)
     {
-        return array();
+        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $page = $repo->find($id);
+        
+        return array(
+            'page' => $page
+        );
     }
     
     /**

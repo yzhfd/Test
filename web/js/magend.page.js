@@ -110,6 +110,10 @@ var PageView = Backbone.View.extend({
 	template: '<a href="#" class="pagedel"></a><a href="#1" title={{label}}><img width="128" height="96" src="{{img}}" /></a>',
     events: {
       //"click": ""
+		'dblclick': "editHots"
+    },
+    editHots: function () {
+    	window.open('../page/' + this.model.id + '/edit');
     },
     initialize: function () {
     	//this.model.bind('change:index', this.render, this);
