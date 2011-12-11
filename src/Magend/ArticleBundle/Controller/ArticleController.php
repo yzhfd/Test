@@ -190,13 +190,20 @@ class ArticleController extends Controller
                     $article->setArchitects($architects);
                 }
                 
-                $issue->addArticle($article);
                 $article->setIssue($issue);
-                $em->persist($issue);
                 $em->persist($article);
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('article_show', array('id' => $article->getId())));
+                $articleId = $article->getId();
+                
+                $issue->addArticle($article);
+                $articleIds = $issue->getArticleIds();
+                $articleIds = empty($articleIds) ? $articleId : $articleIds . ',' . $articleId;
+                $issue->setArticleIds($articleIds);
+                $em->persist($issue);
+                $em->flush();
+                
+                return $this->redirect($this->generateUrl('article_show', array('id' => $articleId)));
             }
         }
         

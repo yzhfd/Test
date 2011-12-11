@@ -4,7 +4,8 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li><a title="期刊列表" href="{{ url('issue_show', { 'id':article.issue.id }) }}">{{ article.issue.title }}</a> <span class="divider">/</span></li>
+    <li><a title="期刊列表" href="{{ url('issue_list') }}">期刊列表</a> <span class="divider">/</span></li>
+    <li><a href="{{ url('issue_show', { 'id':article.issue.id }) }}">{{ article.issue.title }}</a> <span class="divider">/</span></li>
     <li class="active">{{ article.title|truncate(10) }}</li>
 {% endblock %}
 
@@ -46,7 +47,6 @@
 </table>
 
 <div class="well">
-    <a class="btn" href="#">返回列表</a>
     <a class="primary btn" href="{{ path('article_edit', { 'id': article.id }) }}">编辑文字信息</a>
     <a class="danger btn" style="float:right;" href="{{ path('article_show', { 'id': article.id }) }}">删除</a>
 </div>

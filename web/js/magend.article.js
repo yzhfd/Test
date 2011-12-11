@@ -47,7 +47,7 @@ var Article = Backbone.Model.extend({
 			} else {
 				this.pages = new Pages(pages);
 			}
-		} else {
+		} else if (!this.pages) {
 			this.pages = new Pages;
 		}
 		

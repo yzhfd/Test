@@ -347,13 +347,16 @@ class Article
     
     public function getThumbnail()
     {
-        $pages = $this->getPages();
-        if (empty($pages)) {
+        $pages = $this->getPages();        
+        $pageIds = $this->getPageIds();
+        if (empty($pages) || empty($pageIds)) {
             return null;
         }
         
-        $pageIds = $this->getPageIds();
         $firstPage = $pages[$pageIds[0]];
+        if (!$firstPage) {
+            return null;
+        }
         return $firstPage->getLandscapeImg();
     }
 }

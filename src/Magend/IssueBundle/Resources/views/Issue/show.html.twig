@@ -39,7 +39,7 @@
                     <ol class="articles" style="width:{{ (issue.articles|length)*160 }}px">
                         {% for article in issue.articles %}
                         <li class="article">
-                            <a class="thumbup" href="{{ url('article_show', { 'id':article.id }) }}"><img src="{{ asset(('uploads/' ~ article.thumbnail) | apply_filter('landscapeThumb')) }}" /></a>
+                            <a class="thumbup" href="{{ url('article_show', { 'id':article.id }) }}"><img src="{% if article.thumbnail is not empty %}{{ asset(('uploads/' ~ article.thumbnail) | apply_filter('landscapeThumb')) }}{% else %}http://placehold.it/128x96{% endif %}" /></a>
                             <span class="footer">{{ article.nbPages }}</span>
                         </li>
                         {% endfor %}

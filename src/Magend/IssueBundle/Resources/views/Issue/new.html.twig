@@ -4,6 +4,7 @@
 
 {% block breadcrumb %}
     {{ parent() }}
+    <li><a title="期刊列表" href="{{ url('issue_list') }}">期刊列表</a> <span class="divider">/</span></li>
     {% if issue.id is not null %}
        <li><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title|truncate(10) }}</a> <span class="divider">/</span></li>
        <li class="active">编辑</li>
