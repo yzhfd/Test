@@ -11,11 +11,18 @@ use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 
 class BaseController extends Controller
 {
-    public function getList($entityName)
+    /**
+     * 
+     * @param string $entityName
+     * @param Query|QueryBuidler $q
+     */
+    public function getList($entityName, $q = null)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $qb = $em->createQueryBuilder()->select('e')->from($entityName, 'e')->orderBy('e.createdAt', 'desc');
-        $adapter = new DoctrineORMAdapter($qb);
+        if ($q == null) {
+            $q = $em->createQueryBuilder()->select('e')->from($entityName, 'e')->orderBy('e.createdAt', 'desc');
+        }
+        $adapter = new DoctrineORMAdapter($q);
         $pager = new Pagerfanta($adapter);
         
         $page = $this->getRequest()->get('page', 1);

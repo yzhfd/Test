@@ -5,7 +5,7 @@ namespace Magend\IssueBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Magend\BaseBundle\Controller\BaseController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\ArticleBundle\Entity\Article;
@@ -147,7 +147,7 @@ class IssueController extends Controller
         $page = $this->getRequest()->get('page', 1);
         $issues = array();
         try {
-            $pager->setMaxPerPage(13);
+            $pager->setMaxPerPage(10);
             $pager->setCurrentPage($page);
             $issues = $pager->getCurrentPageResults();
         } catch (OutOfRangeCurrentPageException $e) {
@@ -210,7 +210,31 @@ class IssueController extends Controller
         }
         */
         return new Response(json_encode($result));
+    }
+    
+    /**
+     * 
+     * @Route("/{id}/article/list", name="issue_article_list", requirements={"id"="\d+"})
+     * @Template()
+     */
+    public function articleListAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
         
+        // @todo throw exception if issue not exist
+        
+        $query = $em->createQuery('SELECT a FROM MagendArticleBundle:Article a WHERE :issueId MEMBER OF a.issues')
+                    ->setParameter('issueId', $id);
+        $tplVars = $this->getList('MagendArticleBundle:Article', $query);
+        $tplVars['articles'] = $tplVars['entities'];
+        unset($tplVars['entities']);
+        $tplVars['issue'] = $issue;
+        
+        // @todo no pager?
+        
+        return $tplVars;
     }
     
     /**
