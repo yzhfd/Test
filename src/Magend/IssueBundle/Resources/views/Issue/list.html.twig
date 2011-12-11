@@ -1,50 +1,75 @@
 {% extends '::base.html.twig' %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="active">期刊列表</li>
-{% endblock %}
-
 {% block main %}
-<table class="zebra-striped">
-    <thead>
-        <tr>
-            <th>类型</th>
-            <th>期刊号</th>
-            <th>标题</th>
-            <th>封面</th>
-            <th>下载次数</th>
-            <th>创建时间</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for issue in issues %}
-        <tr>
-            <td>0</td>
-            <td>{{ issue.serial }}</td>
-            <td><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title|truncate(10) }}</a></td>
-            <td class="thumbup"><a class="media" href="#"><img width="120" height="160" src="{% if issue.cover is not empty %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" /></a></td>
-            <td>{{ issue.nbDownloaded }}</td>
-            <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
-            <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('issue_show', { 'id': issue.id }) }}">查看</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('issue_edit', { 'id': issue.id }) }}">编辑</a>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <ul class="shortcut-buttons-set">
+        <li><a rel="dialog" class="shortcut-button" href="{{ path('issue_new') }}"><span>新建</span></a></li>
+    </ul>
+    <div class="clear"></div>
 
-{% if pager.haveToPaginate() %}{{ pagerfanta(pager, 'magend') }}{% endif %}
-
-<div class="well">
-    <a class="primary btn" href="{{ path('issue_new') }}">创建</a>
-</div>
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>期刊列表</h3>
+            <select id="magtype_sel" style="margin-top: 6px;" class="medium">
+                <option value="1">世界建筑杂志</option>
+                <option value="2">中国建筑</option>
+            </select>
+            <!-- href must be unique and match the id of target div -->
+            <!--<ul class="content-box-tabs">
+                <li><a href="#tab1" class="default-tab">Table</a></li>
+                <li><a href="#tab2">Forms</a></li>
+            </ul>-->
+            <div class="clear"></div>
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content">
+            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+            <table>
+                <thead><tr>
+                    <th><input class="check-all" type="checkbox" /></th>
+                    <th>期刊号</th>
+                    <th>标题</th>
+                    <th>封面</th>
+                    <th>下载次数</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr></thead>
+                
+                <tfoot><tr>
+                    <td colspan="6">
+                        <div class="bulk-actions align-left">
+                            <select name="dropdown" class="small">
+                                <option value="option1">选择...</option>
+                                <!--<option value="option2">编辑</option>-->
+                                <option value="option3">删除</option>
+                            </select>
+                            <a class="button" href="#">执行</a>
+                        </div>
+                        
+                        {% if pager.haveToPaginate() %}{{ pagerfanta(pager, 'magend') }}{% endif %}
+                        <div class="clear"></div>
+                    </td>
+                </tr></tfoot>
+                
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>{{ issue.serial }}</td>
+                        <td><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title|truncate(10) }}</a></td>
+                        <td class="thumbup"><a class="media" href="#"><img width="120" height="160" src="{% if issue.cover is not empty %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" /></a></td>
+                        <td>{{ issue.nbDownloaded }}</td>
+                        <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
+                        <td>
+                            <!-- Icons -->
+                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
+                             <a rel="confirm" href="#" title="Delete"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
+                             <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div><!-- End Content Box -->
 {% endblock %}
