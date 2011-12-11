@@ -8,30 +8,73 @@
         	<link href="{{ asset('css/Aristo.css') }}" rel="stylesheet" type="text/css" />       
             <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
             <link href="{{ asset('css/jquery.tagit.css') }}" rel="stylesheet" type="text/css" />
+            <link rel="stylesheet" href="{{ asset('css/simpla/reset.css') }}" type="text/css" media="screen" />
+            <link rel="stylesheet" href="{{ asset('css/simpla/style.css') }}" type="text/css" media="screen" />
+            <link rel="stylesheet" href="{{ asset('css/simpla/invalid.css') }}" type="text/css" media="screen" />
             <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css" />      
         {% endblock %}
         
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
-        <div class="container">
-            <!-- sidebar -->
-            <div class="content">
-                <div class="page-header">
-                    <ul class="mybread">
-                        {% block breadcrumb %}<li><a href="#">Magend</a> <span class="divider">/</span></li>{% endblock %}
+    
+    <body><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+        <div id="sidebar"><div id="sidebar-wrapper"> <!-- Sidebar with logo and menu -->
+            
+            <h1 id="sidebar-title"><a href="#">iMagShow</a></h1>
+            <!-- Logo (221px wide) -->
+            <!-- <a href="#"><img id="logo" src="resources/images/logo.png" alt="Simpla Admin logo" /></a>-->
+          
+            <!-- Sidebar Profile links -->
+            <!-- <div id="profile-links">
+                哈罗, <a href="#" title="Edit your profile">管理员</a>
+                <br />
+                <a href="#" title="View the Site">View the Site</a> | <a href="#" title="Sign Out">Sign Out</a>
+            </div>-->
+            {% set currentRoute = app.request.get('_route') %}
+            <ul id="main-nav">
+                <li><a href="#" class="nav-top-item no-submenu">首页</a></li>
+                
+                <li><a href="#" class="nav-top-item current">分类定义</a>
+                    <ul>
+                        <li><a {% if currentRoute == 'magzine_list' %}class="current"{% endif %} href="{{ path('magzine_list') }}">杂志分类</a></li>
+                        <li><a {% if currentRoute == 'proj_list' %}class="current"{% endif %} href="#">项目类型</a></li> <!-- Add class "current" to sub menu items also -->
+                        <li><a {% if currentRoute == 'institute_list' %}class="current"{% endif %} href="{{ path('institute_list') }}">设计机构</a></li>
                     </ul>
+                </li>
+                
+                <li><a href="#" class="nav-top-item">期刊</a>
+                    <ul>
+                        <li><a href="#">浏览</a></li>
+                        <li><a href="#">创建</a></li>
+                    </ul>
+                </li>
+            </ul> <!-- End #main-nav -->
+        </div></div> <!-- End #sidebar -->
+        
+        <div id="main-content"> <!-- Main Content Section with everything -->
+            <noscript> <!-- Show a notification if the user has disabled javascript -->
+                <div class="notification error png_bg">
+                    <div>请启用Javascript</div>
                 </div>
-                <div class="row">
-                    <div class="span14">
-                        {% block main %}{% endblock %}
-                    </div>
-                </div>
-            </div>
-            <footer>
-                <p>&copy; 2011 5DScape</p>
-            </footer>
-        </div> <!-- /container -->
+            </noscript>
+            
+            <h2>{% block contentTitle %}{% endblock %}</h2>
+            <p id="page-intro">Magend Powered</p>
+            <!--<div class="page-header">
+                <ul class="mybread">
+                    {% block breadcrumb %}<li><a href="#">Magend</a> <span class="divider">/</span></li>{% endblock %}
+                </ul>
+            </div>-->
+            <div class="row"><div class="span16" style="height: 1000px;">
+                {% block main %}{% endblock %}
+            </div></div>
+            
+            <div id="footer">
+                <small> <!-- Remove this notice or replace it with whatever you want -->
+                        &#169; Copyright 2011 5DScape | Powered by <a href="#">Kail</a> | <a href="#">Top</a>
+                </small>
+            </div><!-- End #footer -->
+        </div>
         
         {% block javascripts %}
             <script src="{{ asset('js/jquery-1.7.min.js') }}" type="text/javascript"></script>
@@ -56,6 +99,8 @@
             <script src="{{ asset('js/magend.undo.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/magend.hots.js') }}" type="text/javascript"></script>
             
+            <script src="{{ asset('js/facebox.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/simpla.jquery.configuration.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
         {% endblock %}
     </body>

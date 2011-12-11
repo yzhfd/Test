@@ -1,3 +1,18 @@
+MagendBaseBundle:
+    resource: "@MagendBaseBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendInstituteBundle:
+    resource: "@MagendInstituteBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendMagzineBundle:
+    resource: "@MagendMagzineBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendHomeBundle:
     resource: "@MagendHomeBundle/Controller/"
     type:     annotation

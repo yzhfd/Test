@@ -25,6 +25,9 @@ class AppKernel extends Kernel
             new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new Avalanche\Bundle\ImagineBundle\AvalancheImagineBundle(),
             new Magend\HomeBundle\MagendHomeBundle(),
+            new Magend\MagzineBundle\MagendMagzineBundle(),
+            new Magend\InstituteBundle\MagendInstituteBundle(),
+            new Magend\BaseBundle\MagendBaseBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -29,8 +29,8 @@ services:
     pagerfanta.view.magend:
         class: Pagerfanta\View\OptionableView
         arguments:
-            - @pagerfanta.view.twitter_bootstrap_translated
-            - { proximity: 3, prev_message: ←, next_message: → }
+            - @pagerfanta.view.default
+            - { proximity: 3, previous_message: ←, next_message: → }
         public: false
         tags: [{ name: pagerfanta.view, alias: magend }]
 

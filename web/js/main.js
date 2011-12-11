@@ -3,6 +3,59 @@ jQuery.event.props.push("dataTransfer");
 Backbone.sync = Backbone.ajaxSync;
 
 $(function () {
+	$('a[rel*=dialog]').live('click', function() {
+	    var url = this.href;
+	    var dialog = $("#dialog");
+	    if ($("#dialog").length == 0) {
+	        dialog = $('<div id="dialog" style="display:hidden"></div>').appendTo('body');
+	    } 
+
+	    // load remote content
+	    dialog.load(
+	            url,
+	            {},
+	            function(responseText, textStatus, XMLHttpRequest) {
+	                dialog.dialog({
+	                	modal: true,
+	                	position: [265, 115],
+	                	width: 'auto',
+	                	height: 'auto'
+	                });
+	            }
+	        );
+	    //prevent the browser to follow the link
+	    return false;
+	});
+	
+	if ($('#magzine_form').length > 0) {
+		var magForm = $('#magzine_form');
+		magForm.fileupload({
+			// maxFilesize, minFileSize
+			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			//dropZone: $('#issue_cover')
+		}).bind('fileuploaddrop', function (e, data) {
+			var files = data.files;
+			var imgFile = files[0];
+			 
+			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+			if (!(acceptFileTypes.test(imgFile.type) ||
+                    acceptFileTypes.test(imgFile.name))) {
+				alert('请上传有效的图片文件');
+                return;
+            }
+			
+			// @todo validate image size and dimension
+            var reader = new FileReader();
+            reader.onload = function (e) {
+            	$('#form_landscapeCoverImage').val(e.target.result);
+            };
+            reader.readAsDataURL(imgFile);
+		}).bind('fileuploadsubmit', function (e, data) {
+			// no upload immediately
+			e.stopPropagation();
+			e.preventDefault();
+		});
+	}
 	
 	if ($('#issue_form').length > 0) {
 		$('#issue_cover').click( function (e) {
@@ -12,6 +65,7 @@ $(function () {
 			// @todo show large
 		});
 		
+		// @todo use dropZone's dimension as restriction
 		var issueForm = $('#issue_form');
 		issueForm.fileupload({
 			// maxFilesize, minFileSize
