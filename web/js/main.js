@@ -13,7 +13,7 @@ $(function () {
 	    // load remote content
 	    dialog.load(
 	            url,
-	            {},
+	            // {} then POST
 	            function(responseText, textStatus, XMLHttpRequest) {
 	                dialog.dialog({
 	                	modal: true,

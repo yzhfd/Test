@@ -1,8 +1,8 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block main %}
 
-<form id="magzine_form" action="{% if magzineId is null %}{{ path('magzine_new') }}{% else %}{{ path('magzine_edit', { 'id':magzineId }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
+<form id="magzine_form" style="width:680px; margin-top:10px;" action="{% if magzineId is null %}{{ path('magzine_new') }}{% else %}{{ path('magzine_edit', { 'id':magzineId }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     <div class="clearfix">
         {{ form_label(form.name) }}
         <div class="input">{{ form_errors(form.name) }}{{ form_widget(form.name, { 'attr':{'class':'middle'} }) }}</div>

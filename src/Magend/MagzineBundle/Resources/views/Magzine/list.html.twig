@@ -5,10 +5,7 @@
 {% block main %}
             
     <ul class="shortcut-buttons-set">
-        <li><a class="shortcut-button" href="#"><span>
-            <!--<img src="resources/images/icons/pencil_48.png" alt="icon" /><br />-->
-            新建
-        </span></a></li>
+        <li><a rel="dialog" class="shortcut-button" href="{{ path('magzine_new') }}"><span>新建</span></a></li>
         
         <!--<li><a class="shortcut-button" href="#"><span>
             <img src="resources/images/icons/paper_content_pencil_48.png" alt="icon" /><br />
@@ -68,7 +65,7 @@
                         <td>N/A</td>
                         <td>
                             <!-- Icons -->
-                             <a href="#" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
+                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
                              <a href="#" title="Delete"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
