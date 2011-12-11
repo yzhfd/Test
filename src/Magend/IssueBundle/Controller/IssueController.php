@@ -57,7 +57,7 @@ class IssueController extends Controller
     /**
      * 
      * @Route("/{id}/edit", name="issue_edit")
-     * @Template("MagendIssueBundle:issue:new.html.twig")
+     * @Template("MagendIssueBundle:Issue:new.html.twig")
      */
     public function editAction($id)
     {
