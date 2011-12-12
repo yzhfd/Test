@@ -59,6 +59,7 @@ $(function () {
 			e.preventDefault();
 		});
 		
+		
 		var savePages = function () {
 			var dfd = $.Deferred();
 			
@@ -69,25 +70,21 @@ $(function () {
 				lipage = $(lipage);
 				var file = lipage.data('file');
 				if (!file) return;
-				(function(){
-					lipage.animate({borderColor: '#57A000'}, 1000).animate({borderColor: 'yellow'}, 1000, arguments.callee);
-				}());
-				return;
+				
 				when = when.pipe(function(){
-					var uploader = $('<div/>');
+					lipage.overlay({ loading:true });
 					
+					var uploader = $('<div/>');
 					return uploader.fileupload({
 						paramName: 'file',
 						url: pages.attr('rel'),
 						success: function (result) {
+							lipage.overlay('hide').removeClass('unsynced', 'fast');
 							lipage.find('img').attr('src', result);
-							(function(){
-								lipage.animate({borderColor: '#57A000'}, 3000)
-									.animate({borderColor: 'yellow'}, 3000, arguments.callee);
-							}());
 						},
 						error: function (result) {
-							
+							lipage.addClass('syncfail', 'fast');
+							lipage.overlay('hide');
 						}
 					}).fileupload('send', { files:[file] }); // only send one file
 				});
@@ -98,22 +95,10 @@ $(function () {
 		};
 		
 		$('#submit_pages').click(function(){
-			
-			savePages().done(function(){
-				console.log('done');
+			$(this).button('loading');
+			savePages().always(function(){
+				$('#submit_pages').button('reset');
 			});
-			/*
-			pages.find('li.page').each(function(index, lipage){
-				lipage = $(lipage);
-				var file = lipage.data('file');
-				if (!file) return;
-				
-				lipage.animate({
-					borderColor: '#333'
-				}, 200, function () {
-					lipage.animate();
-				});
-			});*/
 		});
 	}
 	
@@ -153,7 +138,7 @@ $(function () {
 		var magForm = $('#magzine_form');
 		magForm.fileupload({
 			// maxFilesize, minFileSize
-			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
 			//dropZone: $('#issue_cover')
 		}).bind('fileuploaddrop', function (e, data) {
 			var files = data.files;

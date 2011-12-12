@@ -2,10 +2,14 @@ html, body {
 	font-family: SimHei
 }
 *.unselectable {
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-   user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.centered {
+    margin: 0px auto;
+    display: block;
 }
 
 #newPages li.page {
@@ -14,6 +18,9 @@ html, body {
 }
 #newPages li.page.unsynced {
 	border: 2px solid yellow;
+}
+#newPages li.page.syncfail {
+    border: 2px solid red !important;
 }
 #articles_layout ol.articles {
 	float: left;

@@ -5,7 +5,23 @@
 (function($) {
 	// overlay
 	$.fn.overlay = function(options) {
-		var overlay = $('<div class="overlay" style="position: absolute;"></div>');
+		
+		var overlay = this.data('overlay');
+		if (overlay) {
+			if (options == 'hide') {
+				var overlayed = this;
+				overlay.fadeOut('fast', function () {
+					$(this).remove();
+					overlayed.removeData('overlay');
+				});
+			}
+			
+			return this;
+		} else if (options == 'hide') {
+			return this;
+		}
+		
+		overlay = $('<div class="overlay" style="position: absolute;"></div>');
 		overlay.css({
 			width: this.outerWidth(),
 			height: this.outerHeight(),
@@ -15,6 +31,19 @@
 			opacity: 0.0
 		});
 		overlay.appendTo('body');
+		
+		if (options.loading) {
+			var loadingEl = $('<img class="centered" src="/Magend/web/images/loading.gif" />');
+			loadingEl.appendTo(overlay);
+			loadingEl.css({
+				marginTop: (overlay.height() - loadingEl.height()) / 2
+			});
+		}
+		
 		overlay.fadeTo('fast', 0.6);
-  };
+		
+		this.data('overlay', overlay);
+		
+		return this;
+	};
 })(jQuery);
