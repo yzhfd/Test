@@ -81,11 +81,17 @@ $(function () {
 						success: function (result) {
 							lipage.overlay('hide').removeClass('unsynced', 'fast');
 							lipage.find('img').attr('src', result);
+							lipage.removeData('file');
 						},
 						error: function (result) {
 							lipage.addClass('syncfail', 'fast');
 							lipage.overlay('hide');
+							lipage.removeData('file');
 						}
+					}).bind('fileuploadsubmit', function (e, data) {
+						// no upload immediately
+						e.stopPropagation();
+						e.preventDefault();
 					}).fileupload('send', { files:[file] }); // only send one file
 				});
 			});
@@ -101,7 +107,6 @@ $(function () {
 			});
 		});
 	}
-	
 	
 	if ($('#articles_layout').length > 0) {
 		var articles = $('#articles_layout').find('ol.articles');

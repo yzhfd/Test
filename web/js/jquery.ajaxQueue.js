@@ -52,6 +52,10 @@
 					url: ajaxOpts.url,
 					success: ajaxOpts.success,
 					error: ajaxOpts.error
+				}).bind('fileuploadsubmit', function (e, data) {
+					// no upload immediately
+					e.stopPropagation();
+					e.preventDefault();
 				}).fileupload('send', { files:[ajaxOpts.file] }); // only send one file
 	    	} else {
 	    		jqXHR = $.ajax( ajaxOpts );
