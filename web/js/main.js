@@ -27,6 +27,128 @@ $(function () {
 	    return false;
 	});
 	
+	$('.tabs').tabs();
+	$('.pills').pills();
+	
+	if ($('#newPages').length > 0) {
+		var pages = $('#newPages').find('ol.pages');
+		pages.sortable({
+			
+		});
+		pages.fileupload({
+			url: pages.attr('rel'),
+			paramName: 'file',
+			sequentialUploads: true
+		}).bind('fileuploaddrop', function (e, data) {
+			var count = data.files.length;
+			for (var i = 0; i < count; ++i) {
+				(function (file) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+		            	var page = $('<li class="page unsynced"><a href="#" title="' + file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+		            	page.appendTo(pages);
+		            	page.data('file', file);
+		            };
+		            
+		            reader.readAsDataURL(file);
+				})(data.files[i]);
+			}
+		}).bind('fileuploadsubmit', function (e, data) {
+			// no upload immediately
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		
+		var savePages = function () {
+			var dfd = $.Deferred();
+			
+			var when = $.when({});
+			var lipages = pages.find('li.page');
+			// pipe will pass arguments!
+			lipages.each(function (index, lipage) {
+				lipage = $(lipage);
+				var file = lipage.data('file');
+				if (!file) return;
+				(function(){
+					lipage.animate({borderColor: '#57A000'}, 1000).animate({borderColor: 'yellow'}, 1000, arguments.callee);
+				}());
+				return;
+				when = when.pipe(function(){
+					var uploader = $('<div/>');
+					
+					return uploader.fileupload({
+						paramName: 'file',
+						url: pages.attr('rel'),
+						success: function (result) {
+							lipage.find('img').attr('src', result);
+							(function(){
+								lipage.animate({borderColor: '#57A000'}, 3000)
+									.animate({borderColor: 'yellow'}, 3000, arguments.callee);
+							}());
+						},
+						error: function (result) {
+							
+						}
+					}).fileupload('send', { files:[file] }); // only send one file
+				});
+			});
+			when.done( dfd.resolve ).fail( dfd.reject );
+			
+			return dfd.promise();
+		};
+		
+		$('#submit_pages').click(function(){
+			
+			savePages().done(function(){
+				console.log('done');
+			});
+			/*
+			pages.find('li.page').each(function(index, lipage){
+				lipage = $(lipage);
+				var file = lipage.data('file');
+				if (!file) return;
+				
+				lipage.animate({
+					borderColor: '#333'
+				}, 200, function () {
+					lipage.animate();
+				});
+			});*/
+		});
+	}
+	
+	
+	if ($('#articles_layout').length > 0) {
+		var articles = $('#articles_layout').find('ol.articles');
+		articles.sortable({
+			axis: 'x',
+			helper: 'clone',
+			containment: articles,
+			handle: 'h5',
+			cursor: 'crosshair',
+			tolerance: 'pointer',
+			delay: 100,
+			start: function (e, ui) {
+				$(ui.helper).addClass('highlighted');
+			}
+		});
+		
+		$('#articles_layout').find('.pages').sortable({
+			axis: 'y',
+			opacity: 0.6,
+			containment: 'parent',
+			helper: 'clone',
+			tolerance: 'pointer'
+		});
+		
+		$('#layout_save').click( function () {
+			var contentBox = $(this).closest('.content-box').find('.content-box-content');
+			contentBox.overlay();
+			
+			
+		});
+	}
+	
 	if ($('#magzine_form').length > 0) {
 		var magForm = $('#magzine_form');
 		magForm.fileupload({

@@ -79,7 +79,7 @@ $(document).ready(function(){
 	);
 
     // Initialise Facebox Modal window:
-	$('a[rel*=modal]').facebox(); // Applies modal window to any link with attribute rel="modal"
+	$('a[rel*=facebox]').facebox(); // Applies modal window to any link with attribute rel="facebox"
 
     // Initialise jQuery WYSIWYG:
 	// $(".wysiwyg").wysiwyg(); // Applies WYSIWYG editor to any textarea with the class "wysiwyg"

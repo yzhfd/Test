@@ -100,7 +100,7 @@ class PageController extends Controller
         
         $em->persist($page);
         $em->flush();
-        sleep(1);
+        
         $response = json_encode(array(
             'id' => $page->getId()
         ));
@@ -111,7 +111,7 @@ class PageController extends Controller
      * Upload image
      * @todo landscape or portrait
      * 
-     * @Route("/upload", name="page_upload")
+     * @Route("/upload", name="page_upload", defaults={"_format" = "json"})
      * @Template()
      */
     public function uploadAction()
@@ -123,12 +123,12 @@ class PageController extends Controller
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
             $file->move($rootDir . '/../web/uploads/', $imgName);
-            $this->get('imagine.templating.helper')->filter("uploads/$imgName", 'landscapeThumb');
-            return new Response($imgName);
+            sleep(2);
+            return array(
+                'page' => "uploads/$imgName"
+            );
         }
         
-        return array(
-            'form' => $form->createView()
-        );
+        return array('page' => null);
     }
 }

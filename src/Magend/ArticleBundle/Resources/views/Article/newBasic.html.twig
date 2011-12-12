@@ -1,0 +1,41 @@
+<form id="article_form" action="{% if article.id is null %}{{ path('article_new', { 'id':issue.id }) }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
+
+    <div class="clearfix">
+        {{ form_label(form.title, '标题') }}
+        <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
+    </div>
+    
+    <div class="clearfix">
+        {{ form_label(form.architectsText, '建筑师') }}
+        <div class="input">
+            <select id="architectsel" class="medium" style="margin-bottom:5px;">
+                <option value=""></option>
+                {% for architect in architects %}
+                <option value="{{ loop.index }}">{{ architect.name }}</option>
+                {% endfor %}
+            </select>
+            {{ form_errors(form.architectsText) }}
+            <div class="span5">{{ form_widget(form.architectsText, { 'attr':{'class':'taggable'} }) }}</div>
+        </div>
+    </div>
+    
+    <div class="clearfix">
+        {{ form_label(form.keywordsText, '关键词') }}
+        <div class="input">
+            <select id="keywordsel" class="medium" style="margin-bottom:5px;">
+                <option value=""></option>
+                {% for keyword in keywords %}
+                <option value="{{ loop.index }}">{{ keyword.keyword }}</option>
+                {% endfor %}
+            </select>
+            {{ form_errors(form.keywordsText) }}
+            <div class="span5">{{ form_widget(form.keywordsText, { 'attr': {'class':'taggable'} }) }}</div>
+        </div>
+    </div>
+    
+    {{ form_rest(form) }}
+    
+    <div class="actions">
+        <button class="btn primary" type="submit">提交</button> <a class="btn" href="{{ url('issue_show', { 'id':issue.id }) }}">返回{{ issue.serial }}期</a>
+    </div>
+</form>

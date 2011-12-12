@@ -4,7 +4,7 @@
 
 {%block main %}
     <ul class="shortcut-buttons-set">
-        <li><a rel="dialog" class="shortcut-button" href="{{ path('article_new', { 'id':issue.id }) }}"><span>新建</span></a></li>
+        <li><a class="shortcut-button" href="{{ path('article_new', { 'id':issue.id }) }}"><span>添加文章</span></a></li>
     </ul>
     <div class="clear"></div>
 
@@ -69,6 +69,60 @@
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
+        </div>
+    </div><!-- End Content Box -->
+    
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>编排文章</h3><div style="padding-top: 6px;"><button id="layout_save" class="btn info" data-loading-text="保存中...">保存修改</button> <button id="layout_cancel" class="btn danger">放弃修改</button></div>
+            <!-- href must be unique and match the id of target div -->
+            <!--<ul class="content-box-tabs">
+                <li><a href="#tab1" class="default-tab">Table</a></li>
+                <li><a href="#tab2">Forms</a></li>
+            </ul>-->
+            <div class="clear"></div>
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content" style="overflow-x: auto; min-height: 200px;">
+            <div id="articles_layout" class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+                <ol class="articles unselectable">
+                    <li class="article">
+                        <h5>一</h5>
+                        <ol class="pages">
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        </ol>
+                    </li>
+                    <li class="article">
+                        <h5>一</h5>
+                        <ol class="pages">
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        </ol>
+                    </li>
+                    <li class="article">
+                        <h5>一</h5>
+                        <ol class="pages">
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        </ol>
+                    </li>
+                    <li class="article">
+                        <h5>一</h5>
+                        <ol class="pages">
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        </ol>
+                    </li>
+                    <li class="article">
+                        <h5>一</h5>
+                        <ol class="pages">
+                            <li class="page"><img src="http://placehold.it/128x96" /></li>
+                        </ol>
+                    </li>
+                </ol>
             </div>
         </div>
     </div><!-- End Content Box -->
