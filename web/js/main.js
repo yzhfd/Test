@@ -31,6 +31,48 @@ $(function () {
 	$('.pills').pills();
 	
 	if ($('#newPages').length > 0) {
+		$('#newPagesTab').click(function (e) {
+			var articleId = $('#newPagesTab').attr('rel');
+			if (articleId) {
+				return true;
+			} else {
+				alert('请先提交基本信息创建文章');
+				return false;
+			}
+		});
+		
+		$('#architectsel, #keywordsel').change(function(){
+			var tag = $(this).find('option:selected').text();
+			// make sure html structured
+			var tagit = $(this).closest('div').find('.taggable');
+			tagit.tagit('createTag', tag);
+		});
+		
+		$('#article_form').submit(function(e){
+			var articleId = $('#newPagesTab').attr('rel');
+			console.log(articleId);
+			var submitBtn = $(this).find(':submit');
+			submitBtn.attr('data-loading-text', '提交中...');
+			submitBtn.button('loading');
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: $(this).serializeArray(),
+				success: function (response) {
+					submitBtn.button('reset');
+					$('#newPagesTab').attr('rel', response);
+					if (!articleId && confirm('前往上传页面')) {
+						$('#newPagesTab').click();
+					}
+				}
+			});
+			
+			return false;
+		});
+		
+		
+		
+		
 		var pages = $('#newPages').find('ol.pages');
 		pages.sortable({
 			

@@ -136,7 +136,13 @@ class ArticleController extends Controller
                 $em->persist($article);
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('article_show', array('id' => $article->getId())));
+                if ($req->isXmlHTTPRequest()) {
+                    $response = new Response($articleId);
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                } else {
+                    return $this->redirect($this->generateUrl('article_show', array('id' => $articleId)));
+                }
             }
         }
         
@@ -153,7 +159,7 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route("/issue_{id}/new", name="article_new", requirements={"id" = "\d+"})
+     * @Route("/issue/{id}/new", name="article_new", requirements={"id" = "\d+"})
      * @Template()
      */
     public function newAction($id)
@@ -203,7 +209,13 @@ class ArticleController extends Controller
                 $em->persist($issue);
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('article_show', array('id' => $articleId)));
+                if ($req->isXmlHTTPRequest()) {
+                    $response = new Response($articleId);
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                } else {
+                    return $this->redirect($this->generateUrl('article_show', array('id' => $articleId)));
+                }
             }
         }
         
