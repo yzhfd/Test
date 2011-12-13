@@ -32,7 +32,7 @@
 		});
 		overlay.appendTo('body');
 		
-		if (options.loading) {
+		if (options && options.loading) {
 			var loadingEl = $('<img class="centered" src="/Magend/web/images/loading.gif" />');
 			loadingEl.appendTo(overlay);
 			loadingEl.css({
