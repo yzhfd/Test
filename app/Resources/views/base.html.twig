@@ -33,7 +33,7 @@
             </div>
             {% set currentRoute = app.request.get('_route') %}
             <ul id="main-nav">
-                <li><a href="#" class="nav-top-item no-submenu">首页</a></li>
+                <li><a href="#" class="nav-top-item no-submenu {% if currentRoute == 'home' %}current{% endif %}">首页</a></li>
                 
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_list', 'proj_list', 'institute_list'] %}current{% endif %}">分类定义</a>
                     <ul>
