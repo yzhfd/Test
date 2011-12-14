@@ -134,6 +134,9 @@ class Page
      */
     public function setLandscapeImg($landscapeImg)
     {
+        if ($this->getLandscapeImg() != null && $this->getLandscapeImg() != $landscapeImg) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
+        }
         $this->landscapeImg = $landscapeImg;
     }
 
@@ -174,6 +177,9 @@ class Page
      */
     public function setPortraitImg($portraitImg)
     {
+        if ($this->getPortraitImg() != null && $this->getPortraitImg() != $portraitImg) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
+        }
         $this->portraitImg = $portraitImg;
     }
 

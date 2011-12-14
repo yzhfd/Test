@@ -31,6 +31,17 @@ html, body {
 #articles_layout ol.pages {
 	height: auto !important;
 }
+li.page:hover .pagedel {
+    visibility: visible;
+}
+.pagedel {
+    display: none;
+    /*display: block;*/
+    visibility: hidden;
+    width: 22px; height: 22px;
+    position: absolute; top: -11px; right: -11px;
+    background: transparent url('../images/close.png') no-repeat center center;
+}
 
 #article_pages {
 	padding-top: 20px;
@@ -132,17 +143,7 @@ li.page {
     margin-left: 18px;
     position: relative;
 }
-li.page:hover .pagedel {
-	/*visibility: visible;*/
-}
-.pagedel {
-	display: none;
-	/*display: block;*/
-	visibility: hidden;
-    width: 22px; height: 22px;
-    position: absolute; top: 2px; left: 2px;
-    background: transparent url('../images/close.png') no-repeat center center;
-}
+
 /*
 .close:hover {
     background-image: url('../images/closebtn_h.png');

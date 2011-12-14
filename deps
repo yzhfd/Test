@@ -74,6 +74,7 @@
 [WhiteOctoberPagerfantaBundle]
     git=https://github.com/whiteoctober/WhiteOctoberPagerfantaBundle.git
     target=/bundles/WhiteOctober/PagerfantaBundle
+    version=origin/symfony2.0
 
 [Imagine]
     git=http://github.com/avalanche123/Imagine.git

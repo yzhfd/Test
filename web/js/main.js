@@ -87,7 +87,7 @@ $(function () {
 				(function (file) {
 		            var reader = new FileReader();
 		            reader.onload = function (e) {
-		            	var page = $('<li class="page unsynced"><a href="#" title="' + file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+		            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="' + file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 		            	page.appendTo(pages);
 		            	page.data('file', file);
 		            };
@@ -108,6 +108,10 @@ $(function () {
 			var when = $.when({});
 			var lipages = pages.find('li.page');
 			// pipe will pass arguments!
+			var articleId = $('#newPagesTab').attr('rel');
+			var formData = articleId ? { articleId:articleId }: null;
+			// @todo pass page id for images in other modes
+			
 			lipages.each(function (index, lipage) {
 				lipage = $(lipage);
 				var file = lipage.data('file');
@@ -119,11 +123,16 @@ $(function () {
 					var uploader = $('<div/>');
 					return uploader.fileupload({
 						paramName: 'file',
+						formData: formData,
 						url: pages.attr('rel'),
 						success: function (result) {
+							if (!result.id) {
+								return;
+							}
 							lipage.overlay('hide').removeClass('unsynced', 'fast');
-							lipage.find('img').attr('src', result);
+							lipage.find('img').attr('src', result.page);
 							lipage.removeData('file');
+							lipage.find('.pagedel').attr('href', result.delUrl);
 						},
 						error: function (result) {
 							lipage.addClass('syncfail', 'fast');
@@ -147,6 +156,15 @@ $(function () {
 			savePages().always(function(){
 				$('#submit_pages').button('reset');
 			});
+		});
+		
+		$('a.pagedel').click(function(e){
+			var href = $(this).attr('href');
+			if (href != '#') {
+				$.get(href);
+			}
+			$(this).parent().remove();
+			return false;
 		});
 	}
 	
