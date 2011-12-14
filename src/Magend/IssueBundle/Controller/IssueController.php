@@ -98,7 +98,8 @@ class IssueController extends Controller
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
             } else {
-                return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+                return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issue->getId())));
+                // return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
             }
         }
         
@@ -238,12 +239,20 @@ class IssueController extends Controller
     }
     
     /**
-     * For test, delete all articles and pages belong to this issue
-     * 
-     * @Route("/{id}/flush", defaults={"_format"="json"})
+     * Delete all articles and pages belong to this issue
+     * May need provide method to just delete issue and associations with articles,
+     * not article themselves
+     * // , defaults={"_format"="json"}
+     * @Route("/{id}/flush", name="issue_flush")
      */
     public function flushAction($id)
     {
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('No such issue');
+        }
+        
         $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery('SELECT partial a.{id} FROM MagendArticleBundle:Article a WHERE :issueId MEMBER OF a.issues')
                     ->setParameter('issueId', $id);
@@ -251,11 +260,11 @@ class IssueController extends Controller
         foreach ($arts as $art) {
             $em->remove($art);
         }
+        
+        $em->remove($issue);        
         $em->flush();
         
-        return new Response(json_encode(array(
-            'result' => 'success'
-        )));
+        return $this->redirect($this->generateUrl('issue_list'));
     }
     
     /**

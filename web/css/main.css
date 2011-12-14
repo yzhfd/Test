@@ -30,6 +30,7 @@ html, body {
 }
 #articles_layout ol.pages {
 	height: auto !important;
+	min-height: 96px;
 }
 li.page:hover .pagedel {
     visibility: visible;
@@ -71,7 +72,7 @@ li.page:hover .pagedel {
 }
 .articles {
 	/*padding: 20px 0px 100px 0px;*/
-	width: 1200px; /* change width dynamically*/
+	min-width: 800px;
 	/*super important for sortable*/
 }
 li.highlighted {

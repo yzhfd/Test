@@ -12,7 +12,7 @@
             <div style="padding-top: 6px">
                 <select id="magtype_sel" class="medium">
                     <option value="1">世界建筑杂志</option>
-                    <option value="2">中国建筑</option>
+                    <option value="2">建筑师</option>
                 </select>
                 <a rel="dialog" class="btn info" href="{{ path('issue_new') }}">添加期刊</a>
             </div>
@@ -59,15 +59,15 @@
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td>{{ issue.serial }}</td>
-                        <td><a href="{{ path('issue_show', { 'id': issue.id }) }}" title="点击编排文章">{{ issue.title|truncate(10) }}</a></td>
+                        <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
                         <td class="thumbup"><a class="media" href="#"><img width="120" height="160" src="{% if issue.cover is not empty %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" /></a></td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">10</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
                         <td>
                             <!-- Icons -->
-                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
-                             <a rel="confirm" href="#" title="Delete"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
+                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>
