@@ -1,3 +1,8 @@
+MagendFeedbackBundle:
+    resource: "@MagendFeedbackBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendBaseBundle:
     resource: "@MagendBaseBundle/Controller/"
     type:     annotation
