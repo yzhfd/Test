@@ -31,10 +31,10 @@
         <div class="clearfix">
             {{ form_label(form.coverImage, '封面') }}
             <div class="input">
-                <a href="#" title="拖拽图片到这里上传" id="issue_cover">
+                {# <a href="#" title="拖拽图片到这里上传" id="issue_cover">
                     <img width="120" height="160" src="{% if issue.cover is not null %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" />
-                </a>
-                <div id="cover_input" style="display:none;">{{ form_errors(form.coverImage) }}{{ form_widget(form.coverImage, { 'attr':{'class':'small'} }) }}</div>
+                </a> #}
+                <div id="cover_input">{{ form_errors(form.coverImage) }}{{ form_widget(form.coverImage, { 'attr':{'class':'small'} }) }}</div>
             </div>
         </div>
         
