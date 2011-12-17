@@ -91,7 +91,7 @@ var issue_new = function () {
 			if (!file) return;
 			
 			when = when.pipe(function(){
-				lipage.overlay({ loading:true });
+				lipage.overlay('loading');
 				
 				var uploader = $('<div/>');
 				return uploader.fileupload({

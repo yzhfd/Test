@@ -53,7 +53,7 @@
                 
                 <tbody>
                     {% for article in issue.articles %}
-                    <tr>
+                    <tr id="tr{{ article.id }}">
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('article_show', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
                         <td class="thumbup" style="width:100px;">
@@ -65,8 +65,8 @@
                         <td>{{ article.createdAt|date('Y-m-d H:i') }}</td>
                         <td>
                             <!-- Icons -->
-                             <a href="{{ path('article_edit', { 'id':article.id }) }}" title="编辑"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
-                             <a rel="confirm" href="#" title="删除"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
+                             <a href="{{ path('article_edit', { 'id':article.id }) }}" title="编辑">编辑</a>
+                             <a rel="confirm" href="#" title="删除">删除</a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>
