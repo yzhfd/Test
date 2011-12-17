@@ -153,7 +153,7 @@ class Article
     
     public function getPageIds()
     {
-        return explode(',', $this->pageIds);
+        return $this->pageIds ? explode(',', $this->pageIds) : array();
     }
     
     /**
