@@ -153,7 +153,7 @@ class Article
     
     public function getPageIds()
     {
-        return $this->pageIds ? explode(',', $this->pageIds) : array();
+        return $this->pageIds ? explode(',', trim($this->pageIds, ',')) : array();
     }
     
     /**
@@ -326,9 +326,15 @@ class Article
         $this->issues = new ArrayCollection(array($issue));
     }
     
+    // return pages ordered by pageIds
     public function getPages()
     {
-        return $this->pages;
+        $pages = array();
+        $pageIds = $this->getPageIds();
+        foreach ($pageIds as $pageId) {
+            $pages[$pageId] = $this->pages[$pageId];
+        }
+        return $pages;
     }
     
     public function setPages($pages)

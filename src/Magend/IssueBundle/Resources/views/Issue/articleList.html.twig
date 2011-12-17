@@ -12,8 +12,8 @@
         <div class="content-box-header">
             <h3>文章列表</h3>
             <div style="padding-top: 6px; width: 300px; float: left;">
-                <button id="layout_save" class="btn info" data-loading-text="保存中...">保存修改</button>
-                <button id="layout_cancel" class="btn danger">放弃修改</button>
+                <a id="layout_save" class="btn info" href="{{ path('issue_layout', { 'id':issue.id }) }}" data-loading-text="保存中...">保存修改</a>
+                <!-- <button id="layout_cancel" class="btn danger">放弃修改</button> -->
             </div>
             
             <!-- href must be unique and match the id of target div -->
@@ -31,7 +31,7 @@
                     <th><input class="check-all" type="checkbox" /></th>
                     <th>名称</th>
                     <th>关键词</th>
-                    <th>页面数</th>
+                    <th>页数</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr></thead>
@@ -47,18 +47,21 @@
                             <a class="button" href="#">执行</a>
                         </div>
                         
-                        {% if pager.haveToPaginate() %}{{ pagerfanta(pager, 'magend') }}{% endif %}
                         <div class="clear"></div>
                     </td>
                 </tr></tfoot>
                 
                 <tbody>
-                    {% for article in articles %}
+                    {% for article in issue.articles %}
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('article_show', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
-                        <td class="thumbup"><a href="#">哥特</a>、<a href="#">古典</a></td>
-                        <td>32</td>
+                        <td class="thumbup" style="width:100px;">
+                        {% for keyword in article.keywords %}
+                        <a href="#">{{ keyword }}</a>{% if not loop.last %}、{% endif %}
+                        {% endfor %}
+                        </td>
+                        <td>{{ article.pageIds|length }}</td>
                         <td>{{ article.createdAt|date('Y-m-d H:i') }}</td>
                         <td>
                             <!-- Icons -->
@@ -73,13 +76,13 @@
             </div>
             
             <div id="articles_layout" class="tab-content" style="min-height: 280px; overflow-x: auto;">
-                <ol class="articles unselectable" style="width:{{ articles|length*160 }}px">
-                    {% for article in articles %}
-                        <li class="article">
-                            <h5>一</h5>
+                <ol class="articles unselectable" style="width:{{ issue.articles|length*160 }}px">
+                    {% for article in issue.articles %}
+                        <li class="article" rel="{{ article.id }}">
+                            <h5>=</h5>
                             <ol class="pages">
                                 {% for page in article.pages %}
-                                    <li class="page"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></li>
+                                    <li class="page" rel="{{ page.id }}"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></li>
                                 {% endfor %}
                             </ol>
                         </li>
@@ -90,6 +93,4 @@
         </div>
     </div><!-- End Content Box -->
     
-    
-
 {% endblock %}

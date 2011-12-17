@@ -19,7 +19,6 @@ var issue_new = function () {
 	
 	$('#article_form').submit(function(e){
 		var articleId = $('#newPagesTab').attr('rel');
-		console.log(articleId);
 		var submitBtn = $(this).find(':submit');
 		submitBtn.attr('data-loading-text', '提交中...');
 		submitBtn.button('loading');
@@ -101,11 +100,16 @@ var issue_new = function () {
 					url: pages.attr('rel'),
 					success: function (result) {
 						if (!result.id) {
+							// some error
+							lipage.addClass('syncfail', 'fast');
+							lipage.overlay('hide');
 							return;
 						}
+						
 						lipage.overlay('hide').removeClass('unsynced', 'fast');
 						lipage.find('img').attr('src', result.page);
 						lipage.removeData('file');
+						lipage.attr('rel', result.id);
 						lipage.find('.pagedel').attr('href', result.delUrl);
 					},
 					error: function (result) {
@@ -125,9 +129,32 @@ var issue_new = function () {
 		return dfd.promise();
 	};
 	
+	var pageIds = [];
+	pages.find('li.page').each(function(index, lipage){
+		var pageId = $(lipage).attr('rel');
+		if (pageId) pageIds.push(pageId);
+	});
 	$('#submit_pages').click(function(){
 		$(this).button('loading');
-		savePages().always(function(){
+		savePages().pipe(function(){
+			var _pageIds = [];
+			pages.find('li.page').each(function(index, lipage){
+				var pageId = $(lipage).attr('rel');
+				if (pageId) _pageIds.push(pageId);
+			});
+			var strPageIds = _pageIds.join(',');
+			if (strPageIds != pageIds.join(',')) {
+				var articleId = $('#newPagesTab').attr('rel');
+				return $.ajax({
+					url: '/Magend/web/app_dev.php/article/orderpages',
+					data: {
+						id: articleId,
+						pageIds: strPageIds
+					}
+				});
+			}
+			return {};
+		}).always(function(){
 			$('#submit_pages').button('reset');
 		});
 	});

@@ -26,7 +26,7 @@
             <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
                 {% for page in article.pages %}
-                <li class="page"><a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a><a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
+                <li class="page" rel="{{ page.id }}"><a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a><a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
                 {% endfor %}
             {% endif %}
         </ol>

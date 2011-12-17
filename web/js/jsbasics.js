@@ -33,7 +33,7 @@
 		overlay.appendTo('body');
 		
 		if (options && options.loading) {
-			var loadingEl = $('<img class="centered" src="/Magend/web/images/loading.gif" />');
+			var loadingEl = $('<img class="centered" width="32" height="32" src="/Magend/web/images/loading.gif" />');
 			loadingEl.appendTo(overlay);
 			loadingEl.css({
 				marginTop: (overlay.height() - loadingEl.height()) / 2

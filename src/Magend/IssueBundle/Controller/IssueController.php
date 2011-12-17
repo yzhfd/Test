@@ -163,7 +163,7 @@ class IssueController extends Controller
     
     /**
      * @Route("/update_articleIds", name="issue_update_articleIds", defaults={"_format"="json"})
-     * @Method("post")
+     * @method("post")
      */
     public function updateArticleIdsAction()
     {
@@ -220,22 +220,63 @@ class IssueController extends Controller
      */
     public function articleListAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
-        
-        // @todo throw exception if issue not exist
-        
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+        /*
+        // no pager as we need layout
+        $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery('SELECT a FROM MagendArticleBundle:Article a WHERE :issueId MEMBER OF a.issues')
                     ->setParameter('issueId', $id);
         $tplVars = $this->getList('MagendArticleBundle:Article', $query);
         $tplVars['articles'] = $tplVars['entities'];
         unset($tplVars['entities']);
-        $tplVars['issue'] = $issue;
+        $tplVars['issue'] = $issue;*/
         
-        // @todo no pager?
+        return array('issue' => $issue);
+    }
+    
+    /**
+     * 
+     * @Route("/{id}/layout", name="issue_layout", requirements={"id"="\d+"}, defaults={"_format"="json"})
+     * 
+     */
+    public function layoutAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        if (!$issue) {
+            throw new \ Exception('issue ' . $id . ' not found');
+        }
+
+        $req = $this->getRequest();
+        $articles = $req->get('articles');
+        if (empty($articles)) {
+            return new Response('{ "error":1 }');
+        }
         
-        return $tplVars;
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT partial a.{id, pageIds} FROM MagendArticleBundle:Article a INDEX BY a.id WHERE :issueId MEMBER OF a.issues')
+                    ->setParameter('issueId', $id);
+        $arts = $query->getResult();
+        
+        $articleIds = array();
+        foreach ($articles as $articleId=>$pageIds) {
+            if (isset($arts[$articleId])) {
+                if ($pageIds != $arts[$articleId]->getPageIds()) {
+                    $arts[$articleId]->setPageIds($pageIds);
+                }
+            }
+            $articleIds[] = $articleId;
+        }
+        
+        if ($issue->getArticleIds() != $articleIds) {
+            $issue->setArticleIds($articleIds);
+        }
+        $em->flush();
+        return new Response('{ "success":1 }');
     }
     
     /**

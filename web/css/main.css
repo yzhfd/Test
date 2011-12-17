@@ -133,7 +133,7 @@ li.article ol.pages {
 	/*min-height: 96px;*/
 	height: 96px;/* consider border */
 	overflow: hidden;
-	background-color: gray; /* indicate no page inside */
+	background-color: #57A000; /* indicate no page inside */
 	border: 1px solid #333;
 }
 .expanded ol.pages {

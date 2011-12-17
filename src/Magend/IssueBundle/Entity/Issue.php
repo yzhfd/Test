@@ -314,7 +314,7 @@ class Issue
      */
     public function getArticleIds()
     {
-        return $this->articleIds;
+        return $this->articleIds ? explode(',', trim($this->articleIds, ',')) : array();
     }
     
     /**
@@ -326,7 +326,6 @@ class Issue
         $articles = array();
         $articleIds = $this->getArticleIds();
         if (!empty($articleIds)) {
-            $articleIds = explode(',', $articleIds);
             foreach ($articleIds as $articleId) {
                 $articles[$articleId] = $this->articles[$articleId];
             }

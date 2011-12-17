@@ -93,7 +93,7 @@ class ArticleController extends Controller
         $em->persist($article);
         $em->flush();
         
-        return new Response('');
+        return new Response('{"success":1}');
     }
 
     /**
@@ -133,9 +133,9 @@ class ArticleController extends Controller
                     $article->setArchitects($architects);
                 }
                 
-                $em->persist($article);
                 $em->flush();
                 
+                $articleId = $article->getId();
                 if ($req->isXmlHTTPRequest()) {
                     $response = new Response($articleId);
                     $response->headers->set('Content-Type', 'application/json');
@@ -204,7 +204,7 @@ class ArticleController extends Controller
                 
                 $issue->addArticle($article);
                 $articleIds = $issue->getArticleIds();
-                $articleIds = empty($articleIds) ? $articleId : $articleIds . ',' . $articleId;
+                $articleIds[] = $articleId;
                 $issue->setArticleIds($articleIds);
                 $em->persist($issue);
                 $em->flush();
