@@ -26,6 +26,7 @@
                     <th>分类名称</th>
                     <th>横版缩略图</th>
                     <th>竖版缩略图</th>
+                    <th>期刊数</th>
                     <th>创建时间</th>
                     <th>版权页</th>
                     <th>操作</th>
@@ -51,15 +52,16 @@
                     {% for magzine in magzines %}
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>{{ magzine.name }}</td>
+                        <td><a href="{{ path('magzine_issues', { 'id':magzine.id }) }}" title="查看所属期刊">{{ magzine.name }}</a></td>
                         <td>{% if magzine.landscapeCover is not null %}<a href="#" title="放大"><img width="128" height="96" src="{{ asset('uploads/' ~ magzine.landscapeCover) }}" /></a>{% endif %}</td>
                         <td>{% if magzine.portraitCover is not null %}<a href="#" title="放大"><img width="96" height="128" src="{{ asset('uploads/' ~ magzine.portraitCover) }}" /></a>{% endif %}</td>
+                        <td>{{ magzine.issues|length }}</td>
                         <td>{{ magzine.createdAt|date('Y-m-d H:i') }}</td>
                         <td>N/A</td>
                         <td>
                             <!-- Icons -->
                              <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
-                             <a href="#" title="Delete"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
+                             <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>

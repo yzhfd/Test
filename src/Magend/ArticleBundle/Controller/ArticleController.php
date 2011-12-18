@@ -21,6 +21,15 @@ use Magend\KeywordBundle\Entity\Keyword;
 class ArticleController extends Controller
 {
     /**
+     * 
+     * @Route("/{id}/del", name="article_del", requirements={"id" = "\d+"})
+     */
+    public function delAction($id)
+    {
+        
+    }
+    
+    /**
      * // , requirements={"id" = "\d+"}, defaults={"id" = null}
      * 
      * @Route("/new_pages", name="article_new_pages")

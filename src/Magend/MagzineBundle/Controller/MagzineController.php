@@ -2,6 +2,8 @@
 
 namespace Magend\MagzineBundle\Controller;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use Symfony\Component\HttpFoundation\Response;
 use Magend\BaseBundle\Controller\BaseController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -67,6 +69,26 @@ class MagzineController extends Controller
     public function editAction($id)
     {
         return $this->submit($id);
+    }
+    
+    /**
+     * 
+     * @Route("/{id}/del", name="magzine_del", requirements={"id"="\d+"})
+     * @param int $id
+     */
+    public function delAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $magzine = $repo->find($id);
+        if (!$magzine) {
+            throw new \ Exception('Magzine not found');
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($magzine);
+        $em->flush();
+        
+        return new RedirectResponse($this->generateUrl('magzine_list'));
     }
     
     /**

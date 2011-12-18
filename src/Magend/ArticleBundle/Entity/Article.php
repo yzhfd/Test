@@ -83,7 +83,13 @@ class Article
      * @var ArrayCollection
      * 
      * 
-     * @ORM\OneToMany(targetEntity="Magend\PageBundle\Entity\Page", mappedBy="article", indexBy="id", cascade={"persist", "remove"})
+     * @ORM\OneToMany(
+     *     targetEntity="Magend\PageBundle\Entity\Page",
+     *     mappedBy="article",
+     *     indexBy="id",
+     *     cascade={"persist", "remove"},
+     *     fetch="EXTRA_LAZY"
+     * )
      */
     private $pages;
     
@@ -331,7 +337,9 @@ class Article
         $pages = array();
         $pageIds = $this->getPageIds();
         foreach ($pageIds as $pageId) {
-            $pages[$pageId] = $this->pages[$pageId];
+            if (!empty($this->pages[$pageId])) {
+                $pages[$pageId] = $this->pages[$pageId];
+            }
         }
         return $pages;
     }

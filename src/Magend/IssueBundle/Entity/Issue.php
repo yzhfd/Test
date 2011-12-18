@@ -74,7 +74,12 @@ class Issue
      * cascade will not happen unless you define it
      * cascade={"persist", "remove"}
      * 
-     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", inversedBy="issues", indexBy="id")
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\ArticleBundle\Entity\Article",
+     *     inversedBy="issues",
+     *     indexBy="id",
+     *     fetch="EXTRA_LAZY"
+     * )
      * @ORM\JoinTable(name="mag_issue_article")
      */
     private $articles;
@@ -344,7 +349,9 @@ class Issue
         $articleIds = $this->getArticleIds();
         if (!empty($articleIds)) {
             foreach ($articleIds as $articleId) {
-                $articles[$articleId] = $this->articles[$articleId];
+                if (!empty($this->articles[$articleId])) {
+                    $articles[$articleId] = $this->articles[$articleId];
+                }
             }
         }
         

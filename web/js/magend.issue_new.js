@@ -39,15 +39,14 @@ var issue_new = function () {
 	});
 	
 	// pages
-	var pageDel = function(e){
+	$('a.pagedel').on('click', function(e){
 		var href = $(this).attr('href');
 		if (href != '#') {
 			$.get(href);
 		}
 		$(this).parent().remove();
 		return false;
-	};
-	$('a.pagedel').click(pageDel);
+	});
 	
 	var pages = $('#newPages').find('ol.pages');
 	pages.sortable({});
@@ -64,7 +63,6 @@ var issue_new = function () {
 	            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="' + file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 	            	page.appendTo(pages);
 	            	page.data('file', file);
-	            	page.find('a.pagedel').click(pageDel);
 	            };
 	            
 	            reader.readAsDataURL(file);

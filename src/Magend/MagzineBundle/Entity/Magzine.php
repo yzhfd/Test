@@ -74,7 +74,13 @@ class Magzine
      * @var ArrayCollection
      * 
      * 
-     * @ORM\OneToMany(targetEntity="Magend\IssueBundle\Entity\Issue", mappedBy="issue", indexBy="id", cascade={"persist", "remove"})
+     * @ORM\OneToMany(
+     *     targetEntity="Magend\IssueBundle\Entity\Issue",
+     *     mappedBy="magzine",
+     *     indexBy="id",
+     *     cascade={"persist", "remove"},
+     *     fetch="EXTRA_LAZY"
+     * )
      */
     private $issues;
 
@@ -163,6 +169,11 @@ class Magzine
     public function setIssues($issues)
     {
         $this->issues = new ArrayCollection($issues);
+    }
+    
+    public function getNbIssues()
+    {
+        return $this->issues->count();
     }
 
     /**

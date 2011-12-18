@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$('a[rel*=dialog]').live('click', function() {
+	$('a[rel*=dialog]').on('click', function() {
 	    var url = this.href;
 	    var dialog = $("#dialog");
 	    if ($("#dialog").length == 0) {
@@ -36,7 +36,12 @@ $(document).ready(function(){
 	
 	$('.alert-message').alert();
 	
-	$('select.urlSelect').change(function(e){
+	$('select.urlSelect').on('change', function(e){
 		window.location = $(this).val();
+	});
+	
+	// @todo not only delete
+	$('a[rel*=confirm]').on('click', function(e){
+		return confirm('确定删除吗？');
 	});
 });

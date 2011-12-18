@@ -43,7 +43,7 @@
                     </ul>
                 </li>
                 
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_article_list', 'issue_new', 'issue_edit'] %}current{% endif %}">期刊</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit'] %}current{% endif %}">期刊</a>
                     <ul>
                         <li><a {% if currentRoute == 'issue_list' %}class="current"{% endif %} href="{{ path('issue_list') }}">查看</a></li>
                         <li><a href="#">文章检索</a></li>
@@ -66,7 +66,6 @@
             </noscript>
             
             <h2>{% block contentTitle %}{% endblock %}</h2>
-            <p id="page-intro">Magend Powered</p>
             <!--<div class="page-header">
                 <ul class="mybread">
                     {% block breadcrumb %}<li><a href="#">Magend</a> <span class="divider">/</span></li>{% endblock %}
