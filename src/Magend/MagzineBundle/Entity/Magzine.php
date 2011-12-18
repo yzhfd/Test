@@ -2,6 +2,7 @@
 
 namespace Magend\MagzineBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -68,6 +69,14 @@ class Magzine
      * @var File
      */
     public $portraitCoverImage;
+    
+    /**
+     * @var ArrayCollection
+     * 
+     * 
+     * @ORM\OneToMany(targetEntity="Magend\IssueBundle\Entity\Issue", mappedBy="issue", indexBy="id", cascade={"persist", "remove"})
+     */
+    private $issues;
 
 
     /**
@@ -78,6 +87,16 @@ class Magzine
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __construct()
+    {
+        $this->issues = new ArrayCollection();
+    }
+    
+    public function __toString()
+    {
+        return $this->name;
     }
     
     /**
@@ -129,6 +148,21 @@ class Magzine
         if ($this->getPortraitCover()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitCover());
         }
+    }
+    
+    /**
+     * Get all issues
+     * 
+     * @return ArrayCollection
+     */
+    public function getIssues()
+    {
+        return $this->issues;
+    }
+    
+    public function setIssues($issues)
+    {
+        $this->issues = new ArrayCollection($issues);
     }
 
     /**

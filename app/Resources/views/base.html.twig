@@ -43,7 +43,7 @@
                     </ul>
                 </li>
                 
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['issue_list', 'issue_article_list', 'issue_new', 'issue_edit'] %}current{% endif %}">期刊</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_article_list', 'issue_new', 'issue_edit'] %}current{% endif %}">期刊</a>
                     <ul>
                         <li><a {% if currentRoute == 'issue_list' %}class="current"{% endif %} href="{{ path('issue_list') }}">查看</a></li>
                         <li><a href="#">文章检索</a></li>

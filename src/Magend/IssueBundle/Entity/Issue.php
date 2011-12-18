@@ -134,6 +134,13 @@ class Issue
      * @var File
      */
     public $coverImage;
+    
+    /**
+     * @var Magzine
+     * 
+     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="articles")
+     */
+    private $magzine;    
 
 
     public function __construct()
@@ -186,6 +193,16 @@ class Issue
         if ($this->getCover()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
         }
+    }
+    
+    public function getMagzine()
+    {
+        return $this->magzine;
+    }
+    
+    public function setMagzine($magzine)
+    {
+        $this->magzine = $magzine;
     }
 
     /**

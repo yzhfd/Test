@@ -268,8 +268,9 @@ class IssueController extends Controller
                 if ($pageIds != $arts[$articleId]->getPageIds()) {
                     $arts[$articleId]->setPageIds($pageIds);
                 }
+                
+                $articleIds[] = $articleId;
             }
-            $articleIds[] = $articleId;
         }
         
         if ($issue->getArticleIds() != $articleIds) {

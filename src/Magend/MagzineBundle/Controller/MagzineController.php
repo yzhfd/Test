@@ -30,6 +30,27 @@ class MagzineController extends Controller
     
     /**
      * 
+     * @Route("/{id}/issues", name="magzine_issues", requirements={"id"="\d+"})
+     * @Template()
+     */
+    public function issuesAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $cls = 'MagendIssueBundle:Issue';
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId")
+                    ->setParameter('magId', $id);
+        $arr = $this->getList($cls, $query);
+        $arr['issues'] = $arr['entities'];
+        unset($arr['entities']);
+        
+        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $arr['magzines'] = $repo->findAll();
+        
+        return $arr;
+    }
+    
+    /**
+     * 
      * @Route("/new", name="magzine_new")
      * @Template()
      */

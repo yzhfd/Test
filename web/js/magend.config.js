@@ -34,5 +34,9 @@ $(document).ready(function(){
 		availableTags: ['sexy', 'girl']
 	});
 	
-	$(".alert-message").alert();
+	$('.alert-message').alert();
+	
+	$('select.urlSelect').change(function(e){
+		window.location = $(this).val();
+	});
 });
