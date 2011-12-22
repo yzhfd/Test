@@ -7,12 +7,27 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
+        mag_bundle:
+            id: magend.user_manager
         in_memory:
             users:
                 user:  { password: userpass, roles: [ 'ROLE_USER' ] }
                 admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
+        main:
+            pattern: ^/
+            form_login:
+                provider: mag_bundle
+                # default_target_path: /login
+            logout: true
+            anonymous: true
+            remember_me:
+                key:      this_is_secret_ingredient_from_iMagShow
+                lifetime: 2592000 # 30days
+                path:     /
+                domain:   ~ # Defaults to the current domain from $_SERVER
+
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false

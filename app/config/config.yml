@@ -73,6 +73,20 @@ swiftmailer:
 jms_security_extra:
     secure_controllers:  true
     secure_all_services: false
+    
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb'
+    firewall_name: main
+    user_class: Magend\UserBundle\Entity\User
+    #from_email:
+    #    address: admin@paiqoo.com
+    #    sender_name: Paiqoo Admin
+    #registration:
+    #    form:
+    #        type: pq_user_registration
+    #        handler: pq.registration.form.handler
+    #    confirmation:
+    #        enabled: false
 
 avalanche_imagine:
     filters:

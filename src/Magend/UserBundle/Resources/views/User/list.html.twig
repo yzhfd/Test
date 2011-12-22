@@ -1,0 +1,69 @@
+{% extends '::base.html.twig' %}
+
+{% block contentTitle %}用户列表{% endblock %}
+
+{% block main %}
+
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>分用户表</h3>
+            <!-- <div style="padding-top: 6px">
+                <a rel="dialog" class="btn info" href="{{ path('magzine_new') }}">添加杂志</a>
+            </div> -->
+            <!-- href must be unique and match the id of target div -->
+            <!--<ul class="content-box-tabs">
+                <li><a href="#tab1" class="default-tab">Table</a></li>
+                <li><a href="#tab2">Forms</a></li>
+            </ul>-->
+            <div class="clear"></div>
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content">
+            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+            <table>
+                <thead><tr>
+                    <th><input class="check-all" type="checkbox" /></th>
+                    <th>用户名</th>
+                    <th>邮箱</th>
+                    <th>注册时间</th>
+                    <th>操作</th>
+                </tr></thead>
+             
+                <tfoot><tr>
+                    <td colspan="6">
+                        <div class="bulk-actions align-left">
+                            <select name="dropdown" class="small">
+                                <option value="option1">选择...</option>
+                                <!--<option value="option2">编辑</option>-->
+                                <option value="option3">删除</option>
+                            </select>
+                            <a class="button" href="#">执行</a>
+                        </div>
+                        
+                        {% if pager.haveToPaginate() %}{{ pagerfanta(pager, 'magend') }}{% endif %}
+                        <div class="clear"></div>
+                    </td>
+                </tr></tfoot>
+             
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <!-- Icons -->
+                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':user.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('user_del', { 'id':user.id }) }}" title="删除">删除</a> 
+                             <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+                    
+{% endblock %}

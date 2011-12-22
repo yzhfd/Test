@@ -3,7 +3,6 @@
 namespace Magend\MagzineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use Symfony\Component\HttpFoundation\Response;
 use Magend\BaseBundle\Controller\BaseController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

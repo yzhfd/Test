@@ -17,6 +17,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Magend\IssueBundle\MagendIssueBundle(),
             new Magend\ArticleBundle\MagendArticleBundle(),
             new Magend\PageBundle\MagendPageBundle(),
@@ -29,6 +30,7 @@ class AppKernel extends Kernel
             new Magend\InstituteBundle\MagendInstituteBundle(),
             new Magend\BaseBundle\MagendBaseBundle(),
             new Magend\FeedbackBundle\MagendFeedbackBundle(),
+            new Magend\UserBundle\MagendUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
