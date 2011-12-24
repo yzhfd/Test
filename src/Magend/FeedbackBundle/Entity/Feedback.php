@@ -20,7 +20,14 @@ class Feedback
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
+    
+    /**
+     * 
+     * @var text
+     * 
+     * @ORM\Column(name="content", type="text")
+     */
+    private $content;
 
     /**
      * Get id

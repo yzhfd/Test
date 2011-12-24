@@ -214,7 +214,7 @@ ol, ul { list-style: none; }
 /*page editor*/
 #page_editor {
 	height: 640px;
-	padding-left: 30px;
+	/*padding-left: 30px;*/
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */

@@ -81,7 +81,7 @@
                             <h5>=</h5>
                             <ol class="pages">
                                 {% for page in article.pages %}
-                                    <li class="page" rel="{{ page.id }}"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></li>
+                                    <li class="page" rel="{{ page.id }}"><a href="{{ path('page_edit', { 'id':page.id }) }}" title="双击编辑热点"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
                                 {% endfor %}
                             </ol>
                         </li>

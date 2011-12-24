@@ -1,23 +1,21 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}
-	单页编辑
-{% endblock %}
+{% block title %}单页编辑{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="active">编辑热点</li>
-{% endblock %}
+{# belongs to which article, issue and magazine #}
 
 {% block main %}
 <div id="page_editor">
-    <input type="checkbox" id="selenable" />
+    <!--<input type="checkbox" id="selenable" />
     <div id="info_panel">
         
+    </div>-->
+    <div style="width: 768px;">
+        <button id="saveall" class="btn primary">保存</button>
+        <button id="undo" class="btn">撤销</button>
+        <button id="redo" class="btn">重做</button>
+        <button id="flushall" class="btn danger" style="float: right;">清空</button>
     </div>
-    <button id="flushall" class="btn">清空</button>
-    <button id="undo" class="btn">Undo</button>
-    <button id="redo" class="btn">Redo</button>
     <p/>
     <div id="hot_dialog">
     	<select class="span2" id="hottype">
