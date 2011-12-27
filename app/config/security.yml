@@ -19,9 +19,10 @@ security:
     firewalls:
         main:
             pattern: ^/
+            provider: chain_provider
             form_login:
-                provider: chain_provider
-                # default_target_path: /login
+                always_use_default_target_path: true
+                default_target_path: /dashboard
             logout: true
             anonymous: true
             remember_me:
@@ -51,5 +52,7 @@ security:
             #    realm: "Secured Demo Area"
 
     access_control:
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        #- { path: ^/_internal, roles: IS_AUTHENTICATED_ANONYMOUSLY, ip: 127.0.0.1 }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_wdt, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_profiler, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/.*, roles: ROLE_ADMIN }

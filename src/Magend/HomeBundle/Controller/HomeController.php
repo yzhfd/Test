@@ -9,13 +9,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * 
- * @Route("/");
  * @author Kail
  */
 class HomeController extends Controller
 {
     /**
-     * @Route("", name="home")
+     * @Route("/dashboard", name="home")
      * @Template()
      */
     public function indexAction()
