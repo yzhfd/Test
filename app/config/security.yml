@@ -13,8 +13,8 @@ security:
             id: magend.user_manager
         in_memory:
             users:
-                erick:  { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
-                kail: { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
+                Erick:  { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
+                Kail: { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
         main:

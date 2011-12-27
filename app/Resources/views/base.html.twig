@@ -27,9 +27,9 @@
           
             <!-- Sidebar Profile links -->
             <div id="profile-links">
-                欢迎回来, <a href="#" title="Edit your profile">Erick</a>
+                欢迎回来, {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}<a href="#" title="编辑个人信息">{{ app.user.username }}</a>{% else %}<a href="#" title="关于游客">Guest</a>{% endif %}
                 <br />
-                <a href="#" title="View the Site">{{ "now"|date("Y年m月d日") }}</a> | <a href="#" title="Sign Out">退出</a>
+                <a href="#" title="View the Site">{{ "now"|date("Y年m月d日") }}</a> | <a href="{{ path('fos_user_security_logout') }}" title="登出">退出</a>
             </div>
             {% set currentRoute = app.request.get('_route') %}
             <ul id="main-nav">
