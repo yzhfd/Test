@@ -36,10 +36,17 @@ class MagzineController extends Controller
      */
     public function issuesAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
         $cls = 'MagendIssueBundle:Issue';
+        $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId")
                     ->setParameter('magId', $id);
+        if ($this->getRequest()->isXmlHTTPRequest()) {
+            $response = $this->container->get('templating')->renderResponse(
+                'MagendMagzineBundle:Magzine:issueOptions.html.twig',
+                array('issues' => $query->getResult()));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        }
         $arr = $this->getList($cls, $query);
         $arr['issues'] = $arr['entities'];
         unset($arr['entities']);

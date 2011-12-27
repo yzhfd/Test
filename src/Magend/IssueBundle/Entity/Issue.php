@@ -143,7 +143,7 @@ class Issue
     /**
      * @var Magzine
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
      */
     private $magzine;    
 

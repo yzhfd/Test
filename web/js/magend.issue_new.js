@@ -10,6 +10,11 @@ var issue_new = function () {
 		}
 	});
 	
+	$('#magsel').change(function(){
+		var opt = $(this).find('option:selected');
+		$('#issuesel').load(opt.val());
+	});
+	
 	$('#architectsel, #keywordsel').change(function(){
 		var tag = $(this).find('option:selected').text();
 		// make sure html structured

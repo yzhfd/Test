@@ -2,7 +2,7 @@
 
 namespace Magend\FeedbackBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Magend\BaseBundle\Controller\BaseController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -19,7 +19,9 @@ class FeedbackController extends Controller
      */
     public function listAction()
     {
-        
-        return array();
+        $arr = $this->getList('MagendFeedbackBundle:Feedback');
+        $arr['feedbacks'] = $arr['entities'];
+        unset($arr['entities']);
+        return $arr;
     }
 }

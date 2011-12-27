@@ -94,6 +94,24 @@ class Article
     private $pages;
     
     /**
+     * Latitude
+     * 
+     * @var float $lat
+     * @ORM\Column(name="lat", type="float")
+     */
+    private $lat = 0.0;
+    
+    /**
+     * Longitude
+     * 
+     * @var float $lng
+     * @ORM\Column(name="lng", type="float")
+     */
+    private $lng = 0.0;
+    
+    // @todo altitude, not supported by google map directly
+    
+    /**
      * @var integer $nbShared
      *
      * @ORM\Column(name="nb_shared", type="integer")
@@ -371,5 +389,75 @@ class Article
             return null;
         }
         return $firstPage->getLandscapeImg();
+    }
+
+    /**
+     * Set lat
+     *
+     * @param float $lat
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+    }
+
+    /**
+     * Get lat
+     *
+     * @return float 
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * Set lng
+     *
+     * @param float $lng
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+    }
+
+    /**
+     * Get lng
+     *
+     * @return float 
+     */
+    public function getLng()
+    {
+        return $this->lng;
+    }
+
+    /**
+     * Add issues
+     *
+     * @param Magend\IssueBundle\Entity\Issue $issues
+     */
+    public function addIssue(\Magend\IssueBundle\Entity\Issue $issues)
+    {
+        $this->issues[] = $issues;
+    }
+
+    /**
+     * Get issues
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getIssues()
+    {
+        return $this->issues;
+    }
+
+    /**
+     * Add pages
+     *
+     * @param Magend\PageBundle\Entity\Page $pages
+     */
+    public function addPage(\Magend\PageBundle\Entity\Page $pages)
+    {
+        $this->pages[] = $pages;
     }
 }

@@ -23,6 +23,20 @@ class Feedback
     private $id;
     
     /**
+     * @var string $userId
+     * 
+     * @ORM\Column(name="userId", type="integer", nullable=true)
+     */
+    private $userId;
+
+    /**
+     * @var string $email
+     * 
+     * @ORM\Column(name="email", type="string", nullable=true)
+     */
+    private $email;
+    
+    /**
      * 
      * @var text
      * 
@@ -67,5 +81,105 @@ class Feedback
         } else {
             $this->updatedAt = $now;
         }
+    }
+
+    /**
+     * Set userId
+     *
+     * @param integer $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return integer 
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set content
+     *
+     * @param text $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * Get content
+     *
+     * @return text 
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param datetime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return datetime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param datetime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return datetime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

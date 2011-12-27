@@ -155,31 +155,27 @@ class ArticleController extends Controller
             }
         }
         
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $mags = $magRepo->findAll();
         $issue = $article->getIssue();
         $issue->getId();
         return array(
             'architects' => $ats,
-            'keywords' => $kws,
-            'issue'   => $issue,
-            'article' => $article,
-            'form'    => $form->createView()
+            'keywords'   => $kws,
+            'issue'      => $issue,
+            'magzines'   => $mags,
+            'article'    => $article,
+            'form'       => $form->createView()
         );
     }
     
     /**
      * 
-     * @Route("/issue/{id}/new", name="article_new", requirements={"id" = "\d+"})
+     * @Route("/new", name="article_new")
      * @Template()
      */
-    public function newAction($id)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        $issue = $repo->find($id);
-        if (empty($issue)) {
-            throw new \ Exception('Issue not found');
-        }
-        
+    public function newAction()
+    {        
         $article = new Article();
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
@@ -193,6 +189,13 @@ class ArticleController extends Controller
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
+                $issueId = $req->get('issueId');
+                $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+                $issue = $repo->find($issueId);
+                if (empty($issue)) {
+                    throw new \ Exception('Issue not found');
+                }
+                
                 $kwText = trim($article->getKeywordsText());
                 if (!empty($kwText)) {
                     $keywords = $kwRepo->toEntities(explode(',', $kwText));
@@ -206,6 +209,7 @@ class ArticleController extends Controller
                 }
                 
                 $article->setIssue($issue);
+                $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($article);
                 $em->flush();
                 
@@ -228,12 +232,14 @@ class ArticleController extends Controller
             }
         }
         
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $mags = $magRepo->findAll();
         return array(
             'architects' => $ats,
-            'keywords' => $kws,
-            'issue'   => $issue,
-            'article' => $article,
-            'form'    => $form->createView()
+            'keywords'   => $kws,
+            'magzines'   => $mags,
+            'article'    => $article,
+            'form'       => $form->createView()
         );
     }
 
