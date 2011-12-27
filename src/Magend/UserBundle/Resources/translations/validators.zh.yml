@@ -1,0 +1,13 @@
+
+Please enter an email: 请输入邮箱
+The email is already used: 邮箱已存在
+The email is too short: 邮箱太短
+The email is too long: 邮箱太长
+The email is not valid: 请输入正确的邮箱地址
+
+Please enter a password: 请输入密码
+The password is too short: 密码太短
+
+Please enter a new password: 请输入一个新密码
+The new password is too short: 新密码太短
+This value is not valid: 输入值无效

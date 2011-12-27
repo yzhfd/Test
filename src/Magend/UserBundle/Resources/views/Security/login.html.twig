@@ -1,20 +1,72 @@
-{% extends "FOSUserBundle::layout.html.twig" %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-{% block fos_user_content %}
-{% if error %}
-    <div>{{ error }}</div>
-{% endif %}
-
-<form action="{{ path("fos_user_security_check") }}" method="post">
-    <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" />
-
-    <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
-    <input type="password" id="password" name="_password" />
-
-    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-    <label for="remember_me">{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
-
-    <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
-</form>
-{% endblock fos_user_content %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
+    <title>iMagShow 后台 | 登入</title>
+    <link rel="stylesheet" href="{{ asset('css/simpla/reset.css') }}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ asset('css/simpla/style.css') }}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ asset('css/simpla/invalid.css') }}" type="text/css" media="screen" />
+    <style type="text/css">
+        .text-input {
+            color: #333333;
+            font-size: 13px;
+            padding: 6px;
+        }
+        #_submit {
+            margin-top: 20px !important;
+            width: auto !important;
+            background: url("../images/simpla/bg-button-green.gif") repeat-x scroll left top #459300 !important;
+            border: 1px solid #459300 !important;
+            border-radius: 4px 4px 4px 4px;
+            color: #FFFFFF !important;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Verdana,Arial,sans-serif;
+            font-size: 11px !important;
+            padding: 4px 7px !important;
+        }
+    </style>
+</head>
+  
+    <body id="login">
+        
+        <div id="login-wrapper" class="png_bg">
+            <div id="login-top">
+                <h1>iMagShow 后台</h1>
+                <!-- <img id="logo" src="resources/images/logo.png" alt="Simpla Admin logo" /> -->
+            </div>
+            
+            <div id="login-content">
+                <form action="{{ path("fos_user_security_check") }}" method="post">
+                
+                    <div class="notification information png_bg">
+                        {% if error %}
+                            <div>{{ error|trans }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <p>
+                        <label>用户名</label>
+                        <input class="text-input" type="text" id="username" name="_username" value="{{ last_username }}" />
+                    </p>
+                    <div class="clear"></div>
+                    <p>
+                        <label>密码</label>
+                        <input class="text-input" type="password" id="password" name="_password" />
+                    </p>
+                    <div class="clear"></div>
+                    <p id="remember-password">
+                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />记住我
+                    </p>
+                    <div class="clear"></div>
+                    <p>
+                        <input type="submit" id="_submit" name="_submit" value="登 入" />
+                    </p>
+                    
+                </form>
+            </div> <!-- End #login-content -->
+            
+        </div> <!-- End #login-wrapper -->
+  </body>
+</html>

@@ -7,18 +7,20 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
+        chain_provider:
+            providers: [mag_bundle, in_memory]
         mag_bundle:
             id: magend.user_manager
         in_memory:
             users:
-                user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+                erick:  { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
+                kail: { password: 5dscape2011, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
         main:
             pattern: ^/
             form_login:
-                provider: mag_bundle
+                provider: chain_provider
                 # default_target_path: /login
             logout: true
             anonymous: true
