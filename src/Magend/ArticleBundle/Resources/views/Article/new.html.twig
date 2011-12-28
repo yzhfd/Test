@@ -1,5 +1,10 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+{% endblock %}
+
 {% block title %}{% if article.id %}编辑文章{% else %}创建新文章{% endif %}{% endblock %}
 
 {% form_theme form '::fields.html.twig' %}

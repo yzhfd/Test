@@ -14,6 +14,8 @@ class ArticleType extends AbstractType
             ->add('title')
             ->add('keywordsText')
             ->add('architectsText')
+            ->add('lat')
+            ->add('lng')
         ;
     }
 

@@ -14,6 +14,9 @@ var issue_new = function () {
 		var opt = $(this).find('option:selected');
 		$('#issuesel').load(opt.val());
 	});
+	if ($('#issuesel').find('option').length == 0) {
+		$('#magsel').change();
+	}
 	
 	$('#architectsel, #keywordsel').change(function(){
 		var tag = $(this).find('option:selected').text();
@@ -42,6 +45,28 @@ var issue_new = function () {
 		
 		return false;
 	});
+	
+	// map & lat,lng
+    var map = new google.maps.Map($("#map_canvas")[0], {
+    	zoom: 2,
+    	center: new google.maps.LatLng(48.108, 23.417),
+    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	scrollwheel: false
+    });
+    var marker = null;
+    google.maps.event.addListener(map, 'click', function(event) {
+    	var latlng = event.latLng;
+    	if (marker) {
+    		marker.setMap(null);
+    	}
+    	marker = new google.maps.Marker({
+    		position: latlng, 
+    		map: map
+    	});
+    	$('#latdiv  input').val(latlng.lat());
+    	$('#lngdiv  input').val(latlng.lng());
+    	  //map.setCenter(event.latLng);
+    });
 	
 	// pages
 	$('a.pagedel').on('click', function(e){
