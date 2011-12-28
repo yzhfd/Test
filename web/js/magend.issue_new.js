@@ -54,6 +54,16 @@ var issue_new = function () {
     	scrollwheel: false
     });
     var marker = null;
+    var lat = $('#latdiv  input').val();
+    var lng = $('#lngdiv  input').val();
+    if (lat != 0 && lng != 0) { // @todo what if lat, lng is zero
+    	var pos = new google.maps.LatLng(lat, lng);
+    	marker = new google.maps.Marker({
+    		position: pos,
+    		map: map
+    	});
+    	map.setCenter(pos);
+    }
     google.maps.event.addListener(map, 'click', function(event) {
     	var latlng = event.latLng;
     	if (marker) {

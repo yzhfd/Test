@@ -215,6 +215,22 @@ ol, ul { list-style: none; }
 #page_editor {
 	height: 640px;
 	/*padding-left: 30px;*/
+	position: relative;
+}
+#hotlib {
+	position: absolute;
+	right: 40px;
+	background-color: #CCC;
+	width: 120px;
+	height: 300px;
+}
+.hotobj {
+	float: left;
+	margin: 5px 0 0 5px;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	background-color: #DDD;
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
