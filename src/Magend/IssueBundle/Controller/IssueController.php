@@ -48,9 +48,12 @@ class IssueController extends Controller
             }
         }
         
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $mags = $magRepo->findAll();
         return array(
-            'issue' => $issue,
-            'form'  => $form->createView()
+            'issue'    => $issue,
+            'magzines' => $mags,
+            'form'     => $form->createView()
         );
     }
     
@@ -70,9 +73,12 @@ class IssueController extends Controller
             }
         }
         
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $mags = $magRepo->findAll();
         return array(
-            'issue' => $issue,
-            'form'  => $form->createView()
+            'issue'    => $issue,
+            'magzines' => $mags,
+            'form'     => $form->createView()
         );
     }
     
@@ -86,6 +92,13 @@ class IssueController extends Controller
         $form->bindRequest($req);
         if ($form->isValid()) {                
             $em = $this->getDoctrine()->getEntityManager();
+            $magzineId = $req->get('magzineId');
+            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $mag = $magRepo->find($magzineId);
+            if (empty($mag)) {
+                throw new \ Exception('magzine ' . $magzineId . ' not found');
+            }
+            $issue->setMagzine($mag);
             $em->persist($issue);
             $em->flush();
             
