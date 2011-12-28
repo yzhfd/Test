@@ -57,10 +57,10 @@
                     </ul>
                 </li>
                 
-                <li><a href="#" class="nav-top-item">普通用户</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['user_list', 'feedback_list'] %}current{% endif %}">普通用户</a>
                     <ul>
-                        <li><a href="#">管理</a></li>
-                        <li><a href="#">用户反馈</a></li>
+                        <li><a {% if currentRoute == 'user_list' %}class="current"{% endif %} href="{{ path('user_list') }}">管理</a></li>
+                        <li><a {% if currentRoute == 'feedback_list' %}class="current"{% endif %} href="{{ path('feedback_list') }}">用户反馈</a></li>
                     </ul>
                 </li>
             </ul> <!-- End #main-nav -->
