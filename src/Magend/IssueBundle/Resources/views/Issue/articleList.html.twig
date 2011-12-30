@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}magzine > issue {% endblock %}
+{% block contentTitle %}<a href="{{ path('magzine_issues', { 'id':issue.magzine.id }) }}">{{ issue.magzine.name }}</a> &gt; {{ issue.title }} {% endblock %}
 
 {%block main %}
     <ul class="shortcut-buttons-set">

@@ -148,6 +148,7 @@ class IssueController extends Controller
      */
     public function listAction()
     {
+        // @todo get magzine that is previously selected (or cached)
         $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery('SELECT m.id FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC');
         $query->setMaxResults(1);
