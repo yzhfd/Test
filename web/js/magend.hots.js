@@ -170,7 +170,7 @@ var HotView = Backbone.View.extend({
 var PageCanvas = Backbone.View.extend({
 	events: {
 		"mousedown": "mousedown",
-		"mousemove": "mousemove",
+		//"mousemove": "mousemove",
 		"mouseup": "mouseup"
 	},
     initialize: function () {
@@ -270,7 +270,7 @@ var PageCanvas = Backbone.View.extend({
 			});
 		}
 		
-		this._beginDraw(e);
+		// this._beginDraw(e);
 	},
 	mousemove: function (e) {
 		this._draw(e);
