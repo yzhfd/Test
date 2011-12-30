@@ -2,6 +2,7 @@
 
 namespace Magend\IssueBundle\Controller;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -33,16 +34,15 @@ class IssueController extends Controller
     }
     
     /**
+     * Abstract new and edit actions
      * 
-     * @Route("/new", name="issue_new")
-     * @Template()
+     * @param Issue $issue
      */
-    public function newAction()
+    private function _formRet($issue)
     {
-        $issue = new Issue();
         $form  = $this->createForm(new IssueType(), $issue);
         if ($this->getRequest()->getMethod() == 'POST') {
-            $ret = $this->submit($form, $issue);
+            $ret = $this->_submit($form, $issue);
             if ($ret) {
                 return $ret;
             }
@@ -54,7 +54,17 @@ class IssueController extends Controller
             'issue'    => $issue,
             'magzines' => $mags,
             'form'     => $form->createView()
-        );
+        );        
+    }
+    
+    /**
+     * 
+     * @Route("/new", name="issue_new")
+     * @Template()
+     */
+    public function newAction()
+    {
+        return $this->_formRet(new Issue());
     }
     
     /**
@@ -65,28 +75,14 @@ class IssueController extends Controller
     public function editAction($id)
     {
         $issue = $this->_findIssue($id);
-        $form  = $this->createForm(new IssueType(), $issue);
-        if ($this->getRequest()->getMethod() == 'POST') {
-            $ret = $this->submit($form, $issue);
-            if ($ret) {
-                return $ret;
-            }
-        }
-        
-        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $mags = $magRepo->findAll();
-        return array(
-            'issue'    => $issue,
-            'magzines' => $mags,
-            'form'     => $form->createView()
-        );
+        return $this->_formRet($issue);
     }
     
     /**
      * For new and edit
      * 
      */
-    private function submit($form, $issue)
+    private function _submit($form, $issue)
     {
         $req = $this->getRequest();
         $form->bindRequest($req);
@@ -149,29 +145,16 @@ class IssueController extends Controller
     /**
      * 
      * @Route("/list", name="issue_list")
-     * @Template()
      */
     public function listAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $qb = $em->createQueryBuilder()->select('s')->from('MagendIssueBundle:Issue', 's')->orderBy('s.createdAt', 'desc');
-        $adapter = new DoctrineORMAdapter($qb);
-        $pager = new Pagerfanta($adapter);
-        
-        $page = $this->getRequest()->get('page', 1);
-        $issues = array();
-        try {
-            $pager->setMaxPerPage(10);
-            $pager->setCurrentPage($page);
-            $issues = $pager->getCurrentPageResults();
-        } catch (OutOfRangeCurrentPageException $e) {
-            // simply no entities
-        }
-        
-        return array(
-            'pager' => $pager,
-            'issues' => $issues
-        );
+        $query = $em->createQuery('SELECT m.id FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC');
+        $query->setMaxResults(1);
+        $magId = $query->getSingleScalarResult();
+        return new RedirectResponse($this->generateUrl('magzine_issues', array(
+            'id' => $magId
+        )));
     }
     
     /**

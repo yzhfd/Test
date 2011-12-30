@@ -11,8 +11,9 @@
             <h3>期刊列表</h3>
             <div style="padding-top: 6px">
                 <select id="magtype_sel" class="medium">
-                    <option value="1">世界建筑杂志</option>
-                    <option value="2">建筑师</option>
+                {% for magzine in magzines %}
+                <option value="{{ magzine.id }}">{{ magzine.name }}</option>
+                {% endfor %}
                 </select>
                 <a rel="dialog" class="btn info" href="{{ path('issue_new') }}">添加期刊</a>
             </div>

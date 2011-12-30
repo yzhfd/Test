@@ -62,7 +62,7 @@
                         <td>{{ issue.serial }}</td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
                         <td class="thumbup"><a class="media" href="#"><img width="120" height="160" src="{% if issue.cover is not empty %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" /></a></td>
-                        <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">10</a></td>
+                        <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.articles|length }}</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
                         <td>

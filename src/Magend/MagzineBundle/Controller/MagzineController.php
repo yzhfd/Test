@@ -38,7 +38,7 @@ class MagzineController extends Controller
     {
         $cls = 'MagendIssueBundle:Issue';
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId")
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
                     ->setParameter('magId', $id);
         if ($this->getRequest()->isXmlHTTPRequest()) {
             $response = $this->container->get('templating')->renderResponse(
