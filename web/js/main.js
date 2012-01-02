@@ -54,6 +54,7 @@ $(function () {
 			accept: '#hotlib > li',
 			drop: function(event, ui) {
 				// @todo set position, type etc
+				console.log(ui.offset.left - $(this).offset().left);
 				pageCanvas.hots.add(new Hot());
 			}
 		});
