@@ -47,15 +47,21 @@ $(function () {
 		$('li', '#hotlib').draggable({
 			revert: "invalid", // when not dropped, the item will revert back to its initial position
 			containment: 'document',
-			helper: "clone",
+			helper: function (){
+				return $('<div style="width:80px; height:80px; background-color:gray;" />')
+			},
 			cursor: "move"
 		});
 		$('#page_canvas').droppable({
 			accept: '#hotlib > li',
 			drop: function(event, ui) {
-				// @todo set position, type etc
-				console.log(ui.offset.left - $(this).offset().left);
-				pageCanvas.hots.add(new Hot());
+				// use ui.draggable to determine what type it is
+				pageCanvas.hots.add(new Hot({
+					x: Math.max(ui.offset.left - $(this).offset().left, 0),
+					y: Math.max(ui.offset.top - $(this).offset().top, 0),
+					width: $(ui.helper).width(),
+					height: $(ui.helper).height()
+				}));
 			}
 		});
 		

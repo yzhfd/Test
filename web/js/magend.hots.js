@@ -141,7 +141,7 @@ var HotView = Backbone.View.extend({
     	}
     },
     edit: function () {
-    	$('#hot_dialog').dialog({show:'fade'});
+    	$('#hot_dialog').dialog({show:'fade', zIndex:2000});
     },
     resize: function () {
     	$(this.el).css({
