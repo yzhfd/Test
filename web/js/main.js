@@ -65,8 +65,24 @@ $(function () {
 			}
 		});
 		
+		// @todo landscape or portrait
 		$('#saveall').click(function () {
-			// @todo save
+			var pageId = $('#pageid').text();
+			
+			var hots = [];
+			pageCanvas.hots.each(function(hot){
+				delete hot.attributes['id'];
+				hots.push(hot.attributes);
+			});
+			
+			$.ajax({
+				url: 'http://localhost/Magend/web/app_dev.php/page/savehots',
+				type: 'POST',
+				data: { 'hots':hots, 'id':pageId },
+				success: function (response) {
+					console.log(response);
+				}
+			});
 		});		
 		
 		$('#flushall').click(function () {

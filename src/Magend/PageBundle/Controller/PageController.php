@@ -188,4 +188,24 @@ class PageController extends Controller
 
         return $tplVars;
     }
+    
+    /**
+     * 
+     * Save hots
+     * only position and dimension
+     * 
+     * @Route("/savehots", name="page_hots_save", defaults={"_format" = "json"})
+     */
+    public function saveHotsAction()
+    {
+        $req = $this->getRequest();
+        $hots = $req->get('hots');
+        if (empty($hots)) {
+            return new Response('nothing submitted');
+        }
+        
+        
+        echo serialize($hots);
+        exit;
+    }
 }
