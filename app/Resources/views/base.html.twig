@@ -50,7 +50,7 @@
                     </ul>
                 </li>
                 
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['article_list', 'article_new', 'article_edit'] %}current{% endif %}">文章</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">文章</a>
                     <ul>
                         <li><a {% if currentRoute == 'article_new' %}class="current"{% endif %} href="{{ path('article_new') }}">创建</a></li>
                         <!-- <li><a href="#">文章检索</a></li> -->

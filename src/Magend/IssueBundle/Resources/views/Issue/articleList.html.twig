@@ -1,6 +1,10 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}<a href="{{ path('magzine_issues', { 'id':issue.magzine.id }) }}">{{ issue.magzine.name }}</a> &gt; {{ issue.title }} {% endblock %}
+{% block contentTitle %}
+    <a href="{{ path('magzine_issues', { 'id':issue.magzine.id }) }}">{{ issue.magzine.name }}</a>
+    <span style="color:#AAA"> / </span>
+    {{ issue.title }}
+{% endblock %}
 
 {%block main %}
     <ul class="shortcut-buttons-set">
@@ -55,7 +59,7 @@
                     {% for article in issue.articles %}
                     <tr id="tr{{ article.id }}">
                         <td><input type="checkbox" /></td>
-                        <td><a href="{{ path('article_show', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
+                        <td><a href="{{ path('article_edit', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
                         <td class="thumbup" style="width:100px;">
                         {% for keyword in article.keywords %}
                         <a href="#">{{ keyword }}</a>{% if not loop.last %}、{% endif %}

@@ -5,7 +5,13 @@
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 {% endblock %}
 
-{% block title %}{% if article.id %}编辑文章{% else %}创建新文章{% endif %}{% endblock %}
+{% block contentTitle %}
+    <a href="{{ path('magzine_issues', { 'id':article.issue.magzine.id }) }}">{{ article.issue.magzine.name }}</a>
+    <span style="color:#AAA"> / </span>
+    <a href="{{ path('issue_article_list', { 'id':article.issue.id }) }}">{{ article.issue.title }}</a>
+    <span style="color:#AAA"> / </span>
+    {{ article.title|default('(文章' ~ article.id ~ ')') }}
+{% endblock %}
 
 {% form_theme form '::fields.html.twig' %}
 
