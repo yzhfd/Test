@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Magend\IssueBundle\MagendIssueBundle(),
             new Magend\ArticleBundle\MagendArticleBundle(),
             new Magend\PageBundle\MagendPageBundle(),

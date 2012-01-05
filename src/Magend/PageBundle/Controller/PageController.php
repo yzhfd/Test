@@ -194,7 +194,7 @@ class PageController extends Controller
      * Save hots
      * only position and dimension
      * 
-     * @Route("/savehots", name="page_hots_save", defaults={"_format" = "json"})
+     * @Route("/savehots", name="page_hots_save", defaults={"_format" = "json"}, options={"expose" = true})
      */
     public function saveHotsAction()
     {
@@ -202,7 +202,7 @@ class PageController extends Controller
         
         $pageId = $req->get('id');
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find($id);
+        $page = $repo->find($pageId);
         if (empty($page)) {
             throw new \ Exception('page not found');
         }

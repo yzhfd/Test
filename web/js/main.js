@@ -76,7 +76,7 @@ $(function () {
 			});
 			
 			$.ajax({
-				url: 'http://localhost/Magend/web/app_dev.php/page/savehots',
+				url: Routing.generate('page_hots_save'),
 				type: 'POST',
 				data: { 'hots':hots, 'id':pageId },
 				success: function (response) {
