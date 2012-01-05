@@ -199,13 +199,23 @@ class PageController extends Controller
     public function saveHotsAction()
     {
         $req = $this->getRequest();
+        
+        $pageId = $req->get('id');
+        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $page = $repo->find($id);
+        if (empty($page)) {
+            throw new \ Exception('page not found');
+        }
+        
         $hots = $req->get('hots');
         if (empty($hots)) {
             return new Response('nothing submitted');
         }
         
-        
-        echo serialize($hots);
-        exit;
+        // landscape or portrait
+        $page->setLandscapeHots(serialize($hots));
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        return new Response('{"success":1}');
     }
 }
