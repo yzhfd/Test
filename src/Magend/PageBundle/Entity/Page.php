@@ -33,6 +33,20 @@ class Page
     private $article;
     
     /**
+     * @var ArrayCollection
+     * 
+     * 
+     * @ORM\OneToMany(
+     *     targetEntity="Magend\HotBundle\Entity\Hot",
+     *     mappedBy="page",
+     *     indexBy="id",
+     *     cascade={"persist", "remove"},
+     *     fetch="EXTRA_LAZY"
+     * )
+     */
+    private $hots;
+    
+    /**
      * 
      * @var string
      * @ORM\Column(name="label", type="string", length=255, nullable=true)
@@ -96,6 +110,11 @@ class Page
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __construct()
+    {
+        $this->hots = new ArrayCollection();
     }
     
     /**
@@ -291,5 +310,15 @@ class Page
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+    
+    public function getHots()
+    {
+        return $this->hots;
+    }
+    
+    public function setHots($hots)
+    {
+        $this->hots = $hots;
     }
 }
