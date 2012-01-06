@@ -218,7 +218,7 @@ class PageController extends Controller
         foreach ($hots as $hot) {
             // @todo check $hot['id']
             $hotEntity = new Hot();
-            $hotEntity->setAttrs(serialize($hot));
+            $hotEntity->setAttrs($hot);
             $hotEntity->setPage($page);
             $em->persist($hotEntity);
         }

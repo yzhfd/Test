@@ -13,6 +13,11 @@
 {% endblock %}
 
 {% block main %}
+
+{% for hot in page.landscapeHots %}
+    <p>x:{{ hot.attrs.x }}, y:{{ hot.attrs.y }}</p>
+{% endfor %}
+
 <div id="page_editor">
     <!--<input type="checkbox" id="selenable" />
     <div id="info_panel">

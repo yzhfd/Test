@@ -132,41 +132,41 @@ class Hot
     /**
      * Set attrs
      *
-     * @param text $attrs
+     * @param array $attrs
      */
     public function setAttrs($attrs)
     {
-        $this->attrs = $attrs;
+        $this->attrs = is_array($attrs) ? serialize($attrs) : $attrs;
     }
 
     /**
      * Get attrs
      *
-     * @return text 
+     * @return array 
      */
     public function getAttrs()
     {
-        return $this->attrs;
+        return unserialize($this->attrs);
     }
     
     /**
      * Set assets
      *
-     * @param text $assets
+     * @param array $assets
      */
     public function setAssets($assets)
     {
-        $this->assets = $assets;
+        $this->assets = is_array($assets) ? serialize($assets) : $assets;
     }
 
     /**
      * Get assets
      *
-     * @return text 
+     * @return array 
      */
     public function getAssets()
     {
-        return $this->assets;
+        return unserialize($this->assets);
     }
 
     /**

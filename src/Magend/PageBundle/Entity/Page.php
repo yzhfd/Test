@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\ArticleBundle\Entity\Article;
+use Magend\HotBundle\Entity\Hot;
 
 /**
  * Magend\PageBundle\Entity\Page
@@ -266,5 +267,32 @@ class Page
     public function setHots($hots)
     {
         $this->hots = $hots;
+    }
+    
+    /**
+     * For the sake of simplicity
+     * 
+     * @param int $mode
+     */
+    private function _getHotsByMode($mode)
+    {
+        $modeHots = array();
+        foreach ($this->hots as $hot) {
+            if ($hot->getMode() == $mode) {
+                $modeHots[] = $hot;
+            }
+        }
+        
+        return $modeHots;
+    }
+    
+    public function getLandscapeHots()
+    {
+        return $this->_getHotsByMode(Hot::MODE_LANDSCAPE);
+    }
+    
+    public function getPortraitHots()
+    {
+        return $this->_getHotsByMode(Hot::MODE_PORTRAIT);
     }
 }
