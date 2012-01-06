@@ -41,6 +41,7 @@ $(function () {
 	}
 	
 	if ($('#page_canvas').length) {
+		
 		/*$(window).bind('beforeunload', function(){ 
 			alert('dont leave me alone');
 			return false;
@@ -48,6 +49,9 @@ $(function () {
 		
 		Backbone.sync = Backbone.localSync;
 		window.pageCanvas = new PageCanvas;
+		if (initHots.length) {
+			window.pageCanvas.load(initHots);
+		}
 	
 		$('li', '#hotlib').draggable({
 			revert: "invalid", // when not dropped, the item will revert back to its initial position
@@ -72,6 +76,8 @@ $(function () {
 		
 		// @todo landscape or portrait
 		$('#saveall').click(function () {
+			$('#page_editor').overlay('loading');
+			
 			var pageId = $('#pageid').text();
 			
 			var hots = [];
@@ -87,6 +93,8 @@ $(function () {
 				success: function (response) {
 					console.log(response);
 				}
+			}).done(function(){
+				$('#page_editor').overlay('hide');
 			});
 		});		
 		

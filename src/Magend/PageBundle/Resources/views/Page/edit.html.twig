@@ -14,9 +14,12 @@
 
 {% block main %}
 
+<script type="text/javascript">
+    var initHots = [];
 {% for hot in page.landscapeHots %}
-    <p>x:{{ hot.attrs.x }}, y:{{ hot.attrs.y }}</p>
+    initHots.push({{ hot.attrs|json_encode()|raw }});
 {% endfor %}
+</script>
 
 <div id="page_editor">
     <!--<input type="checkbox" id="selenable" />

@@ -71,10 +71,10 @@ var HotView = Backbone.View.extend({
     	hotel.addClass('hot');
 	    hotel.css({
 	    	position: 'absolute', // important for chrome(maybe some other browsers as well)
-	    	left: this.model.get('x'),
-	    	top: this.model.get('y'),
-	    	width: this.model.get('width'),
-	    	height: this.model.get('height')
+	    	left: parseInt(this.model.get('x')),
+	    	top: parseInt(this.model.get('y')),
+	    	width: parseInt(this.model.get('width')),
+	    	height: parseInt(this.model.get('height'))
 	    });
 	    hotel.data('cid', this.model.cid);
 	    hotel.draggable({
@@ -234,9 +234,15 @@ var PageCanvas = Backbone.View.extend({
 		this.hots.bind('reset', this.addAll, this);
 		// remove is bound in HotView
 		
-		this.hots.fetch();
+		//this.hots.fetch();
 		
 		window.undomanager = new UndoManager(this.hots);
+	},
+	// on load
+	load: function (hotAttrs) {
+		$(hotAttrs).each(_.bind(function (index, hotAttr) {
+			this.hots.add(new Hot(hotAttr));
+		}, this));
 	},
 	addOne: function (hot) {
 		if (hot.rendered) {
