@@ -1,3 +1,8 @@
+MagendHotBundle:
+    resource: "@MagendHotBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendUserBundle:
     resource: "@MagendUserBundle/Controller/"
     type:     annotation

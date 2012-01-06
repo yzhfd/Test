@@ -32,6 +32,7 @@ class AppKernel extends Kernel
             new Magend\BaseBundle\MagendBaseBundle(),
             new Magend\FeedbackBundle\MagendFeedbackBundle(),
             new Magend\UserBundle\MagendUserBundle(),
+            new Magend\HotBundle\MagendHotBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
