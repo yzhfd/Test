@@ -13,6 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Hot
 {
+    
+    const MODE_LANDSCAPE = 0;
+    const MODE_PORTRAIT  = 1;
+    
+    // @todo IMAGES, VIDEO, ...
+    
     /**
      * @var integer $id
      *
@@ -34,12 +40,32 @@ class Hot
      *
      * @ORM\Column(name="type", type="integer")
      */
-    private $type;
+    private $type = 0;
+    
+    /**
+     * Landscape(0) or portrait(1)
+     * 
+     * @var integer $mode
+     *
+     * @ORM\Column(name="mode", type="integer")
+     */
+    private $mode = self::MODE_LANDSCAPE;
+    
+    /**
+     * Serialized array of position, dimension, etc
+     * 
+     * @var text $attrs
+     *
+     * @ORM\Column(name="attrs", type="text")
+     */    
+    private $attrs;
 
     /**
+     * Serialized array
+     * 
      * @var text $assets
      *
-     * @ORM\Column(name="assets", type="text")
+     * @ORM\Column(name="assets", type="text", nullable=true)
      */
     private $assets;
 
@@ -103,6 +129,26 @@ class Hot
         return $this->type;
     }
 
+    /**
+     * Set attrs
+     *
+     * @param text $attrs
+     */
+    public function setAttrs($attrs)
+    {
+        $this->attrs = $attrs;
+    }
+
+    /**
+     * Get attrs
+     *
+     * @return text 
+     */
+    public function getAttrs()
+    {
+        return $this->attrs;
+    }
+    
     /**
      * Set assets
      *
@@ -171,5 +217,15 @@ class Hot
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+    
+    public function getMode()
+    {
+        return $this->mode;
+    }
+    
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
     }
 }

@@ -41,10 +41,10 @@ $(function () {
 	}
 	
 	if ($('#page_canvas').length) {
-		$(window).bind('beforeunload', function(){ 
+		/*$(window).bind('beforeunload', function(){ 
 			alert('dont leave me alone');
 			return false;
-		});
+		});*/
 		
 		Backbone.sync = Backbone.localSync;
 		window.pageCanvas = new PageCanvas;

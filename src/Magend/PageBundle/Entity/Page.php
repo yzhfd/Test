@@ -62,24 +62,10 @@ class Page
     
     /**
      * 
-     * @var serialized array
-     * @ORM\Column(name="landscape_hots", type="text", nullable=true)
-     */
-    private $landscapeHots;
-    
-    /**
-     * 
      * @var string
      * @ORM\Column(name="portrait_img", type="string", length=255, nullable=true)
      */
     private $portraitImg;
-    
-    /**
-     * 
-     * @var serialized array
-     * @ORM\Column(name="portrait_hots", type="text", nullable=true)
-     */
-    private $portraitHots;
 
     /**
      * @var datetime $createdAt
@@ -170,26 +156,6 @@ class Page
     }
 
     /**
-     * Set landscapeHots
-     *
-     * @param text $landscapeHots
-     */
-    public function setLandscapeHots($landscapeHots)
-    {
-        $this->landscapeHots = $landscapeHots;
-    }
-
-    /**
-     * Get landscapeHots
-     *
-     * @return text 
-     */
-    public function getLandscapeHots()
-    {
-        return $this->landscapeHots;
-    }
-
-    /**
      * Set portraitImg
      *
      * @param string $portraitImg
@@ -210,26 +176,6 @@ class Page
     public function getPortraitImg()
     {
         return $this->portraitImg;
-    }
-
-    /**
-     * Set portraitHots
-     *
-     * @param text $portraitHots
-     */
-    public function setPortraitHots($portraitHots)
-    {
-        $this->portraitHots = $portraitHots;
-    }
-
-    /**
-     * Get portraitHots
-     *
-     * @return text 
-     */
-    public function getPortraitHots()
-    {
-        return $this->portraitHots;
     }
 
     /**

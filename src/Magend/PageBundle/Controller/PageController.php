@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Magend\HotBundle\Entity\Hot;
 
 /**
  *
@@ -213,8 +214,15 @@ class PageController extends Controller
         }
         
         // landscape or portrait
-        $page->setLandscapeHots(serialize($hots));
         $em = $this->getDoctrine()->getEntityManager();
+        foreach ($hots as $hot) {
+            // @todo check $hot['id']
+            $hotEntity = new Hot();
+            $hotEntity->setAttrs(serialize($hot));
+            $hotEntity->setPage($page);
+            $em->persist($hotEntity);
+        }
+        
         $em->flush();
         return new Response('{"success":1}');
     }
