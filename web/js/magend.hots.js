@@ -98,7 +98,7 @@ var HotView = Backbone.View.extend({
     				x: $(this.el).position().left,
     				y: $(this.el).position().top
     			});
-    			this.model.save();
+    			// this.model.save();
 			}, this)
 		}).resizable({
 			minWidth: this.model.minWidth | 10,
@@ -117,7 +117,7 @@ var HotView = Backbone.View.extend({
 					width: $(this.el).width(),
 					height: $(this.el).height()
 				});
-				this.model.save();
+				// this.model.save();
 			}, this)
 		});
     },
@@ -355,7 +355,7 @@ var PageCanvas = Backbone.View.extend({
 		this.canvasImgEl.focus();
 		if (this.hot) {
 			this.hots.add(this.hot);
-			this.hot.save();
+			// this.hot.save();
 			this.hot = null;
 		}
 	},

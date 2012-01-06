@@ -213,17 +213,43 @@ class PageController extends Controller
             return new Response('nothing submitted');
         }
         
-        // landscape or portrait
+        // @todo landscape or portrait
+        $hotEntities = array();
         $em = $this->getDoctrine()->getEntityManager();
+        $hotRepo = $this->getDoctrine()->getRepository('MagendHotBundle:Hot');
+        $hotIds = array();
         foreach ($hots as $hot) {
-            // @todo check $hot['id']
-            $hotEntity = new Hot();
+            $hotEntity = null;
+            if (isset($hot['id'])) {
+                $hotEntity = $hotRepo->find($hot['id']);
+            }
+            if (empty($hotEntity)) {
+                $hotEntity = new Hot();
+                $hotEntity->setPage($page);
+                $em->persist($hotEntity);
+            } else {
+                $hotIds[] = $hot['id'];
+            }
             $hotEntity->setAttrs($hot);
-            $hotEntity->setPage($page);
-            $em->persist($hotEntity);
+            
+            $hotEntities[] = $hotEntity;
         }
         
+        $pageHots = $page->getLandscapeHots();
+        foreach ($pageHots as $pageHot) {
+            if (!in_array($pageHot->getId(), $hotIds)) {
+                $em->remove($pageHot);
+            }
+        }
         $em->flush();
-        return new Response('{"success":1}');
+        
+        $ret = array();
+        foreach ($hotEntities as $hotEntity) {
+            $ret[] = $hotEntity->getId();
+        }
+        if (empty($ret)) {
+            $ret['success'] = 1;
+        }
+        return new Response(json_encode($ret));
     }
 }

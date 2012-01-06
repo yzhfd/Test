@@ -41,13 +41,14 @@ $(function () {
 	}
 	
 	if ($('#page_canvas').length) {
+		// Backbone.sync = Backbone.localSync;
 		
 		/*$(window).bind('beforeunload', function(){ 
 			alert('dont leave me alone');
 			return false;
 		});*/
 		
-		Backbone.sync = Backbone.localSync;
+		
 		window.pageCanvas = new PageCanvas;
 		if (initHots.length) {
 			window.pageCanvas.load(initHots);
@@ -82,7 +83,7 @@ $(function () {
 			
 			var hots = [];
 			pageCanvas.hots.each(function(hot){
-				delete hot.attributes['id'];
+				//delete hot.attributes['id'];
 				hots.push(hot.attributes);
 			});
 			

@@ -17,7 +17,8 @@
 <script type="text/javascript">
     var initHots = [];
 {% for hot in page.landscapeHots %}
-    initHots.push({{ hot.attrs|json_encode()|raw }});
+    {% set hotAttrs = hot.attrs|merge({ 'id':hot.id }) %}
+    initHots.push({{ hotAttrs|json_encode()|raw }});
 {% endfor %}
 </script>
 
