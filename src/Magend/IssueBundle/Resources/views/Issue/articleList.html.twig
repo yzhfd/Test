@@ -78,7 +78,7 @@
             </table>
             </div>
             
-            <div id="articles_layout" class="tab-content" style="min-height: 280px; overflow-x: auto;">
+            <div id="articles_layout" class="tab-content" style="min-height: 280px; overflow-x: auto; display: none;">
                 <ol class="articles unselectable" style="width:{{ issue.articles|length*160 }}px">
                     {% for article in issue.articles %}
                         <li class="article" rel="{{ article.id }}">
