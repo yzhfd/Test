@@ -33,12 +33,12 @@
             </div>
             {% set currentRoute = app.request.get('_route') %}
             <ul id="main-nav">
-                <li><a href="#" class="nav-top-item no-submenu {% if currentRoute == 'home' %}current{% endif %}">首页</a></li>
+                <li><a href="{{ path('home') }}" class="nav-top-item no-submenu {% if currentRoute == 'home' %}current{% endif %}">首页</a></li>
                 
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_list', 'proj_list', 'institute_list'] %}current{% endif %}">分类定义</a>
                     <ul>
                         <li><a {% if currentRoute == 'magzine_list' %}class="current"{% endif %} href="{{ path('magzine_list') }}">杂志分类</a></li>
-                        <li><a {% if currentRoute == 'proj_list' %}class="current"{% endif %} href="#">项目类型</a></li> <!-- Add class "current" to sub menu items also -->
+                        <li><a {% if currentRoute == 'proj_list' %}class="current"{% endif %} href="{{ path('proj_list') }}">项目类型</a></li>
                         <li><a {% if currentRoute == 'institute_list' %}class="current"{% endif %} href="{{ path('institute_list') }}">设计机构</a></li>
                     </ul>
                 </li>
