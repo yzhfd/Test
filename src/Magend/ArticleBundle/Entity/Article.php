@@ -139,6 +139,7 @@ class Article
         $this->pages = new ArrayCollection();
         $this->keywords = new ArrayCollection();
         $this->architects = new ArrayCollection();
+        $this->issues = new ArrayCollection();
     }
 
     /**
@@ -436,9 +437,9 @@ class Article
      *
      * @param Magend\IssueBundle\Entity\Issue $issues
      */
-    public function addIssue(\Magend\IssueBundle\Entity\Issue $issues)
+    public function addIssue(\Magend\IssueBundle\Entity\Issue $issue)
     {
-        $this->issues[] = $issues;
+        $this->issues[] = $issue;
     }
 
     /**

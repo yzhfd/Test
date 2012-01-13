@@ -185,13 +185,13 @@ class ArticleController extends Controller
                 
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
+        $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $issueId = $req->get('issueId');
-                $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-                $issue = $repo->find($issueId);
+                $issue = $issueRepo->find($issueId);
                 if (empty($issue)) {
                     throw new \ Exception('Issue not found');
                 }
@@ -234,13 +234,23 @@ class ArticleController extends Controller
         
         $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $mags = $magRepo->findAll();
-        return array(
+        $tplVars = array(
             'architects' => $ats,
             'keywords'   => $kws,
             'magzines'   => $mags,
             'article'    => $article,
             'form'       => $form->createView()
         );
+        
+        $issueId = $req->get('id');
+        if ($issueId !== null) {
+            $issue = $issueRepo->find($issueId);
+            if ($issue) {
+                $tplVars['issue'] = $issue;
+            }
+        }
+
+        return $tplVars;
     }
 
     /**
