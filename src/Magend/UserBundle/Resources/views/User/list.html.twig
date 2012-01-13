@@ -52,10 +52,9 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
-                        <td>
-                            <!-- Icons -->
-                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':user.id }) }}" title="Edit"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
-                             <a rel="confirm" href="{{ path('user_del', { 'id':user.id }) }}" title="删除">删除</a> 
+                        <td style="width:50px;">
+                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':user.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('user_del', { 'id':user.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>

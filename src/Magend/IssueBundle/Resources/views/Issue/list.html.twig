@@ -65,10 +65,10 @@
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">10</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
-                        <td>
+                        <td style="width:50px;">
                             <!-- Icons -->
-                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="resources/images/icons/pencil.png" alt="编辑" /></a>
-                             <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="resources/images/icons/cross.png" alt="删除" /></a> 
+                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>
