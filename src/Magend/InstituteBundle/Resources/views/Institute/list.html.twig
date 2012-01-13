@@ -53,8 +53,8 @@
                         <td><input type="checkbox" /></td>
                         <td><a href="#intro_{{ institute.id }}" rel="facebox" title="查看详细">{{ institute.name }}</a></td>
                         <td>{% if institute.thumbnail is not null %}<a href="#" title="放大"><img width="128" height="96" src="{{ asset('uploads/' ~ institute.thumbnail) }}" /></a>{% endif %}</td>
-                        <td>
-                            {{ institute.intro|truncate(15) }}
+                        <td style="width: 240px;">
+                            {{ institute.intro|truncate(100) }}
                             <div class="hide" id="intro_{{ institute.id }}">{{ institute.intro|nl2br }}</div>
                         </td>
                         <td><a title="{{ institute.link }}" href="{{ institute.link }}">{{ institute.link|truncate(15) }}</a></td>

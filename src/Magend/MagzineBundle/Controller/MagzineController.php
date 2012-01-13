@@ -127,6 +127,12 @@ class MagzineController extends Controller
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getEntityManager();
+                
+                // make it dirty for persistence
+                if ($magzine->landscapeCoverImage || $magzine->portraitCoverImage) {
+                    $magzine->setUpdatedAt(new \DateTime);
+                }
+                
                 $em->persist($magzine);
                 $em->flush();
                 
