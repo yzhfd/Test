@@ -7,6 +7,7 @@
 var Hot = Backbone.Model.extend({
 	minWidth: 10,
 	minHeight: 10,
+	type: 0,
 	defaults: {
 		// index: 0,
 		// stackIndex: 1,
@@ -141,7 +142,7 @@ var HotView = Backbone.View.extend({
     	}
     },
     edit: function () {
-    	$('#hot_dialog').dialog({show:'fade', zIndex:2000});
+    	$('#hot_dialog').dialog({show:'fade', zIndex:2000, title:'对话框'});
     },
     resize: function () {
     	$(this.el).css({
