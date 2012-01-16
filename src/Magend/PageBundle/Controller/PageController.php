@@ -207,32 +207,32 @@ class PageController extends Controller
         if (empty($page)) {
             throw new \ Exception('page not found');
         }
-        
-        $hots = $req->get('hots');
-        if (empty($hots)) {
-            return new Response('nothing submitted');
-        }
-        
+                
         // @todo landscape or portrait
         $hotEntities = array();
         $em = $this->getDoctrine()->getEntityManager();
         $hotRepo = $this->getDoctrine()->getRepository('MagendHotBundle:Hot');
         $hotIds = array();
-        foreach ($hots as $hot) {
-            $hotEntity = null;
-            if (isset($hot['id'])) {
-                $hotEntity = $hotRepo->find($hot['id']);
+        $hots = $req->get('hots');
+        if (!empty($hots)) {
+            foreach ($hots as $hot) {
+                $hotEntity = null;
+                if (isset($hot['id'])) {
+                    $hotEntity = $hotRepo->find($hot['id']);
+                }
+                if (empty($hotEntity)) {
+                    $hotEntity = new Hot();
+                    $hotEntity->setType($hot['type']);
+                    $hotEntity->setPage($page);
+                    $em->persist($hotEntity);
+                } else {
+                    $hotIds[] = $hot['id'];
+                }
+                
+                $hotEntity->setAttrs($hot);
+                
+                $hotEntities[] = $hotEntity;
             }
-            if (empty($hotEntity)) {
-                $hotEntity = new Hot();
-                $hotEntity->setPage($page);
-                $em->persist($hotEntity);
-            } else {
-                $hotIds[] = $hot['id'];
-            }
-            $hotEntity->setAttrs($hot);
-            
-            $hotEntities[] = $hotEntity;
         }
         
         $pageHots = $page->getLandscapeHots();

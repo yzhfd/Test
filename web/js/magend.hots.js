@@ -7,10 +7,10 @@
 var Hot = Backbone.Model.extend({
 	minWidth: 10,
 	minHeight: 10,
-	type: 0,
 	defaults: {
 		// index: 0,
 		// stackIndex: 1,
+		type: 0,
 		x: 0,
 		y: 0,
 		width: 40,
@@ -142,7 +142,25 @@ var HotView = Backbone.View.extend({
     	}
     },
     edit: function () {
-    	$('#hot_dialog').dialog({show:'fade', zIndex:2000, title:'对话框'});
+    	var hottype = this.model.get('type');
+    	var title = $('#hot_' + hottype).attr('title');
+    	$('#hot_' + hottype + '_dialog').show();
+    	$('#hot_dialog').dialog({
+    		show:'fade', zIndex:2000, title:title,
+    		width: 400, height: 300,
+    		buttons: { 
+    			"Ok": {
+    				class: 'btn primary',
+    				text: '确认',
+    				click: function() { $(this).dialog("close"); }
+    			},
+    			"Cancel": {
+    				class: 'btn',
+    				text: '取消',
+    				click: function() { $(this).dialog("close"); }
+    			}
+    		}
+    	});
     },
     resize: function () {
     	$(this.el).css({

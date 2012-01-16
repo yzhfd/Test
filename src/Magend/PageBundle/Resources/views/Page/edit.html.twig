@@ -36,7 +36,16 @@
     </div>
     <p/>
     <div id="hot_dialog">
-    
+        <div id="hot_0_dialog" style="display:none;">
+            
+        </div>
+        <div id="hot_1_dialog" style="display:none;">
+        </div>
+        <div id="hot_2_dialog" style="display:none;">
+            <form action="">
+                <input type="text" value="http://baidu.com" />
+            </form>
+        </div>
     </div>
     <div>
         <div id="page_canvas_img" tabIndex="1">
@@ -46,9 +55,9 @@
     	</ul>
     </div>
     <ul id="hotlib">
-        <li class="hotobj hotimg">图片</li>
-        <li class="hotobj hotvideo">视频</li>
-        <li class="hotobj hotlink">链接</li>
+        <li id="hot_0" class="hotobj hotimg" title="图片">图片</li>
+        <li id="hot_1" class="hotobj hotvideo" title="视频">视频</li>
+        <li id="hot_2" class="hotobj hotlink" title="链接">链接</li>
     </ul>
 </div>
 {% endblock %}

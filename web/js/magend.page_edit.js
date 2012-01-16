@@ -24,15 +24,18 @@ var page_edit = function () {
 	$('#page_canvas').droppable({
 		accept: '#hotlib > li',
 		drop: function(event, ui) {
-			console.log(ui.draggable);
+			var typeText = ui.draggable.attr('title');
+			var typeId = ui.draggable.attr('id').split('_')[1];
 			
 			// use ui.draggable to determine what type it is
-			pageCanvas.hots.add(new Hot({
+			var hot = new Hot({
+				type: typeId,
 				x: Math.max(ui.offset.left - $(this).offset().left, 0),
 				y: Math.max(ui.offset.top - $(this).offset().top, 0),
 				width: $(ui.helper).width(),
 				height: $(ui.helper).height()
-			}));
+			});
+			pageCanvas.hots.add(hot);
 		}
 	});
 	
@@ -53,7 +56,7 @@ var page_edit = function () {
 			type: 'POST',
 			data: { 'hots':hots, 'id':pageId },
 			success: function (response) {
-				console.log(response);
+				
 			}
 		}).done(function(){
 			$('#page_editor').overlay('hide');
