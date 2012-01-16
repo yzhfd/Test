@@ -147,16 +147,17 @@ var HotView = Backbone.View.extend({
     	$('#hot_' + hottype + '_dialog').show();
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
-    		width: 400, height: 300,
+    		//width: 500, height: 300,
+    		// dunno why jquery ui button not styled
     		buttons: { 
-    			"Ok": {
-    				class: 'btn primary',
-    				text: '确认',
-    				click: function() { $(this).dialog("close"); }
-    			},
     			"Cancel": {
     				class: 'btn',
     				text: '取消',
+    				click: function() { $(this).dialog("close"); }
+    			},
+    			"Ok": {
+    				class: 'btn primary',
+    				text: '确认',
     				click: function() { $(this).dialog("close"); }
     			}
     		}
