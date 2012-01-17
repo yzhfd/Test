@@ -11,6 +11,9 @@ html, body {
     margin: 0px auto;
     display: block;
 }
+button::-moz-focus-inner {
+  border: 0;
+}
 
 #newPages li.page {
 	margin-top: 10px;
