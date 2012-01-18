@@ -38,19 +38,23 @@ var articles_layout = function () {
 		//var contentBox = $(this).closest('.content-box').find('.content-box-content');
 		$('#articles_layout').overlay('loading');
 		var articles = {};
+		var articleIds = []; // articles cannot maintain order(except firefox...)
 		$('#articles_layout li.article').each(function(index, liarticle){
 			var pageIds = [];
 			$(liarticle).find('li.page').each(function(i, lipage){
 				pageIds.push($(lipage).attr('rel'));
 			});
-			articles[$(liarticle).attr('rel')] = pageIds;
+			var articleId = $(liarticle).attr('rel');
+			articles[articleId] = pageIds;
+			articleIds.push(articleId);
 		});
 		
 		$.ajax({
 			type: 'POST',
 			url: $(this).attr('href'),
 			data: {
-				articles: articles
+				articles: articles,
+				articleIds: articleIds
 			}
 		}).always(function(){
 			$('#articles_layout').overlay('hide');

@@ -259,17 +259,15 @@ class IssueController extends Controller
                     ->setParameter('issueId', $id);
         $arts = $query->getResult();
         
-        $articleIds = array();
         foreach ($articles as $articleId=>$pageIds) {
             if (isset($arts[$articleId])) {
                 if ($pageIds != $arts[$articleId]->getPageIds()) {
                     $arts[$articleId]->setPageIds($pageIds);
                 }
-                
-                $articleIds[] = $articleId;
             }
         }
         
+        $articleIds = $req->get('articleIds');
         if ($issue->getArticleIds() != $articleIds) {
             $issue->setArticleIds($articleIds);
         }
