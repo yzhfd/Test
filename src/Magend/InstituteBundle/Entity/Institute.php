@@ -194,7 +194,11 @@ class Institute
      */
     public function getLink()
     {
-        return $this->link;
+        $link = $this->link;
+        if (strpos($link, 'http://') === false) {
+            $link = "http://$link";
+        }
+        return $link;
     }
 
     /**

@@ -117,7 +117,7 @@ class MagzineController extends Controller
         }
         
         $formBuilder = $this->createFormBuilder($magzine);
-        $form = $formBuilder->add('name', null, array('label' => '分类名称'))
+        $form = $formBuilder->add('name', null, array('label' => '杂志分类'))
                             ->add('landscapeCoverImage', 'file', array('label' => '横版封面', 'required' => false))
                             ->add('portraitCoverImage', 'file', array('label' => '竖版封面', 'required' => false))
                             ->getForm();

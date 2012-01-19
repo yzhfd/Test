@@ -57,7 +57,7 @@
                             {{ institute.intro|truncate(100) }}
                             <div class="hide" id="intro_{{ institute.id }}">{{ institute.intro|nl2br }}</div>
                         </td>
-                        <td><a title="{{ institute.link }}" href="{{ institute.link }}">{{ institute.link|truncate(15) }}</a></td>
+                        <td><a title="{{ institute.link }}" href="{{ institute.link }}" target="_blank">{{ institute.link|replace({'http://':''})|truncate(15) }}</a></td>
                         <td>{{ institute.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:50px;">
                             <!-- Icons -->
