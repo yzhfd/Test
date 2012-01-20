@@ -13,7 +13,6 @@ class ArticleType extends AbstractType
         $builder
             ->add('title')
             ->add('keywordsText')
-            ->add('architectsText')
             ->add('lat')
             ->add('lng')
         ;

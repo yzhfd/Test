@@ -121,8 +121,6 @@ class ArticleController extends Controller
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
         $kws = $kwRepo->findAll();
-        $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
-        $ats = $atRepo->findAll();
         
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
@@ -134,12 +132,6 @@ class ArticleController extends Controller
                 if (!empty($kwText)) {
                     $keywords = $kwRepo->toEntities(explode(',', $kwText));
                     $article->setKeywords($keywords);
-                }
-                
-                $atText = trim($article->getArchitectsText());
-                if (!empty($atText)) {
-                    $architects = $atRepo->toEntities(explode(',', $atText));
-                    $article->setArchitects($architects);
                 }
                 
                 $em->flush();
@@ -160,7 +152,7 @@ class ArticleController extends Controller
         $issue = $article->getIssue();
         $issue->getId();
         return array(
-            'architects' => $ats,
+            //'institutes' => $institutes,
             'keywords'   => $kws,
             'issue'      => $issue,
             'magzines'   => $mags,
@@ -180,8 +172,6 @@ class ArticleController extends Controller
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
         $kws = $kwRepo->findAll();
-        $atRepo = $this->getDoctrine()->getRepository('MagendArchitectBundle:Architect');
-        $ats = $atRepo->findAll();
                 
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
@@ -200,12 +190,6 @@ class ArticleController extends Controller
                 if (!empty($kwText)) {
                     $keywords = $kwRepo->toEntities(explode(',', $kwText));
                     $article->setKeywords($keywords);
-                }
-                
-                $atText = trim($article->getArchitectsText());
-                if (!empty($atText)) {
-                    $architects = $atRepo->toEntities(explode(',', $atText));
-                    $article->setArchitects($architects);
                 }
                 
                 $article->setIssue($issue);
@@ -235,7 +219,7 @@ class ArticleController extends Controller
         $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $mags = $magRepo->findAll();
         $tplVars = array(
-            'architects' => $ats,
+            //'institutes' => $institutes,
             'keywords'   => $kws,
             'magzines'   => $mags,
             'article'    => $article,

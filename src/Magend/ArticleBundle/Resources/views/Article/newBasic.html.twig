@@ -22,9 +22,9 @@
         {{ form_label(form.title, '标题') }}
         <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
     </div>
-    
+    {#
     <div class="clearfix">
-        {{ form_label(form.architectsText, '建筑师') }}
+        {{ form_label(form.architectsText, '设计机构') }}
         <div class="input">
             <select id="architectsel" class="medium" style="margin-bottom:5px;">
                 <option value=""></option>
@@ -36,7 +36,7 @@
             <div class="span5">{{ form_widget(form.architectsText, { 'attr':{'class':'taggable'} }) }}</div>
         </div>
     </div>
-    
+    #}
     <div class="clearfix">
         {{ form_label(form.keywordsText, '关键词') }}
         <div class="input">
