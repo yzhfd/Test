@@ -13,7 +13,7 @@ class IssueType extends AbstractType
             ->add('serial')
             ->add('title')
             ->add('priceLevel', 'choice', array(
-                'choices' => array('0'=>'免费', '1'=>'0.99$, 6RMB', '2'=>'1.99$, 12RMB', '3'=>'2.99$, 18RMB')
+                'choices' => array('0'=>'免费', '1'=>'0.99$/6¥', '2'=>'1.99$/12¥', '3'=>'2.99$/18¥')
             ))
             ->add('coverImage', 'file', array('required'=>false))
         ;
