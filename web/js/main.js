@@ -3,7 +3,7 @@ Backbone.sync = Backbone.ajaxSync;
 
 $(function () {
 	if ($('#newPages').length > 0) {
-		issue_new();
+		article_new();
 	}
 	
 	if ($('#articles_layout').length > 0) {

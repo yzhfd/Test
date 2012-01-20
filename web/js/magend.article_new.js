@@ -1,4 +1,4 @@
-var issue_new = function () {
+var article_new = function () {
 	// basic
 	$('#newPagesTab').click(function (e) {
 		var articleId = $('#newPagesTab').attr('rel');
@@ -64,8 +64,7 @@ var issue_new = function () {
     	});
     	map.setCenter(pos);
     }
-    google.maps.event.addListener(map, 'click', function(event) {
-    	var latlng = event.latLng;
+    var posMark = function (latlng) {
     	if (marker) {
     		marker.setMap(null);
     	}
@@ -74,9 +73,28 @@ var issue_new = function () {
     		map: map
     	});
     	$('#latdiv  input').val(latlng.lat());
-    	$('#lngdiv  input').val(latlng.lng());
-    	  //map.setCenter(event.latLng);
+    	$('#lngdiv  input').val(latlng.lng());    	
+    };
+    google.maps.event.addListener(map, 'click', function(event) {
+    	posMark(event.latLng);
     });
+    // geocoding
+	$('#geobtn').click(function () {
+		var locText = $('#geoinput').val();
+		if (locText.trim(' ') == '') return false;
+		
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({ 'address': locText }, function(results, status) {
+	        if (status == google.maps.GeocoderStatus.OK) {
+	        	var latlng = results[0].geometry.location;
+				map.setCenter(latlng);
+				posMark(latlng);
+	        } else {
+	        	alert("地址解析失败: " + status);
+	        }
+	    });
+		return false;
+	});
 	
 	// pages
 	$('a.pagedel').on('click', function(e){
