@@ -52,13 +52,12 @@
     </div>
     
     <div class="clearfix">
-        {{ form_label(form.lat, '经度') }}
-        <div id="latdiv" class="input">{{ form_errors(form.lat) }}{{ form_widget(form.lat, { 'attr':{'class':'medium'} }) }}</div>
-    </div>
-    
-    <div class="clearfix">
-        {{ form_label(form.lng, '纬度') }}
-        <div id="lngdiv" class="input">{{ form_errors(form.lng) }}{{ form_widget(form.lng, { 'attr':{'class':'medium'} }) }}</div>
+        <label class="required">经纬度</label>
+        <div class="input">
+            <span id="latdiv">{{ form_errors(form.lat) }}{{ form_widget(form.lat, { 'attr':{'class':'small'} }) }}</span>
+            &nbsp;
+            <span id="lngdiv">{{ form_errors(form.lng) }}{{ form_widget(form.lng, { 'attr':{'class':'small'} }) }}</span>
+        </div>
     </div>
     
     <div class="clearfix">
