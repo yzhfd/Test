@@ -269,6 +269,23 @@ class Issue
     {
         return $this->priceLevel;
     }
+    
+    /**
+     * Get price description
+     * 
+     * @return string
+     */
+    public function getPriceDescription()
+    {
+        if ($this->priceLevel == 0) {
+            return '免费';
+        }
+        
+        $dollars = $this->priceLevel - 1 + 0.99;
+        $rmbs = 6 * $this->priceLevel;
+        
+        return $dollars . '$/' . $rmbs . '¥';
+    }
 
     /**
      * Set cover
