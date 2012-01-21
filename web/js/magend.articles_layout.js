@@ -12,6 +12,11 @@ var articles_layout = function () {
 			$(ui.helper).addClass('highlighted');
 		},
 		update: function(e, ui) {
+			// update indexes
+			$(this).find('.article').each(function (index, li) {
+				$(li).find('.article-index').text(index + 1);
+			});
+			
 			var articleId = $(ui.item).attr('rel');
 			var prevArticleId = $(ui.item).prev().attr('rel');
 			if (prevArticleId) {

@@ -42,6 +42,15 @@ class Issue
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
+    
+    /**
+     * Original file name prepended with random-generated unique string
+     * 
+     * @var string $audioFile
+     * 
+     * @ORM\Column(name="audio_file", type="string", length=255, nullable=true)
+     */
+    private $audioFile;
 
     /**
      * @var integer $price_level
@@ -248,6 +257,26 @@ class Issue
     public function getTitle()
     {
         return $this->title;
+    }
+    
+    /**
+     * Set audioFile
+     *
+     * @param string $audioFile
+     */
+    public function setAudioFile($audioFile)
+    {
+        $this->audioFile = $audioFile;
+    }
+
+    /**
+     * Get audioFile
+     *
+     * @return string 
+     */
+    public function getAudioFile()
+    {
+        return $this->audioFile;
     }
 
     /**

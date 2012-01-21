@@ -43,6 +43,15 @@ class Article
     private $title;
     
     /**
+     * Original file name prepended with random-generated unique string
+     * 
+     * @var string $audioFile
+     * 
+     * @ORM\Column(name="audio_file", type="string", length=255, nullable=true)
+     */
+    private $audioFile;
+    
+    /**
      * 
      * @ORM\ManyToMany(targetEntity="Magend\KeywordBundle\Entity\Keyword", inversedBy="articles", cascade={"persist"})
      * @ORM\JoinTable(name="mag_article_keyword")
@@ -300,6 +309,26 @@ class Article
         return $this->title;
     }
 
+    /**
+     * Set audioFile
+     *
+     * @param string $audioFile
+     */
+    public function setAudioFile($audioFile)
+    {
+        $this->audioFile = $audioFile;
+    }
+
+    /**
+     * Get audioFile
+     *
+     * @return string 
+     */
+    public function getAudioFile()
+    {
+        return $this->audioFile;
+    }
+    
     /**
      * Set createdAt
      *
