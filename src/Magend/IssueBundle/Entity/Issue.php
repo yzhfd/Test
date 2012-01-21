@@ -46,11 +46,18 @@ class Issue
     /**
      * Original file name prepended with random-generated unique string
      * 
-     * @var string $audioFile
+     * @var string $audio
      * 
-     * @ORM\Column(name="audio_file", type="string", length=255, nullable=true)
+     * @ORM\Column(name="audio", type="string", length=255, nullable=true)
      */
-    private $audioFile;
+    private $audio;
+    
+    /**
+     * 
+     * @var File
+     * 
+     */
+    public $audioFile;
 
     /**
      * @var integer $price_level
@@ -260,23 +267,23 @@ class Issue
     }
     
     /**
-     * Set audioFile
+     * Set audio
      *
-     * @param string $audioFile
+     * @param string $audio
      */
-    public function setAudioFile($audioFile)
+    public function setAudio($audio)
     {
-        $this->audioFile = $audioFile;
+        $this->audio = $audio;
     }
 
     /**
-     * Get audioFile
+     * Get audio
      *
      * @return string 
      */
-    public function getAudioFile()
+    public function getAudio()
     {
-        return $this->audioFile;
+        return $this->audio;
     }
 
     /**

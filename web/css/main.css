@@ -25,6 +25,13 @@ button::-moz-focus-inner {
 #newPages li.page.syncfail {
     border: 2px solid red !important;
 }
+
+#attachAudio {
+    width: 300px; height: 120px;
+    border: 1px solid gray; background-color: #CCC;
+    text-align: center; line-height: 120px; font-size: 2em; color: #777;	
+}
+
 #articles_layout ol.articles {
 	float: left;
 }

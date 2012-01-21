@@ -1,6 +1,6 @@
 var article_new = function () {
 	// basic
-	$('#newPagesTab').click(function (e) {
+	$(':not(#newBasicTab)').click(function (e) {
 		var articleId = $('#newPagesTab').attr('rel');
 		if (articleId) {
 			return true;
@@ -111,6 +111,7 @@ var article_new = function () {
 	pages.fileupload({
 		url: pages.attr('rel'),
 		paramName: 'file',
+		dropZone: $('#newPages'),
 		sequentialUploads: true
 	}).bind('fileuploaddrop', function (e, data) {
 		var count = data.files.length;
@@ -213,5 +214,22 @@ var article_new = function () {
 		}).always(function(){
 			$('#submit_pages').button('reset');
 		});
+	});
+	
+	// attachment
+	$('#attachAudio').fileupload({
+		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
+		dropZone: $('#attachAudio'),
+		limitMultiFileUploads: 1
+	}).bind('fileuploaddrop', function (e, data) {
+		var audioFile = data.files[0];
+		var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+		if (!(acceptFileTypes.test(audioFile.type) ||
+              acceptFileTypes.test(audioFile.name))) {
+			alert('请上传MP3或者WAV格式的音频文件');
+            return false;
+        }
+		
+		return false;
 	});
 };

@@ -20,8 +20,9 @@
 {% block main %}
 
 <ul class="pills" style="margin-left: 80px;" data-pills="pills">
-    <li class="active"><a href="#newBasic">基本信息</a></li>
+    <li class="active"><a id"newBasicTab" href="#newBasic">基本信息</a></li>
     <li><a id="newPagesTab" rel="{{ article.id }}" href="#newPages">页面</a></li>
+    <li><a id="attachmentsTab" rel="{{ article.id }}" href="#newAttachments">附件（音视频等）</a></li>
 </ul>
 
 <div class="pill-content">
@@ -43,6 +44,11 @@
                 {% endfor %}
             {% endif %}
         </ol>
+        <div style="clear:both; height:200px;"></div>
+    </div>
+    
+    <div id="newAttachments" class="pill-pane" style="padding: 10px 0 0 80px;">
+        {% include 'MagendArticleBundle:Article:newAttachments.html.twig' %}
     </div>
 </div>
 {% endblock %}

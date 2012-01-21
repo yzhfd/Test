@@ -12,6 +12,7 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('title')
+            //->add('audioFile', 'file', array('required'=>false, 'label' => '音频文件'))
             ->add('keywordsText', null, array('required'=>false))
             ->add('lat')
             ->add('lng')
