@@ -12,6 +12,7 @@ use Magend\PageBundle\Entity\Page;
 use Magend\IssueBundle\Entity\Issue;
 use Magend\ArticleBundle\Form\ArticleType;
 use Magend\KeywordBundle\Entity\Keyword;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * 
@@ -27,6 +28,48 @@ class ArticleController extends Controller
     public function delAction($id)
     {
         
+    }
+    
+    /**
+     * Upload audio
+     *
+     * @Route("/uploadAudio", name="article_audioUpload", defaults={"_format" = "json"}, options={"expose" = true})
+     * @Template()
+     */
+    public function uploadAudioAction()
+    {
+        $req = $this->getRequest();
+        $articleId = $req->get('id');
+        $file = $req->files->get('file');
+        if ($articleId === null || empty($file)) {
+            return new Response('no file');
+        }
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find($articleId);
+        if (empty($article)) {
+            return new Response('no article');
+        }
+        
+        // move it
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $oldAudio = $article->getAudio();
+        if (!empty($oldAudio)) {
+            @unlink("$rootDir/../web/uploads/$oldAudio");
+        }
+        
+        $originalName = $file->getClientOriginalName();
+        $audioName = uniqid('audio_') . '.' . $file->guessExtension();
+        $file->move($rootDir . '/../web/uploads/', $audioName);
+        $article->setAudio($audioName);
+        $article->setAudioName($originalName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $tplVars = array(
+            'audio' => $req->getBasePath() . '/uploads/' . $audioName,
+            'name' => $originalName
+        );
+        return new Response(json_encode($tplVars));
     }
     
     /**
@@ -84,7 +127,7 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route("/orderpages", name="article_orderpages", defaults={"_format" = "json"})
+     * @Route("/orderpages", name="article_orderpages", defaults={"_format" = "json"}, options={"expose" = true})
      */
     public function orderPagesAction()
     {
@@ -207,6 +250,7 @@ class ArticleController extends Controller
                 $em->flush();
                 
                 if ($req->isXmlHTTPRequest()) {
+                    // Only return article id
                     $response = new Response($articleId);
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;

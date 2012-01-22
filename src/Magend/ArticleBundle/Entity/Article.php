@@ -43,13 +43,22 @@ class Article
     private $title;
     
     /**
-     * Original file name prepended with random-generated unique string
+     * Name of audio file on the server
      * 
      * @var string $audio
      * 
      * @ORM\Column(name="audio", type="string", length=255, nullable=true)
      */
     private $audio;
+    
+    /** 
+     * Original audio file name
+     * 
+     * @var string $audioName
+     * 
+     * @ORM\Column(name="audio_name", type="string", length=255, nullable=true)
+     */
+    private $audioName;    
     
     /**
      * @var File
@@ -323,6 +332,26 @@ class Article
     public function setAudio($audio)
     {
         $this->audio = $audio;
+    }
+
+    /**
+     * Get audio
+     *
+     * @return string 
+     */
+    public function getAudioName()
+    {
+        return $this->audioName;
+    }
+    
+    /**
+     * Set audio name
+     *
+     * @param string $audioName
+     */
+    public function setAudioName($audioName)
+    {
+        $this->audioName = $audioName;
     }
 
     /**
