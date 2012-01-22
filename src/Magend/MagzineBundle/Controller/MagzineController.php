@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Magend\MagzineBundle\Entity\Magzine;
+use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  * 
@@ -54,7 +55,12 @@ class MagzineController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $arr['magzines'] = $repo->findAll();
         
-        return $arr;
+        $response = $this->container->get('templating')->renderResponse(
+            'MagendMagzineBundle:Magzine:issues.html.twig',
+            $arr
+        );
+        $response->headers->setCookie(new Cookie('magzine_id', $id, time() + (3600 * 30 * 24)));
+        return $response;
     }
     
     /**

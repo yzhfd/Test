@@ -148,11 +148,14 @@ class IssueController extends Controller
      */
     public function listAction()
     {
-        // @todo get magzine that is previously selected (or cached)
-        $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT m.id FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC');
-        $query->setMaxResults(1);
-        $magId = $query->getSingleScalarResult();
+        $req = $this->getRequest();
+        $magId = $req->cookies->get('magzine_id');
+        if ($magId === null) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $query = $em->createQuery('SELECT m.id FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC');
+            $query->setMaxResults(1);
+            $magId = $query->getSingleScalarResult();
+        }
         return new RedirectResponse($this->generateUrl('magzine_issues', array(
             'id' => $magId
         )));
