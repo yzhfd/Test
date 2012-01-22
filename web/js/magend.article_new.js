@@ -1,6 +1,6 @@
 var article_new = function () {
 	// basic
-	$(':not(#newBasicTab)').click(function (e) {
+	$('.pills a:not(#newBasicTab)').click(function (e) {
 		var articleId = $('#newPagesTab').attr('rel');
 		if (articleId) {
 			return true;
