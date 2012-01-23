@@ -37,16 +37,6 @@
             <div class="input">{{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}</div>
         </div>
         
-        <div class="clearfix">
-            {{ form_label(form.coverImage, '封面') }}
-            <div class="input">
-                {# <a href="#" title="拖拽图片到这里上传" id="issue_cover">
-                    <img width="120" height="160" src="{% if issue.cover is not null %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" />
-                </a> #}
-                <div id="cover_input">{{ form_errors(form.coverImage) }}{{ form_widget(form.coverImage, { 'attr':{'class':'small'} }) }}</div>
-            </div>
-        </div>
-        
         {{ form_rest(form) }}
         
         <div class="actions">
@@ -54,4 +44,29 @@
             <a style="display:none;" id="issue_next" class="btn" href="{% if issue.id is not null %}{{ url('issue_editor', { 'id':issue.id }) }}{% else %}#{% endif %}">创建编排文章</a>
         </div>
     </form>
+    
+    {% if issue.id is empty %}
+    <div class="alert-message block-message error">
+        <a href="#" class="close">×</a>
+        <strong>提示：</strong><p>请先提交基本信息</p>
+    </div>
+    {% endif %}
+    
+    <div>拖拽图片上传封面</div>
+    <p/>
+    <div id="landscape-cover" rel="landscapeCover" style="float: left; background-color: #CCC; border: 1px solid #777; width: 160px; height: 120px;">
+        <a title="横版封面" href="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}" rel="facebox"><img width="160" height="120" src="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
+    </div>
+    <div id="portrait-cover" rel="portraitCover" style="float: left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+        <a title="竖版封面" href="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="120" height="160" src="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>
+    </div>
+    
+    <p style="clear:both;"></p>
+    
+    <div id="attachAudio">
+        拖拽音频文件到这里
+    </div>
+    <p/>
+    音频文件：<a id="attachedAudio" rel="{% if issue.id %}{{ issue.id }}{% else %}#{% endif %}" target="_blank" href="{% if issue.audio %}{{ asset('uploads/' ~ issue.audio) }}{% else %}#{% endif %}">{{ issue.audioName|default('尚未上传') }}</a>
+
 {% endblock %}

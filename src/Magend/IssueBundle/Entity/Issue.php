@@ -44,13 +44,22 @@ class Issue
     private $title;
     
     /**
-     * Original file name prepended with random-generated unique string
+     * Name of audio file on the server
      * 
      * @var string $audio
      * 
      * @ORM\Column(name="audio", type="string", length=255, nullable=true)
      */
     private $audio;
+    
+    /** 
+     * Original audio file name
+     * 
+     * @var string $audioName
+     * 
+     * @ORM\Column(name="audio_name", type="string", length=255, nullable=true)
+     */
+    private $audioName;
     
     /**
      * 
@@ -67,11 +76,18 @@ class Issue
     private $priceLevel;
 
     /**
-     * @var string $cover
+     * @var string $landscapeCover
      *
-     * @ORM\Column(name="cover", type="string", length=255, nullable=true)
+     * @ORM\Column(name="landscape_cover", type="string", length=255, nullable=true)
      */
-    private $cover;
+    private $landscapeCover;
+    
+    /**
+     * @var string $portraitCover
+     *
+     * @ORM\Column(name="portrait_cover", type="string", length=255, nullable=true)
+     */
+    private $portraitCover;
 
     /**
      * Comma separated article ids
@@ -285,6 +301,26 @@ class Issue
     {
         return $this->audio;
     }
+    
+    /**
+     * Get audio name
+     *
+     * @return string 
+     */
+    public function getAudioName()
+    {
+        return $this->audioName;
+    }
+    
+    /**
+     * Set audio name
+     *
+     * @param string $audioName
+     */
+    public function setAudioName($audioName)
+    {
+        $this->audioName = $audioName;
+    }
 
     /**
      * Set priceLevel
@@ -324,23 +360,43 @@ class Issue
     }
 
     /**
-     * Set cover
+     * Set landscape cover
      *
-     * @param string $cover
+     * @param string $landscapeCover
      */
-    public function setCover($cover)
+    public function setLandscapeCover($landscapeCover)
     {
-        $this->cover = $cover;
+        $this->landscapeCover = $landscapeCover;
     }
 
     /**
-     * Get cover
+     * Get landscape cover
      *
      * @return string 
      */
-    public function getCover()
+    public function getLandscapeCover()
     {
-        return $this->cover;
+        return $this->landscapeCover;
+    }
+    
+    /**
+     * Set portrait cover
+     *
+     * @param string $portraitCover
+     */
+    public function setPortraitCover($portraitCover)
+    {
+        $this->portraitCover = $portraitCover;
+    }
+
+    /**
+     * Get portrait cover
+     *
+     * @return string 
+     */
+    public function getPortraitCover()
+    {
+        return $this->portraitCover;
     }
 
     /**

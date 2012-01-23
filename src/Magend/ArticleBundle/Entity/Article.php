@@ -335,7 +335,7 @@ class Article
     }
 
     /**
-     * Get audio
+     * Get audio name
      *
      * @return string 
      */

@@ -16,6 +16,7 @@ use Magend\IssueBundle\Entity\Issue;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * 
@@ -26,7 +27,6 @@ class IssueController extends Controller
 {
     private function _findIssue($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         
@@ -55,6 +55,89 @@ class IssueController extends Controller
             'magzines' => $mags,
             'form'     => $form->createView()
         );        
+    }
+    
+    /**
+     * Upload cover (landscape or portrait, not both by dnd)
+     * 
+     * @todo refactor all dnd uploads
+     * @Route("/uploadCover", name="issue_coverUpload", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function uploadCoverAction()
+    {
+        $req = $this->getRequest();
+        $issueId = $req->get('id');
+        $landscapeCover = $req->files->get('landscapeCover');
+        $portraitCover = $req->files->get('portraitCover');
+        if ($issueId === null || (empty($landscapeCover) && empty($portraitCover))) {
+            return new Response('no file');
+        }
+        
+        $issue = $this->_findIssue($issueId);
+        if (empty($issue)) {
+            return new Response('no issue');
+        }
+        
+        // move it
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $oldCover = $landscapeCover ? $issue->getLandscapeCover() : $issue->getPortraitCover();
+        if (!empty($oldCover)) {
+            @unlink("$rootDir/../web/uploads/$oldCover");
+        }
+        
+        $file = $landscapeCover ? $landscapeCover : $portraitCover;
+        $coverName = uniqid('cover_') . '.' . $file->guessExtension();
+        $file->move($rootDir . '/../web/uploads/', $coverName);
+        $landscapeCover ? $issue->setLandscapeCover($coverName) : $issue->setPortraitCover($coverName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $tplVars = array(
+            'cover' => $req->getBasePath() . '/uploads/' . $coverName
+        );
+        return new Response(json_encode($tplVars));
+    }
+    
+    /**
+     * Upload audio
+     * 
+     * @todo refactor with article audio upload
+     * @Route("/uploadAudio", name="issue_audioUpload", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function uploadAudioAction()
+    {
+        $req = $this->getRequest();
+        $issueId = $req->get('id');
+        $file = $req->files->get('file');
+        if ($issueId === null || empty($file)) {
+            return new Response('no file');
+        }
+        
+        $issue = $this->_findIssue($issueId);
+        if (empty($issue)) {
+            return new Response('no issue');
+        }
+        
+        // move it
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $oldAudio = $issue->getAudio();
+        if (!empty($oldAudio)) {
+            @unlink("$rootDir/../web/uploads/$oldAudio");
+        }
+        
+        $originalName = $file->getClientOriginalName();
+        $audioName = uniqid('audio_') . '.' . $file->guessExtension();
+        $file->move($rootDir . '/../web/uploads/', $audioName);
+        $issue->setAudio($audioName);
+        $issue->setAudioName($originalName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $tplVars = array(
+            'audio' => $req->getBasePath() . '/uploads/' . $audioName,
+            'name' => $originalName
+        );
+        return new Response(json_encode($tplVars));
     }
     
     /**
@@ -107,7 +190,7 @@ class IssueController extends Controller
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
             } else {
-                return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issue->getId())));
+                return $this->redirect($this->generateUrl('issue_edit', array('id' => $issue->getId()))); //issue_article_list
                 // return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
             }
         }

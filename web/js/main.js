@@ -2,6 +2,10 @@ jQuery.event.props.push("dataTransfer");
 Backbone.sync = Backbone.ajaxSync;
 
 $(function () {
+	if ($('#issue_form').length > 0) {
+		issue_new();
+	}
+	
 	if ($('#newPages').length > 0) {
 		article_new();
 	}
