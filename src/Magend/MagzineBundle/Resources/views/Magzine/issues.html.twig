@@ -39,6 +39,7 @@
                     <th>下载数</th>
                     <th>创建时间</th>
                     <th>出版日期</th>
+                    <th>发布</th>
                     <th>操作</th>
                 </tr></thead>
                 
@@ -74,6 +75,9 @@
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
                         <td>{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
+                        <td><!-- 已发布 -->
+                             <a rel="confirm" href="#" title="发布"><img src="{{ asset('images/publish.png') }}" alt="发布" /></a> 
+                        </td>
                         <td style="width:50px;">
                             <!-- Icons -->
                              <a href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>

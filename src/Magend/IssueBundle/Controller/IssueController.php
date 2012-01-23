@@ -34,6 +34,16 @@ class IssueController extends Controller
     }
     
     /**
+     * 
+     * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
+     */
+    public function publishAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        // @todo set publish
+    }
+    
+    /**
      * Abstract new and edit actions
      * 
      * @param Issue $issue

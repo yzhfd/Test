@@ -42,6 +42,6 @@ $(document).ready(function(){
 	
 	// @todo not only delete
 	$('a[rel*=confirm]').on('click', function(e){
-		return confirm('确定删除吗？');
+		return confirm('确定' + $(this).attr('title') + '吗？');
 	});
 });
