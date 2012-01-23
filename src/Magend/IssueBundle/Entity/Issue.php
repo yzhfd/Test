@@ -27,16 +27,6 @@ class Issue
     private $id;
 
     /**
-     * This will be used to order issues
-     * 
-     * @var string $serial
-     *
-     * @ORM\Column(name="serial", type="string", length=255)
-     * @Assert\NotBlank
-     */
-    private $serial;
-
-    /**
      * @var string $title
      *
      * @ORM\Column(name="title", type="string", length=255)
@@ -261,26 +251,6 @@ class Issue
     public function setMagzine($magzine)
     {
         $this->magzine = $magzine;
-    }
-
-    /**
-     * Set serial
-     *
-     * @param string $serial
-     */
-    public function setSerial($serial)
-    {
-        $this->serial = $serial;
-    }
-
-    /**
-     * Get serial
-     *
-     * @return string 
-     */
-    public function getSerial()
-    {
-        return $this->serial;
     }
 
     /**

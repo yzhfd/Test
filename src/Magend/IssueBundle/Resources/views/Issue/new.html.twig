@@ -15,7 +15,7 @@
     <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
         <div class="clearfix">
             {{ form_label(form.title, '杂志选择') }}
-            <div class="input"><select class="medium" name="magzineId">
+            <div class="input"><select id="magsel" class="medium" name="magzineId">
                 {% for magzine in magzines %}
                 <option value="{{ magzine.id }}" {% if issue.magzine is not null and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
                 {% endfor %}            
@@ -24,12 +24,12 @@
         
         <div class="clearfix">
             {{ form_label(form.yearIssueNo, '年期数') }}
-            <div class="input">{{ form_errors(form.yearIssueNo) }}{{ form_widget(form.yearIssueNo, { 'attr':{'class':'small'} }) }}</div>
+            <div class="input">{{ form_errors(form.yearIssueNo) }}{{ form_widget(form.yearIssueNo, { 'attr':{'class':'small'}, 'id':'yearIssueNo' }) }}</div>
         </div>
         
         <div class="clearfix">
             {{ form_label(form.totalIssueNo, '总期数') }}
-            <div class="input">{{ form_errors(form.totalIssueNo) }}{{ form_widget(form.totalIssueNo, { 'attr':{'class':'small'} }) }}</div>
+            <div class="input">{{ form_errors(form.totalIssueNo) }}{{ form_widget(form.totalIssueNo, { 'attr':{'class':'small'}, 'id':'totalIssueNo' }) }}</div>
         </div>
         
         <div class="clearfix">
@@ -39,7 +39,7 @@
         
         <div class="clearfix">
             {{ form_label(form.publishedAt, '出版日期') }}
-            <div id="publishedAt" class="input">{{ form_errors(form.publishedAt) }}{{ form_widget(form.publishedAt, { 'attr':{'class':'small'} }) }}</div>
+            <div class="input">{{ form_errors(form.publishedAt) }}{{ form_widget(form.publishedAt, { 'attr':{'class':'small'}, 'id':'publishedAt' }) }}</div>
         </div>
         
         <div class="clearfix">

@@ -1,5 +1,18 @@
 var issue_new = function () {
-	$('#publishedAt input').keydown(function(e){
+	$('#magsel').change(function(){
+		// get issueno 
+		$.ajax({
+			url: Routing.generate('issuenos'),
+			data: { magzineId:$(this).val() },
+			success: function (result) {
+				if (!result) result = {};
+				$('#yearIssueNo').val(result.yearIssueNo);
+				$('#totalIssueNo').val(result.totalIssueNo);
+			}
+		});
+	});
+	
+	$('#publishedAt').keydown(function(e){
 		e.stopPropagation();
 		return false;
 	}).datepicker({

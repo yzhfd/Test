@@ -141,6 +141,33 @@ class IssueController extends Controller
     }
     
     /**
+     * Get default issue nos
+     * 
+     * @Route("/nos", name="issuenos", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function issueNoAction()
+    {
+        $req = $this->getRequest();
+        $magId = $req->get('magzineId');
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
+                    ->setParameter('magId', $magId)
+                    ->setMaxResults(1);
+        try {
+            $issue = $query->getSingleResult();
+        } catch (\Exception $e) {
+            return new Response('');
+        }
+        
+        $tplVars = array(
+            'yearIssueNo' => $issue->getYearIssueNo(),
+            'totalIssueNo' => $issue->getTotalIssueNo()
+        );
+        
+        return new Response(json_encode($tplVars));
+    }
+    
+    /**
      * 
      * @Route("/new", name="issue_new")
      * @Template()
@@ -151,14 +178,23 @@ class IssueController extends Controller
         $issue = new Issue();
         $em = $this->getDoctrine()->getEntityManager();
         $magId = $req->get('magzineId', $req->cookies->get('magzine_id'));
-        if ($magId !== null) {
+        if ($req->getMethod() == 'GET' && $magId !== null) {
             $magzine = $em->getReference('MagendMagzineBundle:Magzine', $magId);
-            $query = $em->createQuery('SELECT MAX(s.totalIssueNo) FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId')
-                        ->setParameter('magId', $magId);
-            $totalIssueNo = $query->getSingleScalarResult();
-            $issue->setMagzine($magzine);
-            $issue->setYearIssueNo('2012.1');
-            $issue->setTotalIssueNo($totalIssueNo + 1);            
+            $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
+                        ->setParameter('magId', $magId)
+                        ->setMaxResults(1);
+            try {
+                $latestIssue = $query->getSingleResult();
+                
+                $totalIssueNo = $latestIssue->getTotalIssueNo();
+                $yearIssueNo = $latestIssue->getYearIssueNo();
+                //$yearIssueNo
+                $issue->setMagzine($magzine);
+                $issue->setYearIssueNo($yearIssueNo);
+                $issue->setTotalIssueNo($totalIssueNo + 1);
+            } catch (\Exception $e) {
+                // do nothing
+            }
         }
         
         return $this->_formRet($issue);
@@ -208,7 +244,7 @@ class IssueController extends Controller
                 // return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
             }
         }
-        
+        //var_dump( $form->getErrors() );exit;
         return null;
     }
     

@@ -29,14 +29,16 @@
             <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
             <table>
                 <thead><tr>
-                    <th><input class="check-all" type="checkbox" /></th>
-                    <th>期刊号</th>
+                    <th style="width:18px;"><input class="check-all" type="checkbox" /></th>
+                    <th>年/期</th>
+                    <th>总期数</th>
                     <th>标题</th>
                     <th>封面</th>
                     <th>价格</th>
                     <th>文章数</th>
                     <th>下载数</th>
                     <th>创建时间</th>
+                    <th>出版日期</th>
                     <th>操作</th>
                 </tr></thead>
                 
@@ -60,7 +62,8 @@
                     {% for issue in issues %}
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>{{ issue.serial }}</td>
+                        <td>{{ issue.yearIssueNo }}</td>
+                        <td>{{ issue.totalIssueNo }}</td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
                         <td class="thumbup">
                             <a class="media" title="竖版封面" href="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="30" height="40" src="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>
@@ -70,6 +73,7 @@
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.articles|length }}</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
+                        <td>{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
                         <td style="width:50px;">
                             <!-- Icons -->
                              <a href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
