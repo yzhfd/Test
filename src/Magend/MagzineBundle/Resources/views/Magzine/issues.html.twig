@@ -62,7 +62,10 @@
                         <td><input type="checkbox" /></td>
                         <td>{{ issue.serial }}</td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
-                        <td class="thumbup"><a class="media" href="#"><img width="120" height="160" src="{% if issue.cover is not empty %}{{ asset('uploads/' ~ issue.cover) }}{% endif %}" /></a></td>
+                        <td class="thumbup">
+                            <a class="media" title="竖版封面" href="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="30" height="40" src="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>
+                            <a class="media" title="横版封面" href="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}" rel="facebox"><img width="40" height="30" src="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
+                        </td>
                         <td>{{ issue.priceDescription }}</td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.articles|length }}</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
