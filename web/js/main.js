@@ -1,4 +1,5 @@
 jQuery.event.props.push("dataTransfer");
+$.datepicker.setDefaults({dateFormat: 'yy-mm-dd'});
 Backbone.sync = Backbone.ajaxSync;
 
 $(function () {

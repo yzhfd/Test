@@ -151,6 +151,27 @@ class Issue
      * @ORM\Column(name="publisher", type="integer")
      */
     private $publisher = 0;
+    
+    /**
+     * @var date $publishedAt
+     *
+     * @ORM\Column(name="published_at", type="date", nullable=true)
+     */
+    private $publishedAt;
+    
+    /**
+     * @var string $yearIssueNo
+     *
+     * @ORM\Column(name="year_issueno", type="string", length=255, nullable=true)
+     */
+    private $yearIssueNo;
+    
+    /**
+     * @var integer $totalIssueNo
+     *
+     * @ORM\Column(name="total_issueno", type="integer", nullable=true)
+     */
+    private $totalIssueNo;
 
     /**
      * @var integer $nbFaved
@@ -615,5 +636,65 @@ class Issue
     public function getNbDownloaded()
     {
         return $this->nbDownloaded;
+    }
+
+    /**
+     * Set publishedAt
+     *
+     * @param datetime $publishedAt
+     */
+    public function setPublishedAt($publishedAt)
+    {
+        $this->publishedAt = $publishedAt;
+    }
+
+    /**
+     * Get publishedAt
+     *
+     * @return datetime 
+     */
+    public function getPublishedAt()
+    {
+        return $this->publishedAt;
+    }
+
+    /**
+     * Set yearIssueNo
+     *
+     * @param string $yearIssueNo
+     */
+    public function setYearIssueNo($yearIssueNo)
+    {
+        $this->yearIssueNo = $yearIssueNo;
+    }
+
+    /**
+     * Get yearIssueNo
+     *
+     * @return string 
+     */
+    public function getYearIssueNo()
+    {
+        return $this->yearIssueNo;
+    }
+
+    /**
+     * Set totalIssueNo
+     *
+     * @param string $totalIssueNo
+     */
+    public function setTotalIssueNo($totalIssueNo)
+    {
+        $this->totalIssueNo = $totalIssueNo;
+    }
+
+    /**
+     * Get totalIssueNo
+     *
+     * @return string 
+     */
+    public function getTotalIssueNo()
+    {
+        return $this->totalIssueNo;
     }
 }

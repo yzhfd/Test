@@ -40,7 +40,7 @@ class IssueController extends Controller
      */
     private function _formRet($issue)
     {
-        $form  = $this->createForm(new IssueType(), $issue);
+        $form = $this->createForm(new IssueType(), $issue);
         if ($this->getRequest()->getMethod() == 'POST') {
             $ret = $this->_submit($form, $issue);
             if ($ret) {
@@ -147,7 +147,21 @@ class IssueController extends Controller
      */
     public function newAction()
     {
-        return $this->_formRet(new Issue());
+        $req = $this->getRequest();
+        $issue = new Issue();
+        $em = $this->getDoctrine()->getEntityManager();
+        $magId = $req->get('magzineId', $req->cookies->get('magzine_id'));
+        if ($magId !== null) {
+            $magzine = $em->getReference('MagendMagzineBundle:Magzine', $magId);
+            $query = $em->createQuery('SELECT MAX(s.totalIssueNo) FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId')
+                        ->setParameter('magId', $magId);
+            $totalIssueNo = $query->getSingleScalarResult();
+            $issue->setMagzine($magzine);
+            $issue->setYearIssueNo('2012.1');
+            $issue->setTotalIssueNo($totalIssueNo + 1);            
+        }
+        
+        return $this->_formRet($issue);
     }
     
     /**

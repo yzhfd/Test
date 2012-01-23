@@ -15,7 +15,7 @@
                         <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if magzine.id == app.request.get('id') %}selected="selected"{% endif %}>{{ magzine.name }}</option>
                     {% endfor %}
                 </select>
-                <a rel="dialog" class="btn info" href="{{ path('issue_new') }}">添加期刊</a>
+                <a class="btn info" href="{{ path('issue_new') }}">添加期刊</a>
             </div>
             <!-- href must be unique and match the id of target div -->
             <!--<ul class="content-box-tabs">
@@ -35,7 +35,7 @@
                     <th>封面</th>
                     <th>价格</th>
                     <th>文章数</th>
-                    <th>下载次数</th>
+                    <th>下载数</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr></thead>
@@ -72,7 +72,7 @@
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
                         <td style="width:50px;">
                             <!-- Icons -->
-                             <a rel="dialog" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
                              <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
                              <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
