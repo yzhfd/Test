@@ -7,6 +7,12 @@ var page_edit = function () {
 		return false;
 	});*/
 	
+	$('#internRadio').click(function(){
+		$('#linkInput').val('0');
+	});
+	$('#externRadio').click(function(){
+		$('#linkInput').val('http://');
+	});
 	
 	window.pageCanvas = new PageCanvas;
 	if (initHots.length) {
@@ -56,7 +62,11 @@ var page_edit = function () {
 			type: 'POST',
 			data: { 'hots':hots, 'id':pageId },
 			success: function (response) {
-				
+				pageCanvas.hots.each(function(hot, index){
+					if (!hot.id) {
+						hot.set({id:response[index]});
+					}
+				});
 			}
 		}).done(function(){
 			$('#page_editor').overlay('hide');

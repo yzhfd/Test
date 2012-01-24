@@ -144,10 +144,12 @@ var HotView = Backbone.View.extend({
     edit: function () {
     	var hottype = this.model.get('type');
     	var title = $('#hot_' + hottype).attr('title');
+    	$('#hot_dialog').find('.dlgcontent').hide();
     	$('#hot_' + hottype + '_dialog').show();
+    	var hotModel = this.model;
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
-    		//width: 500, height: 300,
+    		width: 'auto', height: 'auto',
     		// dunno why jquery ui button not styled
     		buttons: { 
     			"Cancel": {
@@ -158,7 +160,12 @@ var HotView = Backbone.View.extend({
     			"Ok": {
     				class: 'btn primary',
     				text: '确认',
-    				click: function() { $(this).dialog("close"); }
+    				click: function() {
+    					$(this).dialog("close");
+    					if (hotModel.id == undefined) {
+    						alert('请先保存');
+    					}
+    				}
     			}
     		}
     	});

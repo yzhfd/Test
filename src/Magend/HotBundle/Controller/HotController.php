@@ -16,4 +16,13 @@ class HotController extends Controller
     {
         return array('name' => 'Kail');
     }
+    
+    /**
+     * 
+     * @Route("/saveExtraAttrs");
+     */
+    public function saveExtraAttrsAction()
+    {
+        
+    }
 }

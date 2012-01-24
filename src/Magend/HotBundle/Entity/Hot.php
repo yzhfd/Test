@@ -52,13 +52,22 @@ class Hot
     private $mode = self::MODE_LANDSCAPE;
     
     /**
-     * Serialized array of position, dimension, etc
+     * Serialized array of position, dimension and other essential attributes
      * 
      * @var text $attrs
      *
      * @ORM\Column(name="attrs", type="text")
      */    
     private $attrs;
+    
+    /**
+     * Serialized array of extra attributes
+     * 
+     * @var text $extraAttrs
+     *
+     * @ORM\Column(name="extra_attrs", type="text", nullable=true)
+     */    
+    private $extraAttrs;
 
     /**
      * Serialized array
@@ -147,6 +156,26 @@ class Hot
     public function getAttrs()
     {
         return unserialize($this->attrs);
+    }
+    
+    /**
+     * Set extra attrs
+     *
+     * @param array $extaAttrs
+     */
+    public function setExtraAttrs($extraAttrs)
+    {
+        $this->extraAttrs = is_array($extraAttrs) ? serialize($extraAttrs) : $extraAttrs;
+    }
+
+    /**
+     * Get extra attrs
+     *
+     * @return array 
+     */
+    public function getExtraAttrs()
+    {
+        return unserialize($this->extraAttrs);
     }
     
     /**
