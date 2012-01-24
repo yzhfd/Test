@@ -15,6 +15,27 @@ $(function () {
 		articles_layout();
 	}
 	
+	if ($('#magissues').length > 0) {
+		$('.publishbtn').click(function(e){
+			if (confirm('确定发布吗？')) {
+				var publishBtn = $(this);
+				$.ajax({
+					url: $(this).attr('href'),
+					success: function (result) {
+						var tr = publishBtn.parent().parent();
+						var publishedAt = tr.find('.publishedAt');
+						if (publishedAt.text() == '') {
+							publishedAt.text(result.publishedAt);
+						}
+						tr.find('.editbtn').remove();
+						publishBtn.replaceWith('已发布');
+					}
+				});
+			}
+			return false;
+		});
+	}
+	
 	if ($('#magzine_form').length > 0) {
 		var magForm = $('#magzine_form');
 		magForm.fileupload({

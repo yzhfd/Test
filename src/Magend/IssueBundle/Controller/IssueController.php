@@ -40,7 +40,22 @@ class IssueController extends Controller
     public function publishAction($id)
     {
         $issue = $this->_findIssue($id);
-        // @todo set publish
+        if (empty($issue)) {
+            return new Response('{"msg":"期刊不存在"}'); 
+        }
+        if ($issue->getPublish()) {
+            return new Response('{"msg":"期刊已发布"}'); 
+        }
+        
+        $issue->setPublish(true);
+        if ($issue->getPublishedAt() === null) {
+            $issue->setPublishedAt(new \DateTime());
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
+        return new Response('{"msg":"发布成功", "publishedAt":"' . $pubAt . '" }');
     }
     
     /**
@@ -218,6 +233,14 @@ class IssueController extends Controller
     public function editAction($id)
     {
         $issue = $this->_findIssue($id);
+        
+        $isPublished = $issue->getPublish();
+        if ($isPublished) {
+            return $this->container->get('templating')->renderResponse(
+                'MagendIssueBundle:Issue:noedit.html.twig'
+            );
+        }
+        
         return $this->_formRet($issue);
     }
     

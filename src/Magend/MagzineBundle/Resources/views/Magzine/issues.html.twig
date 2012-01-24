@@ -25,7 +25,7 @@
             <div class="clear"></div>
         </div> <!-- End .content-box-header -->
                 
-        <div class="content-box-content">
+        <div id="magissues" class="content-box-content">
             <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
             <table>
                 <thead><tr>
@@ -74,15 +74,13 @@
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.articles|length }}</a></td>
                         <td>{{ issue.nbDownloaded }}</td>
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d H:i') }}{% endif%}</td>
-                        <td>{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
-                        <td><!-- 已发布 -->
-                             <a rel="confirm" href="#" title="发布"><img src="{{ asset('images/publish.png') }}" alt="发布" /></a> 
+                        <td class="publishedAt">{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
+                        <td style="color: #57A000;">
+                             {% if issue.publish %}已发布{% else %}<a class="publishbtn" href="{{ path('issue_publish', { 'id':issue.id }) }}" title="发布"><img src="{{ asset('images/publish.png') }}" alt="发布" /></a>{% endif %} 
                         </td>
                         <td style="width:50px;">
-                            <!-- Icons -->
-                             <a href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             {% if not issue.publish %}<a class="editbtn" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>{% endif %}
                              <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
-                             <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
                         </td>
                     </tr>
                     {% endfor %}
