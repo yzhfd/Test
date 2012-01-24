@@ -3,10 +3,17 @@
 {% block contentTitle %}项目类型{% endblock %}
 
 {% block main %}
-
+    <ul class="shortcut-buttons-set">
+        <li><a class="shortcut-button" href="{{ path('proj_add_default') }}"><span>添加默认类型</span></a></li>
+    </ul>
+    <div class="clear"></div>
+    
     <div class="content-box"><!-- Start Content Box -->
         <div class="content-box-header">
             <h3>项目类型列表</h3>
+            <div style="padding-top: 6px">
+                <a class="btn info" rel="dialog" href="{{ path('proj_new') }}">添加</a>
+            </div>
             <div class="clear"></div>
         </div> <!-- End .content-box-header -->
                 
@@ -14,7 +21,7 @@
             <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
             <table>
                 <thead><tr>
-                    <th><input class="check-all" type="checkbox" /></th>
+                    <th style="width: 20px;"><input class="check-all" type="checkbox" /></th>
                     <th>名称</th>
                     <th>缩略图</th>
                     <th>操作</th>
@@ -39,13 +46,11 @@
                     {% for project in projects %}
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td><a href="#">{{ project }}</a></td>
-                        <td>...</td>
+                        <td><a href="#">{{ project.name }}</a></td>
+                        <td>{% if project.thumbnail %}<a rel="facebox" href="{{ asset('uploads/' ~ project.thumbnail) }}"><img style="width: 40px; height: 30px;" src="{{ asset('uploads/' ~ project.thumbnail) }}" /></a>{% endif %}</td>
                         <td style="width:50px;">
-                            <!-- Icons -->
-                             <a rel="dialog" href="#" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                             <a rel="confirm" href="#" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
-                             <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
+                             <a rel="dialog" href="{{ path('proj_edit', { 'id':project.id } ) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('proj_del', { 'id':project.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
                         </td>
                     </tr>
                     {% endfor %}
