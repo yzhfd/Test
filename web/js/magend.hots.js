@@ -151,43 +151,66 @@ var HotView = Backbone.View.extend({
     	$('#hot_dialog').find('.dlgcontent').hide();
     	var typeDlg = $('#hot_' + hottype + '_dialog');
     	var hotModel = this.model;
-    	if ($('form', typeDlg).length > 0) {
-    		$('form', typeDlg)[0].reset();
-    		$('form', typeDlg).submit(function(e){
-    			return false;
-    		});
-    	}
+    	typeDlg.data('hot', hotModel);
+    	typeDlg.html(typeDlg.data('resetTo').clone(true, true));
+    	// populate the form
     	if (hotModel.extraAttrs) {
 	    	$.each(hotModel.extraAttrs, function(name, value) {
 	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
 	            input.val( ( !$.isArray( value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ value ] : value );
 	    	});
     	}
+    	// video
+    	if (hotModel.get('type') == 1) {
+    		if (hotModel.uploads) {
+    			var videoFile = hotModel.uploads[0];
+    			$('#video-upload-area')
+    			.removeClass('synced')
+    			.addClass('unsynced')
+    			.html(videoFile.name + '<br/>' + parseSize(videoFile.size));
+    		} else if (hotModel.assets) {
+	    		var filePath = hotModel.assets[0]['file'];
+	    		var fileName = hotModel.assets[0]['name'];
+	    		$('#video-upload-area')
+	    		.addClass('synced')
+	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
+    		}
+    	}
+    	
     	typeDlg.show();
     	
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
     		width: 'auto', height: 'auto',
     		// dunno why jquery ui button not styled
+			close: function () {
+				
+			},
     		buttons: { 
     			"Cancel": {
     				class: 'btn',
     				text: '取消',
-    				click: function() { $(this).dialog("close"); }
+    				click: function() {
+    					hotModel.addUploads = null;
+    					
+    					$(this).dialog('close');
+    				}
     			},
     			"Ok": {
     				class: 'btn primary',
     				text: '确认',
-    				click: function() {
-    					$('#hot_dialog').dialog("close");
-    					
+    				click: function() {    					
     					if ($('form', typeDlg).length > 0) {
 	    					var formObj = $('form', typeDlg).serializeObject();
 	    					hotModel.extraAttrs = formObj;
-	    					/*if (hotModel.id == undefined) {
-	    						alert('请先保存');
-	    					}*/
     					}
+    					if (hotModel.addUploads) {
+    						if (!hotModel.uploads) hotModel.uploads = [];
+    						$.merge(hotModel.uploads, hotModel.addUploads);
+    						hotModel.addUploads = null;
+    					}
+    					
+    					$('#hot_dialog').dialog('close');
     				}
     			}
     		}
@@ -289,15 +312,11 @@ var PageCanvas = Backbone.View.extend({
 		window.undomanager = new UndoManager(this.hots);
 	},
 	// on load
-	load: function (hotAttrs) {
-		$(hotAttrs).each(_.bind(function (index, hotAttr) {
-			var extras = null;
-			if (hotAttr['extras']) {
-				extras = hotAttr['extras'];
-				delete hotAttr['extras'];
-			}
-			var hot = new Hot(hotAttr);
-			hot.extraAttrs = extras;
+	load: function (hotsData) {
+		$(hotsData).each(_.bind(function (index, hotData) {
+			var hot = new Hot(hotData.attrs);
+			hot.extraAttrs = hotData.extras;
+			hot.assets = hotData.assets;
 			this.hots.add(hot);
 		}, this));
 	},

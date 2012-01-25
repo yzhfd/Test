@@ -15,14 +15,18 @@
 {% block main %}
 
 <script type="text/javascript">
+    var basePath = '{{ app.request.basePath }}';
     var initHots = [];
 {% for hot in page.landscapeHots %}
-    {% set hotAttrs = hot.attrs|merge({ 'id':hot.id }) %}
+    {% set hotsData = { 'attrs':hot.attrs|merge({ 'id':hot.id }) } %}
     {% if hot.extraAttrs %}
-        {% set hotAttrs = hotAttrs|merge({ 'extras':hot.extraAttrs }) %}
+        {% set hotsData = hotsData|merge({ 'extras':hot.extraAttrs }) %}
+    {% endif %}
+    {% if hot.assets %}
+        {% set hotsData = hotsData|merge({ 'assets':hot.assets }) %}
     {% endif %}
     
-    initHots.push({{ hotAttrs|json_encode()|raw }});
+    initHots.push({{ hotsData|json_encode()|raw }});
 {% endfor %}
 </script>
 
@@ -40,8 +44,13 @@
     </div>
     <p/>
     <div id="hot_dialog" style="padding:10px;">
-        <div id="hot_0_dialog" class="dlgcontent" style="display:none; min-width: 300px; min-height: 120px;">
-            
+        <div id="hot_0_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px; overflow-x: auto;">
+            <p style="position: absolute; left: 10px;">拖拽图片到这里</p>
+            <div style="margin-top: 30px; width: 300px; background-color: red;">
+                <ol id="hotimgs" style="width: 1000px; height: 150px; background-color: #333;">
+                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
+                </ol>
+            </div>
         </div>
         <div id="hot_1_dialog" class="dlgcontent" style="display:none; min-width: 300px; ">
             <div id="video-upload-area">
@@ -65,7 +74,7 @@
     	</ul>
     </div>
     <ul id="hotlib">
-        <li id="hot_0" class="hotobj hotimg" title="图片">图片</li>
+        <li id="hot_0" class="hotobj hotimgs" title="图片">图片</li>
         <li id="hot_1" class="hotobj hotvideo" title="视频">视频</li>
         <li id="hot_2" class="hotobj hotlink" title="链接">链接</li>
     </ul>

@@ -26,6 +26,22 @@ button::-moz-focus-inner {
     border: 2px solid red !important;
 }
 
+#hotimgs li.hotimg {
+    margin-top: 10px;
+    border: 2px solid #57A000;
+}
+#hotimgs li.hotimg.unsynced {
+    border: 2px solid yellow;
+}
+#hotimgs li.hotimg.syncfail {
+    border: 2px solid red !important;
+}
+li.hotimg { /* refer to li.page below */
+    float: left;
+    margin-left: 18px;
+    position: relative;
+}
+
 #attachAudio {
     width: 300px; height: 120px;
     border: 1px solid gray; background-color: #CCC;
@@ -41,6 +57,9 @@ button::-moz-focus-inner {
 	height: 100px;
 	padding-top: 40px;
 	color: #777;
+}
+#video-upload-area a {
+	color: #57A000;
 }
 #video-upload-area.unsynced{
 	border: 2px solid yellow;
@@ -62,7 +81,7 @@ button::-moz-focus-inner {
 	height: auto !important;
 	min-height: 96px;
 }
-li.page:hover .pagedel {
+li.page:hover .pagedel, li.hotimg:hover .pagedel {
     visibility: visible;
 }
 .pagedel {
@@ -72,6 +91,9 @@ li.page:hover .pagedel {
     width: 22px; height: 22px;
     position: absolute; top: -11px; right: -11px;
     background: transparent url('../images/close.png') no-repeat center center;
+}
+li.hotimg a, li.hotimg img {
+    display: block;
 }
 
 #article_pages {

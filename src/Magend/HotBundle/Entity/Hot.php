@@ -119,6 +119,22 @@ class Hot
     }
 
     /**
+     * @ORM\PostRemove()
+     */
+    public function postRemove()
+    {
+        $assets = $this->getAssets();
+        if (empty($assets)) {
+            return;
+        }
+        foreach ($assets as $asset) {
+            if (!empty($asset['file'])) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $asset['file']);
+            }
+        }
+    }
+    
+    /**
      * Set type
      *
      * @param integer $type
@@ -197,7 +213,7 @@ class Hot
     {
         return unserialize($this->assets);
     }
-
+    
     /**
      * Set createdAt
      *
