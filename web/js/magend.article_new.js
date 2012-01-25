@@ -245,6 +245,7 @@ var article_new = function () {
 		if (!(acceptFileTypes.test(audioFile.type) ||
               acceptFileTypes.test(audioFile.name))) {
 			alert('请上传MP3格式的音频文件');
+			for (var i=0; i<100; ++i) {}
             return false;
         }
 		

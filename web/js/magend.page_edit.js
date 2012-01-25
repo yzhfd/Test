@@ -1,3 +1,15 @@
+function parseSize(size) {
+	var suffix = ["字节", "KB", "MB", "GB", "TB", "PB"],
+		tier = 0;
+
+	while(size >= 1024) {
+		size = size / 1024;
+		tier++;
+	}
+
+	return Math.round(size * 10) / 10 + " " + suffix[tier];
+}
+
 var page_edit = function () {
 
 	// Backbone.sync = Backbone.localSync;
@@ -7,11 +19,45 @@ var page_edit = function () {
 		return false;
 	});*/
 	
+	// link
 	$('#internRadio').click(function(){
 		$('#linkInput').val('0');
 	});
 	$('#externRadio').click(function(){
 		$('#linkInput').val('http://');
+	});
+	
+	// video
+	$('#video-upload-area').fileupload({
+		url: 'http://baidu.com',
+		paramName: 'file',
+		acceptFileTypes: /(\.|\/)mp4$/i,
+		dropZone: $('#video-upload-area'),
+		limitMultiFileUploads: 1,
+		success: function (result) {
+			$('#video-upload-area').text('拖拽视频到这里');
+			$('#video-upload-area').overlay('hide');
+			
+		},
+		fail: function () {
+			$('#video-upload-area').text('拖拽视频到这里');
+			$('#video-upload-area').overlay('hide');
+			alert('上传失败');
+		}
+	}).bind('fileuploaddrop', function (e, data) {
+		var videoFile = data.files[0];
+		var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+		if (!(acceptFileTypes.test(videoFile.type) ||
+              acceptFileTypes.test(videoFile.name))) {
+			alert('请上传MP4格式的视频文件');
+			for (var i=0; i<100; ++i) {} // may freeze the page if return right away
+            return false;
+        }
+		
+		$('#video-upload-area')
+		.addClass('synced')
+		.html(videoFile.name + '<br/>' + parseSize(videoFile.size));
+		return false;
 	});
 	
 	window.pageCanvas = new PageCanvas;
@@ -54,7 +100,11 @@ var page_edit = function () {
 		var hots = [];
 		pageCanvas.hots.each(function(hot){
 			//delete hot.attributes['id'];
-			hots.push(hot.attributes);
+			var attrs = hot.attributes;
+			if (hot.extraAttrs) {
+				attrs['extras'] = hot.extraAttrs;
+			}
+			hots.push(attrs);
 		});
 		
 		$.ajax({

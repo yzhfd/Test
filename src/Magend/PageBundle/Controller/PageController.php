@@ -229,6 +229,11 @@ class PageController extends Controller
                     $hotIds[] = $hot['id'];
                 }
                 
+                // extra attributes, specific to type
+                if (isset($hot['extras'])) {
+                    $hotEntity->setExtraAttrs($hot['extras']);
+                    unset($hot['extras']);
+                }
                 $hotEntity->setAttrs($hot);
                 
                 $hotEntities[] = $hotEntity;

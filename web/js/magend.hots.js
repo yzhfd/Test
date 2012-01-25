@@ -157,10 +157,10 @@ var HotView = Backbone.View.extend({
     			return false;
     		});
     	}
-    	if (hotModel.extraAttrs && hotModel.extraAttrs.length > 0) {
-	    	$.each(hotModel.extraAttrs, function(index, param) {
-	    		var input = $(":input[name='" + param.name + "']:not(:button,:reset,:submit,:image)", typeDlg );
-	            input.val( ( !$.isArray( param.value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ param.value ] : param.value );
+    	if (hotModel.extraAttrs) {
+	    	$.each(hotModel.extraAttrs, function(name, value) {
+	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
+	            input.val( ( !$.isArray( value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ value ] : value );
 	    	});
     	}
     	typeDlg.show();
@@ -182,9 +182,8 @@ var HotView = Backbone.View.extend({
     					$('#hot_dialog').dialog("close");
     					
     					if ($('form', typeDlg).length > 0) {
-	    					var formArr = $('form', typeDlg).serializeArray();
-	    					hotModel.extraAttrs = formArr;
-	    					console.log(hotModel.extraAttrs);
+	    					var formObj = $('form', typeDlg).serializeObject();
+	    					hotModel.extraAttrs = formObj;
 	    					/*if (hotModel.id == undefined) {
 	    						alert('请先保存');
 	    					}*/
@@ -292,7 +291,14 @@ var PageCanvas = Backbone.View.extend({
 	// on load
 	load: function (hotAttrs) {
 		$(hotAttrs).each(_.bind(function (index, hotAttr) {
-			this.hots.add(new Hot(hotAttr));
+			var extras = null;
+			if (hotAttr['extras']) {
+				extras = hotAttr['extras'];
+				delete hotAttr['extras'];
+			}
+			var hot = new Hot(hotAttr);
+			hot.extraAttrs = extras;
+			this.hots.add(hot);
 		}, this));
 	},
 	addOne: function (hot) {
