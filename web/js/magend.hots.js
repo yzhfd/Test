@@ -1,3 +1,4 @@
+
 /**
  * Hot
  * 
@@ -141,12 +142,29 @@ var HotView = Backbone.View.extend({
     		$(this.el).css({backgroundColor: "rgba(255, 255, 255, 0.5)"});
     	}
     },
+    submitDialog: function () {
+    	
+    },
     edit: function () {
     	var hottype = this.model.get('type');
     	var title = $('#hot_' + hottype).attr('title');
     	$('#hot_dialog').find('.dlgcontent').hide();
-    	$('#hot_' + hottype + '_dialog').show();
+    	var typeDlg = $('#hot_' + hottype + '_dialog');
     	var hotModel = this.model;
+    	if ($('form', typeDlg).length > 0) {
+    		$('form', typeDlg)[0].reset();
+    		$('form', typeDlg).submit(function(e){
+    			return false;
+    		});
+    	}
+    	if (hotModel.extraAttrs && hotModel.extraAttrs.length > 0) {
+	    	$.each(hotModel.extraAttrs, function(index, param) {
+	    		var input = $(":input[name='" + param.name + "']:not(:button,:reset,:submit,:image)", typeDlg );
+	            input.val( ( !$.isArray( param.value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ param.value ] : param.value );
+	    	});
+    	}
+    	typeDlg.show();
+    	
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
     		width: 'auto', height: 'auto',
@@ -161,9 +179,15 @@ var HotView = Backbone.View.extend({
     				class: 'btn primary',
     				text: '确认',
     				click: function() {
-    					$(this).dialog("close");
-    					if (hotModel.id == undefined) {
-    						alert('请先保存');
+    					$('#hot_dialog').dialog("close");
+    					
+    					if ($('form', typeDlg).length > 0) {
+	    					var formArr = $('form', typeDlg).serializeArray();
+	    					hotModel.extraAttrs = formArr;
+	    					console.log(hotModel.extraAttrs);
+	    					/*if (hotModel.id == undefined) {
+	    						alert('请先保存');
+	    					}*/
     					}
     				}
     			}
