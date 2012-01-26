@@ -207,7 +207,7 @@ class PageController extends Controller
         if (empty($page)) {
             throw new \ Exception('page not found');
         }
-                
+        
         // @todo landscape or portrait
         $hotEntities = array();
         $em = $this->getDoctrine()->getEntityManager();

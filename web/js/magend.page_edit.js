@@ -155,9 +155,9 @@ var page_edit = function () {
 		}
 	});
 	
-	// @todo landscape or portrait
-	$('#saveall').click(function () {
-		$('#page_editor').overlay('loading');
+	var saveAll = function () {
+		var dfd = $.Deferred();
+		var promise = dfd.promise();
 		
 		var pageId = $('#pageid').text();
 		
@@ -175,10 +175,18 @@ var page_edit = function () {
 			url: Routing.generate('page_hots_save'),
 			type: 'POST',
 			data: { 'hots':hots, 'id':pageId },
+			fail: function () {
+				dfd.reject();
+			},
 			success: function (response) {
+				if (!pageCanvas.hots || pageCanvas.hots.length == 0) {
+					dfd.resolve();
+					return;
+				}
+				
 				pageCanvas.hots.each(function(hot, index){
 					if (!hot.id) {
-						hot.set({id:response[index]});
+						hot.set({ id:response[index] });
 					}
 				});
 				
@@ -187,38 +195,76 @@ var page_edit = function () {
 				uploader.fileupload({
 					paramName: 'file'
 				}).bind('fileuploadsubmit', function (e, data) {
-					// no upload immediately
 					e.stopPropagation();
 					e.preventDefault();
 				});
+				
 				var when = $.when({});
 				pageCanvas.hots.each(function(hot, index){
-					if (hot.uploads && hot.uploads.length > 0) {
-						$(hot.uploads).each(function(index, file){
-							when = when.pipe(function(){
-								// uploader.fileupload('option', 'formData', { name:file.name });
-								uploader.fileupload('option', 'success', function(result){
-									if (hot.type == 1) {
-										
-									}
-									hot.assets = result;
-									hot.uploads = null;
-								});
-								
-								uploader.fileupload('option', 'url', Routing.generate('hot_upload', { 'id':hot.id }));
-								return uploader.fileupload('send', { files:[file] });
+					if (!hot.uploads || hot.uploads.length == 0) {
+						return;
+					}
+					$(hot.uploads).each(function(index, file){
+						noUpload = false;
+						when = when.pipe(function(){
+							// uploader.fileupload('option', 'formData', { name:file.name });
+							uploader.fileupload('option', 'success', function(result){
+								if (hot.type == 1) {
+									
+								}
+								hot.assets = result;
+								hot.uploads = null;
+							});
+							
+							uploader.fileupload('option', 'url', Routing.generate('hot_upload', { 'id':hot.id }));
+							return uploader.fileupload('send', { files:[file] });
+						});
+					});
+				});
+				
+				// To order pages must wait for complete of all uploads
+				var when2 = $.when({});
+				when.done(function(){
+					pageCanvas.hots.each(function(hot, index){
+						// @todo only images now
+						if (!hot.assets || hot.get('type') != 0) {
+							return;
+						}
+						
+						var assets = [];
+						$(hot.assets).each(function(index, asset){
+							if (asset.file) {
+								assets.push(asset.file);
+							} else {
+								assets.push($('.imgwrapper', asset).attr('rel'));
+							}
+						});
+						
+						when2 = when2.pipe(function(){
+							return $.ajax({
+								url: Routing.generate('hot_order_assets', { 'id':hot.id }),
+								type: 'POST',
+								data: { assets:assets }
 							});
 						});
-					}
-				});
-				when.done(function(){
-					console.log('over');
-				});
+					});
+				}).fail( dfd.reject );
+				
+				when2.done( dfd.resolve ).fail( dfd.reject );
 			}
-		}).done(function(){
-			$('#page_editor').overlay('hide');
 		});
-	});		
+		
+		return promise;
+	};
+	
+	// @todo landscape or portrait
+	$('#saveall').click(function () {
+		$('#page_editor').overlay('loading');
+		saveAll().always(function(){
+			$('#page_editor').overlay('hide');
+			console.log('save done');
+		});
+	});
 	
 	$('#flushall').click(function () {
 		localStorage.clear();

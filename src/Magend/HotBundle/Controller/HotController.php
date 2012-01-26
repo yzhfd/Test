@@ -68,7 +68,7 @@ class HotController extends Controller
     }
     
     /**
-     * Order hot's assets
+     * Order hot's assets and delete ones not exist any longer
      * 
      * @Route("/{id}/order_assets", name="hot_order_assets", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});
      */
@@ -81,5 +81,38 @@ class HotController extends Controller
                 'error' => 'hot not found'
             )));
         }
+
+        $req = $this->getRequest();
+        $reqAssets = $req->get('assets'); // $reqAssets must be subset of $assets, and order may be changed
+        if (empty($hot)) {
+            return new Response(json_encode(array(
+                'error' => 'no asset in request'
+            )));
+        }
+        
+        $assets = $hot->getAssets();
+        $fileAssets = array();
+        foreach ($assets as $asset) {
+            $fileAssets[$asset['file']] = $asset;
+        }
+        
+        $newAssets = array();
+        foreach ($reqAssets as $reqAsset) {
+            if (isset($fileAssets[$reqAsset])) {
+                $newAssets[] = $fileAssets[$reqAsset];
+                unset($fileAssets[$reqAsset]);
+            }
+        }
+        if (!empty($fileAssets)) {
+            $rootDir = $this->container->getParameter('kernel.root_dir');
+            foreach ($fileAssets as $fileName=>$asset) {
+                @unlink($rootDir . '/../web/uploads/' . $fileName);
+            }
+        }
+        $hot->setAssets($newAssets);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return new Response('{"success":1}');
     }
 }
