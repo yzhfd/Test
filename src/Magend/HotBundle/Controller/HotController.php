@@ -43,15 +43,23 @@ class HotController extends Controller
         $file->move($rootDir . '/../web/uploads/', $fileName);
         
         // @todo @unlink existing files
-        if ($hot->getType() == 1) { // video
+        $hotType = $hot->getType();
+        if ($hotType == 1) { // video
             $assets = $hot->getAssets();
             if (!empty($assets)) {
                 @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);
             }
+            $assets = array(
+                array('name' => $file->getClientOriginalName(), 'file' => $fileName)
+            );
+        } else if ($hotType == 0) { // gallery
+            $assets = $hot->getAssets();
+            if (!is_array($assets)) {
+                $assets = array();
+            }
+            $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
         }
-        $assets = array(
-            array('name' => $file->getClientOriginalName(), 'file' => $fileName)
-        );
+
         $hot->setAssets($assets);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
@@ -59,5 +67,19 @@ class HotController extends Controller
         return new Response(json_encode($assets));
     }
     
-    // @todo order
+    /**
+     * Order hot's assets
+     * 
+     * @Route("/{id}/order_assets", name="hot_order_assets", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});
+     */
+    public function orderAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendHotBundle:Hot');
+        $hot = $repo->find($id);
+        if (empty($hot)) {
+            return new Response(json_encode(array(
+                'error' => 'hot not found'
+            )));
+        }
+    }
 }

@@ -119,7 +119,8 @@ var article_new = function () {
 			(function (file) {
 	            var reader = new FileReader();
 	            reader.onload = function (e) {
-	            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="' + file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+	            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="'
+	            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 	            	page.appendTo(pages);
 	            	page.data('file', file);
 	            };

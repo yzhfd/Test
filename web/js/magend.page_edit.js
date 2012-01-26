@@ -71,6 +71,8 @@ var page_edit = function () {
 	});
 	
 	// images
+
+	
 	var hotimgs = $('#hotimgs');
 	hotimgs.fileupload({
 		url: '',
@@ -78,21 +80,29 @@ var page_edit = function () {
 		dropZone: hotimgs,
 		sequentialUploads: true,
 		drop: function (e, data) {
-			$('#hotimgs').sortable({containment:$('#hotimgs')});
-		
+			var hot = $('#hot_0_dialog').data('hot');
+			if (!hot.addUploads) hot.addUploads = [];
 			var count = data.files.length;
 			for (var i = 0; i < count; ++i) {
 				(function (file) {
 		            var reader = new FileReader();
 		            reader.onload = function (e) {
-		            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a href="#" title="'
+		            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
 		            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 		            	hotimg.appendTo($('#hotimgs'));
 		            	hotimg.data('file', file);
+
+		            	$('a.pagedel').on('click', function(e){
+		            		$(this).parent().remove();
+		            		return false;
+		            	});
+		            	
+		            	$('#hotimgs').width($('#hotimgs li.hotimg').length * hotimg.outerWidth(true) + 20);
 		            };
 		            
 		            reader.readAsDataURL(file);
 				})(data.files[i]);
+				hot.addUploads.push(data.files[i]);
 			}
 			
 			return false;
@@ -103,6 +113,7 @@ var page_edit = function () {
 			e.preventDefault();
 		}
 	});
+
 	
 	// store original dialog content
 	$('.dlgcontent').each(function(index, dlg){
@@ -180,9 +191,9 @@ var page_edit = function () {
 					e.stopPropagation();
 					e.preventDefault();
 				});
+				var when = $.when({});
 				pageCanvas.hots.each(function(hot, index){
 					if (hot.uploads && hot.uploads.length > 0) {
-						var when = $.when({}); 
 						$(hot.uploads).each(function(index, file){
 							when = when.pipe(function(){
 								// uploader.fileupload('option', 'formData', { name:file.name });
@@ -193,14 +204,15 @@ var page_edit = function () {
 									hot.assets = result;
 									hot.uploads = null;
 								});
+								
 								uploader.fileupload('option', 'url', Routing.generate('hot_upload', { 'id':hot.id }));
 								return uploader.fileupload('send', { files:[file] });
 							});
 						});
-						when.done(function(){
-							console.log('over');
-						});
 					}
+				});
+				when.done(function(){
+					console.log('over');
 				});
 			}
 		}).done(function(){

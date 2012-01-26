@@ -175,7 +175,33 @@ var HotView = Backbone.View.extend({
 	    		.addClass('synced')
 	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
     		}
+    	} else if (hotModel.get('type') == 0) {
+    		// @todo DRY
+    		if (hotModel.assets) {
+    			$(hotModel.assets).each(function(index, asset){
+    				if (asset.file) {
+		            	var hotimg = $('<li class="hotimg synced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" rel="' + asset.file + '" title="'
+		            			+ asset.name + '"><img width="128" height="96" src="' + basePath + '/uploads/' + asset.file + '" /></a></li>');
+		            	hotimg.appendTo($('#hotimgs'));
+    				} else { // asset is DOM element
+    					$(asset).clone(true, true).appendTo($('#hotimgs'));
+    				}
+    			});
+    		}
+    		
+        	$('a.pagedel').on('click', function(e){
+        		$(this).parent().remove();
+        		return false;
+        	});
+        	
+        	if ($('#hotimgs li.hotimg').length > 0) {
+        		$('#hotimgs').width($('#hotimgs li.hotimg').length * 150 + 20);
+        	}
+    		$('#hotimgs').sortable({containment:$('#hotimgs')});
     	}
+    	
+    	// images
+    	
     	
     	typeDlg.show();
     	
@@ -193,7 +219,7 @@ var HotView = Backbone.View.extend({
     				click: function() {
     					hotModel.addUploads = null;
     					
-    					$(this).dialog('close');
+    					$('#hot_dialog').dialog('close');
     				}
     			},
     			"Ok": {
@@ -208,6 +234,18 @@ var HotView = Backbone.View.extend({
     						if (!hotModel.uploads) hotModel.uploads = [];
     						$.merge(hotModel.uploads, hotModel.addUploads);
     						hotModel.addUploads = null;
+    					}
+    					if (hotModel.get('type') == 0) {
+    						hotModel.uploads = [];
+    						hotModel.assets = [];
+    						$('#hotimgs').find('li.hotimg').each(function(index, hotimg){
+    							hotimg = $(hotimg);
+    							var imgFile = hotimg.data('file');
+    							hotModel.assets.push(hotimg.clone(true, true)); // not file but element to avoid file read delay
+    							if (imgFile) {
+    								hotModel.uploads.push(imgFile);
+    							}
+    						});
     					}
     					
     					$('#hot_dialog').dialog('close');
