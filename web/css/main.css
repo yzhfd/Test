@@ -15,6 +15,16 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+.copyright {
+    font-size:18px; font-weight: bold; 
+}
+.copyright_on, .copyright_off:hover {
+	color: #57A000;
+}
+.copyright_off, .copyright_on:hover {
+    color: #CCC;
+}
+
 #newPages li.page {
 	margin-top: 10px;
 	border: 2px solid #57A000;
