@@ -164,11 +164,16 @@ class ArticleController extends Controller
     }
     
     /**
-     * Use request parameter TYPE to differentiate among different groups
      * 
-     * @Route("/orderpages", name="article_orderpages", defaults={"_format" = "json"}, options={"expose" = true})
+     * @Route(
+     *     "/orderpages/{type}",
+     *     name="article_orderpages",
+     *     defaults={"_format" = "json"},
+     *     requirements={"type"="[0-2]"},
+     *     options={"expose" = true}
+     * )
      */
-    public function orderPagesAction()
+    public function orderPagesAction($type = Page::TYPE_MAIN)
     {
         $req = $this->getRequest();
         $articleId = $req->get('id');
@@ -179,7 +184,6 @@ class ArticleController extends Controller
         }
         
         $pageIds = $req->get('pageIds');
-        $type = $req->get('type', Page::TYPE_MAIN);
         if ($type == Page::TYPE_MAIN) {
             $article->setPageIds($pageIds);
         } else if ($type == Page::TYPE_INFO) {

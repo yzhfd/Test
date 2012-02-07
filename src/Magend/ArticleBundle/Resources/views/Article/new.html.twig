@@ -37,8 +37,8 @@
             <a class="close" href="#">&times;</a>
             <h3>从本地硬盘拖拽图片到这里添加页面.</h3>
         </div>
-        <div class="well"><button id="submit_pages" data-loading-text="保存中..." class="btn info">保存</button></div>
-        <ol class="pages" rel="{{ path('page_upload') }}">
+        <div class="well"><button rel="0" data-loading-text="保存中..." class="btn info submit_pages">保存</button></div>
+        <ol class="pages" rel="{{ path('page_upload', {'type':0}) }}">
             <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
                 {% for page in article.pages %}
@@ -54,11 +54,11 @@
             <a class="close" href="#">&times;</a>
             <h3>从本地硬盘拖拽图片到这里添加页面.</h3>
         </div>
-        <div class="well"><button data-loading-text="保存中..." class="btn info submit_pages">保存</button></div>
-        <ol class="pages" rel="{{ path('page_upload') }}">
+        <div class="well"><button rel="1" data-loading-text="保存中..." class="btn info submit_pages">保存</button></div>
+        <ol class="pages" rel="{{ path('page_upload', {'type':1}) }}">
             <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
-                {% for page in article.pages %}
+                {% for page in article.infoPages %}
                 <li class="page" rel="{{ page.id }}"><a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a><a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
                 {% endfor %}
             {% endif %}
@@ -71,11 +71,11 @@
             <a class="close" href="#">&times;</a>
             <h3>从本地硬盘拖拽图片到这里添加页面.</h3>
         </div>
-        <div class="well"><button data-loading-text="保存中..." class="btn info submit_pages">保存</button></div>
-        <ol class="pages" rel="{{ path('page_upload') }}">
+        <div class="well"><button rel="2" data-loading-text="保存中..." class="btn info submit_pages">保存</button></div>
+        <ol class="pages" rel="{{ path('page_upload', {'type':2}) }}">
             <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
-                {% for page in article.pages %}
+                {% for page in article.structurePages %}
                 <li class="page" rel="{{ page.id }}"><a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a><a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
                 {% endfor %}
             {% endif %}

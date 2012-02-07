@@ -144,10 +144,10 @@ class PageController extends Controller
      * 
      * Use request parameter TYPE to differentiate among different groups
      *
-     * @Route("/upload", name="page_upload", defaults={"_format" = "json"})
+     * @Route("/upload/{type}", name="page_upload", defaults={"_format" = "json"}, requirements={"type"="[0-2]"})
      * @Template()
      */
-    public function uploadAction()
+    public function uploadAction($type)
     {
         $req = $this->getRequest();
         $tplVars = array(
@@ -175,8 +175,6 @@ class PageController extends Controller
                 $page = new Page();
                 $page->setLandscapeImg($imgName);
                 $page->setArticle($article);
-                $type = $req->get('type', Page::TYPE_MAIN);
-                // @todo validate that type cannot fall out of Page types
                 $page->setType($type);
                 
                 $em = $this->getDoctrine()->getEntityManager();
@@ -187,7 +185,7 @@ class PageController extends Controller
                 $tplVars['delUrl'] = $this->generateUrl('page_del', array('id' => $page->getId()));
                 $pageIds = $article->getPageIds();
                 $pageIds[] = $page->getId();
-                $article->setPageIds($pageIds);
+                $article->setPageIds($pageIds, $type);
                 $em->flush();
             }
         }

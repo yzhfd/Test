@@ -107,7 +107,7 @@ class Article
     
     /**
      * Comma separated text of page ids
-     * Info pages
+     * Pages of TYPE_INFO
      * 
      * @var string $infoPageIds
      *
@@ -117,7 +117,7 @@ class Article
     
     /**
      * Comma separated text of page ids
-     * Structure pages (images)
+     * Pages of TYPE_STRUCTURE
      * 
      * @var string $structurePageIds
      *
@@ -248,11 +248,12 @@ class Article
     public function getPageIds($pageType = Page::TYPE_MAIN)
     {
         $pageIds = $this->pageIds;
-        if ($pageType = Page::TYPE_INFO) {
+        if ($pageType == Page::TYPE_INFO) {
             $pageIds = $this->infoPageIds;
-        } else if ($pageType = Page::TYPE_STRUCTURE) {
+        } else if ($pageType == Page::TYPE_STRUCTURE) {
             $pageIds = $this->structurePageIds;
         }
+        
         return $pageIds ? explode(',', trim($pageIds, ',')) : array();
     }
     
@@ -487,20 +488,30 @@ class Article
     }
     
     /**
-     * NOT all pages but only main pages
      * 
+     * @param int $pageType
      * @return array - pages ordered by pageIds
      */ 
-    public function getPages()
+    public function getPages($pageType = Page::TYPE_MAIN)
     {
         $pages = array();
-        $pageIds = $this->getPageIds();
+        $pageIds = $this->getPageIds($pageType);
         foreach ($pageIds as $pageId) {
             if (!empty($this->pages[$pageId])) {
                 $pages[$pageId] = $this->pages[$pageId];
             }
         }
         return $pages;
+    }
+    
+    public function getInfoPages()
+    {
+        return $this->getPages(Page::TYPE_INFO);
+    }
+    
+    public function getStructurePages()
+    {
+        return $this->getPages(Page::TYPE_STRUCTURE);
     }
     
     public function setPages($pages)
@@ -511,6 +522,10 @@ class Article
         $this->pages = $pages;
     }
     
+    /**
+     * 
+     * Just count main pages
+     */
     public function getNbPages()
     {
         $pageIds = $this->getPageIds();

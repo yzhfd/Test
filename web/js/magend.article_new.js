@@ -106,35 +106,37 @@ var article_new = function () {
 		return false;
 	});
 	
-	var pages = $('#newPages').find('ol.pages');
-	pages.sortable({});
-	pages.fileupload({
-		url: pages.attr('rel'),
-		paramName: 'file',
-		dropZone: $('#newPages'),
-		sequentialUploads: true
-	}).bind('fileuploaddrop', function (e, data) {
-		var count = data.files.length;
-		for (var i = 0; i < count; ++i) {
-			(function (file) {
-	            var reader = new FileReader();
-	            reader.onload = function (e) {
-	            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="'
-	            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
-	            	page.appendTo(pages);
-	            	page.data('file', file);
-	            };
-	            
-	            reader.readAsDataURL(file);
-			})(data.files[i]);
-		}
-	}).bind('fileuploadsubmit', function (e, data) {
-		// no upload immediately
-		e.stopPropagation();
-		e.preventDefault();
+	$('.newPages').find('ol.pages').each(function(index, pages){
+		pages = $(pages);
+		pages.sortable({});
+		pages.fileupload({
+			url: pages.attr('rel'),
+			paramName: 'file',
+			dropZone: pages.parent(),
+			sequentialUploads: true
+		}).bind('fileuploaddrop', function (e, data) {
+			var count = data.files.length;
+			for (var i = 0; i < count; ++i) {
+				(function (file) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+		            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="'
+		            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+		            	page.appendTo(pages);
+		            	page.data('file', file);
+		            };
+		            
+		            reader.readAsDataURL(file);
+				})(data.files[i]);
+			}
+		}).bind('fileuploadsubmit', function (e, data) {
+			// no upload immediately
+			e.stopPropagation();
+			e.preventDefault();
+		});
 	});
 	
-	var savePages = function () {
+	var savePages = function (pages) {
 		var dfd = $.Deferred();
 		
 		var when = $.when({});
@@ -187,14 +189,25 @@ var article_new = function () {
 		return dfd.promise();
 	};
 	
-	var pageIds = [];
-	pages.find('li.page').each(function(index, lipage){
-		var pageId = $(lipage).attr('rel');
-		if (pageId) pageIds.push(pageId);
+	// old pageIds
+	$('.newPages').find('ol.pages').each(function(index, pages){
+		pages = $(pages);
+		var pageIds = [];
+		pages.find('li.page').each(function(index, lipage){
+			var pageId = $(lipage).attr('rel');
+			if (pageId) pageIds.push(pageId);
+		});
+		pages.data('pageIds', pageIds);
 	});
+	
 	$('.submit_pages').click(function(){
-		$(this).button('loading');
-		savePages().pipe(function(){
+		var submitBtn = $(this);
+		submitBtn.button('loading');
+		var pages = submitBtn.parent().parent().find('ol.pages');
+		var pageIds = pages.data('pageIds');
+		
+		// upload pages then order them (if there is change)
+		savePages(pages).pipe(function(){
 			var _pageIds = [];
 			pages.find('li.page').each(function(index, lipage){
 				var pageId = $(lipage).attr('rel');
@@ -204,7 +217,7 @@ var article_new = function () {
 			if (strPageIds != pageIds.join(',')) {
 				var articleId = $('#newPagesTab').attr('rel');
 				return $.ajax({
-					url: Routing.generate('article_orderpages'),
+					url: Routing.generate('article_orderpages', {'type':submitBtn.attr('rel')}),
 					data: {
 						id: articleId,
 						pageIds: strPageIds
@@ -213,7 +226,7 @@ var article_new = function () {
 			}
 			return {};
 		}).always(function(){
-			$('#submit_pages').button('reset');
+			submitBtn.button('reset');
 		});
 	});
 	
