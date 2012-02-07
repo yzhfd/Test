@@ -16,13 +16,13 @@ button::-moz-focus-inner {
 }
 
 .copyright {
-    font-size:18px; font-weight: bold; 
+    font-size:18px; font-weight: bold;
 }
 .copyright_on, .copyright_off:hover {
-	color: #57A000;
+	color: #57A000; text-decoration: none;
 }
 .copyright_off, .copyright_on:hover {
-    color: #CCC;
+    color: #CCC; text-decoration: none;
 }
 
 #newPages li.page {
