@@ -17,6 +17,10 @@ use Magend\HotBundle\Entity\Hot;
  */
 class Page
 {
+    const TYPE_MAIN      = 0;
+    const TYPE_INFO      = 1;
+    const TYPE_STRUCTURE = 2;
+    
     /**
      * @var integer $id
      *
@@ -32,6 +36,13 @@ class Page
      * @ORM\ManyToOne(targetEntity="Magend\ArticleBundle\Entity\Article", inversedBy="pages")
      */
     private $article;
+    
+    /**
+     * 
+     * @var int
+     * @ORM\Column(name="type", type="smallint")
+     */
+    private $type = self::TYPE_MAIN;
     
     /**
      * @var ArrayCollection
@@ -294,5 +305,15 @@ class Page
     public function getPortraitHots()
     {
         return $this->_getHotsByMode(Hot::MODE_PORTRAIT);
+    }
+    
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

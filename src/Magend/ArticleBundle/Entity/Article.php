@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Magend\KeywordBundle\Entity\Keyword;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
+USE Magend\PageBundle\Entity\Page;
 
 /**
  * Magend\ArticleBundle\Entity\Article
@@ -96,16 +97,38 @@ class Article
     
     /**
      * Comma separated text of page ids
+     * Main pages
      * 
-     * @var string $pages
+     * @var string $pageIds
      *
      * @ORM\Column(name="page_ids", type="text", nullable=true)
      */
     private $pageIds;
     
     /**
-     * @var ArrayCollection
+     * Comma separated text of page ids
+     * Info pages
      * 
+     * @var string $infoPageIds
+     *
+     * @ORM\Column(name="infopage_ids", type="text", nullable=true)
+     */
+    private $infoPageIds;
+    
+    /**
+     * Comma separated text of page ids
+     * Structure pages (images)
+     * 
+     * @var string $structurePageIds
+     *
+     * @ORM\Column(name="structurepage_ids", type="text", nullable=true)
+     */
+    private $structurePageIds;
+    
+    /**
+     * Include all kinds of pages: main, info and structure
+     * 
+     * @var ArrayCollection
      * 
      * @ORM\OneToMany(
      *     targetEntity="Magend\PageBundle\Entity\Page",
@@ -198,17 +221,59 @@ class Article
         }
     }
     
-    public function setPageIds($pageIds)
+    /**
+     * 
+     * @param mixed $pageIds
+     * @param int $pageType
+     */
+    public function setPageIds($pageIds, $pageType = Page::TYPE_MAIN)
     {
         if (is_array($pageIds)) {
             $pageIds = implode(',', $pageIds);
         }
-        $this->pageIds = $pageIds;
+        
+        if ($pageType == Page::TYPE_MAIN) {
+            $this->pageIds = $pageIds;
+        } else if ($pageType == Page::TYPE_INFO) {
+            $this->infoPageIds = $pageIds;
+        } else if ($pageType == Page::TYPE_STRUCTURE) {
+            $this->structurePageIds = $pageIds;
+        }
     }
     
-    public function getPageIds()
+    /**
+     * 
+     * @param int $pageType
+     */
+    public function getPageIds($pageType = Page::TYPE_MAIN)
     {
-        return $this->pageIds ? explode(',', trim($this->pageIds, ',')) : array();
+        $pageIds = $this->pageIds;
+        if ($pageType = Page::TYPE_INFO) {
+            $pageIds = $this->infoPageIds;
+        } else if ($pageType = Page::TYPE_STRUCTURE) {
+            $pageIds = $this->structurePageIds;
+        }
+        return $pageIds ? explode(',', trim($pageIds, ',')) : array();
+    }
+    
+    public function setInfoPageIds($pageIds)
+    {
+        $this->setPageIds($pageIds, Page::TYPE_INFO);
+    }
+    
+    public function getInfoPageIds()
+    {
+        return $this->getPageIds(Page::TYPE_INFO);
+    }
+    
+    public function setStructurePageIds($pageIds)
+    {
+        $this->setPageIds($pageIds, Page::TYPE_STRUCTURE);
+    }
+    
+    public function getStructurePageIds()
+    {
+        return $this->getPageIds(Page::TYPE_STRUCTURE);
     }
     
     /**
@@ -421,7 +486,11 @@ class Article
         $this->issues = new ArrayCollection(array($issue));
     }
     
-    // return pages ordered by pageIds
+    /**
+     * NOT all pages but only main pages
+     * 
+     * @return array - pages ordered by pageIds
+     */ 
     public function getPages()
     {
         $pages = array();

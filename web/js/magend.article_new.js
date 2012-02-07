@@ -192,7 +192,7 @@ var article_new = function () {
 		var pageId = $(lipage).attr('rel');
 		if (pageId) pageIds.push(pageId);
 	});
-	$('#submit_pages').click(function(){
+	$('.submit_pages').click(function(){
 		$(this).button('loading');
 		savePages().pipe(function(){
 			var _pageIds = [];

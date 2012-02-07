@@ -25,14 +25,17 @@ button::-moz-focus-inner {
     color: #CCC; text-decoration: none;
 }
 
-#newPages li.page {
+.newPages {
+	padding: 10px 0 0 60px;
+}
+.newPages li.page {
 	margin-top: 10px;
 	border: 2px solid #57A000;
 }
-#newPages li.page.unsynced {
+.newPages li.page.unsynced {
 	border: 2px solid yellow;
 }
-#newPages li.page.syncfail {
+.newPages li.page.syncfail {
     border: 2px solid red !important;
 }
 

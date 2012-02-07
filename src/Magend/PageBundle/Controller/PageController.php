@@ -141,6 +141,8 @@ class PageController extends Controller
     /**
      * Upload image if page not exist will create it
      * @todo landscape or portrait
+     * 
+     * Use request parameter TYPE to differentiate among different groups
      *
      * @Route("/upload", name="page_upload", defaults={"_format" = "json"})
      * @Template()
@@ -173,6 +175,9 @@ class PageController extends Controller
                 $page = new Page();
                 $page->setLandscapeImg($imgName);
                 $page->setArticle($article);
+                $type = $req->get('type', Page::TYPE_MAIN);
+                // @todo validate that type cannot fall out of Page types
+                $page->setType($type);
                 
                 $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($page);

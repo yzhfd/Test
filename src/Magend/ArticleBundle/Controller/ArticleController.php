@@ -109,7 +109,9 @@ class ArticleController extends Controller
     }
     
     /**
-     * // , requirements={"id" = "\d+"}, defaults={"id" = null}
+     * 
+     * 
+     * @deprecated
      * 
      * @Route("/new_pages", name="article_new_pages")
      * @Template()
@@ -162,6 +164,7 @@ class ArticleController extends Controller
     }
     
     /**
+     * Use request parameter TYPE to differentiate among different groups
      * 
      * @Route("/orderpages", name="article_orderpages", defaults={"_format" = "json"}, options={"expose" = true})
      */
@@ -174,8 +177,16 @@ class ArticleController extends Controller
         if (!$article || !$req->get('pageIds')) {
             return new Response(json_encode(array('result'=>0)));
         }
+        
         $pageIds = $req->get('pageIds');
-        $article->setPageIds($pageIds);
+        $type = $req->get('type', Page::TYPE_MAIN);
+        if ($type == Page::TYPE_MAIN) {
+            $article->setPageIds($pageIds);
+        } else if ($type == Page::TYPE_INFO) {
+            $article->setInfoPageIds($pageIds);
+        } else if ($type == Page::TYPE_STRUCTURE) {
+            $article->setPageIds($pageIds);
+        }
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($article);
