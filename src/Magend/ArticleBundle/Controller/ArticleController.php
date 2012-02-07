@@ -21,13 +21,49 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ArticleController extends Controller
 {
+    private function getArticleById($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $article = $repo->find($id);
+        if (empty($article)) {
+            throw new \ Exception('Article not found');
+        }
+        
+        return $article;
+    }
+    
+    /**
+     * Set the article as copyright
+     * 
+     * @Route("/{id}/copyright", name="article_copyright", requirements={"id" = "\d+"})
+     */
+    public function copyrightAction($id)
+    {
+        $req = $this->getRequest();
+        $on = $req->get('on');
+        $article = $this->getArticleById($id);
+        $article->setCopyright($on == 1);
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $article->getIssue()->getId())));
+    }
+    
     /**
      * 
      * @Route("/{id}/del", name="article_del", requirements={"id" = "\d+"})
      */
     public function delAction($id)
     {
+        $article = $this->getArticleById($id);
+        $issueId = $article->getIssue()->getId();
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($article);
+        $em->flush();
         
+        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issueId)));
     }
     
     /**

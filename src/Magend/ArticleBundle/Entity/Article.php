@@ -141,6 +141,13 @@ class Article
      * @ORM\Column(name="nb_shared", type="integer")
      */
     private $nbShared = 0;
+    
+    /**
+     * @var bool $copyright
+     *
+     * @ORM\Column(name="copyright", type="boolean")
+     */
+    private $copyright = false;
 
     /**
      * @var datetime $createdAt
@@ -524,5 +531,25 @@ class Article
     public function addPage(\Magend\PageBundle\Entity\Page $pages)
     {
         $this->pages[] = $pages;
+    }
+    
+    /**
+     * Set copyright
+     *
+     * @param bool $copyright
+     */
+    public function setCopyright($copyright)
+    {
+        $this->copyright = $copyright;
+    }
+
+    /**
+     * Get copyright
+     *
+     * @return bool 
+     */
+    public function getCopyright()
+    {
+        return $this->copyright;
     }
 }
