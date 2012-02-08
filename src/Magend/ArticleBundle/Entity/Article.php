@@ -46,6 +46,13 @@ class Article
     private $issues;
     
     /**
+     * @var smallint $type
+     *
+     * @ORM\Column(name="type", type="smallint")
+     */
+    private $type;
+    
+    /**
      * @var string $title
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=true)
@@ -644,5 +651,25 @@ class Article
     public function getCopyright()
     {
         return $this->copyright;
+    }
+
+    /**
+     * Set type
+     *
+     * @param smallint $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * Get type
+     *
+     * @return smallint 
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

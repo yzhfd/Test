@@ -10,7 +10,15 @@ class ArticleType extends AbstractType
 {
     public function buildForm(FormBuilder $builder, array $options)
     {
+        $types = array();
+        // article types
+        // @todo better from Article
+        for ($i=0; $i<7; ++$i) {
+            $types[] = "article.$i";
+        }
+        
         $builder
+            ->add('type', 'choice', array('choices'=>$types, 'empty_value' => ''))
             ->add('title')
             //->add('audioFile', 'file', array('required'=>false, 'label' => '音频文件'))
             ->add('keywordsText', null, array('required'=>false))
