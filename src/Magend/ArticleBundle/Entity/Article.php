@@ -171,6 +171,13 @@ class Article
     private $institutes;
     
     /**
+     * @var Project
+     * 
+     * @ORM\ManyToOne(targetEntity="Magend\ProjectBundle\Entity\Project", inversedBy="pages")
+     */
+    private $project;
+    
+    /**
      * Latitude
      * 
      * @var float $lat
@@ -706,5 +713,25 @@ class Article
     public function getInstitutes()
     {
         return $this->institutes;
+    }
+
+    /**
+     * Set project
+     *
+     * @param Magend\ProjectBundle\Entity\Project $project
+     */
+    public function setProject(\Magend\ProjectBundle\Entity\Project $project)
+    {
+        $this->project = $project;
+    }
+
+    /**
+     * Get project
+     *
+     * @return Magend\ProjectBundle\Entity\Project 
+     */
+    public function getProject()
+    {
+        return $this->project;
     }
 }
