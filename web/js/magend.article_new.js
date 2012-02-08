@@ -110,6 +110,14 @@ var article_new = function () {
 		return false;
 	});
 	
+	$('#article_typesel').change(function(){
+		if ($(this).val() == 4) {
+			$('#proj_intro').show();
+		} else {
+			$('#proj_intro').hide();
+		}
+	});
+	
 	// map & lat,lng
     var map = new google.maps.Map($("#map_canvas")[0], {
     	zoom: 2,

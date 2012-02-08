@@ -157,6 +157,20 @@ class Article
     private $pages;
     
     /**
+     * Institutes
+     * Only articles of type TYPE_PROJ have
+     * 
+     * @var ArrayCollection
+     * 
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\InstituteBundle\Entity\Institute",
+     *     fetch="EXTRA_LAZY"
+     * )
+     * @ORM\JoinTable(name="mag_article_institute")
+     */
+    private $institutes;
+    
+    /**
      * Latitude
      * 
      * @var float $lat
@@ -210,6 +224,7 @@ class Article
         $this->keywords = new ArrayCollection();
         $this->architects = new ArrayCollection();
         $this->issues = new ArrayCollection();
+        $this->institutes = new ArrayCollection();
     }
 
     /**
@@ -671,5 +686,25 @@ class Article
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Add institute
+     *
+     * @param Magend\InstituteBundle\Entity\Institute $institute
+     */
+    public function addInstitute(\Magend\InstituteBundle\Entity\Institute $institute)
+    {
+        $this->institutes[] = $institute;
+    }
+
+    /**
+     * Get institutes
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getInstitutes()
+    {
+        return $this->institutes;
     }
 }

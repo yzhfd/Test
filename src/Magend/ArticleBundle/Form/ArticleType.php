@@ -22,6 +22,12 @@ class ArticleType extends AbstractType
             ->add('title')
             //->add('audioFile', 'file', array('required'=>false, 'label' => '音频文件'))
             ->add('keywordsText', null, array('required'=>false))
+            ->add('institutes', 'entity', array(
+                'required' => false,
+                'class' => 'MagendInstituteBundle:Institute',
+                'expanded' => false,
+                'multiple' => true
+            ))
             ->add('lat')
             ->add('lng')
         ;

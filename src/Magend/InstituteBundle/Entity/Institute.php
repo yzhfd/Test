@@ -32,7 +32,7 @@ class Institute
     /**
      * @var string $thumbnail
      *
-     * @ORM\Column(name="thumbnail", type="string", length=255)
+     * @ORM\Column(name="thumbnail", type="string", length=255, nullable=true)
      */
     private $thumbnail;
 
@@ -69,6 +69,13 @@ class Institute
      * @var File
      */
     public $thumbnailImage;
+    
+    /**
+     * 
+     * 
+     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="institutes")
+     */
+    private $articles;
 
     /**
      * Get id
@@ -239,5 +246,34 @@ class Institute
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+    public function __construct()
+    {
+        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add articles
+     *
+     * @param Magend\ArticleBundle\Entity\Article $articles
+     */
+    public function addArticle(\Magend\ArticleBundle\Entity\Article $articles)
+    {
+        $this->articles[] = $articles;
+    }
+
+    /**
+     * Get articles
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+    
+    public function __toString()
+    {
+        return $this->name;
     }
 }
