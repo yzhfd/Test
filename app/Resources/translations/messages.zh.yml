@@ -3,3 +3,13 @@ The presented password is invalid.: 密码不正确
 The presented password cannot be empty.: 密码不能为空
 The credentials were changed from another session.: 会话失效
 Bad credentials: 帐号无效
+
+article:
+    0: 广告
+    1: 封面
+    2: 目录
+    3: 版权页
+    4: 项目介绍
+    5: 机构介绍
+    6: 人物访谈
+    7: 建筑评论
