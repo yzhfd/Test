@@ -1,5 +1,0 @@
-<div id="attachAudio">
-    拖拽音频文件到这里
-</div>
-<p/>
-音频文件：<a id="attachedAudio" target="_blank" href="{% if article.audio %}{{ asset('uploads/' ~ article.audio) }}{% else %}#{% endif %}">{{ article.audioName|default('尚未上传') }}</a>

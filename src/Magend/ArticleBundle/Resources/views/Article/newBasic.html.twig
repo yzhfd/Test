@@ -52,6 +52,17 @@
     </div>
     
     <div class="clearfix">
+        <label>背景音乐</label>
+        <div class="input">
+            <div id="attachAudio">
+                拖拽音频文件到这里
+            </div>
+            <p/>
+            音频文件：<a id="attachedAudio" target="_blank" href="{% if article.audio %}{{ asset('uploads/' ~ article.audio) }}{% else %}#{% endif %}">{{ article.audioName|default('尚未上传') }}</a>
+        </div>
+    </div>
+    
+    <div class="clearfix">
         <label class="required">经纬度</label>
         <div class="input">
             <span id="latdiv">{{ form_errors(form.lat) }}{{ form_widget(form.lat, { 'attr':{'class':'small'} }) }}</span>

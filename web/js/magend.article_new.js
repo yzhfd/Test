@@ -25,21 +25,77 @@ var article_new = function () {
 		tagit.tagit('createTag', tag);
 	});
 	
+	// attachment
+	$('#attachedAudio').click(function(){
+		if ($(this).attr('href') == '#') {
+			return false;
+		}
+	});
+	$('#attachAudio').fileupload({
+		url: Routing.generate('article_audioUpload'),
+		paramName: 'file',
+		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
+		dropZone: $('#attachAudio'),
+		limitMultiFileUploads: 1
+	}).bind('fileuploaddrop', function (e, data) {
+		var audioFile = data.files[0];
+		var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+		if (!(acceptFileTypes.test(audioFile.type) ||
+              acceptFileTypes.test(audioFile.name))) {
+			alert('请上传MP3格式的音频文件');
+			for (var i=0; i<100; ++i) {}
+            return false;
+        }
+		
+		$('#attachAudio').text(audioFile.name);
+		$('#article_form').data('audio', audioFile);
+		/*$('#attachAudio').overlay('loading');
+		
+		return true;*/
+	}).bind('fileuploadsubmit', function (e, data) {
+		// no upload immediately
+		e.stopPropagation();
+		e.preventDefault();
+	});
+	
 	$('#article_form').submit(function(e){
 		var articleId = $('#newPagesTab').attr('rel');
 		var submitBtn = $(this).find(':submit');
 		submitBtn.attr('data-loading-text', '提交中...');
 		submitBtn.button('loading');
+		
+		var existentArticleId = $('#newPagesTab').attr('rel');
+		var audioFile = $(this).data('audio');
 		$.ajax({
 			url: $(this).attr('action'),
 			type: 'POST',
 			data: $(this).serializeArray(),
 			success: function (response) {
-				submitBtn.button('reset');
-				$('#newPagesTab, #attachmentsTab').attr('rel', response);
-				if (!articleId && confirm('前往上传页面')) {
-					$('#newPagesTab').click();
-				}
+				var articleId = response;
+				$('#newPagesTab, #attachmentsTab').attr('rel', articleId);
+				
+				var audioFormData = {id:articleId};
+				$('#attachAudio').fileupload('option', 'formData', audioFormData)
+							     .fileupload('send', { files:[audioFile] })
+								 .success(function (result, textStatus, jqXHR) {
+										$('#attachAudio').text('拖拽音频文件到这里');
+										$('#attachAudio').overlay('hide');
+										
+										$('#attachedAudio').attr('href', result.audio).text(result.name);
+										
+										submitBtn.button('reset');
+										if (!existentArticleId && confirm('前往上传页面')) {
+											$('#newPagesTab').click();
+										}
+								 })
+								 .error(function (result, textStatus, jqXHR) {
+									 console.log(textStatus);
+									 $('#attachAudio').text('拖拽音频文件到这里');
+									 $('#attachAudio').overlay('hide');
+									 alert('上传背景音乐失败');
+									 
+									 submitBtn.button('reset');
+								 });
 			}
 		});
 		
@@ -228,47 +284,5 @@ var article_new = function () {
 		}).always(function(){
 			submitBtn.button('reset');
 		});
-	});
-	
-	// attachment
-	$('#attachedAudio').click(function(){
-		if ($(this).attr('href') == '#') {
-			return false;
-		}
-	});
-	$('#attachAudio').fileupload({
-		url: Routing.generate('article_audioUpload'),
-		paramName: 'file',
-		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
-		dropZone: $('#attachAudio'),
-		limitMultiFileUploads: 1,
-		success: function (result) {
-			$('#attachAudio').text('拖拽音频文件到这里');
-			$('#attachAudio').overlay('hide');
-			
-			$('#attachedAudio').attr('href', result.audio).text(result.name);
-		},
-		fail: function () {
-			$('#attachAudio').text('拖拽音频文件到这里');
-			$('#attachAudio').overlay('hide');
-			alert('上传失败');
-		}
-	}).bind('fileuploaddrop', function (e, data) {
-		var audioFile = data.files[0];
-		var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
-		if (!(acceptFileTypes.test(audioFile.type) ||
-              acceptFileTypes.test(audioFile.name))) {
-			alert('请上传MP3格式的音频文件');
-			for (var i=0; i<100; ++i) {}
-            return false;
-        }
-		
-		$('#attachAudio').text(audioFile.name);
-		$('#attachAudio').overlay('loading');
-		
-		var articleId = $('#newPagesTab').attr('rel');
-		var audioFormData = {id:articleId};
-		$('#attachAudio').fileupload('option', 'formData', audioFormData);
-		return true;
 	});
 };
