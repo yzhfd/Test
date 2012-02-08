@@ -74,13 +74,21 @@ var article_new = function () {
 				var articleId = response;
 				$('#newPagesTab, #attachmentsTab').attr('rel', articleId);
 				
+				if (!audioFile) {
+					// @todo DRY
+					submitBtn.button('reset');
+					if (!existentArticleId && confirm('前往上传页面')) {
+						$('#newPagesTab').click();
+					}
+					return;
+				}
+				
 				var audioFormData = {id:articleId};
 				$('#attachAudio').fileupload('option', 'formData', audioFormData)
 							     .fileupload('send', { files:[audioFile] })
 								 .success(function (result, textStatus, jqXHR) {
 										$('#attachAudio').text('拖拽音频文件到这里');
 										$('#attachAudio').overlay('hide');
-										
 										$('#attachedAudio').attr('href', result.audio).text(result.name);
 										
 										submitBtn.button('reset');
