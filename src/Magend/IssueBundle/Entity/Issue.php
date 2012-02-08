@@ -178,10 +178,11 @@ class Issue
     private $nbDownloaded = 0;
     
     /**
-     * 
-     * @var File
+     * @var string $preview
+     *
+     * @ORM\Column(name="preview", type="string", length=255, nullable=true)
      */
-    public $coverImage;
+    private $preview;
     
     /**
      * @var Magzine
@@ -219,7 +220,7 @@ class Issue
         } else {
             $this->updatedAt = $now;
         }
-        
+        /*
         if ($this->coverImage) {
             $imgName = uniqid('issue_') . '.' . $this->coverImage->guessExtension();
             $this->coverImage->move(__DIR__.'/../../../../web/uploads/', $imgName);
@@ -229,7 +230,7 @@ class Issue
             }
             
             $this->setCover($imgName);
-        }
+        }*/
     }
     
     /**
@@ -666,5 +667,25 @@ class Issue
     public function getTotalIssueNo()
     {
         return $this->totalIssueNo;
+    }
+
+    /**
+     * Set preview
+     *
+     * @param string $preview
+     */
+    public function setPreview($preview)
+    {
+        $this->preview = $preview;
+    }
+
+    /**
+     * Get preview
+     *
+     * @return string 
+     */
+    public function getPreview()
+    {
+        return $this->preview;
     }
 }

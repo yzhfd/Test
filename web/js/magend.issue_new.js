@@ -24,7 +24,7 @@ var issue_new = function () {
 		}
 	});
 	
-	// covers
+	// covers and preview
 	$('#landscape-cover, #portrait-cover').each(function(index, cover){
 		cover = $(cover);
 		cover.fileupload({

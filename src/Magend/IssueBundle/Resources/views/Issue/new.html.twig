@@ -73,6 +73,13 @@
     
     <p style="clear:both;"></p>
     
+    <p>预览图</p>
+    <div id="preview" rel="preview" style="background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+        <a title="预览图" href="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% else %}#{% endif %}" rel="facebox"><img width="120" height="160" src="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% endif %}" /></a>
+    </div> 
+    
+    <p></p>
+    
     <div id="attachAudio">
         拖拽音频文件到这里
     </div>
