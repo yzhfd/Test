@@ -57,11 +57,10 @@
                         <td>{{ magzine.issues|length }}</td>
                         <td>{{ magzine.createdAt|date('Y-m-d H:i') }}</td>
                         <td>N/A</td>
-                        <td style="width:50px;">
-                            <!-- Icons -->
-                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                             <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
-                             <!--<a href="#" title="Edit Meta"><img src="resources/images/icons/hammer_screwdriver.png" alt="Edit Meta" /></a>-->
+                        <td style="width:70px;">
+                            <a title="选择版权页" href="#" class="copyright copyright_off">©</a>
+                            <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                            <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
                         </td>
                     </tr>
                     {% endfor %}
