@@ -734,4 +734,9 @@ class Article
     {
         return $this->project;
     }
+    
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
 }

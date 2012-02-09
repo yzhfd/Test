@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Magend\MagzineBundle\Entity\Magzine;
 use Symfony\Component\HttpFoundation\Cookie;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * 

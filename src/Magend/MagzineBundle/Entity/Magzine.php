@@ -57,6 +57,14 @@ class Magzine
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @var Article $copyrightArticle
+     *
+     * @ORM\Column(name="copyright_article", nullable=true)
+     * @ORM\OneToOne(targetEntity="Magend\ArticleBundle\Entity\Article")
+     */
+    private $copyrightArticle;
     
     /**
      * 
@@ -274,5 +282,35 @@ class Magzine
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Set copyrightArticle
+     *
+     * @param string $copyrightArticle
+     */
+    public function setCopyrightArticle($copyrightArticle)
+    {
+        $this->copyrightArticle = $copyrightArticle;
+    }
+
+    /**
+     * Get copyrightArticle
+     *
+     * @return string 
+     */
+    public function getCopyrightArticle()
+    {
+        return $this->copyrightArticle;
+    }
+
+    /**
+     * Add issues
+     *
+     * @param Magend\IssueBundle\Entity\Issue $issues
+     */
+    public function addIssue(\Magend\IssueBundle\Entity\Issue $issues)
+    {
+        $this->issues[] = $issues;
     }
 }
