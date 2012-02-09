@@ -201,13 +201,6 @@ class Article
      * @ORM\Column(name="nb_shared", type="integer")
      */
     private $nbShared = 0;
-    
-    /**
-     * @var bool $copyright
-     *
-     * @ORM\Column(name="copyright", type="boolean")
-     */
-    private $copyright = false;
 
     /**
      * @var datetime $createdAt
@@ -222,6 +215,13 @@ class Article
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
+    
+    /**
+     * @var Magzine
+     * 
+     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="copyrightArticles")
+     */
+    private $copyrightMagzine;
     
     // @todo postRemove
     
@@ -654,26 +654,6 @@ class Article
     {
         $this->pages[] = $pages;
     }
-    
-    /**
-     * Set copyright
-     *
-     * @param bool $copyright
-     */
-    public function setCopyright($copyright)
-    {
-        $this->copyright = $copyright;
-    }
-
-    /**
-     * Get copyright
-     *
-     * @return bool 
-     */
-    public function getCopyright()
-    {
-        return $this->copyright;
-    }
 
     /**
      * Set type
@@ -738,5 +718,34 @@ class Article
     public function __toString()
     {
         return $this->getTitle();
+    }
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function isCopyright()
+    {
+        return $this->getCopyrightMagzine() != null;
+    }
+
+    /**
+     * Set copyrightMagzine
+     *
+     * @param Magzine $copyrightMagzine
+     */
+    public function setCopyrightMagzine($mag)
+    {
+        $this->copyrightMagzine = $mag;
+    }
+
+    /**
+     * Get copyrightMagzine
+     *
+     * @return string 
+     */
+    public function getCopyrightMagzine()
+    {
+        return $this->copyrightMagzine;
     }
 }

@@ -91,6 +91,18 @@ class Magzine
      * )
      */
     private $issues;
+    
+    /**
+     * @var ArrayCollection
+     * 
+     * 
+     * @ORM\OneToMany(
+     *     targetEntity="Magend\ArticleBundle\Entity\Article",
+     *     mappedBy="copyrightMagzine",
+     *     fetch="EXTRA_LAZY"
+     * )
+     */
+    private $copyrightArticles;
 
 
     /**
@@ -106,6 +118,7 @@ class Magzine
     public function __construct()
     {
         $this->issues = new ArrayCollection();
+        $this->copyrightArticles = new ArrayCollection();
     }
     
     public function __toString()
@@ -312,5 +325,25 @@ class Magzine
     public function addIssue(\Magend\IssueBundle\Entity\Issue $issues)
     {
         $this->issues[] = $issues;
+    }
+
+    /**
+     * Add copyrightArticle
+     *
+     * @param Magend\ArticleBundle\Entity\Article $copyrightArticle
+     */
+    public function addCopyrightArticle(\Magend\ArticleBundle\Entity\Article $copyrightArticle)
+    {
+        $this->copyrightArticles[] = $copyrightArticle;
+    }
+
+    /**
+     * Get copyrightArticles
+     *
+     * @return ArrayCollection 
+     */
+    public function getCopyrightArticles()
+    {
+        return $this->copyrightArticles;
     }
 }

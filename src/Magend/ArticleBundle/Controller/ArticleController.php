@@ -43,7 +43,24 @@ class ArticleController extends Controller
         $req = $this->getRequest();
         $on = $req->get('on');
         $article = $this->getArticleById($id);
-        $article->setCopyright($on == 1);
+        $asCopyright = $on == 1;
+        
+        // add/remove article from magzine's copyright articles
+        $issue = $article->getIssue();
+        if (empty($issue)) {
+            if ($asCopyright) {
+                throw new \ Exception('Article not belongs to any issue');
+            } 
+        } else {
+            $mag = $issue->getMagzine();
+            if (empty($issue)) {
+                if ($asCopyright) {
+                    throw new \ Exception('Article not belongs to any magzine');
+                } 
+            } else {
+                $article->setCopyrightMagzine($asCopyright ? $mag : null);
+            }
+        }
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();

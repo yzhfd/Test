@@ -189,7 +189,7 @@ class Issue
      * 
      * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
      */
-    private $magzine;    
+    private $magzine;
 
 
     public function __construct()

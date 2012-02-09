@@ -1,0 +1,14 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+
+<form id="magzine_copyright_form" style="width:680px; margin-top:10px;" method="POST" action="{{ path('magzine_copyright', { 'id':magzine.id })}}">
+    <select name="copyright">
+        <option value="1">123</option>
+        <option value="2">124</option>
+    </select>
+    
+    <div class="actions"><button class="btn primary" type="submit">提交</button></div>
+</form>
+
+{% endblock %}

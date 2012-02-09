@@ -20,6 +20,28 @@ use Doctrine\ORM\EntityRepository;
 class MagzineController extends Controller
 {
     /**
+     * @Route("/{id}/copyright", name="magzine_copyright", requirements={"id"="\d+"})
+     * @Template()
+     */    
+    public function copyrightAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $magzine = $repo->find($id);
+        if (!$magzine) {
+            throw new \ Exception('Magzine not found');
+        }
+        
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST') {
+            echo $req->get('copyright');exit;
+        }
+        //$cprs = $magzine->getCopyrightArticles();
+        return array(
+            'magzine' => $magzine
+        );
+    }
+    
+    /**
      * @Route("/list", name="magzine_list")
      * @Template()
      */
