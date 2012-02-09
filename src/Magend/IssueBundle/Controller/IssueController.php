@@ -83,18 +83,19 @@ class IssueController extends Controller
     }
     
     /**
-     * Upload cover (landscape or portrait, not both by dnd)
+     * Upload cover (landscape or portrait, not both by dnd), and preview images
      * 
      * @todo refactor all dnd uploads
-     * @Route("/uploadCover", name="issue_coverUpload", defaults={"_format" = "json"}, options={"expose" = true})
+     * @Route("/uploadImg", name="issue_imgUpload", defaults={"_format" = "json"}, options={"expose" = true})
      */
-    public function uploadCoverAction()
+    public function uploadImgAction()
     {
         $req = $this->getRequest();
         $issueId = $req->get('id');
         $landscapeCover = $req->files->get('landscapeCover');
         $portraitCover = $req->files->get('portraitCover');
-        if ($issueId === null || (empty($landscapeCover) && empty($portraitCover))) {
+        $preview = $req->files->get('preview');
+        if ($issueId === null || (empty($landscapeCover) && empty($portraitCover) && empty($preview))) {
             return new Response('no file');
         }
         
@@ -105,20 +106,34 @@ class IssueController extends Controller
         
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
-        $oldCover = $landscapeCover ? $issue->getLandscapeCover() : $issue->getPortraitCover();
-        if (!empty($oldCover)) {
-            @unlink("$rootDir/../web/uploads/$oldCover");
+        $oldImg = null;
+        $imgFile = null;
+        $setterName = null;
+        if ($landscapeCover) {
+            $oldImg = $issue->getLandscapeCover();
+            $imgFile = $landscapeCover;
+            $setterName = 'setLandscapeCover';
+        } else if ($portraitCover) {
+            $oldImg = $issue->getPortraitCover();
+            $imgFile = $portraitCover;
+            $setterName = 'setPortraitCover';
+        } else if ($preview) {
+            $oldImg = $issue->getPreview();
+            $imgFile = $preview;
+            $setterName = 'setPreview';
+        }
+        if (!empty($oldImg)) {
+            @unlink("$rootDir/../web/uploads/$oldImg");
         }
         
-        $file = $landscapeCover ? $landscapeCover : $portraitCover;
-        $coverName = uniqid('cover_') . '.' . $file->guessExtension();
-        $file->move($rootDir . '/../web/uploads/', $coverName);
-        $landscapeCover ? $issue->setLandscapeCover($coverName) : $issue->setPortraitCover($coverName);
+        $imgName = uniqid('issue_') . '.' . $imgFile->guessExtension();
+        $imgFile->move($rootDir . '/../web/uploads/', $imgName);
+        $issue->$setterName($imgName);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
         $tplVars = array(
-            'cover' => $req->getBasePath() . '/uploads/' . $coverName
+            'img' => $req->getBasePath() . '/uploads/' . $imgName
         );
         return new Response(json_encode($tplVars));
     }

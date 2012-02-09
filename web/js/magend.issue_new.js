@@ -25,21 +25,21 @@ var issue_new = function () {
 	});
 	
 	// covers and preview
-	$('#landscape-cover, #portrait-cover').each(function(index, cover){
-		cover = $(cover);
-		cover.fileupload({
-			url: Routing.generate('issue_coverUpload'),
-			paramName: cover.attr('rel'),
+	$('#landscape-cover, #portrait-cover, #preview').each(function(index, img){
+		img = $(img);
+		img.fileupload({
+			url: Routing.generate('issue_imgUpload'),
+			paramName: img.attr('rel'),
 			acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
-			dropZone: cover,
+			dropZone: img,
 			limitMultiFileUploads: 1,
 			success: function (result) {
-				cover.find('a').attr('href', result.cover);
-				cover.find('img').attr('src', result.cover);
-				cover.overlay('hide');
+				img.find('a').attr('href', result.img);
+				img.find('img').attr('src', result.img);
+				img.overlay('hide');
 			},
 			fail: function () {
-				cover.overlay('hide');
+				img.overlay('hide');
 				alert('上传失败');
 			}
 		}).bind('fileuploaddrop', function (e, data) {
@@ -49,24 +49,24 @@ var issue_new = function () {
 				return false;
 			}
 			
-			var coverFile = data.files[0];
+			var imgFile = data.files[0];
 			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
-			if (!(acceptFileTypes.test(coverFile.type) ||
-		          acceptFileTypes.test(coverFile.name))) {
+			if (!(acceptFileTypes.test(imgFile.type) ||
+		          acceptFileTypes.test(imgFile.name))) {
 				alert('请上传JPG或者PNG格式的图片');
 		        return false;
 		    }
 			
             var reader = new FileReader();
             reader.onload = function (e) {
-            	cover.find('img').attr('src', e.target.result);
+            	img.find('img').attr('src', e.target.result);
             };
-            reader.readAsDataURL(coverFile);
+            reader.readAsDataURL(imgFile);
 			
-			cover.overlay('loading');
+            img.overlay('loading');
 			
-			var coverFormData = {id:issueId};
-			cover.fileupload('option', 'formData', coverFormData);
+			var imgFormData = {id:issueId};
+			img.fileupload('option', 'formData', imgFormData);
 			return true;
 		});
 	});
