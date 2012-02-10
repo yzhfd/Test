@@ -33,11 +33,22 @@ class MagzineController extends Controller
         
         $req = $this->getRequest();
         if ($req->getMethod() == 'POST') {
-            echo $req->get('copyright');exit;
+            $articleId = $req->get('copyright');
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($articleId);
+            $magzine->setCopyrightArticle($article);
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->flush();
+            
+            return new RedirectResponse($this->generateUrl('magzine_list'));
         }
-        //$cprs = $magzine->getCopyrightArticles();
+        
+        $cprs = $magzine->getCopyrightArticles();
+        $noCopyrightArticle = empty($cprs) || $cprs->isEmpty();
         return array(
-            'magzine' => $magzine
+            'magzine'            => $magzine,
+            'copyrightArticles'  => $cprs,
+            'noCopyrightArticle' => $noCopyrightArticle
         );
     }
     

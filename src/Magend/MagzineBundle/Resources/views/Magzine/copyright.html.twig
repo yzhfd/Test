@@ -2,13 +2,20 @@
 
 {% block main %}
 
-<form id="magzine_copyright_form" style="width:680px; margin-top:10px;" method="POST" action="{{ path('magzine_copyright', { 'id':magzine.id })}}">
+{% if noCopyrightArticle %}
+    <p>该杂志尚没有版权文章，请先设置至少一篇文章为版权页</p>
+{% else %}
+<form id="magzine_copyright_form" style="width:240px; margin-top:10px;" method="POST" action="{{ path('magzine_copyright', { 'id':magzine.id })}}">
+
     <select name="copyright">
-        <option value="1">123</option>
-        <option value="2">124</option>
+        <option value=""></option>
+        {% for article in copyrightArticles %}
+            <option value="{{ article.id }}" {% if magzine.copyrightArticle is not null and article.id == magzine.copyrightArticle.id %}selected="selected"{% endif %}>{{ article.title }}</option>
+        {% endfor %}
     </select>
     
     <div class="actions"><button class="btn primary" type="submit">提交</button></div>
 </form>
+{% endif %}
 
 {% endblock %}

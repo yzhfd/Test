@@ -61,7 +61,6 @@ class Magzine
     /**
      * @var Article $copyrightArticle
      *
-     * @ORM\Column(name="copyright_article", nullable=true)
      * @ORM\OneToOne(targetEntity="Magend\ArticleBundle\Entity\Article")
      */
     private $copyrightArticle;
