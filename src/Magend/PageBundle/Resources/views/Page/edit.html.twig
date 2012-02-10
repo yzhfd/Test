@@ -32,10 +32,8 @@
 
 <div id="page_editor">
     <!--<input type="checkbox" id="selenable" />
-    <div id="info_panel">
-        
-    </div>-->
-    <div style="width: 768px;">
+    <div id="info_panel"></div>-->
+    <div style="width: 1024px;">
         <div id="pageid" style="display:none;">{{page.id}}</div>
         <button id="saveall" class="btn primary">保存</button>
         <!--<button id="undo" class="btn">撤销</button>
@@ -43,7 +41,15 @@
         <button id="flushall" class="btn danger" style="float: right;">清空</button>
     </div>
     <p/>
+    
     <div id="hot_dialog" style="padding:10px;">
+        <div id="hot_essential">
+            <div>坐标: <input type="text" name="x" class="span1" />, <input type="text" name="y" class="span1" /></div>
+            <br/>
+            <div>长宽: <input type="text" name="w" class="span1" />, <input type="text" name="h" class="span1" /> <span style="color:#FC3F4D;">（不能小于40x40）</span></div>
+        </div>
+        <br/>
+        
         <div id="hot_0_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px; overflow-x: auto;">
             <p style="position: absolute; left: 10px;">拖拽图片到这里</p>
             <div style="margin-top: 30px; width: 300px; background-color: red;">
@@ -52,11 +58,13 @@
                 </ol>
             </div>
         </div>
+        
         <div id="hot_1_dialog" class="dlgcontent" style="display:none; min-width: 300px; ">
             <div id="video-upload-area">
                 拖拽视频到这里
             </div>
         </div>
+        
         <div id="hot_2_dialog" class="dlgcontent" style="display:none;">
             <form action="#">
                 <input id="internRadio" type="radio" name="type" value="0" /> 内部页面
@@ -65,7 +73,8 @@
                 <input id="linkInput" type="text" class="span6" name="link" value="" />
             </form>
         </div>
-    </div>
+    </div><!-- end of dialog -->
+    
     <div>
         <div id="page_canvas_img" tabIndex="1">
             <img src="{{ asset('uploads/' ~ page.landscapeImg) }}" />

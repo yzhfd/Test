@@ -145,6 +145,7 @@ var HotView = Backbone.View.extend({
     submitDialog: function () {
     	
     },
+    // @todo edit is too complex, refactor
     edit: function () {
     	var hottype = this.model.get('type');
     	var title = $('#hot_' + hottype).attr('title');
@@ -153,7 +154,8 @@ var HotView = Backbone.View.extend({
     	var hotModel = this.model;
     	typeDlg.data('hot', hotModel);
     	typeDlg.html(typeDlg.data('resetTo').clone(true, true));
-    	// populate the form
+    	
+    	// populate the form with extra attrs
     	if (hotModel.extraAttrs) {
 	    	$.each(hotModel.extraAttrs, function(name, value) {
 	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
@@ -203,6 +205,16 @@ var HotView = Backbone.View.extend({
     	// images
     	
     	
+    	// set hot essential information
+    	var inputX = $('#hot_essential input[name="x"]');
+    	var inputY = $('#hot_essential input[name="y"]');
+    	var inputW = $('#hot_essential input[name="w"]');
+    	var inputH = $('#hot_essential input[name="h"]');
+    	inputX.val(this.model.get('x'));
+    	inputY.val(this.model.get('y'));
+    	inputW.val(this.model.get('width'));
+    	inputH.val(this.model.get('height'));
+    	
     	typeDlg.show();
     	
     	$('#hot_dialog').dialog({
@@ -225,7 +237,19 @@ var HotView = Backbone.View.extend({
     			"Ok": {
     				class: 'btn primary',
     				text: '确认',
-    				click: function() {    					
+    				click: function() {
+    					var x = parseInt(inputX.val());
+    					var y = parseInt(inputY.val());
+    					var w = parseInt(inputW.val());
+    					var h = parseInt(inputH.val());
+    					
+    					hotModel.set({
+    						x: 100,
+    						y: y,
+    						width: w,
+    						height: h
+    					});
+    					
     					if ($('form', typeDlg).length > 0) {
 	    					var formObj = $('form', typeDlg).serializeObject();
 	    					hotModel.extraAttrs = formObj;

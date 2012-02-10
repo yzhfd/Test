@@ -278,13 +278,14 @@ ol, ul { list-style: none; }
 
 /*page editor*/
 #page_editor {
-	height: 640px;
+	width: 1160px;
+	height: 840px;
 	/*padding-left: 30px;*/
 	position: relative;
 }
 #hotlib {
 	position: absolute;
-	right: 40px;
+	right: 0px;
 	background-color: #CCC;
 	width: 120px;
 	height: 300px;
@@ -299,8 +300,8 @@ ol, ul { list-style: none; }
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
-	width: 768px;
-	height: 576px;
+	width: 1024px;
+	height: 768px;
 	margin: 0; padding: 0;
 }
 #page_canvas_img {
