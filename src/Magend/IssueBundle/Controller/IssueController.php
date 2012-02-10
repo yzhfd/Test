@@ -35,6 +35,15 @@ class IssueController extends Controller
     
     /**
      * 
+     * @Route("/output")
+     */
+    public function outputAction()
+    {
+        return new Response('hey');
+    }
+    
+    /**
+     * 
      * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
      */
     public function publishAction($id)
