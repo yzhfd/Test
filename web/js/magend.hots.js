@@ -17,6 +17,7 @@ var Hot = Backbone.Model.extend({
 		width: 40,
 		height: 40
 	},
+	isEdited: false, // true if confirm on edit dialog
 	rendered: false,
 	selected: false, // should not be attribute, as it should be persistent
 	select: function () {
@@ -286,6 +287,7 @@ var HotView = Backbone.View.extend({
     						});
     					}
     					
+    					hotModel.isEdited = true;
     					$('#hot_dialog').dialog('close');
     				}
     			}

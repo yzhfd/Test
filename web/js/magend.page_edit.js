@@ -265,7 +265,7 @@ var page_edit = function () {
 				when.done(function(){
 					pageCanvas.hots.each(function(hot, index){
 						// @todo only images now
-						if (!hot.assets || hot.get('type') != 0) {
+						if (!hot.assets || hot.get('type') != 0 || !hot.isEdited) {
 							return;
 						}
 						
@@ -300,6 +300,9 @@ var page_edit = function () {
 		$('#page_editor').overlay('loading');
 		saveAll().always(function(){
 			$('#page_editor').overlay('hide');
+			pageCanvas.hots.each(function(hot, index){
+				hot.isEdited = false;
+			});
 			console.log('save done');
 		});
 	});
