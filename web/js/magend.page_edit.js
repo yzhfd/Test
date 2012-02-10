@@ -71,8 +71,6 @@ var page_edit = function () {
 	});
 	
 	// images
-
-	
 	var hotimgs = $('#hotimgs');
 	hotimgs.fileupload({
 		url: '',
@@ -113,7 +111,47 @@ var page_edit = function () {
 			e.preventDefault();
 		}
 	});
-
+	
+	// single image
+	$('#image-upload-area').fileupload({
+		paramName: 'file',
+		acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
+		dropZone: $('#image-upload-area'),
+		limitMultiFileUploads: 1,
+		success: function (result) {
+			$('#image-upload-area').overlay('hide');
+		},
+		fail: function () {
+			$('#image-upload-area').overlay('hide');
+			alert('上传失败');
+		},
+		drop: function (e, data) {
+			var imgFile = data.files[0];
+			var acceptFileTypes = $('#image-upload-area').fileupload('option', 'acceptFileTypes');
+			
+			if (!(acceptFileTypes.test(imgFile.type) ||
+	              acceptFileTypes.test(imgFile.name))) {
+				alert('请上传有效的图片文件');
+				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
+	            return false;
+	        }
+			
+            var reader = new FileReader();
+            reader.onload = function (e) {
+            	$('#image-upload-area').html('<img class="unsynced" style="width:120px;" title="' + imgFile.name + '" src="' + e.target.result + '" />');
+            };
+            reader.readAsDataURL(imgFile);
+			
+			var hot = $('#hot_3_dialog').data('hot');
+			hot.addUploads = [ imgFile ];
+			
+			return false;
+		}
+	}).bind('fileuploadsubmit', function (e, data) {
+		// no upload immediately
+		e.stopPropagation();
+		e.preventDefault();
+	});
 	
 	// store original dialog content
 	$('.dlgcontent').each(function(index, dlg){

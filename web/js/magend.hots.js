@@ -148,7 +148,7 @@ var HotView = Backbone.View.extend({
     // @todo edit is too complex, refactor
     edit: function () {
     	var hottype = this.model.get('type');
-    	var title = $('#hot_' + hottype).attr('title');
+    	var title = $('#hot_' + hottype).text();
     	$('#hot_dialog').find('.dlgcontent').hide();
     	var typeDlg = $('#hot_' + hottype + '_dialog');
     	var hotModel = this.model;
@@ -156,6 +156,7 @@ var HotView = Backbone.View.extend({
     	typeDlg.html(typeDlg.data('resetTo').clone(true, true));
     	
     	// populate the form with extra attrs
+    	// link
     	if (hotModel.extraAttrs) {
 	    	$.each(hotModel.extraAttrs, function(name, value) {
 	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
@@ -163,7 +164,7 @@ var HotView = Backbone.View.extend({
 	    	});
     	}
     	// video
-    	if (hotModel.get('type') == 1) {
+    	if (hottype == 1) {
     		if (hotModel.uploads) {
     			var videoFile = hotModel.uploads[0];
     			$('#video-upload-area')
@@ -177,7 +178,7 @@ var HotView = Backbone.View.extend({
 	    		.addClass('synced')
 	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
     		}
-    	} else if (hotModel.get('type') == 0) {
+    	} else if (hottype == 0) {// images
     		// @todo DRY
     		if (hotModel.assets) {
     			$(hotModel.assets).each(function(index, asset){
@@ -200,10 +201,23 @@ var HotView = Backbone.View.extend({
         		$('#hotimgs').width($('#hotimgs li.hotimg').length * 150 + 20);
         	}
     		$('#hotimgs').sortable({containment:$('#hotimgs')});
+    	} else if (hottype == 3) {
+    		// single image
+    		if (hotModel.uploads) {
+    			var imgFile = hotModel.uploads[0];
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                	$('#image-upload-area').html('<img class="unsynced" style="width:120px;" title="' + imgFile.name + '" src="' + e.target.result + '" />');
+                };
+                reader.readAsDataURL(imgFile);
+    		} else if (hotModel.assets) {
+	    		var filePath = hotModel.assets[0]['file'];
+	    		var fileName = hotModel.assets[0]['name'];
+	    		var imgUrl = basePath + '/uploads/' + filePath;
+	    		$('#image-upload-area').html('<a rel="facebox" href="' + imgUrl + '"><img class="synced" alt="' + fileName + '" style="width:120px;" title="' + fileName + '" src="' + imgUrl + '" /></a>');
+	    		$('#image-upload-area a[rel*=facebox]').facebox();
+    		}
     	}
-    	
-    	// images
-    	
     	
     	// set hot essential information
     	var inputX = $('#hot_essential input[name="x"]');
@@ -244,7 +258,7 @@ var HotView = Backbone.View.extend({
     					var h = parseInt(inputH.val());
     					
     					hotModel.set({
-    						x: 100,
+    						x: x,
     						y: y,
     						width: w,
     						height: h

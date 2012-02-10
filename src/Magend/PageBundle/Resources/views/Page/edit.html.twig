@@ -51,7 +51,7 @@
         <br/>
         
         <div id="hot_0_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px; overflow-x: auto;">
-            <p style="position: absolute; left: 10px;">拖拽图片到这里</p>
+            <p style="position: absolute; left: 10px;">拖拽多张图片到这里</p>
             <div style="margin-top: 30px; width: 300px; background-color: red;">
                 <ol id="hotimgs" style="min-width: 400px; height: 150px; background-color: #333;">
                     <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
@@ -73,6 +73,13 @@
                 <input id="linkInput" type="text" class="span6" name="link" value="" />
             </form>
         </div>
+        
+        <div id="hot_3_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px;">
+            <p>拖拽单张图片到下面</p>
+            <div id="image-upload-area" style="width: 400px; height: 120px; background-color: #CCC; padding: 20px; overflow-x: auto;">
+                
+            </div>
+        </div>
     </div><!-- end of dialog -->
     
     <div>
@@ -83,9 +90,11 @@
     	</ul>
     </div>
     <ul id="hotlib">
-        <li id="hot_0" class="hotobj hotimgs" title="图片">图片</li>
+        <!-- hot_type as li's id, type will be model's type -->
+        <li id="hot_0" class="hotobj hotimgs" title="用于画廊、相片流等">多图</li>
         <li id="hot_1" class="hotobj hotvideo" title="视频">视频</li>
-        <li id="hot_2" class="hotobj hotlink" title="链接">链接</li>
+        <li id="hot_2" class="hotobj hotlink" title="内部链接或者网页链接">链接</li>
+        <li id="hot_3" class="hotobj hotsimg" title="单张图片将显示在热点区域内，一般图片可滚动">单图</li>
     </ul>
 </div>
 {% endblock %}

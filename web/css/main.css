@@ -74,13 +74,13 @@ li.hotimg { /* refer to li.page below */
 #video-upload-area a {
 	color: #57A000;
 }
-#video-upload-area.unsynced{
+#video-upload-area.unsynced, img.unsynced {
 	border: 2px solid yellow;
 }
-#video-upload-area.synced{
+#video-upload-area.synced, img.synced {
     border: 2px solid #57A000;
 }
-#video-upload-area.syncfail{
+#video-upload-area.syncfail, img.syncfail {
     border: 2px solid red !important;
 }
 
@@ -297,6 +297,7 @@ ol, ul { list-style: none; }
 	height: 50px;
 	text-align: center;
 	background-color: #DDD;
+	cursor: pointer;
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */

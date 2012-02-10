@@ -44,7 +44,7 @@ class HotController extends Controller
         
         // @todo @unlink existing files
         $hotType = $hot->getType();
-        if ($hotType == 1) { // video
+        if ($hotType == 1 || $hotType == 3) { // video or single image
             $assets = $hot->getAssets();
             if (!empty($assets)) {
                 @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);

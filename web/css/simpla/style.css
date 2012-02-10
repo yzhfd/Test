@@ -603,7 +603,7 @@ body#login {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 3000;
   text-align: left;
 }
 
@@ -667,7 +667,7 @@ body#login {
 
 .facebox_overlayBG {
   background-color: #000;
-  z-index: 99;
+  z-index: 2999;
 }
 
 /*************** jQuery WYSIWYG ***************/
