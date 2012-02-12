@@ -24,6 +24,9 @@ button::-moz-focus-inner {
 .copyright_off, .copyright_on:hover {
     color: #CCC; text-decoration: none;
 }
+.copyright_chosen {
+    color: red;
+}
 
 .newPages {
 	padding: 10px 0 0 60px;

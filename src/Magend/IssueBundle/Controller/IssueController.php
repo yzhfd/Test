@@ -44,6 +44,33 @@ class IssueController extends Controller
     
     /**
      * 
+     * @Route("/{id}/insert-copyright", name="insert_copyright")
+     */
+    public function insertCopyrightAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        if (empty($issue)) {
+            throw new \Exception('Issue not found'); 
+        }
+        
+        $cpr = $issue->getMagzine()->getCopyrightArticle();
+        $articleIds = $issue->getArticleIds();
+        if (in_array($cpr->getId(), $articleIds)) {
+            throw new \Exception('Already inserted'); 
+        }
+        $issue->addArticle($cpr);
+        if (count($articleIds) >= 1) {
+            array_splice($articleIds, 1, 0, $cpr->getId()); 
+        }
+        $issue->setArticleIds($articleIds);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issue->getId())));
+    }
+    
+    /**
+     * 
      * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
      */
     public function publishAction($id)

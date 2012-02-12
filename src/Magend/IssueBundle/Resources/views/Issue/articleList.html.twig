@@ -17,6 +17,8 @@
             <h3>文章列表</h3>
             <div style="padding-top: 6px; width: 300px; float: left;">
                 <a id="layout_save" class="btn info" href="{{ path('issue_layout', { 'id':issue.id }) }}" data-loading-text="保存中...">保存修改</a>
+                {# insert copyright if there is copyright article in the issue #}
+                <a id="insert_copyright" class="btn primary {% if issue.magzine.copyrightArticle is null %}disabled{% endif %}" href="{% if issue.magzine.copyrightArticle is null %}#{% else %}{{ path('insert_copyright', { 'id':issue.id }) }}{% endif %}" title="{% if issue.magzine.copyrightArticle is null %}请先设置所属杂志默认版权页{% else %}插入杂志默认版权页{% endif %}">插入版权页</a>
                 <!-- <button id="layout_cancel" class="btn danger">放弃修改</button> -->
             </div>
             
