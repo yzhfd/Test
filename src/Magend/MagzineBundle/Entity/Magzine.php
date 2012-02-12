@@ -62,6 +62,7 @@ class Magzine
      * @var Article $copyrightArticle
      *
      * @ORM\OneToOne(targetEntity="Magend\ArticleBundle\Entity\Article")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $copyrightArticle;
     
