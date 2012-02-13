@@ -52,24 +52,24 @@
             音频文件：<a id="attachedAudio" target="_blank" href="{% if article.audio %}{{ asset('uploads/' ~ article.audio) }}{% else %}#{% endif %}">{{ article.audioName|default('尚未上传') }}</a>
         </div>
     </div>
-    <div id="proj_intro" {% if article.type != 4 %}style="display:none;"{% endif %}>
-
-        <div class="clearfix">
-            {{ form_label(form.project, '项目类型') }}
-            <div class="input">
-                {{ form_errors(form.project) }}
-                <div class="span5">{{ form_widget(form.project, { 'attr':{'class':'medium'} }) }}</div>
-            </div>
-        </div>
     
-        <div class="clearfix">
-            {{ form_label(form.institutes, '设计机构') }}
-            <div class="input">
-                {{ form_errors(form.institutes) }}
-                <div class="span5">{{ form_widget(form.institutes, { 'attr':{'class':'medium'} }) }}</div>
-            </div>
+    <div class="clearfix article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}>
+        {{ form_label(form.project, '项目类型') }}
+        <div class="input">
+            {{ form_errors(form.project) }}
+            <div class="span5">{{ form_widget(form.project, { 'attr':{'class':'medium'} }) }}</div>
         </div>
-        
+    </div>
+
+    <div class="clearfix article-uncommon article-type4 article-type5" {% if article.type != 4 and article.type != 5 %}style="display:none;"{% endif %}>
+        {{ form_label(form.institutes, '设计机构') }}
+        <div class="input">
+            {{ form_errors(form.institutes) }}
+            <div class="span5">{{ form_widget(form.institutes, { 'attr':{'class':'medium'} }) }}</div>
+        </div>
+    </div>
+    
+    <div class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}>
         <div class="clearfix">
             <label class="required">经纬度</label>
             <div class="input">

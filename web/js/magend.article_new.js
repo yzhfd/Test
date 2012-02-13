@@ -111,11 +111,8 @@ var article_new = function () {
 	});
 	
 	$('#article_typesel').change(function(){
-		if ($(this).val() == 4) {
-			$('#proj_intro').show();
-		} else {
-			$('#proj_intro').hide();
-		}
+		$('.article-uncommon').hide();
+		$('.article-type' + $(this).val()).show();
 	});
 	
 	// map & lat,lng

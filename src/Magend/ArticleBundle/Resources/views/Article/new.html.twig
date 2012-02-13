@@ -22,8 +22,8 @@
 <ul class="pills" style="margin-left: 80px;" data-pills="pills">
     <li class="active"><a id"newBasicTab" href="#newBasic">基本信息</a></li>
     <li><a id="newPagesTab" rel="{{ article.id }}" href="#newPages">主页面</a></li>
-    <li><a id="newInfoPagesTab" rel="{{ article.id }}" href="#newInfoPages">信息页</a></li>
-    <li><a id="newStructurePagesTab" rel="{{ article.id }}" href="#newStructurePages">结构图</a></li>
+    <li class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}><a id="newInfoPagesTab" rel="{{ article.id }}" href="#newInfoPages">信息页</a></li>
+    <li class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}><a id="newStructurePagesTab" rel="{{ article.id }}" href="#newStructurePages">结构图</a></li>
 </ul>
 
 <div class="pill-content">
