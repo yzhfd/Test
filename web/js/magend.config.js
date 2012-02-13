@@ -36,6 +36,8 @@ $(document).ready(function(){
 	
 	$('.alert-message').alert();
 	
+	$('a[rel*=colorbox]').colorbox();
+	
 	$('select.urlSelect').on('change', function(e){
 		window.location = $(this).val();
 	});

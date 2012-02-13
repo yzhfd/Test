@@ -46,7 +46,7 @@
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td><a href="#">{{ project.name }}</a></td>
-                        <td>{% if project.thumbnail %}<a rel="facebox" href="{{ asset('uploads/' ~ project.thumbnail) }}"><img style="width: 40px; height: 30px;" src="{{ asset('uploads/' ~ project.thumbnail) }}" /></a>{% endif %}</td>
+                        <td>{% if project.thumbnail %}<a rel="colorbox" href="{{ asset('uploads/' ~ project.thumbnail) }}"><img style="width: 40px; height: 30px;" src="{{ asset('uploads/' ~ project.thumbnail) }}" /></a>{% endif %}</td>
                         <td style="width:50px;">
                              <a rel="dialog" href="{{ path('proj_edit', { 'id':project.id } ) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
                              <a rel="confirm" href="{{ path('proj_del', { 'id':project.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
