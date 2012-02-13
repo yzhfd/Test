@@ -13,7 +13,7 @@ class ArticleType extends AbstractType
         $types = array();
         // article types
         // @todo better from Article
-        for ($i=0; $i<7; ++$i) {
+        for ($i=0; $i<9; ++$i) {
             $types[] = "article.$i";
         }
         

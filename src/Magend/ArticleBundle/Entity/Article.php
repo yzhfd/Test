@@ -26,6 +26,7 @@ class Article
     const TYPE_INST   = 5;
     const TYPE_PEOPLE = 6;
     const TYPE_ARCTH  = 7;
+    const TYPE_ELSE   = 8;
     
     /**
      * @var integer $id
