@@ -33,14 +33,21 @@
 <div id="page_editor">
     <!--<input type="checkbox" id="selenable" />
     <div id="info_panel"></div>-->
-    <div style="width: 1024px;">
+    <div style="width: 1024px;">        
         <div id="pageid" style="display:none;">{{page.id}}</div>
         <button id="saveall" class="btn primary">保存</button>
         <!--<button id="undo" class="btn">撤销</button>
         <button id="redo" class="btn">重做</button>
         <button id="flushall" class="btn danger" style="float: right;">清空</button>-->
     </div>
-    <p/>
+    <ul id="hotlib">
+        <!-- hot_type as li's id, type will be model's type -->
+        <li id="hot_0" class="hotobj hotimgs" title="用于画廊、相片流等">多图</li>
+        <li id="hot_1" class="hotobj hotvideo" title="视频">视频</li>
+        <li id="hot_2" class="hotobj hotlink" title="内部链接或者网页链接">链接</li>
+        <li id="hot_3" class="hotobj hotsimg" title="单张图片将显示在热点区域内，一般图片可滚动">单图</li>
+    </ul>
+    <p/><p/>
     
     <div id="hot_dialog" style="padding:10px;">
         <div id="hot_essential">
@@ -89,12 +96,5 @@
     	<ul id="page_canvas">
     	</ul>
     </div>
-    <ul id="hotlib">
-        <!-- hot_type as li's id, type will be model's type -->
-        <li id="hot_0" class="hotobj hotimgs" title="用于画廊、相片流等">多图</li>
-        <li id="hot_1" class="hotobj hotvideo" title="视频">视频</li>
-        <li id="hot_2" class="hotobj hotlink" title="内部链接或者网页链接">链接</li>
-        <li id="hot_3" class="hotobj hotsimg" title="单张图片将显示在热点区域内，一般图片可滚动">单图</li>
-    </ul>
 </div>
 {% endblock %}

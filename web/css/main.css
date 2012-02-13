@@ -281,17 +281,17 @@ ol, ul { list-style: none; }
 
 /*page editor*/
 #page_editor {
-	width: 1160px;
+	width: 1050px;
 	height: 840px;
 	/*padding-left: 30px;*/
 	position: relative;
 }
 #hotlib {
 	position: absolute;
-	right: 0px;
+	top: 0px; left: 100px; z-index: 9;
 	background-color: #CCC;
-	width: 120px;
-	height: 300px;
+	width: 240px;
+	height: 60px;
 }
 .hotobj {
 	float: left;
