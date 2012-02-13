@@ -65,7 +65,7 @@
                         <td>{{ issue.totalIssueNo }}</td>
                         <td class="thumbup">
                             <!--<a class="media" title="竖版封面" href="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="30" height="40" src="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>-->
-                            <a class="media" title="横版封面" href="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}" rel="facebox"><img width="40" height="30" src="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
+                            <a class="media" title="横版封面" href="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}"><img width="40" height="30" src="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
                         </td>
                         <td>{{ issue.priceDescription }}</td>
                         <td>{{ issue.nbDownloaded }}</td>

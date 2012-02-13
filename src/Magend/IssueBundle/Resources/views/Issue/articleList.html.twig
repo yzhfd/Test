@@ -68,10 +68,11 @@
                         </td>
                         <td>{{ article.pageIds|length }}</td>
                         <td>{{ article.createdAt|date('Y-m-d H:i') }}</td>
-                        <td style="width:80px;">
+                        <td style="width:90px;">
                             <a rel="confirm" title="{% if article.isCopyright %}取消作为版权页{% else %}设置为版权页{% endif %}" href="{{ path('article_copyright', { 'id':article.id }) }}?on={% if article.isCopyright %}0{% else %}1{% endif %}" class="copyright {% if article.isCopyright %}copyright_on{% else %}copyright_off{% endif %}">©</a>
                             <a href="{{ path('article_edit', { 'id':article.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                            <a rel="confirm" href="{{ path('article_del', { 'id':article.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
+                            <a rel="confirm" href="{{ path('article_del', { 'id':article.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
+                            {% if article.id == issue.magzine.copyrightArticle.id %}<a rel="confirm" href="#" title="移除版权页（版权文章并不会被删除）">移除</a>{% endif %} 
                         </td>
                     </tr>
                     {% endfor %}
