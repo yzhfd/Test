@@ -201,13 +201,7 @@ class ArticleController extends Controller
         }
         
         $pageIds = $req->get('pageIds');
-        if ($type == Page::TYPE_MAIN) {
-            $article->setPageIds($pageIds);
-        } else if ($type == Page::TYPE_INFO) {
-            $article->setInfoPageIds($pageIds);
-        } else if ($type == Page::TYPE_STRUCTURE) {
-            $article->setPageIds($pageIds);
-        }
+        $article->setPageIds($pageIds, $type);
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($article);

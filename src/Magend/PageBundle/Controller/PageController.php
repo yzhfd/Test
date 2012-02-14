@@ -183,7 +183,7 @@ class PageController extends Controller
                 
                 $tplVars['id'] = $page->getId();
                 $tplVars['delUrl'] = $this->generateUrl('page_del', array('id' => $page->getId()));
-                $pageIds = $article->getPageIds();
+                $pageIds = $article->getPageIds($type);
                 $pageIds[] = $page->getId();
                 $article->setPageIds($pageIds, $type);
                 $em->flush();
