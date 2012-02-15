@@ -230,9 +230,24 @@ class ArticleController extends Controller
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
         
+        $issue = $article->getIssue();
+        
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
+                $issueId = $req->get('issueId');
+                if ($issueId != $issue->getId()) {
+                    $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+                    $newIssue = $issueRepo->find($issueId);
+                    if (empty($newIssue)) {
+                        throw new \ Exception('Issue not found');
+                    }
+                    
+                    $newIssue->addArticle($article);
+                    $issue->removeArticle($article);
+                    $article->setIssue($newIssue);
+                }
+                
                 $kwText = trim($article->getKeywordsText());
                 if (!empty($kwText)) {
                     $keywords = $kwRepo->toEntities(explode(',', $kwText));
@@ -254,8 +269,6 @@ class ArticleController extends Controller
         
         $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $mags = $magRepo->findAll();
-        $issue = $article->getIssue();
-        $issue->getId();
         return array(
             //'institutes' => $institutes,
             'keywords'   => $kws,

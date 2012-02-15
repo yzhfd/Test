@@ -416,18 +416,26 @@ class Issue
         if ($this->articles->contains($article)) {
             return;
         }
-        
-        /*$articleId = $article->getId();
-        if ($articleId === null) {
-            throw new \ Exception('Please persist article first');
-        }*/
-        
+                
         $this->articles->add($article);
         
-        // update idArray separately
-        // $idArray = $this->getArticleIds();
-        // $idArray[] = $articleId;
-        // $this->setArticleIds($idArray);
+        $articleIds = $this->getArticleIds();
+        $articleIds[] = $article->getId();
+        $this->setArticleIds($articleIds);
+    }
+    
+    public function removeArticle(Article $article)
+    {
+        $this->articles->removeElement($article);
+        
+        $articleIds = $this->getArticleIds();
+        $newArticleIds = array();
+        foreach ($articleIds as $articleId) {
+            if ($articleId != $article->getId()) {
+                $newArticleIds[] = $articleId;
+            }
+        }
+        $this->setArticleIds($newArticleIds);
     }
 
     /**

@@ -1,4 +1,4 @@
 <option value=""></option>
-{% for issue in issues %}
-    <option value="{{ issue.id }}" {% if app.request.get('id') == issue.id %}selected="selected"{% endif%}>{{ issue.title }}</option>
+{% for _issue in issues %}
+    <option value="{{ _issue.id }}" {% if issue is defined and _issue.id == issue.id %}selected="selected"{% endif%}>{{ _issue.title }}</option>
 {% endfor %}

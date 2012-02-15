@@ -262,6 +262,21 @@ class Article
     
     /**
      * 
+     * @ORM\PreRemove()
+     */
+    public function preRemove()
+    {
+        $issues = $this->getIssues();
+        if (empty($issues)) {
+            return;
+        }
+        foreach ($issues as $issue) {
+            $issue->removeArticle($this);
+        }
+    }
+    
+    /**
+     * 
      * @param mixed $pageIds
      * @param int $pageType
      */
