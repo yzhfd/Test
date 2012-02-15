@@ -166,7 +166,7 @@ var article_new = function () {
 	});
 	
 	// pages
-	$('a.pagedel').on('click', function(e){
+	$('a.pagedel').live('click', function(e){
 		var href = $(this).attr('href');
 		if (href != '#') {
 			$.get(href);

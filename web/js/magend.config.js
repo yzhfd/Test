@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$('a[rel*=dialog]').on('click', function() {
+	$('a[rel*=dialog]').live('click', function() {
 	    var url = this.href;
 	    var dialog = $("#dialog");
 	    if ($("#dialog").length == 0) {
@@ -38,11 +38,11 @@ $(document).ready(function(){
 	
 	$('a[rel*=colorbox]').colorbox();
 	
-	$('select.urlSelect').on('change', function(e){
+	$('select.urlSelect').live('change', function(e){
 		window.location = $(this).val();
 	});
 	
-	$('a[rel*=confirm]').on('click', function(e){
+	$('a[rel*=confirm]').live('click', function(e){
 		return confirm('确定' + $(this).attr('title') + '吗？');
 	});
 });

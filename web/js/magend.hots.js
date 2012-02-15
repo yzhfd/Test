@@ -193,7 +193,7 @@ var HotView = Backbone.View.extend({
     			});
     		}
     		
-        	$('a.pagedel').on('click', function(e){
+        	$('a.pagedel').live('click', function(e){
         		$(this).parent().remove();
         		return false;
         	});
