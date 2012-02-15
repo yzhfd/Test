@@ -90,7 +90,7 @@ var page_edit = function () {
 		            	hotimg.appendTo($('#hotimgs'));
 		            	hotimg.data('file', file);
 
-		            	$('a.pagedel').on('click', function(e){
+		            	$('a.pagedel').live('click', function(e){
 		            		$(this).parent().remove();
 		            		return false;
 		            	});
