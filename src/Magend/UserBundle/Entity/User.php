@@ -81,6 +81,12 @@ class User extends BaseUser
         return $this->id;
     }
     
+    public function __construct()
+    {
+        parent::__construct();
+        $this->groups = new ArrayCollection();
+    }
+    
     /**
      * @ORM\PrePersist()
      */
@@ -154,11 +160,6 @@ class User extends BaseUser
         foreach ($groups as $group){
             $this->addGroup($group);
         }
-    }
-    public function __construct()
-    {
-        parent::__construct();
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**

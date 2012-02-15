@@ -315,22 +315,16 @@ class ArticleController extends Controller
                 $em->persist($article);
                 $em->flush();
                 
-                $articleId = $article->getId();
-                
                 $issue->addArticle($article);
-                $articleIds = $issue->getArticleIds();
-                $articleIds[] = $articleId;
-                $issue->setArticleIds($articleIds);
-                $em->persist($issue);
                 $em->flush();
                 
                 if ($req->isXmlHTTPRequest()) {
                     // Only return article id
-                    $response = new Response($articleId);
+                    $response = new Response($article->getId());
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 } else {
-                    return $this->redirect($this->generateUrl('article_show', array('id' => $articleId)));
+                    return $this->redirect($this->generateUrl('article_show', array('id' => $article->getId())));
                 }
             }
         }

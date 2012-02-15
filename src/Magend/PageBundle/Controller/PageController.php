@@ -55,7 +55,6 @@ class PageController extends Controller
             $em = $this->getDoctrine()->getEntityManager();
             $em->remove($page);
             
-            // @todo remove from article.pageIds
             $article = $page->getArticle();
             $pageIds = $article->getPageIds();
             foreach ($pageIds as $index=>$pageId) {

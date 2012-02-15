@@ -662,13 +662,13 @@ class Article
     }
 
     /**
-     * Add pages
+     * Add page
      *
-     * @param Magend\PageBundle\Entity\Page $pages
+     * @param Magend\PageBundle\Entity\Page $page
      */
-    public function addPage(\Magend\PageBundle\Entity\Page $pages)
+    public function addPage(\Magend\PageBundle\Entity\Page $page)
     {
-        $this->pages[] = $pages;
+        $this->pages[] = $page;
     }
 
     /**
