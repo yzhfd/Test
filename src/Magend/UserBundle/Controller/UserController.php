@@ -45,7 +45,23 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
         $user = $repo->find($id);
-        echo $user->getUsername();
-        exit;
+        
+        $em->remove($user);
+        $em->flush();
+        return $this->redirect($this->generateUrl('user_list'));
+    }
+    
+    /**
+     * User edits its profile(not administration)
+     * 
+     * @Route("/edit", name="user_edit")
+     */
+    public function editAction()
+    {
+        // @todo ROLE_ADMIN and $req->getParameter('id')
+        $user = $this->get('security.context')->getToken()->getUser();
+        $formBuilder = $this->createFormBuilder($user);
+        /*$form = $formBuilder->add('mobile', null, array('label' => '手机号'))
+                            ->getForm();*/
     }
 }

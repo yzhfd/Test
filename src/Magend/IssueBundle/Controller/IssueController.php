@@ -119,6 +119,34 @@ class IssueController extends Controller
     }
     
     /**
+     * Delete cover or preview
+     * @Route("/delImg", name="issue_imgDel", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function delImgAction()
+    {
+        $req = $this->getRequest();
+        $issueId = $req->get('id');
+        $issue = $this->_findIssue($issueId);
+        if (empty($issue)) {
+            return new Response('no issue');
+        }
+        
+        $img = $req->get('img');
+        $getter = "get$img";
+        if (method_exists($issue, $getter)) {
+            $imgName = $issue->$getter();
+            $setter = "set$img";
+            $issue->$setter(null);
+            $rootDir = $this->container->getParameter('kernel.root_dir');
+            @unlink($rootDir . '/../web/uploads/'. $imgName);
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->flush();        
+        }
+        
+        return new Response('done');
+    }
+    
+    /**
      * Upload cover (landscape or portrait, not both by dnd), and preview images
      * 
      * @todo refactor all dnd uploads

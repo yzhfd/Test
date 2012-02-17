@@ -64,17 +64,20 @@
     
     <div>拖拽图片上传封面</div>
     <p/>
-    <div id="landscape-cover" rel="landscapeCover" style="float: left; background-color: #CCC; border: 1px solid #777; width: 160px; height: 120px;">
+    <div id="landscape-cover" class="issueImg {% if issue.landscapeCover is null %}noImg{% endif %}" rel="landscapeCover" style="float: left; background-color: #CCC; border: 1px solid #777; width: 160px; height: 120px;">
+        <a href="{{ path('issue_imgDel') }}" class="pagedel">
         <a title="横版封面" href="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}" rel="colorbox"><img width="160" height="120" src="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
     </div>
-    <div id="portrait-cover" rel="portraitCover" style="float: left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+    <div id="portrait-cover" class="issueImg {% if issue.portraitCover is null %}noImg{% endif %}" rel="portraitCover" style="float: left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+        <a href="{{ path('issue_imgDel') }}" class="pagedel">
         <a title="竖版封面" href="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>
     </div>
     
     <p style="clear:both;"></p>
     
     <p>预览图</p>
-    <div id="preview" rel="preview" style="background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+    <div id="preview" class="issueImg {% if issue.preview is null %}noImg{% endif %}" rel="preview" style="background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+        <a href="{{ path('issue_imgDel') }}" class="pagedel">
         <a title="预览图" href="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% endif %}" /></a>
     </div> 
     

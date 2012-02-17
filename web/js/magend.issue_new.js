@@ -27,6 +27,16 @@ var issue_new = function () {
 	// covers and preview
 	$('#landscape-cover, #portrait-cover, #preview').each(function(index, img){
 		img = $(img);
+		
+		$('.pagedel', img).click(function(){
+			$('img', img).attr('src', null);
+			img.addClass('noImg');
+			
+			var issueId = $('#attachedAudio').attr('rel'); // @todo what if no attchedAudio in issue
+			$.get($(this).attr('href') + '?id=' + issueId +  '&img=' + img.attr('rel'));
+			return false;
+		});
+		
 		img.fileupload({
 			url: Routing.generate('issue_imgUpload'),
 			paramName: img.attr('rel'),
@@ -43,7 +53,7 @@ var issue_new = function () {
 				alert('上传失败');
 			}
 		}).bind('fileuploaddrop', function (e, data) {
-			var issueId = $('#attachedAudio').attr('rel');
+			var issueId = $('#attachedAudio').attr('rel'); // @todo what if no attchedAudio in issue
 			if (issueId == '#') {
 				alert('请先提交期刊基本信息');
 				return false;

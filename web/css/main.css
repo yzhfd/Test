@@ -100,8 +100,16 @@ li.hotimg { /* refer to li.page below */
 li.page:hover .pagedel, li.hotimg:hover .pagedel {
     visibility: visible;
 }
+.issueImg {
+	position: relative;
+}
+.issueImg:hover .pagedel {
+    visibility: visible;
+}
+.noImg .pagedel, .noImg:hover .pagedel {
+	display: none !important;
+}
 .pagedel {
-    display: none;
     /*display: block;*/
     visibility: hidden;
     width: 22px; height: 22px;
