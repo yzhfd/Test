@@ -239,8 +239,14 @@ class Issue
      */
     public function postRemove()
     {
-        if ($this->getCover()) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
+        if ($this->getPortraitCover()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitCover());
+        }
+        if ($this->getLandscapeCover()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeCover());
+        }
+        if ($this->getPreview()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPreview());
         }
     }
     
