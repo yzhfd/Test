@@ -1,0 +1,19 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Issue>
+        <Articles>
+            {% for article in issue.articles %}
+            <Article id="{{ article.id }}" title="{{ article.title }}">
+                {% for page in article.pages %}
+                <Page type="{{ page.type }}" landscape="{{ page.landscapeImg }}">
+                    {% for hot in page.hots %}
+                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}"></Hot>
+                    {% endfor %}
+                </Page>
+                {% endfor %}
+            </Article>
+            {% endfor %}
+        </Articles>
+    </Issue>
+{% endblock %}

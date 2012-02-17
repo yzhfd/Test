@@ -174,6 +174,30 @@ class Hot
         return unserialize($this->attrs);
     }
     
+    public function getX()
+    {
+        $attrs = $this->getAttrs();
+        return $attrs['x'];
+    }
+    
+    public function getY()
+    {
+        $attrs = $this->getAttrs();
+        return $attrs['y'];
+    }
+    
+    public function getWidth()
+    {
+        $attrs = $this->getAttrs();
+        return $attrs['width'];
+    }
+    
+    public function getHeight()
+    {
+        $attrs = $this->getAttrs();
+        return $attrs['height'];
+    }
+    
     /**
      * Set extra attrs
      *

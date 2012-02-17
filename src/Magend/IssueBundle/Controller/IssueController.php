@@ -35,11 +35,23 @@ class IssueController extends Controller
     
     /**
      * 
-     * @Route("/output")
+     * @Route("/{id}/output", defaults={"_format" = "xml"})
+     * @Template()
      */
-    public function outputAction()
+    public function outputAction($id)
     {
-        return new Response('hey');
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        $issue = $repo->find($id);
+        
+        // @todo refactor query
+        $em = $this->getDoctrine()->getEntityManager();
+        $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
+                    ->setParameter('issue', $issue);
+        $query->getResult();
+        
+        return array(
+            'issue' => $issue
+        );
     }
     
     /**
