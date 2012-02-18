@@ -19,6 +19,8 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
+        // if from ios
+        // then return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
         return array();
     }
 }

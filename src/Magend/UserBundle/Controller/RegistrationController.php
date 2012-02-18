@@ -26,8 +26,7 @@ class RegistrationController extends BaseController
             } else {
                 $this->authenticateUser($user);
             }
-            return $this->container->get('templating')
-                                   ->renderResponse('MagendUserBundle:User:user.xml.twig');
+            return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
         }
         
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Registration:register.html.'.$this->getEngine(), array(
