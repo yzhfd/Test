@@ -61,4 +61,4 @@ security:
         
         # first matched rules apply
         
-        - { path: ^/.*, role: ROLE_ADMIN }
+        - { path: ^/.*, role: ROLE_USER }
