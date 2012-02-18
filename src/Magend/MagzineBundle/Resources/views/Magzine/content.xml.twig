@@ -1,0 +1,21 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Magzine>{# which magazine #}
+        <Issues>
+            {% for issue in issues %}
+            <Issue
+                id="{{ issue.id }}"
+                title="{{ issue.title }}"
+                landscapeCover="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}"
+                portraitCover="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}"
+                price="{{ issue.priceLevel }}"
+                year="{{ issue.yearIssueNo }}"
+                total="{{ issue.totalIssueNo }}"
+                audio="{% if issue.audio is not null %}{{ asset('uploads/' ~ issue.audio) }}{% endif %}"
+                publish="{{ issue.publishedAt }}"
+            ></Issue>
+            {% endfor %}
+        </Issues>
+    </Magzine>
+{% endblock %}

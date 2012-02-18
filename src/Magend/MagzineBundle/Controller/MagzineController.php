@@ -20,6 +20,26 @@ use Doctrine\ORM\EntityRepository;
 class MagzineController extends Controller
 {
     /**
+     * Output xml of magzine's content(issues)
+     * 
+     * @Route("/{id}/content", name="magzine_content", requirements={"id"="\d+"}, defaults={"_format" = "xml"})
+     * @Template()
+     */
+    public function contentAction($id)
+    {
+        $cls = 'MagendIssueBundle:Issue';
+        $em = $this->getDoctrine()->getEntityManager();
+        // @todo which order
+        $query = $em->createQuery("SELECT s FROM $cls s WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
+                    ->setParameter('magId', $id);
+        $arr = $this->getList($cls, $query);
+        $arr['issues'] = $arr['entities'];
+        unset($arr['entities']);
+        
+        return $arr;
+    }
+    
+    /**
      * @Route("/{id}/copyright", name="magzine_copyright", requirements={"id"="\d+"})
      * @Template()
      */    

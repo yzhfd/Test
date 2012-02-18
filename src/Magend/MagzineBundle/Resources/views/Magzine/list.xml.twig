@@ -1,0 +1,14 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Magzines>{# which magzine #}
+        {% for magzine in magzines %}
+        <Magzine
+            id="{{ magzine.id }}"
+            name="{{ magzine.name }}"
+            landscapeCover="{% if magzine.landscapeCover is not null %}{{ asset('uploads/' ~ magzine.landscapeCover) }}{% endif %}"
+            portraitCover="{% if magzine.portraitCover is not null %}{{ asset('uploads/' ~ magzine.portraitCover) }}{% endif %}"
+        ></Magzine>
+        {% endfor %}
+    </Magzines>
+{% endblock %}

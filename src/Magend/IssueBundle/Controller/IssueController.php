@@ -35,10 +35,10 @@ class IssueController extends Controller
     
     /**
      * 
-     * @Route("/{id}/output", defaults={"_format" = "xml"})
+     * @Route("/{id}/content", name="issue_content", defaults={"_format" = "xml"})
      * @Template()
      */
-    public function outputAction($id)
+    public function contentAction($id)
     {
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
