@@ -3,7 +3,11 @@
 {% block contentTitle %}杂志分类{% endblock %}
 
 {% block main %}
-
+    <ul class="shortcut-buttons-set">
+        <li><a target="_blank" class="shortcut-button" href="{{ path('magzine_list', { '_format':'xml' }) }}" title="移动客户端使用"><span>杂志列表XML</span></a></li>
+    </ul>
+    <div class="clear"></div>
+    
     <div class="content-box"><!-- Start Content Box -->
         <div class="content-box-header">
             <h3>分类列表</h3>
@@ -55,10 +59,11 @@
                         <td>{% if magzine.portraitCover is not null %}<a href="#" title="放大"><img width="96" height="128" src="{{ asset('uploads/' ~ magzine.portraitCover) }}" /></a>{% endif %}</td>
                         <td>{{ magzine.issues|length }}</td>
                         <td>{{ magzine.createdAt|date('Y-m-d H:i') }}</td>
-                        <td style="width:70px;">
+                        <td style="width:100px;">
                             <a title="选择版权页" rel="dialog" href="{{ path('magzine_copyright', { 'id':magzine.id }) }}" class="copyright {% if magzine.copyrightArticle is null %}copyright_off{% else %}copyright_on{% endif %}">©</a>
                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                            <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
+                            <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
+                            <a target="_blank" href="{{ path('magzine_content', { 'id':magzine.id }) }}" title="杂志内容XML">XML</a> 
                         </td>
                     </tr>
                     {% endfor %}

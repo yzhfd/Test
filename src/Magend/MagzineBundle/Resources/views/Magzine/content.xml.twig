@@ -13,7 +13,7 @@
                 year="{{ issue.yearIssueNo }}"
                 total="{{ issue.totalIssueNo }}"
                 audio="{% if issue.audio is not null %}{{ asset('uploads/' ~ issue.audio) }}{% endif %}"
-                publish="{{ issue.publishedAt }}"
+                publish="{{ issue.publishedAt|date('Y-m-d') }}"
             ></Issue>
             {% endfor %}
         </Issues>
