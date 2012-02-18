@@ -1,0 +1,9 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <User>
+        <ID>{{ app.user.id }}</ID>
+        <Username>{{ app.user.username }}</Username>
+        <Email>{{ app.user.email }}</Email>
+    </User>
+{% endblock %}
