@@ -204,6 +204,17 @@ var article_new = function () {
 			e.preventDefault();
 		});
 	});
+
+	$('li.page a:not(.pagedel)').live('click', function(){
+		return false;
+	});
+	$('li.page').live('dblclick', function(){
+		var pageId = $(this).attr('rel');
+		if (pageId) {
+			var editUrl = Routing.generate('page_edit', {id:pageId});
+			document.location = editUrl;
+		}
+	});
 	
 	var savePages = function (pages) {
 		var dfd = $.Deferred();

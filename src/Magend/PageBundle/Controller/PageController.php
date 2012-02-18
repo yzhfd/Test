@@ -19,7 +19,7 @@ use Magend\HotBundle\Entity\Hot;
 class PageController extends Controller
 {
     /**
-     * @Route("/{id}/edit", name="page_edit")
+     * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
      * @Template()
      */
     public function editAction($id)
