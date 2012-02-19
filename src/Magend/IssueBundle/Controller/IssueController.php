@@ -82,6 +82,26 @@ class IssueController extends Controller
     }
     
     /**
+     * Remove copyright article
+     *
+     * @Route("/{id}/remove-copyright", name="remove_copyright", requirements={"id"="\d+"})
+     */
+    public function removeCopyrightAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        if (empty($issue)) {
+            throw new \Exception('Issue not found'); 
+        }
+        
+        $cpArticle = $issue->getMagzine()->getCopyrightArticle();
+        $issue->removeArticle($cpArticle);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $id)));
+    }
+    
+    /**
      * 
      * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
      */
