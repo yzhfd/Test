@@ -10,6 +10,7 @@
                 landscapeCover="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}"
                 portraitCover="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}"
                 price="{{ issue.priceLevel }}"
+                preview="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% endif %}"
                 year="{{ issue.yearIssueNo }}"
                 total="{{ issue.totalIssueNo }}"
                 audio="{% if issue.audio is not null %}{{ asset('uploads/' ~ issue.audio) }}{% endif %}"
