@@ -510,10 +510,8 @@ class IssueController extends Controller
         $q->getResult();
         
         // select keywords and associate with articles
-        // SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)
-        // cannot work, because if the article does not have keywords then article cannot be selected
-        $dql = 'SELECT s, a, k FROM MagendIssueBundle:Issue s JOIN s.articles a LEFT JOIN a.keywords k WHERE s = :issue';
-        $q = $em->createQuery($dql)->setParameter('issue', $issue);
+        $dql = 'SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)';
+        $q = $em->createQuery($dql)->setParameter('articles', $issue->getArticleIds());
         $q->getResult();
         
         return array('issue' => $issue);
