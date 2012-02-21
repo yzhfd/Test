@@ -67,7 +67,7 @@
     version=1.0.0
 
 [KLUtilBundle]
-    git=https://github.com/KailZhang/KLUtilBundle.git
+    git=git://github.com/KailZhang/KLUtilBundle.git
     target=/bundles/KL/UtilBundle
 
 [DoctrineExtensions]
