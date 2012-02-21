@@ -1,3 +1,8 @@
+MagendOutputBundle:
+    resource: "@MagendOutputBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendProjectBundle:
     resource: "@MagendProjectBundle/Controller/"
     type:     annotation

@@ -4,7 +4,7 @@
 
 {% block main %}
     <ul class="shortcut-buttons-set">
-        <li><a target="_blank" class="shortcut-button" href="{{ path('magzine_list', { '_format':'xml' }) }}" title="移动客户端使用"><span>杂志列表XML</span></a></li>
+        <li><a target="_blank" class="shortcut-button" href="{{ path('output_magzines', { '_format':'xml' }) }}" title="移动客户端使用"><span>杂志列表XML</span></a></li>
     </ul>
     <div class="clear"></div>
     
@@ -63,7 +63,7 @@
                             <a title="选择版权页" rel="dialog" href="{{ path('magzine_copyright', { 'id':magzine.id }) }}" class="copyright {% if magzine.copyrightArticle is null %}copyright_off{% else %}copyright_on{% endif %}">©</a>
                             <a rel="dialog" href="{{ path('magzine_edit', { 'id':magzine.id }) }}" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
                             <a rel="confirm" href="{{ path('magzine_del', { 'id':magzine.id }) }}" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
-                            <a target="_blank" href="{{ path('magzine_content', { 'id':magzine.id }) }}" title="杂志内容XML">XML</a> 
+                            <a target="_blank" href="{{ path('output_magzine', { 'id':magzine.id }) }}" title="杂志内容XML">XML</a> 
                         </td>
                     </tr>
                     {% endfor %}
