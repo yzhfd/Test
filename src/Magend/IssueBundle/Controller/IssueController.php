@@ -15,7 +15,7 @@ use Magend\IssueBundle\Form\IssueType;
 use Magend\IssueBundle\Entity\Issue;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\ Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -62,13 +62,13 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
-            throw new \Exception('Issue not found'); 
+            throw new \ Exception('Issue not found'); 
         }
         
         $cpr = $issue->getMagzine()->getCopyrightArticle();
         $articleIds = $issue->getArticleIds();
         if (in_array($cpr->getId(), $articleIds)) {
-            throw new \Exception('Already inserted'); 
+            throw new \ Exception('Already inserted'); 
         }
         $issue->addArticle($cpr);
         if (count($articleIds) >= 1) {
@@ -90,7 +90,7 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
-            throw new \Exception('Issue not found'); 
+            throw new \ Exception('Issue not found'); 
         }
         
         $cpArticle = $issue->getMagzine()->getCopyrightArticle();
@@ -291,7 +291,7 @@ class IssueController extends Controller
                     ->setMaxResults(1);
         try {
             $issue = $query->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (\ Exception $e) {
             return new Response('');
         }
         
@@ -328,7 +328,7 @@ class IssueController extends Controller
                 $issue->setMagzine($magzine);
                 $issue->setYearIssueNo($yearIssueNo);
                 $issue->setTotalIssueNo($totalIssueNo + 1);
-            } catch (\Exception $e) {
+            } catch (\ Exception $e) {
                 // do nothing
             }
         }
@@ -468,8 +468,8 @@ class IssueController extends Controller
     public function articlesAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT partial a.{id, title, pageIds}, partial p.{id, landscapeImg, portraitImg, label} FROM MagendArticleBundle:Article a INDEX BY a.id LEFT JOIN a.pages p WHERE :issueId MEMBER OF a.issues')
-                    ->setParameter('issueId', $id);
+        $dql = 'SELECT partial a.{id, title, pageIds}, partial p.{id, landscapeImg, portraitImg, label} FROM MagendArticleBundle:Article a INDEX BY a.id LEFT JOIN a.pages p WHERE :issueId MEMBER OF a.issues';
+        $query = $em->createQuery($dql)->setParameter('issueId', $id);
         
         $arr = $query->getArrayResult();
         $result = array();
@@ -502,15 +502,21 @@ class IssueController extends Controller
         if (!$issue) {
             throw new \ Exception('issue ' . $id . ' not found');
         }
-        /*
-        // no pager as we need layout
+        
+        // select pages and associate with articles
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT a FROM MagendArticleBundle:Article a WHERE :issueId MEMBER OF a.issues')
-                    ->setParameter('issueId', $id);
-        $tplVars = $this->getList('MagendArticleBundle:Article', $query);
-        $tplVars['articles'] = $tplVars['entities'];
-        unset($tplVars['entities']);
-        $tplVars['issue'] = $issue;*/
+        $dql = 'SELECT a, p FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a in (:articles)';
+        $q = $em->createQuery($dql)->setParameter('articles', $issue->getArticleIds());
+        $q->getResult();
+        
+        // select keywords and associate with articles
+        $dql = 'SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)';
+        $q = $em->createQuery($dql)->setParameter('articles', $issue->getArticleIds());
+        $q->getResult();
+        
+        /*$dql = 'SELECT p FROM MagendPageBundle:Page p LEFT JOIN p.article a WHERE p.article in (:articles)';
+        $q = $em->createQuery($dql)->setParameter('articles', $articles);
+        $pages = $q->getResult();*/
         
         return array('issue' => $issue);
     }

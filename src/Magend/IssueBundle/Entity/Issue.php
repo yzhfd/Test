@@ -96,6 +96,8 @@ class Issue
      * cascade will not happen unless you define it
      * cascade={"persist", "remove"}
      * 
+     * indexBy here is important but will affect in condition in DQL
+     * 
      * @ORM\ManyToMany(
      *     targetEntity="Magend\ArticleBundle\Entity\Article",
      *     inversedBy="issues",
