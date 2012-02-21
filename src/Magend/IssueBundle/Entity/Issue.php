@@ -428,8 +428,10 @@ class Issue
         $this->articles->add($article);
         
         $articleIds = $this->getArticleIds();
-        $articleIds[] = $article->getId();
-        $this->setArticleIds($articleIds);
+        if (!in_array($article->getId(), $articleIds)) {
+            $articleIds[] = $article->getId();
+            $this->setArticleIds($articleIds);
+        }
     }
     
     public function removeArticle(Article $article)

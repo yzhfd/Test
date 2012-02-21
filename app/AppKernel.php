@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new KL\UtilBundle\KLUtilBundle(),
             new Magend\IssueBundle\MagendIssueBundle(),
             new Magend\ArticleBundle\MagendArticleBundle(),
             new Magend\PageBundle\MagendPageBundle(),

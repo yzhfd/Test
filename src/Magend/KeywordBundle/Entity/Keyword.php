@@ -44,7 +44,10 @@ class Keyword
     /**
      * 
      * 
-     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="keywords")
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\ArticleBundle\Entity\Article",
+     *     mappedBy="keywords"
+     * )
      */
     private $articles;
 

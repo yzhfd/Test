@@ -51,7 +51,7 @@
                 <thead><tr>
                     <th><input class="check-all" type="checkbox" /></th>
                     <th>名称</th>
-                    <th>关键词</th>
+                    <th>类型</th>
                     <th>页数</th>
                     <th>创建时间</th>
                     <th>操作</th>
@@ -76,11 +76,7 @@
                     <tr id="tr{{ article.id }}">
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('article_edit', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
-                        <td class="thumbup" style="width:100px;">
-                        {% for keyword in article.keywords %}
-                        <a href="#">{{ keyword }}</a>{% if not loop.last %}、{% endif %}
-                        {% endfor %}
-                        </td>
+                        <td>{{ article.type|transIn('article') }}</td>
                         <td>{{ article.pageIds|length }}</td>
                         <td>{{ article.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:90px;">

@@ -510,9 +510,12 @@ class IssueController extends Controller
         $q->getResult();
         
         // select keywords and associate with articles
+        // shit, I cannot get this done - if article has no keywords, then article->getKeywords() will
+        // still query database
+        /*
         $dql = 'SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)';
         $q = $em->createQuery($dql)->setParameter('articles', $issue->getArticleIds());
-        $q->getResult();
+        $articles = $q->getResult();*/
         
         return array('issue' => $issue);
     }

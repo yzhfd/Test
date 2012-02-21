@@ -86,7 +86,12 @@ class Article
     
     /**
      * 
-     * @ORM\ManyToMany(targetEntity="Magend\KeywordBundle\Entity\Keyword", inversedBy="articles", cascade={"persist"})
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\KeywordBundle\Entity\Keyword",
+     *     inversedBy="articles",
+     *     cascade={"persist"},
+     *     fetch="EXTRA_LAZY"
+     * )
      * @ORM\JoinTable(name="mag_article_keyword")
      */
     private $keywords;
@@ -229,7 +234,6 @@ class Article
     public function __construct()
     {
         $this->pages = new ArrayCollection();
-        $this->keywords = new ArrayCollection();
         $this->architects = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->institutes = new ArrayCollection();
