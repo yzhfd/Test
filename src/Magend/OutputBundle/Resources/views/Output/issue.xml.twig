@@ -4,7 +4,7 @@
     <Issue>
         <Articles>
             {% for article in issue.articles %}
-            <Article id="{{ article.id }}" title="{{ article.title }}">
+            <Article id="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" lat="{{ article.lat }}" lng="{{ article.lng }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
                 {% for page in article.pages %}
                 <Page type="{{ page.type }}" landscape="{{ asset('uploads/' ~ page.landscapeImg) }}">
                     {% for hot in page.hots %}
@@ -26,6 +26,54 @@
                     {% endfor %}
                 </Page>
                 {% endfor %}
+                
+                {% if article.infopages|length > 0 %}
+                {% for page in article.infopages %}
+                <Page type="{{ page.type }}" landscape="{{ asset('uploads/' ~ page.landscapeImg) }}">
+                    {% for hot in page.hots %}
+                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                        
+                        <Assets>
+                        {% for asset in hot.assets %}
+                            <Asset>{{ asset('uploads/' ~ asset.file) }}</Asset>
+                        {% endfor %}
+                        </Assets>
+                        
+                        <Attrs>
+                        {% for key, val in hot.extraAttrs %}
+                            <{{key}}>{{ val }}</{{key}}>
+                        {% endfor %}
+                        </Attrs>
+                    
+                    </Hot>
+                    {% endfor %}
+                </Page>
+                {% endfor %}
+                {% endif %}
+                
+                {% if article.structurepages|length > 0 %}
+                {% for page in article.structurepages %}
+                <Page type="{{ page.type }}" landscape="{{ asset('uploads/' ~ page.landscapeImg) }}">
+                    {% for hot in page.hots %}
+                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                        
+                        <Assets>
+                        {% for asset in hot.assets %}
+                            <Asset>{{ asset('uploads/' ~ asset.file) }}</Asset>
+                        {% endfor %}
+                        </Assets>
+                        
+                        <Attrs>
+                        {% for key, val in hot.extraAttrs %}
+                            <{{key}}>{{ val }}</{{key}}>
+                        {% endfor %}
+                        </Attrs>
+                    
+                    </Hot>
+                    {% endfor %}
+                </Page>
+                {% endfor %}
+                {% endif %}
             </Article>
             {% endfor %}
         </Articles>
