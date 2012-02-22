@@ -44,7 +44,14 @@ class HotController extends Controller
         
         // @todo @unlink existing files
         $hotType = $hot->getType();
-        if ($hotType == 1 || $hotType == 3) { // video or single image
+        if ($hotType == 0) { // gallery
+            $assets = $hot->getAssets();
+            if (!is_array($assets)) {
+                $assets = array();
+            }
+            $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
+        } else {
+            //if ($hotType == 1 || $hotType == 3 || $hotType == 4) { // video audio or single image
             $assets = $hot->getAssets();
             if (!empty($assets)) {
                 @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);
@@ -52,12 +59,7 @@ class HotController extends Controller
             $assets = array(
                 array('name' => $file->getClientOriginalName(), 'file' => $fileName)
             );
-        } else if ($hotType == 0) { // gallery
-            $assets = $hot->getAssets();
-            if (!is_array($assets)) {
-                $assets = array();
-            }
-            $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
+            //} 
         }
 
         $hot->setAssets($assets);

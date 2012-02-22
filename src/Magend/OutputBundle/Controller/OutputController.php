@@ -18,7 +18,7 @@ class OutputController extends Controller
     /**
      * Output issue content
      * 
-     * @Route("/issue/{id}", name="output_issue", defaults={"_format" = "xml"})
+     * @Route("/issue/{id}", name="output_issue", requirements={"id"="\d+"}, defaults={"_format" = "xml"})
      * @Template()
      */
     public function issueAction($id)
