@@ -15,6 +15,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class OutputController extends Controller
 {
    
+    
+    // @todo need some authentication
+    
     /**
      * Output issue content
      * 

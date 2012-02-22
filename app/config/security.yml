@@ -60,5 +60,5 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         
         # first matched rules apply
-        
+        - { path: ^/output, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/.*, role: ROLE_USER }
