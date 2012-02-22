@@ -50,9 +50,7 @@ class IssueController extends Controller
             throw new \ Exception('Already inserted'); 
         }
         $issue->addArticle($cpr);
-        if (count($articleIds) >= 1) {
-            array_splice($articleIds, 1, 0, $cpr->getId()); 
-        }
+        $articleIds[] = $cpr->getId(); 
         $issue->setArticleIds($articleIds);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
