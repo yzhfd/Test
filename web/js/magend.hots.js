@@ -137,10 +137,11 @@ var HotView = Backbone.View.extend({
     	}*/
     },
     toggle: function () {
+    	// indicate selection
     	if (this.model.selected) {
-    		$(this.el).css({backgroundColor: "rgba(0, 125, 255, 0.5)"});
+    		$(this.el).addClass('hotsel');
     	} else {
-    		$(this.el).css({backgroundColor: "rgba(255, 255, 255, 0.5)"});
+    		$(this.el).removeClass('hotsel');
     	}
     },
     submitDialog: function () {
