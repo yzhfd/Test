@@ -23,6 +23,16 @@ class UserController extends Controller
     {
         return array('name' => $name);
     }
+    
+    /**
+     * RESTful login
+     * 
+     */
+    public function restfulLoginAction()
+    {
+        // username
+        // plainPassword
+    }
 
     /**
      * @Route("/list", name="user_list")
