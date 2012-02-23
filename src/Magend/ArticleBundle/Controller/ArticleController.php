@@ -227,11 +227,9 @@ class ArticleController extends Controller
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
         $kws = $kwRepo->findAll();
         
-        $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
-        
         $issue = $article->getIssue();
-        
+        $req  = $this->getRequest();
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
