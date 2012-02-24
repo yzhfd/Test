@@ -12,9 +12,19 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RegistrationController extends BaseController
 {
+    /**
+     * 
+     * @todo refactor - move it out
+     * @param Form $form
+     */
     private function getErrorMessages($form) {
         foreach ($form->getErrors() as $key => $error) {
-            $errors[] = strtr($error->getMessageTemplate(), $error->getMessageParameters());
+            // translation 
+            $errors[] = $this->container->get('translator')->trans(
+                $error->getMessageTemplate(),
+                $error->getMessageParameters(),
+                'validators'
+            );
         }
         if ($form->hasChildren()) {
             foreach ($form->getChildren() as $child) {
