@@ -12,6 +12,20 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RegistrationController extends BaseController
 {
+    private function getErrorMessages($form) {
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = strtr($error->getMessageTemplate(), $error->getMessageParameters());
+        }
+        if ($form->hasChildren()) {
+            foreach ($form->getChildren() as $child) {
+                if (!$child->isValid()) {
+                    $errors[$child->getName()] = $this->getErrorMessages($child);
+                }
+            }
+        }
+        return $errors;
+    }
+    
     public function registerAction()
     {
         $form = $this->container->get('fos_user.registration.form');
@@ -27,6 +41,9 @@ class RegistrationController extends BaseController
                 $this->authenticateUser($user);
             }
             return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
+        } else if ($this->container->get('request')->getMethod() == 'POST') {
+            $errors = $this->getErrorMessages($form);
+            return $this->container->get('templating')->renderResponse('MagendUserBundle:Registration:regerr.xml.twig', array('errors' => $errors));
         }
         
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Registration:register.html.'.$this->getEngine(), array(

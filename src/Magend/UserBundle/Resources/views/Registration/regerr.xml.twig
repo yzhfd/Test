@@ -1,0 +1,15 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Registration>
+        <Errors>
+        {% for name, msgs in errors %}
+            <Error name="{{ name }}">
+            {% for msg in msgs %}
+                <Msg>{{ msg }}</Msg>
+            {% endfor %}
+            </Error>
+        {% endfor %}
+        <Errors>
+    </Registration>
+{% endblock %}
