@@ -214,7 +214,7 @@ var page_edit = function () {
 		revert: "invalid", // when not dropped, the item will revert back to its initial position
 		containment: 'document',
 		helper: function (){
-			return $('<div style="width:80px; height:80px; background-color:gray;" />');
+			return $('<div style="width:80px; height:80px; background-color:gray; z-index:10;" />');
 		},
 		cursor: "move"
 	});
@@ -298,6 +298,7 @@ var page_edit = function () {
 							});
 							
 							uploader.fileupload('option', 'url', Routing.generate('hot_upload', { 'id':hot.id }));
+							// @todo on success, map id with li
 							return uploader.fileupload('send', { files:[file] });
 						});
 					});

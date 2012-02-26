@@ -234,6 +234,8 @@ var HotView = Backbone.View.extend({
     	
     	typeDlg.show();
     	
+    	// $('<div/>').html('<h1>eample</h1>').dialog({autoOpen:true});
+    	
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
     		width: 'auto', height: 'auto',

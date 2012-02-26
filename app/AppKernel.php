@@ -36,6 +36,7 @@ class AppKernel extends Kernel
             new Magend\HotBundle\MagendHotBundle(),
             new Magend\ProjectBundle\MagendProjectBundle(),
             new Magend\OutputBundle\MagendOutputBundle(),
+            new Magend\AssetBundle\MagendAssetBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
