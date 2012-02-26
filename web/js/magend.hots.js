@@ -166,17 +166,18 @@ var HotView = Backbone.View.extend({
 	    	});
     	}
     	// video
-    	if (hottype == 1) {
+    	if (hottype == 1 || hottype == 4) {
+    		var uploadArea = hottype == 1 ? $('#video-upload-area') : $('#audio-upload-area');
     		if (hotModel.uploads) {
-    			var videoFile = hotModel.uploads[0];
-    			$('#video-upload-area')
+    			var file = hotModel.uploads[0];
+    			uploadArea
     			.removeClass('synced')
     			.addClass('unsynced')
-    			.html(videoFile.name + '<br/>' + parseSize(videoFile.size));
+    			.html(file.name + '<br/>' + parseSize(file.size));
     		} else if (hotModel.assets) {
 	    		var filePath = hotModel.assets[0]['file'];
 	    		var fileName = hotModel.assets[0]['name'];
-	    		$('#video-upload-area')
+	    		uploadArea
 	    		.addClass('synced')
 	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
     		}

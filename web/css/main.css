@@ -66,7 +66,7 @@ li.hotimg { /* refer to li.page below */
 }
 
 /* hots */
-#video-upload-area {
+#video-upload-area, #audio-upload-area {
 	border: 1px solid #777;
 	background-color: #CCC;
 	text-align: center;
@@ -77,13 +77,13 @@ li.hotimg { /* refer to li.page below */
 #video-upload-area a {
 	color: #57A000;
 }
-#video-upload-area.unsynced, img.unsynced {
+#video-upload-area.unsynced, #audio-upload-area.unsynced, img.unsynced {
 	border: 2px solid yellow;
 }
-#video-upload-area.synced, img.synced {
+#video-upload-area.synced, #audio-upload-area.synced, img.synced {
     border: 2px solid #57A000;
 }
-#video-upload-area.syncfail, img.syncfail {
+#video-upload-area.syncfail, #audio-upload-area.syncfail, img.syncfail {
     border: 2px solid red !important;
 }
 
@@ -289,17 +289,17 @@ ol, ul { list-style: none; }
 
 /*page editor*/
 #page_editor {
-	width: 1050px;
+	width: 1024px;
 	height: 840px;
 	/*padding-left: 30px;*/
 	position: relative;
 }
 #hotlib {
-	position: absolute;
-	top: 0px; left: 100px; z-index: 9;
+    z-index: 9;
 	background-color: #CCC;
-	width: 240px;
+	padding-right: 5px;
 	height: 60px;
+	margin: 10px 0 0 0;
 }
 .hotobj {
 	float: left;
@@ -309,6 +309,24 @@ ol, ul { list-style: none; }
 	text-align: center;
 	background-color: #DDD;
 	cursor: pointer;
+}
+.hotobj:hover {
+	color: green;
+}
+.hotimgs {
+	background: #EEE url('../images/hotlib_imgs.png') no-repeat center center;
+}
+.hotsimg {
+    background: #EEE url('../images/hotlib_img.png') no-repeat center center;
+}
+.hotvideo {
+    background: #EEE url('../images/hotlib_video.png') no-repeat center center;
+}
+.hotaudio {
+    background: #EEE url('../images/hotlib_audio.png') no-repeat center center;
+}
+.hotlink {
+    background: #EEE url('../images/hotlib_link.png') no-repeat center center;
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
@@ -338,16 +356,19 @@ ol, ul { list-style: none; }
 	position: absolute; /*!important*/
 	padding: 0px; margin: 0px; list-style: none;
 	width: 80px; height: 80px;
-	/*background-color: rgba(255, 255, 255, 0.5);*/
-	background: transparent url('../images/stripe.png') repeat;
-	opacity: 0.6;
+	background-color: rgba(255, 255, 255, 0.5);
+	/*background: transparent url('../images/stripe.png') repeat;
+	opacity: 0.6;*/
 }
 .hot:hover {
-	background: transparent url('../images/stripe2.png') repeat;
+	/*background: transparent url('../images/stripe2.png') repeat;*/
+	background-color: rgba(0, 125, 255, 0.5);
 }
 .hotsel {
+	background-color: rgba(0, 125, 255, 0.7);
+	/*
 	opacity: 0.8;
-	background: transparent url('../images/stripe2.png') repeat;
+	background: transparent url('../images/stripe2.png') repeat;*/
 }
 li.ui-selected {
 	background-color: rgba(255, 0, 0, 0.5);

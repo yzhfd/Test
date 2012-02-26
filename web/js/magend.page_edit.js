@@ -27,6 +27,49 @@ var page_edit = function () {
 		$('#linkInput').val('http://');
 	});
 	
+	// audio
+	$('#audio-upload-area').fileupload({
+		paramName: 'file',
+		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
+		dropZone: $('#audio-upload-area'),
+		limitMultiFileUploads: 1,
+		success: function (result) {
+			$('#audio-upload-area').text('拖拽音频到这里');
+			$('#audio-upload-area').overlay('hide');
+			
+		},
+		fail: function () {
+			$('#audio-upload-area').text('拖拽音频到这里');
+			$('#audio-upload-area').overlay('hide');
+			alert('上传失败');
+		},
+		drop: function (e, data) {
+			var file = data.files[0];
+			var acceptFileTypes = $('#audio-upload-area').fileupload('option', 'acceptFileTypes');
+			
+			if (!(acceptFileTypes.test(file.type) ||
+	              acceptFileTypes.test(file.name))) {
+				alert('请上传MP3、WAV格式的视频文件');
+				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
+	            return false;
+	        }
+			
+			$('#audio-upload-area')
+			.removeClass('synced')
+			.addClass('unsynced')
+			.html(file.name + '<br/>' + parseSize(file.size));
+			
+			var hot = $('#hot_4_dialog').data('hot');
+			hot.addUploads = [ file ];
+			
+			return false;
+		}
+	}).bind('fileuploadsubmit', function (e, data) {
+		// no upload immediately
+		e.stopPropagation();
+		e.preventDefault();
+	});
+	
 	// video
 	$('#video-upload-area').fileupload({
 		paramName: 'file',
@@ -228,7 +271,7 @@ var page_edit = function () {
 					}
 				});
 				
-				// upload hot's video or image
+				// upload hot's video, audio or image
 				var uploader = $('<div/>');
 				uploader.fileupload({
 					paramName: 'file'
@@ -286,9 +329,9 @@ var page_edit = function () {
 							});
 						});
 					});
+					
+					when2.done( dfd.resolve ).fail( dfd.reject );
 				}).fail( dfd.reject );
-				
-				when2.done( dfd.resolve ).fail( dfd.reject );
 			}
 		});
 		

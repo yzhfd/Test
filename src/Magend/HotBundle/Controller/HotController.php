@@ -99,10 +99,12 @@ class HotController extends Controller
         }
         
         $newAssets = array();
-        foreach ($reqAssets as $reqAsset) {
-            if (isset($fileAssets[$reqAsset])) {
-                $newAssets[] = $fileAssets[$reqAsset];
-                unset($fileAssets[$reqAsset]);
+        if (!empty($reqAssets)) {
+            foreach ($reqAssets as $reqAsset) {
+                if (isset($fileAssets[$reqAsset])) {
+                    $newAssets[] = $fileAssets[$reqAsset];
+                    unset($fileAssets[$reqAsset]);
+                }
             }
         }
         if (!empty($fileAssets)) {
