@@ -42,6 +42,17 @@ class User extends BaseUser
      * )
      */
     public $avatarFile;
+
+    /**
+     * Mobile number
+     * 
+     * @var string
+     * @ORM\Column(name="mobile", type="string", length=12, nullable=true)
+     */
+    public $mobile;
+    
+    // @todo weibo
+    
     
     /**
      * The time user updated its profile
@@ -174,6 +185,16 @@ class User extends BaseUser
     public function getAvatar()
     {
         return $this->avatar;
+    }
+    
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+    
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
     }
 
     /**

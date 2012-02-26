@@ -6,10 +6,7 @@
     <div class="row" style="margin-top:20px;">
         <div class="span6">
             <h3>最近打开的期刊</h3>
-            <!--<video width="320" height="240" controls="controls">
-              <source src="/Magend/web/uploads/hot_4f1fd0051a74f.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>-->
+            {% if magzine is not null %}<a href="{{ path('magzine_issues', { 'id':magzine.id}) }}">{{ magzine.name }}</a>{% endif %}
         </div>
         
         <div class="span6">

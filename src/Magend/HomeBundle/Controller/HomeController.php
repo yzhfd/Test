@@ -19,8 +19,17 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
-        // if from ios
-        // then return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
-        return array();
+        $req = $this->getRequest();
+        $magId = $req->cookies->get('magzine_id');
+        $magzine = null;
+        if ($magId !== null) {
+            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $magzine = $repo->find($magId);
+        }
+        
+        
+        return array(
+            'magzine' => $magzine
+        );
     }
 }
