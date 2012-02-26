@@ -372,8 +372,10 @@ class Article
         
         $keywords = $this->getKeywords();
         $kws = array();
-        foreach ($keywords as $keyword) {
-            $kws[] = $keyword->getKeyword();
+        if (!empty($keywords)) {
+            foreach ($keywords as $keyword) {
+                $kws[] = $keyword->getKeyword();
+            }
         }
         return implode(',', $kws);
     }
