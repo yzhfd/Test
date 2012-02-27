@@ -23,6 +23,8 @@ class Asset
     private $id;
 
     /**
+     * Video, audio or image, etc
+     * 
      * @var smallint $type
      *
      * @ORM\Column(name="type", type="smallint")
@@ -30,6 +32,8 @@ class Asset
     private $type = 0;
     
     /**
+     * Currently name of the file
+     * 
      * @var string $tag
      *
      * @ORM\Column(name="tag", type="string", length=255, nullable=true)

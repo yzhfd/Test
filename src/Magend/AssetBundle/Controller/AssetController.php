@@ -66,12 +66,30 @@ class AssetController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         
         $asset = new Asset();
+        $asset->setTag($file->getClientOriginalName());
         $asset->setResource($fileName);
         $em->persist($asset);
-
-        $hot->setAssets($assets);
         $em->flush();
         
-        return new Response(json_encode($assets));
+        $hot->addAsset($asset);
+        $em->flush();
+        
+        $assetIds = $hot->getAssets();
+        $query = $em->createQuery('SELECT a FROM MagendAssetBundle:Asset a INDEX BY a.id WHERE a in (:assets)')
+                     ->setParameter('assets', $assetIds);
+        $assets = $query->getResult();
+        $orderedAssets = array();
+        foreach ($assetIds as $assetId) {
+            $asset = $assets[$assetId];
+            if (empty($asset)) continue;
+            $orderedAssets[] = array(
+                'id'   => $asset->getId(),
+                'file' => $asset->getResource(),
+                'name' => $asset->getTag()
+            );
+        }
+        unset($assets);
+        
+        return new Response(json_encode($orderedAssets));
     }
 }

@@ -36,7 +36,6 @@ var page_edit = function () {
 		success: function (result) {
 			$('#audio-upload-area').text('拖拽音频到这里');
 			$('#audio-upload-area').overlay('hide');
-			
 		},
 		fail: function () {
 			$('#audio-upload-area').text('拖拽音频到这里');
@@ -293,6 +292,7 @@ var page_edit = function () {
 								if (hot.type == 1) {
 									
 								}
+								// according set is done on dialog open
 								hot.assets = result;
 								hot.uploads = null;
 							});
@@ -315,8 +315,8 @@ var page_edit = function () {
 						
 						var assets = [];
 						$(hot.assets).each(function(index, asset){
-							if (asset.file) {
-								assets.push(asset.file);
+							if (asset.id) {
+								assets.push(asset.id);
 							} else {
 								assets.push($('.imgwrapper', asset).attr('rel'));
 							}

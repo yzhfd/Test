@@ -16,60 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 class HotController extends Controller
 {
     /**
-     * Upload hot's video or image
-     * 
-     * @Route("/{id}/upload", name="hot_upload", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});
-     */
-    public function uploadAction($id)
-    {
-        $repo = $this->getDoctrine()->getRepository('MagendHotBundle:Hot');
-        $hot = $repo->find($id);
-        if (empty($hot)) {
-            return new Response(json_encode(array(
-                'error' => 'hot not found'
-            )));
-        }
-        
-        $req = $this->getRequest();
-        $file = $req->files->get('file');
-        $ext = $file->guessExtension();
-        if (empty($ext)) {
-            $nameArr = explode('.', $file->getClientOriginalName());
-            $ext = array_pop($nameArr);
-        }
-        
-        $rootDir = $this->container->getParameter('kernel.root_dir');
-        $fileName = uniqid('hot_') . ".$ext";
-        $file->move($rootDir . '/../web/uploads/', $fileName);
-        
-        // @todo @unlink existing files
-        $hotType = $hot->getType();
-        if ($hotType == 0) { // gallery
-            $assets = $hot->getAssets();
-            if (!is_array($assets)) {
-                $assets = array();
-            }
-            $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
-        } else {
-            //if ($hotType == 1 || $hotType == 3 || $hotType == 4) { // video audio or single image
-            $assets = $hot->getAssets();
-            if (!empty($assets)) {
-                @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);
-            }
-            $assets = array(
-                array('name' => $file->getClientOriginalName(), 'file' => $fileName)
-            );
-            //} 
-        }
-
-        $hot->setAssets($assets);
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        return new Response(json_encode($assets));
-    }
-    
-    /**
      * Order hot's assets and delete ones not exist any longer
      * 
      * @Route("/{id}/order_assets", name="hot_order_assets", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});
@@ -80,41 +26,31 @@ class HotController extends Controller
         $hot = $repo->find($id);
         if (empty($hot)) {
             return new Response(json_encode(array(
-                'error' => 'hot not found'
+                'error' => 'hot.not_found'
             )));
         }
 
         $req = $this->getRequest();
-        $reqAssets = $req->get('assets'); // $reqAssets must be subset of $assets, and order may be changed
+        $newAssets = $req->get('assets'); // $newAssets must be subset of $assets, and order may be changed
         if (empty($hot)) {
             return new Response(json_encode(array(
-                'error' => 'no asset in request'
+                'error' => 'request.no_asset'
             )));
         }
         
+        $em = $this->getDoctrine()->getEntityManager();
+        $assetRepo = $em->getRepository('MagendAssetBundle:Asset');
         $assets = $hot->getAssets();
-        $fileAssets = array();
-        foreach ($assets as $asset) {
-            $fileAssets[$asset['file']] = $asset;
-        }
-        
-        $newAssets = array();
-        if (!empty($reqAssets)) {
-            foreach ($reqAssets as $reqAsset) {
-                if (isset($fileAssets[$reqAsset])) {
-                    $newAssets[] = $fileAssets[$reqAsset];
-                    unset($fileAssets[$reqAsset]);
+        $delAssets = array_diff($assets, $newAssets);
+        if (!empty($delAssets)) {
+            foreach ($delAssets as $asset) {
+                $asset = $assetRepo->find($asset);
+                if ($asset) {
+                    $em->remove($asset);
                 }
             }
         }
-        if (!empty($fileAssets)) {
-            $rootDir = $this->container->getParameter('kernel.root_dir');
-            foreach ($fileAssets as $fileName=>$asset) {
-                @unlink($rootDir . '/../web/uploads/' . $fileName);
-            }
-        }
         $hot->setAssets($newAssets);
-        $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
         return new Response('{"success":1}');

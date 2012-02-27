@@ -70,7 +70,7 @@ class Hot
     private $extraAttrs;
 
     /**
-     * Serialized array
+     * comma separated asset ids
      * 
      * @var text $assets
      *
@@ -123,6 +123,7 @@ class Hot
      */
     public function postRemove()
     {
+        /*
         $assets = $this->getAssets();
         if (empty($assets)) {
             return;
@@ -131,7 +132,7 @@ class Hot
             if (!empty($asset['file'])) {
                 @unlink(__DIR__.'/../../../../web/uploads/' . $asset['file']);
             }
-        }
+        }*/
     }
     
     /**
@@ -221,11 +222,14 @@ class Hot
     /**
      * Set assets
      *
-     * @param array $assets
+     * @param array|string $assets
      */
     public function setAssets($assets)
     {
-        $this->assets = is_array($assets) ? serialize($assets) : $assets;
+        if (is_array($assets)) {
+            $assets = implode(',', $assets);
+        }
+        $this->assets = $assets;
     }
 
     /**
@@ -235,7 +239,19 @@ class Hot
      */
     public function getAssets()
     {
-        return unserialize($this->assets);
+        return $this->assets ? explode(',', $this->assets) : array();
+    }
+    
+    /**
+     * Add asset
+     * 
+     * @param Asset $asset
+     */
+    public function addAsset($asset)
+    {
+        $assets = $this->getAssets();
+        $assets[] = $asset->getId();
+        $this->setAssets($assets);
     }
     
     /**

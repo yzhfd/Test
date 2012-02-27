@@ -186,7 +186,7 @@ var HotView = Backbone.View.extend({
     		if (hotModel.assets) {
     			$(hotModel.assets).each(function(index, asset){
     				if (asset.file) {
-		            	var hotimg = $('<li class="hotimg synced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" rel="' + asset.file + '" title="'
+		            	var hotimg = $('<li class="hotimg synced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" rel="' + asset.id + '" title="'
 		            			+ asset.name + '"><img width="128" height="96" src="' + basePath + '/uploads/' + asset.file + '" /></a></li>');
 		            	hotimg.appendTo($('#hotimgs'));
     				} else { // asset is DOM element
