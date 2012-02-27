@@ -5,6 +5,8 @@ namespace Magend\AssetBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Response;
+use Magend\AssetBundle\Entity\Asset;
 
 /**
  * Asset controller
@@ -13,16 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  * @author Kail
  */
 class AssetController extends Controller
-{
-    /**
-     * @Route("/hello/{name}")
-     * @Template()
-     */
-    public function indexAction($name)
-    {
-        return array('name' => $name);
-    }
-    
+{    
     /**
      * Upload asset
      * 
@@ -69,9 +62,14 @@ class AssetController extends Controller
             );
             //} 
         }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $asset = new Asset();
+        $asset->setResource($fileName);
+        $em->persist($asset);
 
         $hot->setAssets($assets);
-        $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
         return new Response(json_encode($assets));

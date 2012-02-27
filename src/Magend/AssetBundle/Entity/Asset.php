@@ -37,11 +37,17 @@ class Asset
     private $tag;
 
     /**
-     * @var string $resouce
+     * @var string $resource
      *
-     * @ORM\Column(name="resouce", type="string", length=255)
+     * @ORM\Column(name="resource", type="string", length=255)
      */
-    private $resouce;
+    private $resource;
+    
+    /**
+     * 
+     * @var UploadedFile
+     */
+    public $resourceFile;
 
     /**
      * @var text $info
@@ -125,23 +131,23 @@ class Asset
     }
 
     /**
-     * Set resouce
+     * Set resource
      *
-     * @param string $resouce
+     * @param string $resource
      */
-    public function setResouce($resouce)
+    public function setResource($resource)
     {
-        $this->resouce = $resouce;
+        $this->resource = $resource;
     }
 
     /**
-     * Get resouce
+     * Get resource
      *
      * @return string 
      */
-    public function getResouce()
+    public function getResource()
     {
-        return $this->resouce;
+        return $this->resource;
     }
     
     /**

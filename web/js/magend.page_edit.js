@@ -297,7 +297,7 @@ var page_edit = function () {
 								hot.uploads = null;
 							});
 							
-							uploader.fileupload('option', 'url', Routing.generate('hot_upload', { 'id':hot.id }));
+							uploader.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':hot.id }));
 							// @todo on success, map id with li
 							return uploader.fileupload('send', { files:[file] });
 						});
