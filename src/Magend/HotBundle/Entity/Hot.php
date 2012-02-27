@@ -3,6 +3,7 @@
 namespace Magend\HotBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Magend\HotBundle\Entity\Hot
@@ -72,9 +73,20 @@ class Hot
     /**
      * comma separated asset ids
      * 
-     * @var text $assets
+     * @var text $assetIds
      *
-     * @ORM\Column(name="assets", type="text", nullable=true)
+     * @ORM\Column(name="asset_ids", type="text", nullable=true)
+     */
+    private $assetIds;
+    
+    /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\AssetBundle\Entity\Asset",
+     *     inversedBy="hots",
+     *     indexBy="id",
+     *     fetch="EXTRA_LAZY"
+     * )
+     * @ORM\JoinTable(name="mag_hot_asset")
      */
     private $assets;
 
@@ -101,6 +113,11 @@ class Hot
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __construct()
+    {
+        $this->assets = new ArrayCollection();
     }
     
     /**
@@ -224,12 +241,12 @@ class Hot
      *
      * @param array|string $assets
      */
-    public function setAssets($assets)
+    public function setAssetIds($assetIds)
     {
-        if (is_array($assets)) {
-            $assets = implode(',', $assets);
+        if (is_array($assetIds)) {
+            $assetIds = implode(',', $assetIds);
         }
-        $this->assets = $assets;
+        $this->assetIds = $assetIds;
     }
 
     /**
@@ -237,9 +254,9 @@ class Hot
      *
      * @return array 
      */
-    public function getAssets()
+    public function getAssetIds()
     {
-        return $this->assets ? explode(',', $this->assets) : array();
+        return $this->assetIds ? explode(',', $this->assetIds) : array();
     }
     
     /**
@@ -249,9 +266,38 @@ class Hot
      */
     public function addAsset($asset)
     {
-        $assets = $this->getAssets();
-        $assets[] = $asset->getId();
-        $this->setAssets($assets);
+        $this->assets[] = $asset;
+        
+        $assetIds = $this->getAssetIds();
+        $assetIds[] = $asset->getId();
+        $this->setAssetIds($assetIds);
+    }
+    
+    /**
+     * 
+     * @param bool $partial
+     * @return ArrayCollection
+     */
+    public function getAssets($partial = true)
+    {
+        $assets = array();
+        $assetIds = $this->getAssetIds();
+        foreach ($assetIds as $assetId) {
+            if (empty($this->assets[$assetId])) continue;
+            
+            $asset = $this->assets[$assetId]; 
+            if ($partial) {
+                // no id as index, or json_encoded will be different
+                $assets[] = array(
+                    'id'   => $asset->getId(),
+                    'file' => $asset->getResource(),
+                    'name' => $asset->getTag()
+                );
+            } else {
+                $assets[$assetId] = $asset;
+            }
+        }
+        return $assets;
     }
     
     /**

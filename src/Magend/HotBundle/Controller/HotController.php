@@ -31,7 +31,7 @@ class HotController extends Controller
         }
 
         $req = $this->getRequest();
-        $newAssets = $req->get('assets'); // $newAssets must be subset of $assets, and order may be changed
+        $newAssetIds = $req->get('assets'); // $newAssets must be subset of $assets, and order may be changed
         if (empty($hot)) {
             return new Response(json_encode(array(
                 'error' => 'request.no_asset'
@@ -39,18 +39,18 @@ class HotController extends Controller
         }
         
         $em = $this->getDoctrine()->getEntityManager();
-        $assetRepo = $em->getRepository('MagendAssetBundle:Asset');
-        $assets = $hot->getAssets();
-        $delAssets = array_diff($assets, $newAssets);
+        $assetIds = $hot->getAssetIds();
+        $delAssetIds = array_diff($assetIds, $newAssetIds);
         if (!empty($delAssets)) {
-            foreach ($delAssets as $asset) {
-                $asset = $assetRepo->find($asset);
+            $assetRepo = $em->getRepository('MagendAssetBundle:Asset');
+            foreach ($delAssetIds as $assetId) {
+                $asset = $assetRepo->find($assetId);
                 if ($asset) {
                     $em->remove($asset);
                 }
             }
         }
-        $hot->setAssets($newAssets);
+        $hot->setAssetIds($newAssetIds);
         $em->flush();
         
         return new Response('{"success":1}');
