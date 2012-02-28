@@ -80,11 +80,17 @@ class Hot
     private $assetIds;
     
     /**
+     * 
+     * Though Hot and Asset are manytomany associated,
+     * assets will be removed when its hot is removed, by
+     * cascade={"all"} annotation below
+     * 
      * @ORM\ManyToMany(
      *     targetEntity="Magend\AssetBundle\Entity\Asset",
      *     inversedBy="hots",
      *     indexBy="id",
-     *     fetch="EXTRA_LAZY"
+     *     fetch="EXTRA_LAZY",
+     *     cascade={"all"}
      * )
      * @ORM\JoinTable(name="mag_hot_asset")
      */

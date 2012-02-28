@@ -15,7 +15,7 @@ use Magend\AssetBundle\Entity\Asset;
  * @author Kail
  */
 class AssetController extends Controller
-{    
+{
     /**
      * Upload asset
      * 
