@@ -481,10 +481,13 @@ class IssueController extends Controller
         }
         
         // select pages and associate with articles
-        $em = $this->getDoctrine()->getEntityManager();
-        $dql = 'SELECT a, p FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a in (:articles)';
-        $q = $em->createQuery($dql)->setParameter('articles', $issue->getArticleIds());
-        $q->getResult();
+        $articleIds = $issue->getArticleIds();
+        if (!empty($articleIds)) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $dql = 'SELECT a, p FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a in (:articles)';
+            $q = $em->createQuery($dql)->setParameter('articles', $articleIds);
+            $q->getResult();
+        }
         
         // select keywords and associate with articles
         // shit, I cannot get this done - if article has no keywords, then article->getKeywords() will
@@ -577,45 +580,6 @@ class IssueController extends Controller
             throw new \ Exception('issue ' . $id . ' not found');
         }
         
-        
-        /*
-         * find articles that belong to no issue
-         * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE x.issues IS EMPTY');
-         * 
-         * $query = $em->createQuery('SELECT x.id FROM MagendArticleBundle:Article x WHERE :issueId MEMBER OF x.issues');
-        
-        $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT a, p FROM MagendArticleBundle:Article a INDEX BY a.id JOIN a.pages p WHERE a.id IN (1,2,3,4,5)');
-        $res = $query->getArrayResult();
-        echo '<pre>';
-        print_r($res);
-        echo '</pre>';
-         */
-        
-        
-        /*
-        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        $issue = $repo->find(1);
-        
-        $articles = $issue->getArticles();
-        $keys = array_keys($articles);
-        var_dump($keys);exit;
-        
-        $articleExist = true;
-        $articleRef = $em->getReference('MagendArticleBundle:Article', 3);
-        try {
-            $issue->addArticle($articleRef);
-        } catch (EntityNotFoundException $e) {
-            // ignore
-            // die($e->getMessage());
-            $articleExist = false;
-        }
-        
-        if ($articleExist) {
-            $em->persist($issue);
-            $em->flush();
-        }
-        */
         return array(
             'issue' => $issue
         );

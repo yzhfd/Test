@@ -13,9 +13,7 @@
 {% endblock %}
 
 {% block main %}
-{% for hot in page.landscapeHots %}
-{{ hot.id }} --- {{ hot.assets|length }}
-{% endfor %}
+
 <script type="text/javascript">
     var basePath = '{{ app.request.basePath }}';
     var initHots = [];

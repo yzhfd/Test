@@ -292,7 +292,7 @@ var page_edit = function () {
 								if (hot.type == 1) {
 									
 								}
-								// according set is done on dialog open
+								// according setting is done on dialog open
 								hot.assets = result;
 								hot.uploads = null;
 							});

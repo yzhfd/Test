@@ -32,16 +32,11 @@ class HotController extends Controller
 
         $req = $this->getRequest();
         $newAssetIds = $req->get('assets'); // $newAssets must be subset of $assets, and order may be changed
-        if (empty($hot)) {
-            return new Response(json_encode(array(
-                'error' => 'request.no_asset'
-            )));
-        }
         
         $em = $this->getDoctrine()->getEntityManager();
         $assetIds = $hot->getAssetIds();
-        $delAssetIds = array_diff($assetIds, $newAssetIds);
-        if (!empty($delAssets)) {
+        $delAssetIds = empty($newAssetIds) ? $assetIds : array_diff($assetIds, $newAssetIds);
+        if (!empty($delAssetIds)) {
             $assetRepo = $em->getRepository('MagendAssetBundle:Asset');
             foreach ($delAssetIds as $assetId) {
                 $asset = $assetRepo->find($assetId);

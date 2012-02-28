@@ -43,6 +43,7 @@ class AssetController extends Controller
         $fileName = uniqid('asset_') . ".$ext";
         $file->move($rootDir . '/../web/uploads/', $fileName);
         
+        /*
         // @todo @unlink existing files
         $hotType = $hot->getType();
         if ($hotType == 0) { // gallery
@@ -61,7 +62,7 @@ class AssetController extends Controller
                 array('name' => $file->getClientOriginalName(), 'file' => $fileName)
             );
             //} 
-        }
+        }*/
         
         $em = $this->getDoctrine()->getEntityManager();
         
