@@ -34,7 +34,7 @@ class PageController extends Controller
             if (!is_array($hots) && method_exists($hots, 'toArray')) $hots = $hots->toArray();
             $hots = array_values($hots);
             if (!empty($hots)) {
-                $q = $em->createQuery($dql)->setParameter('hots', );
+                $q = $em->createQuery($dql)->setParameter('hots', $hots);
                 $q->getResult();
             }
         }
