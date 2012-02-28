@@ -32,8 +32,11 @@ class PageController extends Controller
             $em = $this->getDoctrine()->getEntityManager();
             $dql = 'SELECT h, a FROM MagendHotBundle:Hot h LEFT JOIN h.assets a WHERE h in (:hots)';
             if (!is_array($hots) && method_exists($hots, 'toArray')) $hots = $hots->toArray();
-            $q = $em->createQuery($dql)->setParameter('hots', array_values($hots));
-            $q->getResult();
+            $hots = array_values($hots);
+            if (!empty($hots)) {
+                $q = $em->createQuery($dql)->setParameter('hots', );
+                $q->getResult();
+            }
         }
         
         return array(
