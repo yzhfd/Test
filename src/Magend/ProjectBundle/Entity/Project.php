@@ -63,7 +63,7 @@ class Project
     /**
      * 
      * 
-     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="keywords")
+     * @ORM\ManyToMany(targetEntity="Magend\ArticleBundle\Entity\Article", mappedBy="projects")
      */
     private $articles;
 
