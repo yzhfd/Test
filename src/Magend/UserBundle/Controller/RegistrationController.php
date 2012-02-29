@@ -18,6 +18,7 @@ class RegistrationController extends BaseController
      * @param Form $form
      */
     private function getErrorMessages($form) {
+        $errors = array();
         foreach ($form->getErrors() as $key => $error) {
             // translation 
             $errors[] = $this->container->get('translator')->trans(
@@ -29,7 +30,7 @@ class RegistrationController extends BaseController
         if ($form->hasChildren()) {
             foreach ($form->getChildren() as $child) {
                 if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrorMessages($child);
+                    $errors = array_merge($errors, $this->getErrorMessages($child));
                 }
             }
         }

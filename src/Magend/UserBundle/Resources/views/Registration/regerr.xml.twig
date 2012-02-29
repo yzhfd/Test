@@ -3,12 +3,8 @@
 {% block body %}
     <Registration>
         <Errors>
-        {% for name, msgs in errors %}
-            <Error name="{{ name }}">
-            {% for msg in msgs %}
-                <Msg>{{ msg }}</Msg>
-            {% endfor %}
-            </Error>
+        {% for error in errors %}
+            <Error>{{ error }}</Error>
         {% endfor %}
         <Errors>
     </Registration>
