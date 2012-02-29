@@ -30,6 +30,26 @@ class InstituteController extends Controller
     
     /**
      * 
+     * @Route("/{id}/del", name="institute_del", requirements={"id"="\d+"})
+     * @param int $id
+     */
+    public function delAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendInstituteBundle:Institute');
+        $inst = $repo->find($id);
+        if (!$inst) {
+            throw new \ Exception('Institute not found');
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($inst);
+        $em->flush();
+        
+        return new RedirectResponse($this->generateUrl('institute_list'));
+    }
+    
+    /**
+     * 
      * @Route("/new", name="institute_new")
      * @Template()
      */
