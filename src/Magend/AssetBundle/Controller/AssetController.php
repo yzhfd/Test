@@ -46,14 +46,14 @@ class AssetController extends Controller
         /*
         // @todo @unlink existing files
         $hotType = $hot->getType();
-        if ($hotType == 0) { // gallery
+        if ($hotType == 1) { // gallery
             $assets = $hot->getAssets();
             if (!is_array($assets)) {
                 $assets = array();
             }
             $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
         } else {
-            //if ($hotType == 1 || $hotType == 3 || $hotType == 4) { // video audio or single image
+            //if ($hotType == 0 || $hotType == 3 || $hotType == 4) { // video audio or single image
             $assets = $hot->getAssets();
             if (!empty($assets)) {
                 @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);

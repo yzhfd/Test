@@ -101,7 +101,7 @@ var page_edit = function () {
 			.addClass('unsynced')
 			.html(videoFile.name + '<br/>' + parseSize(videoFile.size));
 			
-			var hot = $('#hot_1_dialog').data('hot');
+			var hot = $('#hot_3_dialog').data('hot');
 			hot.addUploads = [ videoFile ];
 			
 			return false;
@@ -120,7 +120,7 @@ var page_edit = function () {
 		dropZone: hotimgs,
 		sequentialUploads: true,
 		drop: function (e, data) {
-			var hot = $('#hot_0_dialog').data('hot');
+			var hot = $('#hot_1_dialog').data('hot');
 			if (!hot.addUploads) hot.addUploads = [];
 			var count = data.files.length;
 			for (var i = 0; i < count; ++i) {
@@ -184,7 +184,7 @@ var page_edit = function () {
             };
             reader.readAsDataURL(imgFile);
 			
-			var hot = $('#hot_3_dialog').data('hot');
+			var hot = $('#hot_0_dialog').data('hot');
 			hot.addUploads = [ imgFile ];
 			
 			return false;
@@ -289,9 +289,6 @@ var page_edit = function () {
 						when = when.pipe(function(){
 							// uploader.fileupload('option', 'formData', { name:file.name });
 							uploader.fileupload('option', 'success', function(result){
-								if (hot.type == 1) {
-									
-								}
 								// according setting is done on dialog open
 								hot.assets = result;
 								hot.uploads = null;
@@ -309,7 +306,7 @@ var page_edit = function () {
 				when.done(function(){
 					pageCanvas.hots.each(function(hot, index){
 						// @todo only images now
-						if (!hot.assets || hot.get('type') != 0 || !hot.isEdited) {
+						if (!hot.assets || hot.get('type') != 1 || !hot.isEdited) {
 							return;
 						}
 						

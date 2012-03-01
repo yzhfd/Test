@@ -165,9 +165,9 @@ var HotView = Backbone.View.extend({
 	            input.val( ( !$.isArray( value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ value ] : value );
 	    	});
     	}
-    	// video
-    	if (hottype == 1 || hottype == 4) {
-    		var uploadArea = hottype == 1 ? $('#video-upload-area') : $('#audio-upload-area');
+    	// video or audio
+    	if (hottype == 3 || hottype == 4) {
+    		var uploadArea = hottype == 3 ? $('#video-upload-area') : $('#audio-upload-area');
     		if (hotModel.uploads) {
     			var file = hotModel.uploads[0];
     			uploadArea
@@ -181,7 +181,7 @@ var HotView = Backbone.View.extend({
 	    		.addClass('synced')
 	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
     		}
-    	} else if (hottype == 0) {// images
+    	} else if (hottype == 1) {// images
     		// @todo DRY
     		if (hotModel.assets) {
     			$(hotModel.assets).each(function(index, asset){
@@ -204,7 +204,7 @@ var HotView = Backbone.View.extend({
         		$('#hotimgs').width($('#hotimgs li.hotimg').length * 150 + 20);
         	}
     		$('#hotimgs').sortable({containment:$('#hotimgs')});
-    	} else if (hottype == 3) {
+    	} else if (hottype == 0) {
     		// single image
     		if (hotModel.uploads) {
     			var imgFile = hotModel.uploads[0];
@@ -278,7 +278,7 @@ var HotView = Backbone.View.extend({
     						$.merge(hotModel.uploads, hotModel.addUploads);
     						hotModel.addUploads = null;
     					}
-    					if (hotModel.get('type') == 0) {
+    					if (hotModel.get('type') == 1) { // multiple assets, images here
     						hotModel.uploads = [];
     						hotModel.assets = [];
     						$('#hotimgs').find('li.hotimg').each(function(index, hotimg){
