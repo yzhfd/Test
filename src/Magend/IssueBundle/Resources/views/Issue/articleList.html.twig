@@ -35,7 +35,7 @@
                 <ol class="articles unselectable" style="width:{{ issue.articles|length*160 }}px">
                     {% for article in issue.articles %}
                         <li class="article" rel="{{ article.id }}" style="padding-top: 10px;">
-                            <h5><span class="article-index">{{ loop.index }}</span>.<span title="{{ article.title }}">{{ article.title|truncate(7) }}</span></h5>
+                            <h5><span class="article-index">{{ loop.index }}</span>.<a title="{{ article.title }}" href="{{ path('article_edit', { 'id':article.id }) }}">{{ article.title|truncate(7) }}</a></h5>
                             <ol class="pages">
                                 {% for page in article.pages %}
                                     <li class="page" rel="{{ page.id }}"><a href="{{ path('page_edit', { 'id':page.id }) }}" title="双击编辑热点"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
