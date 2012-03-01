@@ -39,6 +39,9 @@ class PageController extends Controller
             }
         }
         
+        $pageIds = $page->getArticle()->getPageIds();
+        // print_r($pageIds);exit;
+        
         return array(
             'page' => $page
         );
