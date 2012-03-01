@@ -280,6 +280,7 @@ class Hot
     }
     
     /**
+     * This also affects output(xml)
      * 
      * @param bool $partial
      * @return ArrayCollection

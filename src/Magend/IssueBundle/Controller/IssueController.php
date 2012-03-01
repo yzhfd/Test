@@ -520,7 +520,7 @@ class IssueController extends Controller
         }
         
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT partial a.{id, pageIds} FROM MagendArticleBundle:Article a INDEX BY a.id WHERE :issueId MEMBER OF a.issues')
+        $query = $em->createQuery('SELECT a FROM MagendArticleBundle:Article a INDEX BY a.id WHERE :issueId MEMBER OF a.issues')
                     ->setParameter('issueId', $id);
         $arts = $query->getResult();
         
