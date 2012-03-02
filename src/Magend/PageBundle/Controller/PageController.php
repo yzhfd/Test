@@ -57,6 +57,28 @@ class PageController extends Controller
             'next' => $next
         );
     }
+    
+    /**
+     * Replace the background image
+     * 
+     * @Route("/{id}/replace", name="page_replace", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function replaceAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $page = $repo->find($id);
+        
+        $file = $this->getRequest()->files->get('file');
+        // move it
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $imgName = uniqid('page_') . '.' . $file->guessExtension();
+        $file->move($rootDir . '/../web/uploads/', $imgName);
+        $page->setLandscapeImg($imgName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return new Response(json_encode(array('img' => $imgName)));
+    }
 
     /**
      *

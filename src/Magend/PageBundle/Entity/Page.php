@@ -73,11 +73,25 @@ class Page
     private $landscapeImg;
     
     /**
+     * Keep track of the old image, which will be delete in preUpdate
+     * 
+     * @var string
+     */
+    private $oldLandscapeImg;
+    
+    /**
      * 
      * @var string
      * @ORM\Column(name="portrait_img", type="string", length=255, nullable=true)
      */
     private $portraitImg;
+    
+    /**
+     * Keep track of the old image, which will be delete in preUpdate
+     * 
+     * @var string
+     */
+    private $oldPortraitImg;
 
     /**
      * @var datetime $createdAt
@@ -130,18 +144,27 @@ class Page
         }
     }
     
+    public function unlinkLandscapeImg()
+    {
+        if ($this->getLandscapeImg() != null) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
+        }
+    }
+    
+    public function unlinkPortraitImg()
+    {
+        if ($this->getPortraitImg() != null) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
+        }
+    }
+    
     /**
      * @ORM\PostRemove()
      */
     public function removeImgs()
     {
-        if ($this->getLandscapeImg() != null) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
-        }
-        
-        if ($this->getPortraitImg() != null) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
-        }
+        $this->unlinkLandscapeImg();
+        $this->unlinkPortraitImg();
     }
 
     /**

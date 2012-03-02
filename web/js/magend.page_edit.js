@@ -19,6 +19,48 @@ var page_edit = function () {
 		return false;
 	});*/
 	
+	$('#page_canvas').fileupload({
+		url: Routing.generate('page_replace', { id:$('#pageid').text() }),
+		paramName: 'file',
+		dropZone: $('#page_canvas'),
+		acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
+		limitMultiFileUploads: 1,
+		success: function(result) {
+			$('#page_editor').overlay('hide');
+			
+			var oldImgUrl = $('#page_canvas_img>img').attr('src');
+			var segs = oldImgUrl.split('/');
+			segs.pop();
+			segs.push(result.img);
+			var newImgUrl = segs.join('/');
+			$('#page_canvas_img>img').attr('src', newImgUrl);
+		},
+		fail: function(result) {
+			$('#page_editor').overlay('hide');
+			alert('替换背景图片失败');
+		}	
+	}).bind('fileuploadsubmit', function(e, data){
+		// no upload immediately
+		e.stopPropagation();
+		e.preventDefault();
+	}).bind('fileuploaddrop', function(e, data){
+		//if (confirm('确定替换当前页面背景图片吗？')) {
+			var imgFile = data.files[0];
+			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+			
+			if (!(acceptFileTypes.test(imgFile.type) ||
+	              acceptFileTypes.test(imgFile.name))) {
+				alert('请上传有效的图片文件');
+				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
+	            return false;
+	        }
+			
+			$('#page_editor').overlay('loading');
+			$(this).fileupload('send', { files:[imgFile] });
+		//}
+		return false;
+	});
+	
 	// link
 	$('#internRadio').click(function(){
 		$('#linkInput').val('0');

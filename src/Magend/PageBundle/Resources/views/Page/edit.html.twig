@@ -38,6 +38,7 @@
         <button id="saveall" class="btn primary">保存</button>
         {% if prev is not null %}<a href="{{ path('page_edit', { 'id':prev }) }}" class="btn info">上一页</a>{% endif %}
         {% if next is not null %}<a href="{{ path('page_edit', { 'id':next }) }}" class="btn info">下一页</a>{% endif %}
+        <span style="margin-left:20px;">拖拽图片至图片区替换背景图片</span>
         <!--<button id="undo" class="btn">撤销</button>
         <button id="redo" class="btn">重做</button>
         <button id="flushall" class="btn danger" style="float: right;">清空</button>-->
