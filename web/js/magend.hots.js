@@ -235,7 +235,7 @@ var HotView = Backbone.View.extend({
     	typeDlg.show();
     	
     	// $('<div/>').html('<h1>eample</h1>').dialog({autoOpen:true});
-    	
+    	hotView = this; // used to render
     	$('#hot_dialog').dialog({
     		show:'fade', zIndex:2000, title:title,
     		width: 'auto', height: 'auto',
@@ -293,6 +293,7 @@ var HotView = Backbone.View.extend({
     					
     					hotModel.isEdited = true;
     					$('#hot_dialog').dialog('close');
+    					hotView.render();
     				}
     			}
     		}
@@ -303,6 +304,7 @@ var HotView = Backbone.View.extend({
     		width: this.model.get('width'),
     		height: this.model.get('height')
     	});
+    	this.render();
     },
     pos: function () {
     	$(this.el).css({
@@ -318,6 +320,38 @@ var HotView = Backbone.View.extend({
     	this.model.rendered = false;
     },
     render: function () {
+        var imgElm = $(this.el).find('img');
+        if (!imgElm || !imgElm.length) {
+            imgElm = $('<img />');
+            $(this.el).append(imgElm);
+        }
+        if (this.model.assets && this.model.assets.length>0) {
+            var asset = this.model.assets[0];
+            var imgPath;
+            if (asset.file) {
+                imgPath = basePath + '/uploads/' + asset.file;
+            } else {
+                imgPath = $(asset).find('.imgwrapper>img').attr('src');    // see edit, dialog section
+            }
+            if (imgPath && imgPath.length>0) {
+                imgElm.attr('src', imgPath).css({
+                    width: this.model.attributes.width,
+                    height: this.model.attributes.height
+                });
+            }
+        } else if (this.model.uploads && this.model.uploads.length>0) {
+            var imgFile = this.model.uploads[0];
+            var reader = new FileReader();
+            reader.onload = _.bind(function (e) {
+                imgElm.attr('src', e.target.result).css({
+                    width: this.model.attributes.width,
+                    height: this.model.attributes.height
+                });
+            }, this);
+            reader.readAsDataURL(imgFile);
+        } else {
+            $(this.el).find('image').remove();
+        }
         return this;
     }
 });
