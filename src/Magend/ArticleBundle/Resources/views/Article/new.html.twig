@@ -19,6 +19,11 @@
 
 {% block main %}
 
+<div style="position:absolute; width:80px; top:150px;">
+    {% if prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn info">上一篇</a><p/>{% endif %}
+    {% if next is not null %}<a href="{{ path('article_edit', { 'id':next }) }}" class="btn info">下一篇</a>{% endif %}
+</div>
+
 <ul class="pills" style="margin-left: 80px;" data-pills="pills">
     <li class="active"><a id"newBasicTab" href="#newBasic">基本信息</a></li>
     <li><a id="newPagesTab" rel="{{ article.id }}" href="#newPages">主页面</a></li>

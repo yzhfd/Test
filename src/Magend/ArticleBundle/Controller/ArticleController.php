@@ -267,13 +267,28 @@ class ArticleController extends Controller
         
         $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $mags = $magRepo->findAll();
+        
+        $articleIds = $issue->getArticleIds();
+        $index = array_search($id, $articleIds);
+        $prev = $next = null; // id of previous and next page
+        if ($index !== false) {
+            if (isset($articleIds[$index - 1])) {
+                $prev = $articleIds[$index - 1];
+            }
+            if (isset($articleIds[$index + 1])) {
+                $next = $articleIds[$index + 1];
+            }
+        }
+        
         return array(
             //'institutes' => $institutes,
-            'keywords'   => $kws,
-            'issue'      => $issue,
-            'magzines'   => $mags,
-            'article'    => $article,
-            'form'       => $form->createView()
+            'keywords'  => $kws,
+            'issue'     => $issue,
+            'magzines'  => $mags,
+            'article'   => $article,
+            'form'      => $form->createView(),
+            'prev'      => $prev,
+            'next'      => $next,
         );
     }
     
