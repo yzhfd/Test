@@ -46,6 +46,7 @@ var page_edit = function () {
 	}).bind('fileuploaddrop', function(e, data){
 		//if (confirm('确定替换当前页面背景图片吗？')) {
 			var imgFile = data.files[0];
+			if (!imgFile) return false; // may conflict with below dropping controls from toolbar
 			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
 			
 			if (!(acceptFileTypes.test(imgFile.type) ||
