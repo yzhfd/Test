@@ -40,10 +40,21 @@ class PageController extends Controller
         }
         
         $pageIds = $page->getArticle()->getPageIds();
-        // print_r($pageIds);exit;
+        $index = array_search($id, $pageIds);
+        $prev = $next = null; // id of previous and next page
+        if ($index !== false) {
+            if (isset($pageIds[$index - 1])) {
+                $prev = $pageIds[$index - 1];
+            }
+            if (isset($pageIds[$index + 1])) {
+                $next = $pageIds[$index + 1];
+            }
+        }
         
         return array(
-            'page' => $page
+            'page' => $page,
+            'prev' => $prev,
+            'next' => $next
         );
     }
 
