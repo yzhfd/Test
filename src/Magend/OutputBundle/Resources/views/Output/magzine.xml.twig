@@ -1,7 +1,8 @@
 {% extends '::base.xml.twig' %}
 
 {% block body %}
-    <Magzine>{# which magazine #}
+    {# old output
+    <Magzine>
         <Issues>
             {% for issue in issues %}
             <Issue
@@ -19,4 +20,26 @@
             {% endfor %}
         </Issues>
     </Magzine>
+    #}
+    
+    <MagzineList>
+        {% for issue in issues %}
+        <Magzine>
+            <ID>{{ issue.id }}</ID>
+            <GroupID></GroupID>
+            <GroupName></GroupName>
+            <LandscapeCover>{{ issue.landscapeCover }}</LandscapeCover>
+            <PortraitCover>{{ issue.portraitCover }}</PortraitCover>
+            <SmallImags>{{ issue.preview }}</SmallImags>
+            <IAPProductionID>com.imagshow.demo</IAPProductionID>
+            <Period>{{ issue.yearIssueNo }}</Period>
+            <Year>2012</Year>
+            <TotalPeriod>{{ issue.totalIssueNo }}</TotalPeriod>
+            <Price>{{ issue.priceLevel }}</Price>
+            <MType>1</MType>
+            <Audio>{{ issue.audio }}</Audio>
+            <Publish>{{ issue.publishedAt|date('Y-m-d') }}</Publish>
+        </Magzine>
+        {% endfor %}
+    </MagzineList>
 {% endblock %}

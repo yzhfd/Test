@@ -221,7 +221,7 @@ class PageController extends Controller
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
-            $pagePath = 'uploads/mag_' . $magzine->getId() . '/issue_' . $issue->getId();
+            $pagePath = 'uploads/' . $magzine->getId() . '/' . $issue->getId();
             $file->move($rootDir . '/../web/' . $pagePath, $imgName);
             $tplVars = array('page' => "$pagePath/$imgName");
             

@@ -194,7 +194,7 @@ class Page
         if ($issue) {
             $magzine = $issue->getMagzine();
         }
-        return $withDir && $issue && $magzine ? 'mag_' . $magzine->getId() . '/issue_' . $issue->getId() . '/' .  $this->landscapeImg : $this->landscapeImg;
+        return $withDir && $issue && $magzine ? $magzine->getId() . '/' . $issue->getId() . '/' .  $this->landscapeImg : $this->landscapeImg;
     }
 
     /**
