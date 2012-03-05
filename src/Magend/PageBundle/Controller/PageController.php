@@ -72,6 +72,7 @@ class PageController extends Controller
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
         $imgName = uniqid('page_') . '.' . $file->guessExtension();
+        // @todo change dir
         $file->move($rootDir . '/../web/uploads/', $imgName);
         $page->setLandscapeImg($imgName);
         $em = $this->getDoctrine()->getEntityManager();
@@ -208,33 +209,37 @@ class PageController extends Controller
                 return $tplVars;
             }
 
+            $articleId = $req->get('articleId');
+            if ($articleId === null) {
+                throw new \Exception('page.article_notfound');
+            }
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($articleId);
+            $issue = $article->getIssue();
+            $magzine = $issue->getMagzine();
+            
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
-            $file->move($rootDir . '/../web/uploads/', $imgName);
+            $pagePath = 'uploads/mag_' . $magzine->getId() . '/issue_' . $issue->getId();
+            $file->move($rootDir . '/../web/' . $pagePath, $imgName);
+            $tplVars = array('page' => "$pagePath/$imgName");
             
-            $tplVars = array('page' => "uploads/$imgName");
+            $page = new Page();
+            $page->setLandscapeImg($imgName);
+            $page->setArticle($article);
+            $page->setType($type);
             
-            $articleId = $req->get('articleId');
-            if ($articleId) {
-                $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-                $article = $repo->find($articleId);
-                $page = new Page();
-                $page->setLandscapeImg($imgName);
-                $page->setArticle($article);
-                $page->setType($type);
-                
-                $em = $this->getDoctrine()->getEntityManager();
-                $em->persist($page);
-                $em->flush();
-                
-                $tplVars['id'] = $page->getId();
-                $tplVars['delUrl'] = $this->generateUrl('page_del', array('id' => $page->getId()));
-                $pageIds = $article->getPageIds($type);
-                $pageIds[] = $page->getId();
-                $article->setPageIds($pageIds, $type);
-                $em->flush();
-            }
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->persist($page);
+            $em->flush();
+            
+            $tplVars['id'] = $page->getId();
+            $tplVars['delUrl'] = $this->generateUrl('page_del', array('id' => $page->getId()));
+            $pageIds = $article->getPageIds($type);
+            $pageIds[] = $page->getId();
+            $article->setPageIds($pageIds, $type);
+            $em->flush();
         }
 
         return $tplVars;

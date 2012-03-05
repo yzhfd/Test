@@ -185,9 +185,16 @@ class Page
      *
      * @return string 
      */
-    public function getLandscapeImg()
+    public function getLandscapeImg($withDir = true)
     {
-        return $this->landscapeImg;
+        $article = $this->getArticle();
+        if ($article) {
+            $issue = $article->getIssue();
+        }
+        if ($issue) {
+            $magzine = $issue->getMagzine();
+        }
+        return $withDir && $issue && $magzine ? 'mag_' . $magzine->getId() . '/issue_' . $issue->getId() . '/' .  $this->landscapeImg : $this->landscapeImg;
     }
 
     /**
