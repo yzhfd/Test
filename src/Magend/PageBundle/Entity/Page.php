@@ -187,14 +187,7 @@ class Page
      */
     public function getLandscapeImg($withDir = true)
     {
-        $article = $this->getArticle();
-        if ($article) {
-            $issue = $article->getIssue();
-        }
-        if ($issue) {
-            $magzine = $issue->getMagzine();
-        }
-        return $withDir && $issue && $magzine ? $magzine->getId() . '/' . $issue->getId() . '/' .  $this->landscapeImg : $this->landscapeImg;
+        return $this->landscapeImg;
     }
 
     /**
