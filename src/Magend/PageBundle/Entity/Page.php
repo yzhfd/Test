@@ -185,7 +185,7 @@ class Page
      *
      * @return string 
      */
-    public function getLandscapeImg($withDir = true)
+    public function getLandscapeImg()
     {
         return $this->landscapeImg;
     }

@@ -215,13 +215,11 @@ class PageController extends Controller
             }
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($articleId);
-            // $issue = $article->getIssue();
-            // $magzine = $issue->getMagzine();
             
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
-            $pagePath = 'uploads';// . $magzine->getId() . '/' . $issue->getId();
+            $pagePath = 'uploads';
             $file->move($rootDir . '/../web/' . $pagePath, $imgName);
             $tplVars = array('page' => "$pagePath/$imgName");
             
