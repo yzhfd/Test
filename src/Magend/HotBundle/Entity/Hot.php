@@ -272,11 +272,17 @@ class Hot
      */
     public function addAsset($asset)
     {
-        $this->assets[] = $asset;
+        $this->assets[$asset->getId()] = $asset;
         
         $assetIds = $this->getAssetIds();
         $assetIds[] = $asset->getId();
         $this->setAssetIds($assetIds);
+    }
+    
+    public function removeAssets()
+    {
+        $this->assets = new ArrayCollection();
+        $this->setAssetIds(null);
     }
     
     /**

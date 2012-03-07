@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Magend\AssetBundle\Entity\Asset;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Asset controller
@@ -43,28 +44,20 @@ class AssetController extends Controller
         $fileName = uniqid('asset_') . ".$ext";
         $file->move($rootDir . '/../web/uploads/', $fileName);
         
-        /*
-        // @todo @unlink existing files
-        $hotType = $hot->getType();
-        if ($hotType == 1) { // gallery
-            $assets = $hot->getAssets();
-            if (!is_array($assets)) {
-                $assets = array();
-            }
-            $assets[] = array('name' => $file->getClientOriginalName(), 'file' => $fileName);
-        } else {
-            //if ($hotType == 0 || $hotType == 3 || $hotType == 4) { // video audio or single image
-            $assets = $hot->getAssets();
-            if (!empty($assets)) {
-                @unlink($rootDir . '/../web/uploads/' . $assets[0]['file']);
-            }
-            $assets = array(
-                array('name' => $file->getClientOriginalName(), 'file' => $fileName)
-            );
-            //} 
-        }*/
-        
         $em = $this->getDoctrine()->getEntityManager();
+        // @unlink existing files
+        $hotType = $hot->getType();
+        // @todo if !$hot->supportMultiAssets
+        if ($hotType != 1) { // non-gallery, not support multi assets
+            //if ($hotType == 0 || $hotType == 2 || $hotType == 3) { // video, audio or single image
+            $assets = $hot->getAssets(false);
+            $hot->removeAssets();
+            if (!empty($assets)) {
+                foreach ($assets as $asset) {
+                    $em->remove($asset);
+                }
+            }
+        }
         
         $asset = new Asset();
         $asset->setTag($file->getClientOriginalName());
