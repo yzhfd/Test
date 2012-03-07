@@ -25,15 +25,15 @@ var page_edit = function () {
 		dropZone: $('#page_canvas'),
 		acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
 		limitMultiFileUploads: 1,
-		success: function(result) {
-			$('#page_editor').overlay('hide');
-			
+		success: function(result) {			
 			var oldImgUrl = $('#page_canvas_img>img').attr('src');
 			var segs = oldImgUrl.split('/');
 			segs.pop();
 			segs.push(result.img);
 			var newImgUrl = segs.join('/');
 			$('#page_canvas_img>img').attr('src', newImgUrl);
+			
+			$('#page_editor').overlay('hide');
 		},
 		fail: function(result) {
 			$('#page_editor').overlay('hide');
