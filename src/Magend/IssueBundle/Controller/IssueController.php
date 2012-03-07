@@ -2,6 +2,7 @@
 
 namespace Magend\IssueBundle\Controller;
 
+use ZipArchive;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityNotFoundException;
@@ -78,6 +79,15 @@ class IssueController extends Controller
         return $this->redirect($this->generateUrl('issue_article_list', array('id' => $id)));
     }
     
+    private function copyResource($issueId, $resourceFile)
+    {
+        if ($resourceFile == null) return;
+        
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $uploadDir = $rootDir . '/../web/uploads/';
+        return copy($uploadDir . $resourceFile, $uploadDir . $issueId . '/' . $resourceFile);
+    }
+    
     /**
      * 
      * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
@@ -100,13 +110,10 @@ class IssueController extends Controller
         $em->flush();
         
         // zip issue assets
+        // 1. copy assets into same folder
         $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
                     ->setParameter('issue', $issue);
         $issue = $query->getSingleResult();
-        // $issue->getAudio();
-        // $issue->getPortraitCover
-        // $issue->getLandscapeCover
-        // $issue->getPreview
         
         $rootDir = $this->container->getParameter('kernel.root_dir');
         $uploadDir = $rootDir . '/../web/uploads/';
@@ -114,17 +121,44 @@ class IssueController extends Controller
             mkdir($uploadDir . $id);
         }
         
+        $this->copyResource($id, $issue->getAudio());
+        $this->copyResource($id, $issue->getPortraitCover());
+        $this->copyResource($id, $issue->getLandscapeCover());
+        $this->copyResource($id, $issue->getPreview());
+        
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
             $article->getAudio();
             $pages = $article->getPages();
+            if (empty($pages)) continue;
+            
             foreach ($pages as $page) {
-                if ($page->getLandscapeImg()) copy($uploadDir . $page->getLandscapeImg(), $uploadDir . $id . '/' . $page->getLandscapeImg());
-                if ($page->getPortraitImg()) copy($uploadDir . $page->getPortraitImg(), $uploadDir . $id . '/' . $page->getPortraitImg());
+                $this->copyResource($id, $page->getLandscapeImg());
+                $this->copyResource($id, $page->getPortraitImg());
+                
+                $hots = $page->getHots();
+                if (empty($hots)) continue;
+                foreach ($hots as $hot) {
+                    $assets = $hot->getAssets(false);
+                    if (empty($assets)) continue;
+                    foreach ($assets as $asset) {
+                        $this->copyResource($id, $asset->getResource());
+                    }
+                }
             }
         }
         
-        
+        // 2. zip folder of assets
+        $zip = new ZipArchive();
+        $zipName = $uploadDir . "issue$id.zip";
+        if (!$zip->open($zipName, ZIPARCHIVE::CREATE)) {
+            exit("cannot open <$zipName>\n");
+        }
+        $zip->addGlob("$uploadDir$id/*");
+        if (!$zip->status == ZIPARCHIVE::ER_OK) {
+            exit("Failed to write files to zip\n");
+        }
+        $zip->close();
         
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response('{"msg":"发布成功", "publishedAt":"' . $pubAt . '" }');
