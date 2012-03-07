@@ -99,6 +99,33 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
+        // zip issue assets
+        $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
+                    ->setParameter('issue', $issue);
+        $issue = $query->getSingleResult();
+        // $issue->getAudio();
+        // $issue->getPortraitCover
+        // $issue->getLandscapeCover
+        // $issue->getPreview
+        
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $uploadDir = $rootDir . '/../web/uploads/';
+        if (!file_exists($uploadDir . $id)) {
+            mkdir($uploadDir . $id);
+        }
+        
+        $articles = $issue->getArticles();
+        foreach ($articles as $article) {
+            $article->getAudio();
+            $pages = $article->getPages();
+            foreach ($pages as $page) {
+                if ($page->getLandscapeImg()) copy($uploadDir . $page->getLandscapeImg(), $uploadDir . $id . '/' . $page->getLandscapeImg());
+                if ($page->getPortraitImg()) copy($uploadDir . $page->getPortraitImg(), $uploadDir . $id . '/' . $page->getPortraitImg());
+            }
+        }
+        
+        
+        
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response('{"msg":"发布成功", "publishedAt":"' . $pubAt . '" }');
     }
