@@ -1,81 +1,79 @@
 {% extends '::base.xml.twig' %}
 
 {% block body %}
-    <Issue magzineId="{{ issue.magzine.id }}">
-        <Articles>
-            {% for article in issue.articles %}
-            <Article id="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" lat="{{ article.lat }}" lng="{{ article.lng }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
-                {% for page in article.pages %}
-                <Page id="{{ page.id }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
-                    {% for hot in page.hots %}
-                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
-                        
-                        <Assets>
-                        {% for asset in hot.assets %}
-                            <Asset>{{ asset.file }}</Asset>
-                        {% endfor %}
-                        </Assets>
-                        
-                        <Attrs>
-                        {% for key, val in hot.extraAttrs %}
-                            <{{key}}>{{ val }}</{{key}}>
-                        {% endfor %}
-                        </Attrs>
+    <Issue id="{{ issue.id }}">
+        {% for article in issue.articles %}
+        <Article id="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" lat="{{ article.lat }}" lng="{{ article.lng }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
+            {% for page in article.pages %}
+            <Page id="{{ page.id }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
+                {% for hot in page.hots %}
+                <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
                     
-                    </Hot>
+                    <Assets>
+                    {% for asset in hot.assets %}
+                        <Asset>{{ asset.file }}</Asset>
                     {% endfor %}
-                </Page>
-                {% endfor %}
+                    </Assets>
+                    
+                    <Attrs>
+                    {% for key, val in hot.extraAttrs %}
+                        <{{key}}>{{ val }}</{{key}}>
+                    {% endfor %}
+                    </Attrs>
                 
-                {% if article.infopages|length > 0 %}
-                {% for page in article.infopages %}
-                <Page type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
-                    {% for hot in page.hots %}
-                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
-                        
-                        <Assets>
-                        {% for asset in hot.assets %}
-                            <Asset>{{ asset.file }}</Asset>
-                        {% endfor %}
-                        </Assets>
-                        
-                        <Attrs>
-                        {% for key, val in hot.extraAttrs %}
-                            <{{key}}>{{ val }}</{{key}}>
-                        {% endfor %}
-                        </Attrs>
-                    
-                    </Hot>
-                    {% endfor %}
-                </Page>
+                </Hot>
                 {% endfor %}
-                {% endif %}
-                
-                {% if article.structurepages|length > 0 %}
-                {% for page in article.structurepages %}
-                <Page type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
-                    {% for hot in page.hots %}
-                    <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
-                        
-                        <Assets>
-                        {% for asset in hot.assets %}
-                            <Asset>{{ asset.file }}</Asset>
-                        {% endfor %}
-                        </Assets>
-                        
-                        <Attrs>
-                        {% for key, val in hot.extraAttrs %}
-                            <{{key}}>{{ val }}</{{key}}>
-                        {% endfor %}
-                        </Attrs>
-                    
-                    </Hot>
-                    {% endfor %}
-                </Page>
-                {% endfor %}
-                {% endif %}
-            </Article>
+            </Page>
             {% endfor %}
-        </Articles>
+            
+            {% if article.infopages|length > 0 %}
+            {% for page in article.infopages %}
+            <Page type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
+                {% for hot in page.hots %}
+                <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                    
+                    <Assets>
+                    {% for asset in hot.assets %}
+                        <Asset>{{ asset.file }}</Asset>
+                    {% endfor %}
+                    </Assets>
+                    
+                    <Attrs>
+                    {% for key, val in hot.extraAttrs %}
+                        <{{key}}>{{ val }}</{{key}}>
+                    {% endfor %}
+                    </Attrs>
+                
+                </Hot>
+                {% endfor %}
+            </Page>
+            {% endfor %}
+            {% endif %}
+            
+            {% if article.structurepages|length > 0 %}
+            {% for page in article.structurepages %}
+            <Page type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
+                {% for hot in page.hots %}
+                <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                    
+                    <Assets>
+                    {% for asset in hot.assets %}
+                        <Asset>{{ asset.file }}</Asset>
+                    {% endfor %}
+                    </Assets>
+                    
+                    <Attrs>
+                    {% for key, val in hot.extraAttrs %}
+                        <{{key}}>{{ val }}</{{key}}>
+                    {% endfor %}
+                    </Attrs>
+                
+                </Hot>
+                {% endfor %}
+            </Page>
+            {% endfor %}
+            {% endif %}
+        </Article>
+        {% endfor %}
     </Issue>
 {% endblock %}
