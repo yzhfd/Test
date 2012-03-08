@@ -154,7 +154,10 @@ class IssueController extends Controller
         if (!$zip->open($zipName, ZIPARCHIVE::CREATE)) {
             exit("cannot open <$zipName>\n");
         }
-        $zip->addGlob("$uploadDir$id/*");
+        foreach (glob("$uploadDir$id/*") as $file) {
+            $zippedFile = substr($file, strrpos($file, '/') + 1);
+            $zip->addFile($file, $zippedFile);
+        }
         if (!$zip->status == ZIPARCHIVE::ER_OK) {
             exit("Failed to write files to zip\n");
         }

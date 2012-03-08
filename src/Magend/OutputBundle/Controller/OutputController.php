@@ -35,6 +35,10 @@ class OutputController extends Controller
                     ->setParameter('issue', $issue);
         $query->getResult();
         
+        $query = $em->createQuery('SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)')
+                    ->setParameter('articles', $issue->getArticleIds());
+        $query->getResult();
+        
         return array(
             'issue' => $issue
         );
