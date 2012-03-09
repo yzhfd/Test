@@ -198,6 +198,14 @@ class Article
      * @ORM\Column(name="lng", type="float")
      */
     private $lng = 0.0;
+
+    /**
+     * Project's address, complement witt lat and lng
+     * 
+     * @var string $prjectAddr
+     * @ORM\Column(name="project_addr", type="string", length=255, nullable=true)
+     */
+    private $projectAddr;
     
     // @todo altitude, not supported by google map directly
     
@@ -645,6 +653,26 @@ class Article
     public function getLng()
     {
         return $this->lng;
+    }
+    
+    /**
+     * Get project address
+     * 
+     * @return string
+     */
+    public function getProjectAddr()
+    {
+        return $this->projectAddr;
+    }
+    
+    /**
+     * Set project address
+     * 
+     * @param string $projectAddr
+     */
+    public function setProjectAddr($projectAddr)
+    {
+        $this->projectAddr = $projectAddr;
     }
 
     /**
