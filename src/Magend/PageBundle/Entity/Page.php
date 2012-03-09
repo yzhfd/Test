@@ -71,6 +71,13 @@ class Page
      * @ORM\Column(name="landscape_img", type="string", length=255, nullable=true)
      */
     private $landscapeImg;
+
+    /**
+     * 
+     * @var string
+     * @ORM\Column(name="landscape_img_thumbnail", type="string", length=255, nullable=true)
+     */
+    private $landscapeImgThumbnail;
     
     /**
      * Keep track of the old image, which will be delete in preUpdate
@@ -85,6 +92,13 @@ class Page
      * @ORM\Column(name="portrait_img", type="string", length=255, nullable=true)
      */
     private $portraitImg;
+    
+    /**
+     * 
+     * @var string
+     * @ORM\Column(name="portrait_img_thumbnail", type="string", length=255, nullable=true)
+     */
+    private $portraitImgThumbnail;
     
     /**
      * Keep track of the old image, which will be delete in preUpdate
@@ -212,7 +226,47 @@ class Page
     {
         return $this->portraitImg;
     }
-
+    
+    /**
+     * Set thumbnail of landscapeImg
+     *
+     * @return string 
+     */
+    public function setLandscapeImgThumbnail($landscapeImgThumbnail)
+    {
+        $this->landscapeImgThumbnail = $landscapeImgThumbnail;
+    }
+    
+    /**
+     * Get thumbnail of landscapeImg
+     *
+     * @return string 
+     */
+    public function getLandscapeImgThumbnail()
+    {
+        return $this->landscapeImgThumbnail;
+    }
+    
+    /**
+     * Set thumbnail of portraitImg
+     *
+     * @return string 
+     */
+    public function setPortraitImgThumbnail($portraitImgThumbnail)
+    {
+        $this->portraitImgThumbnail = $portraitImgThumbnail;
+    }   
+    
+    /**
+     * Get thumbnail of portraitImg
+     *
+     * @return string 
+     */
+    public function getPortraitImgThumbnail()
+    {
+        return $this->portraitImgThumbnail;
+    }
+    
     /**
      * Set article
      *

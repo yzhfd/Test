@@ -38,7 +38,7 @@
                             <h5><span class="article-index">{{ loop.index }}</span>.<a title="{{ article.title }}" href="{{ path('article_edit', { 'id':article.id }) }}">{{ article.title|truncate(7) }}</a></h5>
                             <ol class="pages">
                                 {% for page in article.pages %}
-                                    <li class="page" rel="{{ page.id }}"><a href="{{ path('page_edit', { 'id':page.id }) }}" title="双击编辑热点"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
+                                    <li class="page" rel="{{ page.id }}"><a href="{{ path('page_edit', { 'id':page.id }) }}" title="单击编辑热点；拖动图片到此可替换缩略图"><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
                                 {% endfor %}
                             </ol>
                         </li>

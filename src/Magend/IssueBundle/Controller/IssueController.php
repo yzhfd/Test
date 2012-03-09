@@ -18,6 +18,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\ Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Magend\IssueBundle\Util\SimpleImage;
 
 /**
  * 
@@ -134,7 +135,14 @@ class IssueController extends Controller
             
             foreach ($pages as $page) {
                 $this->copyResource($id, $page->getLandscapeImg());
+                /*$image = new SimpleImage();
+                $image->load('picture.jpg');
+                $image->resize(250,400);
+                $image->save('picture2.jpg');*/
+                
                 $this->copyResource($id, $page->getPortraitImg());
+                
+                
                 
                 $hots = $page->getHots();
                 if (empty($hots)) continue;
