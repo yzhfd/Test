@@ -158,17 +158,23 @@ class Page
         }
     }
     
-    public function unlinkLandscapeImg()
+    public function unlinkLandscapeImg($withThumbnail = true)
     {
         if ($this->getLandscapeImg() != null) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImg());
         }
+        if ($this->getLandscapeImgThumbnail() != null) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeImgThumbnail());
+        }
     }
     
-    public function unlinkPortraitImg()
+    public function unlinkPortraitImg($withThumbnail = true)
     {
         if ($this->getPortraitImg() != null) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImg());
+        }
+        if ($this->getPortraitImgThumbnail() != null) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImgThumbnail());
         }
     }
     

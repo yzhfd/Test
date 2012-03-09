@@ -72,9 +72,33 @@ class PageController extends Controller
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
         $imgName = uniqid('page_') . '.' . $file->guessExtension();
-        // @todo change dir
+        
         $file->move($rootDir . '/../web/uploads/', $imgName);
         $page->setLandscapeImg($imgName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return new Response(json_encode(array('img' => $imgName)));
+    }
+    
+    /**
+     * Change page's thumbnail
+     * 
+     * @todo landscape or thumbnail
+     * @Route("/{id}/change-thumbnail", name="page_change_thumbnail", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function changeThumbnail($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $page = $repo->find($id);
+        
+        $file = $this->getRequest()->files->get('file');
+        // move it
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $imgName = uniqid('pagethumb_') . '.' . $file->guessExtension();
+        
+        $file->move($rootDir . '/../web/uploads/', $imgName);
+        $page->setLandscapeImgThumbnail($imgName);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         

@@ -35,6 +35,42 @@ var articles_layout = function () {
 		tolerance: 'pointer'
 	});
 	
+	$('li.page').each(function(index, lipage){
+		lipage = $(lipage);
+		
+		var pageId = lipage.attr('rel');
+		lipage.fileupload({
+			url: Routing.generate('page_change_thumbnail', { id:pageId }),
+			paramName: 'file',
+			acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
+			dropZone: lipage,
+			limitMultiFileUploads: 1,
+			success: function (result) {
+				console.log('done');
+			},
+			fail: function () {
+				console.log('error');
+			}
+		}).bind('fileuploaddrop', function (e, data) {
+			var imgFile = data.files[0];
+			var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
+			if (!(acceptFileTypes.test(imgFile.type) ||
+		          acceptFileTypes.test(imgFile.name))) {
+				alert('请上传JPG或者PNG格式的图片');
+		        return false;
+		    }
+			
+            var reader = new FileReader();
+            reader.onload = function (e) {
+            	lipage.find('img').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(imgFile);
+			
+            // img.overlay('loading');
+			return true;
+		});
+	});
+	
 	$('#layout_save').click( function () {
 		if (!$('#articles_layout').is(':visible')) {
 			return false;
