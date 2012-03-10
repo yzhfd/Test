@@ -240,6 +240,7 @@ li.article .footer {
 li.page a, li.page img {
 	display: block;
 }
+li.page img { width: 128px; height: 96px; }
 li.article .progressbar-wrapper {
     position: absolute;
     top: 0px;

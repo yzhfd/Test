@@ -46,6 +46,7 @@ var articles_layout = function () {
 			dropZone: lipage,
 			limitMultiFileUploads: 1,
 			success: function (result) {
+				// lipage.find('img').attr('src', result.img);
 				$('#articles_layout').overlay('hide');
 			},
 			fail: function () {
@@ -63,7 +64,7 @@ var articles_layout = function () {
 			
             var reader = new FileReader();
             reader.onload = function (e) {
-            	lipage.find('img').attr('src', e.target.result).css({ width:128, height:96 });
+            	lipage.find('img').attr('src', e.target.result);
             };
             reader.readAsDataURL(imgFile);
 			

@@ -1,6 +1,6 @@
 <?php
 
-namespace Magend\CommentBundle\Entity;
+namespace Magend\ArticleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Magend\UserBundle\Entity\User;
@@ -27,7 +27,7 @@ class Comment
      * 
      * @var Article
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\ArticleBundle\Entity\Article")
+     * @ORM\ManyToOne(targetEntity="Article")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $article;

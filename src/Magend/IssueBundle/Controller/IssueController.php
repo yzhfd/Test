@@ -138,9 +138,37 @@ class IssueController extends Controller
             
             foreach ($pages as $page) {
                 $this->copyResource($id, $page->getLandscapeImg());
-                $this->copyResource($id, $page->getLandscapeImgThumbnail());
+                // @todo refactor, DRY
+                if ($page->getLandscapeImgThumbnail() == null && $page->getLandscapeImg() != null) {
+                    $thumb = new SimpleImage();
+                    $thumb->load($rootDir . '/../web/uploads/' . $page->getLandscapeImg());
+                    $imagineFilters = $this->container->getParameter('imagine.filters');
+                    list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
+                    $thumb->resize($width, $height);
+                    list($uniqName, $ext) = explode('.', $page->getLandscapeImg());
+                    $thumbName = $uniqName . "_thumb.$ext";
+                    $thumb->save($rootDir . '/../web/uploads/' . $thumbName);
+                    
+                    $this->copyResource($id, $thumbName);
+                } else {
+                    $this->copyResource($id, $page->getLandscapeImgThumbnail());
+                }
+                
                 $this->copyResource($id, $page->getPortraitImg());
-                $this->copyResource($id, $page->getPortraitImgThumbnail());
+                if ($page->getPortraitImgThumbnail() == null && $page->getPortraitImg() != null) {
+                    $thumb = new SimpleImage();
+                    $thumb->load($rootDir . '/../web/uploads/' . $page->getPortraitImg());
+                    $imagineFilters = $this->container->getParameter('imagine.filters');
+                    list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
+                    $thumb->resize($width, $height);
+                    list($uniqName, $ext) = explode('.', $page->getPortraitImg());
+                    $thumbName = $uniqName . "_thumb.$ext";
+                    $thumb->save($rootDir . '/../web/uploads/' . $thumbName);
+                    
+                    $this->copyResource($id, $thumbName);
+                } else {
+                    $this->copyResource($id, $page->getPortraitImgThumbnail());
+                }
                 
                 
                 $hots = $page->getHots();

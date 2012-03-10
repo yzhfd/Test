@@ -250,6 +250,10 @@ class Page
      */
     public function getLandscapeImgThumbnail()
     {
+        if ($this->landscapeImgThumbnail == null && $this->getLandscapeImg() != null) {
+            list($name, $ext) = explode('.', $this->getLandscapeImg());
+            return $name . "_thumb.$ext";
+        }
         return $this->landscapeImgThumbnail;
     }
     
@@ -270,6 +274,10 @@ class Page
      */
     public function getPortraitImgThumbnail()
     {
+        if ($this->portraitImgThumbnail == null && $this->getPortraitImg() != null) {
+            list($name, $ext) = explode('.', $this->getPortraitImg());
+            return $name . "_thumb.$ext";
+        }
         return $this->portraitImgThumbnail;
     }
     

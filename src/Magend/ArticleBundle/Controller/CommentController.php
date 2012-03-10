@@ -1,11 +1,11 @@
 <?php
 
-namespace Magend\CommentBundle\Controller;
+namespace Magend\ArticleBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Magend\CommentBundle\Entity\Comment;
+use Magend\ArticleBundle\Entity\Comment;
 
 /**
  * CommentController

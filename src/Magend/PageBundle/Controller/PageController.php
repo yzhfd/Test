@@ -90,8 +90,8 @@ class PageController extends Controller
         $imagineFilters = $this->container->getParameter('imagine.filters');
         list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
         $image->resize($width, $height);
-        $imgArr = explode('_', $imgName);
-        $thumbName = 'pagethumb_' . $imgArr[1];
+        list($uniqName, $ext) = explode('.', $imgName);
+        $thumbName = $uniqName . "_thumb.$ext";
         $image->save($rootDir . '/../web/uploads/' . $thumbName);
         
         $page->setLandscapeImgThumbnail($thumbName);
@@ -116,7 +116,7 @@ class PageController extends Controller
         $file = $this->getRequest()->files->get('file');
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
-        $tmpName = uniqid('tmp_pagethumb_') . '.' . $file->guessExtension();
+        $tmpName = uniqid('tmp_') . '.' . $file->guessExtension();
         $file->move($rootDir . '/../web/uploads/', $tmpName);
         
         // create thumbnail
@@ -125,15 +125,17 @@ class PageController extends Controller
         $imagineFilters = $this->container->getParameter('imagine.filters');
         list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
         $image->resize($width, $height);
-        $imgName = substr($tmpName, 4);
-        $image->save($rootDir . '/../web/uploads/' . $imgName);
+        list($uniqName, $ext) = explode('.', substr($tmpName, 4));
+        $thumbName = 'page_' . $uniqName . "_thumb.$ext";
+        
+        $image->save($rootDir . '/../web/uploads/' . $thumbName);
         @unlink($rootDir . '/../web/uploads/' . $tmpName);
         
-        $page->setLandscapeImgThumbnail($imgName);
+        $page->setLandscapeImgThumbnail($thumbName);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
-        return new Response(json_encode(array('img' => $imgName)));
+        return new Response(json_encode(array('img' => $thumbName)));
     }
 
     /**
@@ -286,8 +288,8 @@ class PageController extends Controller
             $imagineFilters = $this->container->getParameter('imagine.filters');
             list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
             $image->resize($width, $height);
-            $imgArr = explode('_', $imgName);
-            $thumbName = 'pagethumb_' . $imgArr[1];
+            list($uniqName, $ext) = explode('.', $imgName);
+            $thumbName = $uniqName . "_thumb.$ext";
             $image->save($rootDir . '/../web/uploads/' . $thumbName);
             
             $page->setLandscapeImgThumbnail($thumbName);
