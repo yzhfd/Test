@@ -45,4 +45,10 @@ $(document).ready(function(){
 	$('a[rel*=confirm]').live('click', function(e){
 		return confirm('确定' + $(this).attr('title') + '吗？');
 	});
+	$('a.dblclick').click( function(e){
+		return false;
+	});
+	$('a.dblclick').dblclick( function(e){
+		window.location.href = this.href;
+	});
 });

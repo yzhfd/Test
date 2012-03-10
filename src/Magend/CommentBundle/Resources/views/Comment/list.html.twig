@@ -1,0 +1,45 @@
+{% extends '::base.html.twig' %}
+
+{% block contentTitle %}用户留言{% endblock %}
+
+{% block main %}    
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>留言列表</h3>
+            <!--<div style="padding-top: 6px">
+                <a class="btn info" rel="dialog" href="{{ path('comment_new') }}">添加</a>
+            </div>
+            <div class="clear"></div>-->
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content">
+            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+            <table>
+                <thead><tr>
+                    <th style="width: 20px;"><input class="check-all" type="checkbox" /></th>
+                    <th>用户</th>
+                    <th>留言</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr></thead>
+             
+                <tbody>
+                    {% for comment in comments %}
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>XX</td>
+                        <td>哈哈哈</td>
+                        <td>2012-03-11 22:22:00</td>
+                        <td style="width:50px;">
+                             <a rel="dialog" href="{{ path('proj_edit', { 'id':project.id } ) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a rel="confirm" href="{{ path('proj_del', { 'id':project.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div><!-- End Content Box -->
+                    
+{% endblock %}

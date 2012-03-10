@@ -1,0 +1,17 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+
+<form id="comment_form" style="width:680px; margin-top:10px;" action="{{ path('comment_new') }} method="post" {{ form_enctype(form) }}>
+
+    <div class="clearfix">
+        {{ form_label(form.body) }}
+        <div class="input">{{ form_errors(form.body) }}{{ form_widget(form.body) }}</div>
+    </div>
+    
+    {{ form_rest(form) }}
+    
+    <div class="actions"><button class="btn primary" type="submit">提交</button></div>
+</form>
+
+{% endblock %}

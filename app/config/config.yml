@@ -93,7 +93,7 @@ avalanche_imagine:
     filters:
         landscapeThumb:
             type:    thumbnail
-            options: { size: [128, 96], mode: outbound }
+            options: { size: [205, 154], mode: outbound }
         portraitThumb:
             type:    thumbnail
             options: { size: [96, 128], mode: outbound }

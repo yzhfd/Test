@@ -1,3 +1,8 @@
+MagendCommentBundle:
+    resource: "@MagendCommentBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendAssetBundle:
     resource: "@MagendAssetBundle/Controller/"
     type:     annotation
