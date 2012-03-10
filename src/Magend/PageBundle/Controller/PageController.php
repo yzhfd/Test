@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\HotBundle\Entity\Hot;
+use Magend\IssueBundle\Util\SimpleImage;
 
 /**
  *
@@ -18,6 +19,14 @@ use Magend\HotBundle\Entity\Hot;
  */
 class PageController extends Controller
 {
+    
+    
+    
+    // @todo DRY create thumbnail code
+    
+    
+    
+    
     /**
      * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
      * @Template()
@@ -72,9 +81,21 @@ class PageController extends Controller
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
         $imgName = uniqid('page_') . '.' . $file->guessExtension();
-        
         $file->move($rootDir . '/../web/uploads/', $imgName);
         $page->setLandscapeImg($imgName);
+        
+        // create thumbnail
+        $image = new SimpleImage();
+        $image->load($rootDir . '/../web/uploads/' . $imgName);
+        $imagineFilters = $this->container->getParameter('imagine.filters');
+        list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
+        $image->resize($width, $height);
+        $imgArr = explode('_', $imgName);
+        $thumbName = 'pagethumb_' . $imgArr[1];
+        $image->save($rootDir . '/../web/uploads/' . $thumbName);
+        
+        $page->setLandscapeImgThumbnail($thumbName);
+        
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
@@ -95,9 +116,19 @@ class PageController extends Controller
         $file = $this->getRequest()->files->get('file');
         // move it
         $rootDir = $this->container->getParameter('kernel.root_dir');
-        $imgName = uniqid('pagethumb_') . '.' . $file->guessExtension();
+        $tmpName = uniqid('tmp_pagethumb_') . '.' . $file->guessExtension();
+        $file->move($rootDir . '/../web/uploads/', $tmpName);
         
-        $file->move($rootDir . '/../web/uploads/', $imgName);
+        // create thumbnail
+        $image = new SimpleImage();
+        $image->load($rootDir . '/../web/uploads/' . $tmpName);
+        $imagineFilters = $this->container->getParameter('imagine.filters');
+        list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
+        $image->resize($width, $height);
+        $imgName = substr($tmpName, 4);
+        $image->save($rootDir . '/../web/uploads/' . $imgName);
+        @unlink($rootDir . '/../web/uploads/' . $tmpName);
+        
         $page->setLandscapeImgThumbnail($imgName);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
@@ -243,12 +274,24 @@ class PageController extends Controller
             // move it
             $rootDir = $this->container->getParameter('kernel.root_dir');
             $imgName = uniqid('page_') . '.' . $file->guessExtension();
-            $pagePath = 'uploads';
-            $file->move($rootDir . '/../web/' . $pagePath, $imgName);
-            $tplVars = array('page' => "$pagePath/$imgName");
+            $file->move($rootDir . '/../web/uploads', $imgName);
+            $tplVars = array('page' => "uploads/$imgName");
             
             $page = new Page();
             $page->setLandscapeImg($imgName);
+            
+            // create thumbnail
+            $image = new SimpleImage();
+            $image->load($rootDir . '/../web/uploads/' . $imgName);
+            $imagineFilters = $this->container->getParameter('imagine.filters');
+            list($width, $height) = $imagineFilters['landscapeThumb']['options']['size'];
+            $image->resize($width, $height);
+            $imgArr = explode('_', $imgName);
+            $thumbName = 'pagethumb_' . $imgArr[1];
+            $image->save($rootDir . '/../web/uploads/' . $thumbName);
+            
+            $page->setLandscapeImgThumbnail($thumbName);
+            
             $page->setArticle($article);
             $page->setType($type);
             

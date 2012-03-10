@@ -27,7 +27,6 @@ class HomeController extends Controller
             $magzine = $repo->find($magId);
         }
         
-        
         return array(
             'magzine' => $magzine
         );
