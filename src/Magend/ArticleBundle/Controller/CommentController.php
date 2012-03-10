@@ -48,6 +48,8 @@ class CommentController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getEntityManager();
                 $user = $this->get('security.context')->getToken()->getUser();
+                // @todo Article, find user by id
+                
                 $comment->setUser($user);
                 $em->persist($comment);
                 $em->flush();
