@@ -81,7 +81,7 @@
         
         <div class="clearfix">
             <div class="input">
-                <input id="geoinput" class="span6" type="text" name="geocoding" value="" /> <button id="geobtn" class="btn">获取该地址经纬度</button>
+                {{ form_widget(form.projectAddr, { 'attr':{'class':'span6' }, 'id':'geoinput' }) }} <button id="geobtn" class="btn">获取该地址经纬度</button>
                 <p/>
                 <div id="map_canvas" style="width:600px; height:300px; background-color:#CCC;"></div>
             </div>

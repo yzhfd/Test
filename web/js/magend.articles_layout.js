@@ -46,10 +46,11 @@ var articles_layout = function () {
 			dropZone: lipage,
 			limitMultiFileUploads: 1,
 			success: function (result) {
-				console.log('done');
+				$('#articles_layout').overlay('hide');
 			},
 			fail: function () {
-				console.log('error');
+				$('#articles_layout').overlay('hide');
+				alert('上传失败');
 			}
 		}).bind('fileuploaddrop', function (e, data) {
 			var imgFile = data.files[0];
@@ -62,11 +63,11 @@ var articles_layout = function () {
 			
             var reader = new FileReader();
             reader.onload = function (e) {
-            	lipage.find('img').attr('src', e.target.result);
+            	lipage.find('img').attr('src', e.target.result).css({ width:128, height:96 });
             };
             reader.readAsDataURL(imgFile);
 			
-            // img.overlay('loading');
+            $('#articles_layout').overlay('loading');
 			return true;
 		});
 	});

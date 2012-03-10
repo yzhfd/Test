@@ -34,6 +34,7 @@ class ArticleType extends AbstractType
             ))
             ->add('lat')
             ->add('lng')
+            ->add('projectAddr', null, array( 'required' => false ))
         ;
     }
 

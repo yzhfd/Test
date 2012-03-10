@@ -20,8 +20,8 @@
 {% block main %}
 
 <div style="position:absolute; width:80px; top:94px;">
-    {% if prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn info">上一篇</a><p/>{% endif %}
-    {% if next is not null %}<a href="{{ path('article_edit', { 'id':next }) }}" class="btn info">下一篇</a>{% endif %}
+    {% if prev is defined and prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn info">上一篇</a><p/>{% endif %}
+    {% if prev is defined and next is not null %}<a href="{{ path('article_edit', { 'id':next }) }}" class="btn info">下一篇</a>{% endif %}
 </div>
 
 <ul class="pills" style="margin-left: 80px;" data-pills="pills">
