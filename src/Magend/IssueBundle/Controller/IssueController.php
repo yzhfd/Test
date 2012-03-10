@@ -86,7 +86,10 @@ class IssueController extends Controller
         
         $rootDir = $this->container->getParameter('kernel.root_dir');
         $uploadDir = $rootDir . '/../web/uploads/';
-        return copy($uploadDir . $resourceFile, $uploadDir . $issueId . '/' . $resourceFile);
+        $filePath = $uploadDir . $resourceFile;
+        if (!file_exists($filePath)) return;
+        
+        return copy($filePath, $uploadDir . $issueId . '/' . $resourceFile);
     }
     
     /**
@@ -135,13 +138,9 @@ class IssueController extends Controller
             
             foreach ($pages as $page) {
                 $this->copyResource($id, $page->getLandscapeImg());
-                /*$image = new SimpleImage();
-                $image->load('picture.jpg');
-                $image->resize(250,400);
-                $image->save('picture2.jpg');*/
-                
+                $this->copyResource($id, $page->getLandscapeImgThumbnail());
                 $this->copyResource($id, $page->getPortraitImg());
-                
+                $this->copyResource($id, $page->getPortraitImgThumbnail());
                 
                 
                 $hots = $page->getHots();
