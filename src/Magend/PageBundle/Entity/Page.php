@@ -252,7 +252,10 @@ class Page
     {
         if ($this->landscapeImgThumbnail == null && $this->getLandscapeImg() != null) {
             list($name, $ext) = explode('.', $this->getLandscapeImg());
-            return $name . "_thumb.$ext";
+            $thumbName = $name . "_thumb.$ext";
+            if (file_exists(__DIR__.'/../../../../web/uploads/' . $thumbName)) {
+                return $thumbName;
+            }
         }
         return $this->landscapeImgThumbnail;
     }
@@ -276,7 +279,10 @@ class Page
     {
         if ($this->portraitImgThumbnail == null && $this->getPortraitImg() != null) {
             list($name, $ext) = explode('.', $this->getPortraitImg());
-            return $name . "_thumb.$ext";
+            $thumbName = $name . "_thumb.$ext";
+            if (file_exists(__DIR__.'/../../../../web/uploads/' . $thumbName)) {
+                return $thumbName;
+            }
         }
         return $this->portraitImgThumbnail;
     }
