@@ -4,6 +4,7 @@ namespace Magend\CommentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Magend\UserBundle\Entity\User;
+use Magend\ArticleBundle\Entity\Article;
 
 /**
  * Magend\CommentBundle\Entity\Comment
@@ -21,6 +22,15 @@ class Comment
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * 
+     * @var Article
+     * 
+     * @ORM\ManyToOne(targetEntity="Magend\ArticleBundle\Entity\Article")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $article;
     
     /**
      * User who left the comment
@@ -104,7 +114,47 @@ class Comment
     {
         return $this->body;
     }
+    
+    /**
+     * Set article
+     *
+     * @param Article $article
+     */
+    public function setArticle(Article $article)
+    {
+        $this->article = $article;
+    }
 
+    /**
+     * Get user
+     *
+     * @return Article
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+    
+    /**
+     * Set user
+     *
+     * @param Magend\UserBundle\Entity\User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * Get user
+     *
+     * @return Magend\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
     /**
      * Set createdAt
      *
@@ -143,25 +193,5 @@ class Comment
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * Set user
-     *
-     * @param Magend\UserBundle\Entity\User $user
-     */
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Get user
-     *
-     * @return Magend\UserBundle\Entity\User 
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 }
