@@ -64,4 +64,16 @@
 	    });
 	    return o;
 	};
+	
+	$(function() {
+		$.extend($.ui.resizable.prototype, (function (orig) {
+			return {
+				_mouseStart: function (event) {
+				this._aspectRatio = !!(this.options.aspectRatio);
+				return(orig.call(this, event));
+			}
+		};
+		
+		})($.ui.resizable.prototype["_mouseStart"]));
+	});
 })(jQuery);

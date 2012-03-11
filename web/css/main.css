@@ -369,7 +369,6 @@ ol, ul { list-style: none; }
 	/*background: transparent url('../images/stripe.png') repeat;
 	opacity: 0.6;*/
 	opacity: 0.6;
-	overflow: hidden;
 }
 .hot:hover {
 	/*background: transparent url('../images/stripe2.png') repeat;*/
@@ -386,10 +385,10 @@ ol, ul { list-style: none; }
 .hot .hot-toolbar {
     display: none;
     position: absolute;
-    top:-34px;
+    top:-33px;
     left:-2px;
     width:100%;
-    min-width: 225px;
+    min-width: 230px;
     padding: 3px 2px 2px;
     background-color: royalblue;
     z-index: 2000;

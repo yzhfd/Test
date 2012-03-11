@@ -23,10 +23,6 @@ var Hot = Backbone.Model.extend({
 	layoutChanged: false, // true if being moved/resized/deleted
 	rendered: false,
 	selected: false, // should not be attribute, as it should be persistent
-	select: function () {
-		this.selected = true;
-		this.trigger('select');
-	},
     hasSaved: function () {
         return !(this.isNew() || this.isEdited || this.layoutChanged);
     },
@@ -66,6 +62,10 @@ var Hot = Backbone.Model.extend({
         }
         return dfd.promise();
     },
+	select: function () {
+		this.selected = true;
+		this.trigger('select');
+	},
 	deselect: function () {
 		this.selected = false;
 		this.trigger('deselect');
@@ -97,8 +97,8 @@ var HotView = Backbone.View.extend({
 	tagName: 'li',
     events: {
       "mousedown": "onMousedown",
-      "mouseup": "onMouseup",
-      "dblclick": "edit"
+      // "mouseup": "onMouseup",
+      "dblclick": "dblclick"
     },
     initialize: function () {
     	this.model.rendered = true;
@@ -146,13 +146,13 @@ var HotView = Backbone.View.extend({
 			// support shift fixed aspectRatio
 			start: function (e) {
 				hotel.css('overflow', 'hidden');
-				if (e.shiftKey) {
+				/*if (e.shiftKey) {
 					$(this).resizable('option', 'aspectRatio', true);
-				}
+				}*/
 			},
             resize: function (event, ui) {
                 // 实时更新
-                hotel.find('.size-indicator-text').text([ui.size.width, ui.size.height].join('x'));
+                hotel.find('.size-indicator-text').text([Math.round(ui.size.width), Math.round(ui.size.height)].join('x'));
             },
 			stop: _.bind(function () {
 				// $(this.el).resizable('option', 'aspectRatio', false);
@@ -161,24 +161,28 @@ var HotView = Backbone.View.extend({
 					height: $(this.el).height()
 				});
 				hotel.css('overflow', 'visible');
-				// this.model.save();
 			}, this)
 		});
 	    
-        //工具栏，选中时可见
-        var toolElement = $('<div class="hot-toolbar"></div>');
-        toolElement.append('&nbsp;<button class="btn info" role="lock-position"></button>&nbsp;<button class="btn info" role="lock-ratio"></button>&nbsp;<button class="btn danger" role="delete" style="float:right;">删除</button>');
-        toolElement.prependTo(hotel);
+	    this.initToolbar();
+    },
+    initToolbar: function() {
+    	var hotView = this;
+        // 工具栏，选中时可见
+        var toolbar = $('<div class="hot-toolbar"></div>');
+        toolbar.append('&nbsp;<button class="btn info" role="lock-position"></button>&nbsp;<button class="btn info" role="lock-ratio"></button>&nbsp;<button class="btn danger" role="delete" style="float:right;">删除</button>');
+        toolbar.prependTo($(this.el));
 
-        toolElement.find('button[role=lock-position]').data('text-normal', '锁定位置').data('text-invert', '解锁位置').end()
-                   .find('button[role=lock-ratio]').data('text-normal', '锁定比例').data('text-invert', '解锁比例');
-        toolElement.find('button').click(function (e) {
+        toolbar.find('button[role=lock-position]').data('text-normal', '锁定位置').data('text-invert', '解锁位置').end()
+               .find('button[role=lock-ratio]').data('text-normal', '锁定比例').data('text-invert', '解锁比例');
+        toolbar.find('button').click(function (e) {
             e.preventDefault();
             e.stopPropagation();
+            
             var role = $(this).attr('role');
             switch (role) {
                 case "lock-position":
-                    var locked = parseInt(self.model.get('locked'), 10);
+                    var locked = parseInt(hotView.model.get('locked'), 10);
                     var value, text;
                     if (locked) {
                         value = 0;
@@ -187,11 +191,12 @@ var HotView = Backbone.View.extend({
                         value = 1;
                         text  = $(this).data('text-invert');
                     }
-                    self.model.set('locked', value);
+                    // @todo upgrade backbone will allow
+                    hotView.model.set('locked', value);
                     $(this).text(text);
                     break;
                 case "lock-ratio":
-                    var ratioLocked = parseInt(self.model.get('ratioLocked'), 10);
+                    var ratioLocked = parseInt(hotView.model.get('ratioLocked'), 10);
                     var value, text;
                     if (ratioLocked) {
                         value = 0;
@@ -200,7 +205,7 @@ var HotView = Backbone.View.extend({
                         value = 1;
                         text  = $(this).data('text-invert');
                     }
-                    self.model.set('ratioLocked', value);
+                    hotView.model.set('ratioLocked', value);
                     $(this).text(text);
                     break;
                 case "delete":
@@ -216,15 +221,6 @@ var HotView = Backbone.View.extend({
     onMousedown: function (e) {
     	this.model.select();
     },
-    onMouseup: function (e) {
-    	// not support deselect by clicking on selected element
-    	// if want to, then need check whether its from drag or resize
-    	/*if (!this.model.selected) {
-    		this.model.select();
-    	} else {
-    		this.model.deselect();
-    	}*/
-    },
     toggle: function () {
     	// indicate selection
     	if (this.model.selected) {
@@ -232,9 +228,6 @@ var HotView = Backbone.View.extend({
     	} else {
     		$(this.el).removeClass('hotsel');
     	}
-    },
-    submitDialog: function () {
-    	
     },
     dblclick: function (e) {
         if ($(e.target).parents('.hot-toolbar').length > 0) return false;
@@ -249,6 +242,11 @@ var HotView = Backbone.View.extend({
     	var hotModel = this.model;
     	typeDlg.data('hot', hotModel);
     	typeDlg.html(typeDlg.data('resetTo').clone(true, true));
+    	
+    	if (hottype == 3 || hottype == 4 || hottype == 2) {
+    		// @todo only hide for audio?
+    		$('#hot_use_content_size').hide();
+    	}
     	
     	// populate the form with extra attrs
     	// link
@@ -344,14 +342,14 @@ var HotView = Backbone.View.extend({
             });
         });
         
-        $('#hot_use_content_size').die('click').bind('click', function (e) {
+        $('#hot_use_content_size').die('click').bind('click', _.bind(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            self.model.examineContentImage().done(function (imgPath, width, height) {
+            this.model.examineContentImage().done(function (imgPath, width, height) {
                 inputW.val(width).data('oldValue', width);
                 inputH.val(height).data('oldValue', height);
             });
-        });
+        }, this));
         
     	typeDlg.show();
     	
@@ -429,6 +427,7 @@ var HotView = Backbone.View.extend({
     		width: this.model.get('width'),
     		height: this.model.get('height')
     	});
+    	this.model.layoutChanged = true;
     	this.render();
     },
     pos: function () {
@@ -436,6 +435,7 @@ var HotView = Backbone.View.extend({
     		left: this.model.get('x'),
     		top: this.model.get('y')
     	});
+    	this.model.layoutChanged = true;
     },
     updatePositionLock: function () {
         $(this.el).draggable('option', 'disabled', !!parseInt(this.model.get('locked'), 10));
@@ -449,6 +449,7 @@ var HotView = Backbone.View.extend({
     		$(this).remove(); // use detach to support undo/redo etc
     	});
     	this.model.rendered = false;
+    	this.model.layoutChanged = true;
     },
     render: function () {
         var self = this;
@@ -476,6 +477,7 @@ var HotView = Backbone.View.extend({
         } else {
             $(this.el).removeClass('ratio-locked');
         }
+        
         // toolbar text
         var toolElement = $(this.el).find('.hot-toolbar');
         var positionLockButton = toolElement.find('[role=lock-position]');
@@ -491,7 +493,8 @@ var HotView = Backbone.View.extend({
             ratioLockButton.text(ratioLockButton.data('text-normal'));
         }
         // TODO: size indicator
-        $(this.el).find('.size-indicator-text').text([this.model.get('width'), this.model.get('height')].join('x'));
+        $(this.el).find('.size-indicator-text')
+                  .text([this.model.get('width'), this.model.get('height')].join('x'));
         return this;
     }
 });
@@ -503,8 +506,6 @@ var PageCanvas = Backbone.View.extend({
 		"mouseup": "mouseup"
 	},
     initialize: function () {
-		this.el = $('#page_canvas');
-		
 		$(document).mousemove(_.bind(function (e) {
 			if (this.drawing) {
 				this.mousemove(e);
@@ -520,20 +521,20 @@ var PageCanvas = Backbone.View.extend({
 		var canvasImgEl = $('#page_canvas_img');
 		canvasImgEl.css({
 			// outline: '1px solid red',
-			width: this.el.width(),
-			height: this.el.height()
+			width: $(this.el).width(),
+			height: $(this.el).height()
 			//backgroundImage: 'url(../../images/page.jpg)',
 		});
 		canvasImgEl.find('img').css({
-			width: this.el.width(),
-			height: this.el.height()
+			width: $(this.el).width(),
+			height: $(this.el).height()
 		});
 		canvasImgEl.focus(function (e) {
 			// if it was just off
-			console.log('focus on');
+			// console.log('focus on');
 		});
 		canvasImgEl.blur(function (e) {
-			console.log('focus off');
+			// console.log('focus off');
 		});
 		canvasImgEl.keydown(_.bind(function (e) {
 			if ($(e.target).is('input') || $(e.target).is('textarea')) {
@@ -595,11 +596,14 @@ var PageCanvas = Backbone.View.extend({
 		if (!multi) {
 			var onHot = null;
 			// exclude the hot that mouse is on, as the hot itself will handle it
-			if ($(e.target).is('.hot')) {
-				onHot = $(e.target);
-			} else if ($(e.target).parent().is('.hot')) { // mousedown may be on drag handles
-				onHot = $(e.target).parent();
-			}
+            if ($(e.target).is('.hot')) {
+                onHot = $(e.target);
+            } else {
+                onHot = $(e.target).parents('.hot');
+                if (onHot.length <= 0) {
+                    onHot = null;
+                }
+            }
 			
 			this.hots.each(function (hot) {
 				if (!onHot || hot.cid != onHot.data('cid')) {
