@@ -15,15 +15,57 @@ var Hot = Backbone.Model.extend({
 		x: 0,
 		y: 0,
 		width: 40,
-		height: 40
+		height: 40,
+        locked: 0,   // if element's position is locked or not, persistent
+        ratioLocked: 0 // if element's aspect ratio is locked or not (when resizing), persistent
 	},
 	isEdited: false, // true if confirm on edit dialog
+	layoutChanged: false, // true if being moved/resized/deleted
 	rendered: false,
 	selected: false, // should not be attribute, as it should be persistent
 	select: function () {
 		this.selected = true;
 		this.trigger('select');
 	},
+    hasSaved: function () {
+        return !(this.isNew() || this.isEdited || this.layoutChanged);
+    },
+    examineContentImage: function () {
+        var dfd  = jQuery.Deferred();
+        var self = this;
+        var examineImageAtUrl = function (url) {
+            if (!url || url.length<=0) {
+                dfd.reject();
+                return;
+            }
+            var image = new Image();
+            image.onload = function () {
+                dfd.resolve(url, image.width, image.height);
+            };
+            image.onerror = dfd.reject;
+            image.src = url;
+        };
+        if (this.assets && this.assets[0]) {
+            var asset = this.assets[0];
+            var imgPath;
+            if (asset.file) {
+                imgPath = basePath + '/uploads/' + asset.file;
+            } else {
+                imgPath = $(asset).find('.imgwrapper>img').attr('src');    // see edit, dialog section
+            }
+            examineImageAtUrl(imgPath);
+        } else if (this.uploads && this.uploads[0]) {
+            var imgFile = this.uploads[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                examineImageAtUrl(e.target.result);
+            }
+            reader.readAsDataURL(imgFile);
+        } else {
+            dfd.reject();
+        }
+        return dfd.promise();
+    },
 	deselect: function () {
 		this.selected = false;
 		this.trigger('deselect');
@@ -65,6 +107,8 @@ var HotView = Backbone.View.extend({
     	this.model.bind('change:height', this.resize, this);
     	this.model.bind('change:x', this.pos, this);
     	this.model.bind('change:y', this.pos, this);
+        this.model.bind('change:locked', this.updatePositionLock, this);
+        this.model.bind('change:ratioLocked', this.updateRatioLock, this);
     	this.model.bind('select', this.toggle, this);
     	this.model.bind('deselect', this.toggle, this);
     	this.model.bind('remove', this.remove, this);
@@ -80,21 +124,11 @@ var HotView = Backbone.View.extend({
 	    	height: parseInt(this.model.get('height'))
 	    });
 	    hotel.data('cid', this.model.cid);
+	    hotel.append('<div class="size-indicator"><div class="size-indicator-text"></div></div>'); // size indicator element
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
 			drag: function () {
-	    		// @todo use a config object to switch these settings
-				/*var wlimit = $('#page_canvas').width();
-				var hlimit = $('#page_canvas').height();
-				var x = $(this).position().left;
-				var y = $(this).position().top;
-				var w = $(this).width();
-				var h = $(this).height();
-				if (x < 0 || x + w > wlimit || y < 0 || y + h > hlimit) {
-					return false;
-				}
-				return true;*/
 	    	},
 			stop: _.bind(function () {
     			this.model.set({
@@ -108,21 +142,76 @@ var HotView = Backbone.View.extend({
 			minHeight: this.model.minHeight | 10,
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
+			aspectRatio: !!parseInt(this.model.get('ratioLocked'), 10),
 			// support shift fixed aspectRatio
 			start: function (e) {
+				hotel.css('overflow', 'hidden');
 				if (e.shiftKey) {
 					$(this).resizable('option', 'aspectRatio', true);
 				}
 			},
+            resize: function (event, ui) {
+                // 实时更新
+                hotel.find('.size-indicator-text').text([ui.size.width, ui.size.height].join('x'));
+            },
 			stop: _.bind(function () {
-				$(this.el).resizable('option', 'aspectRatio', false);
+				// $(this.el).resizable('option', 'aspectRatio', false);
 				this.model.set({
 					width: $(this.el).width(),
 					height: $(this.el).height()
 				});
+				hotel.css('overflow', 'visible');
 				// this.model.save();
 			}, this)
 		});
+	    
+        //工具栏，选中时可见
+        var toolElement = $('<div class="hot-toolbar"></div>');
+        toolElement.append('&nbsp;<button class="btn info" role="lock-position"></button>&nbsp;<button class="btn info" role="lock-ratio"></button>&nbsp;<button class="btn danger" role="delete" style="float:right;">删除</button>');
+        toolElement.prependTo(hotel);
+
+        toolElement.find('button[role=lock-position]').data('text-normal', '锁定位置').data('text-invert', '解锁位置').end()
+                   .find('button[role=lock-ratio]').data('text-normal', '锁定比例').data('text-invert', '解锁比例');
+        toolElement.find('button').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var role = $(this).attr('role');
+            switch (role) {
+                case "lock-position":
+                    var locked = parseInt(self.model.get('locked'), 10);
+                    var value, text;
+                    if (locked) {
+                        value = 0;
+                        text  = $(this).data('text-normal');
+                    } else {
+                        value = 1;
+                        text  = $(this).data('text-invert');
+                    }
+                    self.model.set('locked', value);
+                    $(this).text(text);
+                    break;
+                case "lock-ratio":
+                    var ratioLocked = parseInt(self.model.get('ratioLocked'), 10);
+                    var value, text;
+                    if (ratioLocked) {
+                        value = 0;
+                        text  = $(this).data('text-normal');
+                    } else {
+                        value = 1;
+                        text  = $(this).data('text-invert');
+                    }
+                    self.model.set('ratioLocked', value);
+                    $(this).text(text);
+                    break;
+                case "delete":
+                    var e = jQuery.Event('keydown');
+                    e.which = 46;
+                    $('#page_canvas_img').trigger(e);
+                    break;
+                default:
+                    break;
+            }
+        });
     },
     onMousedown: function (e) {
     	this.model.select();
@@ -146,6 +235,10 @@ var HotView = Backbone.View.extend({
     },
     submitDialog: function () {
     	
+    },
+    dblclick: function (e) {
+        if ($(e.target).parents('.hot-toolbar').length > 0) return false;
+        return this.edit();
     },
     // @todo edit is too complex, refactor
     edit: function () {
@@ -227,11 +320,39 @@ var HotView = Backbone.View.extend({
     	var inputY = $('#hot_essential input[name="y"]');
     	var inputW = $('#hot_essential input[name="w"]');
     	var inputH = $('#hot_essential input[name="h"]');
+        var inputL = $('#hot_essential input[name="locked"]');
+        var inputR = $('#hot_essential input[name="ratioLocked"]');
     	inputX.val(this.model.get('x'));
     	inputY.val(this.model.get('y'));
     	inputW.val(this.model.get('width'));
     	inputH.val(this.model.get('height'));
+        inputL.attr('checked', !!parseInt(this.model.get('locked'), 10));
+        inputR.attr('checked', !!parseInt(this.model.get('ratioLocked'), 10));
     	
+        inputW.data('oldValue', parseInt(inputW.val(), 10));
+        inputH.data('oldValue', parseInt(inputH.val(), 10));
+        $([inputW, inputH]).each(function () {
+            this.unbind('keyup change paste').bind('keyup change paste', function () {
+                if (!inputR.is(':checked')) return;
+                var thisElement  = $(this);
+                var otherElement = $(this).is('input[name=w]') ? inputH : inputW;
+                var oldValueOfThisElement = thisElement.data('oldValue');
+                if (oldValueOfThisElement == 0) return;
+                var newValue = parseInt(thisElement.val(), 10) * parseInt(otherElement.val(), 10) / oldValueOfThisElement;
+                thisElement.data('oldValue', parseInt(thisElement.val(), 10));
+                otherElement.val(newValue).data('oldValue', newValue);
+            });
+        });
+        
+        $('#hot_use_content_size').die('click').bind('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            self.model.examineContentImage().done(function (imgPath, width, height) {
+                inputW.val(width).data('oldValue', width);
+                inputH.val(height).data('oldValue', height);
+            });
+        });
+        
     	typeDlg.show();
     	
     	// $('<div/>').html('<h1>eample</h1>').dialog({autoOpen:true});
@@ -261,12 +382,16 @@ var HotView = Backbone.View.extend({
     					var y = parseInt(inputY.val());
     					var w = parseInt(inputW.val());
     					var h = parseInt(inputH.val());
+                        var l = inputL.is(':checked') ? 1 : 0;
+                        var r = inputR.is(':checked') ? 1 : 0;
     					
     					hotModel.set({
     						x: x,
     						y: y,
     						width: w,
-    						height: h
+    						height: h,
+                            locked: l,
+                            ratioLocked: r
     					});
     					
     					if ($('form', typeDlg).length > 0) {
@@ -312,6 +437,12 @@ var HotView = Backbone.View.extend({
     		top: this.model.get('y')
     	});
     },
+    updatePositionLock: function () {
+        $(this.el).draggable('option', 'disabled', !!parseInt(this.model.get('locked'), 10));
+    },
+    updateRatioLock: function () {
+        $(this.el).resizable('option', 'aspectRatio', !!parseInt(this.model.get('ratioLocked'), 10));
+    },
     remove: function (e) {
     	// this.model.destroy(); // not really destroyed but garbaged, so can be undone
     	$(this.el).fadeOut('fast', function () {
@@ -320,38 +451,47 @@ var HotView = Backbone.View.extend({
     	this.model.rendered = false;
     },
     render: function () {
-        var imgElm = $(this.el).find('img');
-        if (!imgElm || !imgElm.length) {
-            imgElm = $('<img />');
-            $(this.el).append(imgElm);
-        }
-        if (this.model.assets && this.model.assets.length>0) {
-            var asset = this.model.assets[0];
-            var imgPath;
-            if (asset.file) {
-                imgPath = basePath + '/uploads/' + asset.file;
-            } else {
-                imgPath = $(asset).find('.imgwrapper>img').attr('src');    // see edit, dialog section
+        var self = this;
+        // preview image
+        this.model.examineContentImage().done(function (imgPath, width, height) {
+            var imgElm = $(self.el).find('img');
+            if (!imgElm || !imgElm.length) {
+                imgElm = $('<img />').appendTo($(self.el));
             }
-            if (imgPath && imgPath.length>0) {
-                imgElm.attr('src', imgPath).css({
-                    width: this.model.attributes.width,
-                    height: this.model.attributes.height
-                });
-            }
-        } else if (this.model.uploads && this.model.uploads.length>0) {
-            var imgFile = this.model.uploads[0];
-            var reader = new FileReader();
-            reader.onload = _.bind(function (e) {
-                imgElm.attr('src', e.target.result).css({
-                    width: this.model.attributes.width,
-                    height: this.model.attributes.height
-                });
-            }, this);
-            reader.readAsDataURL(imgFile);
+            imgElm.attr('src', imgPath).css({
+                width: self.model.attributes.width,
+                height: self.model.attributes.height
+            });
+        }).fail(function () {
+            $(self.el).find('img').remove();
+        });
+        // PH: locked indicator
+        if (parseInt(this.model.get('locked'), 10)) {
+            $(this.el).addClass('drag-locked');
         } else {
-            $(this.el).find('image').remove();
+            $(this.el).removeClass('drag-locked');
         }
+        if (parseInt(this.model.get('ratioLocked'), 10)) {
+            $(this.el).addClass('ratio-locked');
+        } else {
+            $(this.el).removeClass('ratio-locked');
+        }
+        // toolbar text
+        var toolElement = $(this.el).find('.hot-toolbar');
+        var positionLockButton = toolElement.find('[role=lock-position]');
+        var ratioLockButton = toolElement.find('[role=lock-ratio]');
+        if (parseInt(this.model.get('locked'), 10)) {
+            positionLockButton.text(positionLockButton.data('text-invert'));
+        } else {
+            positionLockButton.text(positionLockButton.data('text-normal'));
+        }
+        if (parseInt(this.model.get('ratioLocked'), 10)) {
+            ratioLockButton.text(ratioLockButton.data('text-invert'));
+        } else {
+            ratioLockButton.text(ratioLockButton.data('text-normal'));
+        }
+        // TODO: size indicator
+        $(this.el).find('.size-indicator-text').text([this.model.get('width'), this.model.get('height')].join('x'));
         return this;
     }
 });

@@ -56,7 +56,9 @@
         <div id="hot_essential">
             <div>坐标: <input type="text" name="x" class="span1" />, <input type="text" name="y" class="span1" /></div>
             <br/>
-            <div>长宽: <input type="text" name="w" class="span1" />, <input type="text" name="h" class="span1" /> <span style="color:#FC3F4D;">（不能小于40x40）</span></div>
+            <div>长宽: <input type="text" name="w" class="span1" />, <input type="text" name="h" class="span1" /> <span style="color:#FC3F4D;">（不能小于40x40）</span> <button id="hot_use_content_size">使用图片原始大小</button></div>
+            <br />
+            <div>锁定比例：<input type="checkbox" name="ratioLocked" />，锁定位置：<input type="checkbox" name="locked" /></div>
         </div>
         <br/>
         
@@ -110,12 +112,16 @@
         
     </div><!-- end of dialog -->
     
-    <div>
+    <div class="page_canvas_ruler">
         <div id="page_canvas_img" tabIndex="1">
-            <img src="{{ asset('uploads/' ~ page.landscapeImg) }}" />
+            {% if page.landscapeImg %}
+            <img src="{{ asset('uploads/' ~ page.landscapeImg) }}" src-template="{{ asset('uploads/' ~ page.landscapeImg) }}"  />
+            {% else %}
+            <img src="http://placehold.it/1024x768" src-template="{{ asset('uploads/' ~ page.landscapeImg) }}" />
+            {% endif %}
         </div>
-    	<ul id="page_canvas">
-    	</ul>
+        <ul id="page_canvas">
+        </ul>
     </div>
 </div>
 {% endblock %}
