@@ -10,7 +10,7 @@
             keywords="{% for keyword in article.keywords %}{{ keyword }}{% if not loop.last %}、{% endif %}{% endfor %}"
             lat="{{ article.lat }}" 
             lng="{{ article.lng }}" 
-            projectAddr="{{ article.projectAddr }}"
+            project_addr="{{ article.projectAddr }}"
             audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}"
         >
             {% for page in article.pages %}
