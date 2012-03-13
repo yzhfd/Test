@@ -10,7 +10,7 @@
             keywords="{% for keyword in article.keywords %}{{ keyword }}{% if not loop.last %}、{% endif %}{% endfor %}"
             lat="{{ article.lat }}" 
             lng="{{ article.lng }}" 
-            projectAddr="{{ article.projectAddr }}"
+            project_addr="{{ article.projectAddr }}"
             audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}"
         >
             {% for page in article.pages %}
@@ -33,7 +33,7 @@
                     
                     <Attrs>
                     {% for key, val in hot.extraAttrs %}
-                        <{{key}}>{{ val }}</{{key}}>
+                        <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
                     {% endfor %}
                     </Attrs>
                 
@@ -56,7 +56,7 @@
                     
                     <Attrs>
                     {% for key, val in hot.extraAttrs %}
-                        <{{key}}>{{ val }}</{{key}}>
+                        <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
                     {% endfor %}
                     </Attrs>
                 
@@ -80,7 +80,7 @@
                     
                     <Attrs>
                     {% for key, val in hot.extraAttrs %}
-                        <{{key}}>{{ val }}</{{key}}>
+                        <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
                     {% endfor %}
                     </Attrs>
                 
