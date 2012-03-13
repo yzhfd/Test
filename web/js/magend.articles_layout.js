@@ -1,4 +1,14 @@
 var articles_layout = function () {
+	
+	$("#topslider").scroll(function(){
+	    $("#articles_layout")
+	        .scrollLeft($("#topslider").scrollLeft());
+	});
+	$("#articles_layout").scroll(function(){
+	    $("#topslider")
+	        .scrollLeft($("#articles_layout").scrollLeft());
+	});
+	
 	var articles = $('#articles_layout').find('ol.articles');
 	articles.sortable({
 		axis: 'x',
