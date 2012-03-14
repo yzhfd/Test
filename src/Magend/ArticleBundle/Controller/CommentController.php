@@ -11,14 +11,14 @@ use Magend\ArticleBundle\Entity\Comment;
  * CommentController
  * 
  * @author kail
- * @Route("/comment")
+ * @Route("/article/comment")
  */
 class CommentController extends Controller
 {
     /**
      * // , requirements={"id"="\d+"}
      * 
-     * @Route("/list", name="comment_list")
+     * @Route("/list", name="article_comment_list")
      * @Template()
      */
     public function listAction()
@@ -31,7 +31,7 @@ class CommentController extends Controller
     /**
      * New comment
      * 
-     * @Route("/new", name="comment_new")
+     * @Route("/new", name="article_comment_new")
      * @Template()
      */
     public function newAction()

@@ -2,7 +2,7 @@
 
 {% block main %}
 
-<form id="comment_form" style="width:680px; margin-top:10px;" action="{{ path('comment_new') }} method="post" {{ form_enctype(form) }}>
+<form id="comment_form" style="width:680px; margin-top:10px;" action="{{ path('article_comment_new') }} method="post" {{ form_enctype(form) }}>
 
     <div class="clearfix">
         {{ form_label(form.body) }}
