@@ -31,14 +31,15 @@
         </div> <!-- End .content-box-header -->
                 
         <div class="content-box-content">
+            <div id="topslider" style="height:20px; margin-bottom:10px; overflow-x: auto;"><div style="width:{{ issue.articles|length*150 }}px; height: 18px;"></div></div>
             <div id="articles_layout" class="tab-content default-tab" style="min-height: 280px; overflow-x: auto;">
-                <ol class="articles unselectable" style="width:{{ issue.articles|length*160 }}px">
+                <ol class="articles unselectable" style="width:{{ issue.articles|length*150 }}px">
                     {% for article in issue.articles %}
                         <li class="article" rel="{{ article.id }}" style="padding-top: 10px;">
                             <h5><span class="article-index">{{ loop.index }}</span>.<a title="{{ article.title }}" href="{{ path('article_edit', { 'id':article.id }) }}">{{ article.title|truncate(7) }}</a></h5>
                             <ol class="pages">
                                 {% for page in article.pages %}
-                                    <li class="page" rel="{{ page.id }}"><a class="dblclick" href="{{ path('page_edit', { 'id':page.id }) }}" title="单击编辑热点；拖动图片到此可替换缩略图"><img src="{% if page.landscapeImgThumbnail is not null %}{{ asset('uploads/' ~ page.landscapeImgThumbnail) }}{% else %}{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}{% endif %}" /></a></li>
+                                    <li class="page" rel="{{ page.id }}"><a class="dblclick" href="{{ path('page_edit', { 'id':page.id }) }}" title="双击编辑热点；拖动图片到此可替换缩略图"><img src="{% if page.landscapeImgThumbnail is not null %}{{ asset('uploads/' ~ page.landscapeImgThumbnail) }}{% else %}{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}{% endif %}" /></a></li>
                                 {% endfor %}
                             </ol>
                         </li>
