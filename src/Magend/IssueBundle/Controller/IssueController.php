@@ -121,6 +121,9 @@ class IssueController extends Controller
      */
     private function compressIssueAssets($issue)
     {
+        $id = $issue->getId();
+        $em = $this->getDoctrine()->getEntityManager();
+        
         // zip issue assets
         // 1. copy assets into same folder
         $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
