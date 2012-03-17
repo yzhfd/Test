@@ -34,6 +34,19 @@ $(function () {
 			}
 			return false;
 		});
+		$('.previewbtn').click(function(e){
+			if (confirm('确定预览吗？')) {
+				var previewBtn = $(this);
+				$.ajax({
+					url: $(this).attr('href'),
+					success: function (result) {
+						// @todo do something
+						alert('已成功生成期刊压缩包');
+					}
+				});
+			}
+			return false;
+		});
 	}
 	
 	if ($('#magzine_form').length > 0) {

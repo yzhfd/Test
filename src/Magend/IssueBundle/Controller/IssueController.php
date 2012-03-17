@@ -93,27 +93,34 @@ class IssueController extends Controller
     }
     
     /**
+     * Pre-publish the issue but not update issue.publish
      * 
-     * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
+     * @Route("/{id}/prepublish", name="issue_prepublish", defaults={"_format" = "json"})
      */
-    public function publishAction($id)
+    public function prePublishAction($id)
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
             return new Response('{"msg":"期刊不存在"}'); 
         }
-        if ($issue->getPublish()) {
-            return new Response('{"msg":"期刊已发布"}'); 
-        }
         
-        $issue->setPublish(true);
-        if ($issue->getPublishedAt() === null) {
-            $issue->setPublishedAt(new \DateTime());
-        }
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        
+        $zipName = $this->compressIssueAssets($issue);
+        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
+        return new Response(json_encode(array(
+            'msg' => '发布成功',
+            'publishedAt' => $pubAt,
+            'zip' => $zipName
+        )));
+    }
+    
+    /**
+     * Compress all asset files of the issue
+     * 
+     * @param Issue $issue
+     * @return string
+     */
+    private function compressIssueAssets($issue)
+    {
         // zip issue assets
         // 1. copy assets into same folder
         $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
@@ -202,8 +209,37 @@ class IssueController extends Controller
         }
         $zip->close();
         
+        return $zipName;
+    } 
+    
+    /**
+     * 
+     * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
+     */
+    public function publishAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        if (empty($issue)) {
+            return new Response('{"msg":"期刊不存在"}'); 
+        }
+        if ($issue->getPublish()) {
+            return new Response('{"msg":"期刊已发布"}'); 
+        }
+        
+        $issue->setPublish(true);
+        if ($issue->getPublishedAt() === null) {
+            $issue->setPublishedAt(new \DateTime());
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $zipName = $this->compressIssueAssets($issue);
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
-        return new Response('{"msg":"发布成功", "publishedAt":"' . $pubAt . '" }');
+        return new Response(json_encode(array(
+            'msg' => '发布成功',
+            'publishedAt' => $pubAt,
+            'zip' => $zipName
+        )));
     }
     
     /**
