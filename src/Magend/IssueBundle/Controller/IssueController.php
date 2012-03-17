@@ -135,7 +135,8 @@ class IssueController extends Controller
         if (!file_exists($uploadDir . $id)) {
             mkdir($uploadDir . $id);
         }
-        $zipName = $uploadDir . "issue$id.zip";
+        $totalNo = $issue->getTotalIssueNo();
+        $zipName = $uploadDir . "issue$totalNo.zip";
         if (file_exists($zipName)) {
             @unlink($zipName);
         }
