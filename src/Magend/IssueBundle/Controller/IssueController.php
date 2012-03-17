@@ -113,6 +113,7 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
+        
         // zip issue assets
         // 1. copy assets into same folder
         $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
@@ -123,6 +124,10 @@ class IssueController extends Controller
         $uploadDir = $rootDir . '/../web/uploads/';
         if (!file_exists($uploadDir . $id)) {
             mkdir($uploadDir . $id);
+        }
+        $zipName = $uploadDir . "issue$id.zip";
+        if (file_exists($zipName)) {
+            @unlink($zipName);
         }
         
         $this->copyResource($id, $issue->getAudio());
@@ -185,7 +190,6 @@ class IssueController extends Controller
         
         // 2. zip folder of assets
         $zip = new ZipArchive();
-        $zipName = $uploadDir . "issue$id.zip";
         if (!$zip->open($zipName, ZIPARCHIVE::CREATE)) {
             exit("cannot open <$zipName>\n");
         }
