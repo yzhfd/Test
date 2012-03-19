@@ -250,13 +250,14 @@ class Page
      */
     public function getLandscapeImgThumbnail()
     {
+        /*
         if ($this->landscapeImgThumbnail == null && $this->getLandscapeImg() != null) {
             list($name, $ext) = explode('.', $this->getLandscapeImg());
             $thumbName = $name . "_thumb.$ext";
             if (file_exists(__DIR__.'/../../../../web/uploads/' . $thumbName)) {
                 return $thumbName;
             }
-        }
+        }*/
         return $this->landscapeImgThumbnail;
     }
     
@@ -277,13 +278,14 @@ class Page
      */
     public function getPortraitImgThumbnail()
     {
+        /*
         if ($this->portraitImgThumbnail == null && $this->getPortraitImg() != null) {
             list($name, $ext) = explode('.', $this->getPortraitImg());
             $thumbName = $name . "_thumb.$ext";
             if (file_exists(__DIR__.'/../../../../web/uploads/' . $thumbName)) {
                 return $thumbName;
             }
-        }
+        }*/
         return $this->portraitImgThumbnail;
     }
     
