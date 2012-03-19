@@ -243,6 +243,11 @@ class Page
         $this->landscapeImgThumbnail = $landscapeImgThumbnail;
     }
     
+    public function getCustomLandscapeImgThumbnail()
+    {
+        return $this->landscapeImgThumbnail;
+    }
+    
     /**
      * Get thumbnail of landscapeImg
      *
@@ -284,6 +289,11 @@ class Page
                 return $thumbName;
             }
         }
+        return $this->portraitImgThumbnail;
+    }
+    
+    public function getCustomPortraitImgThumbnail()
+    {
         return $this->portraitImgThumbnail;
     }
     
