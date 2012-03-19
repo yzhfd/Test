@@ -39,6 +39,14 @@ class OutputController extends Controller
                     ->setParameter('articles', $issue->getArticleIds());
         $query->getResult();
         
+        // test
+        $response = $this->render('MagendOutputBundle:Output:issue.xml.twig', array(
+            'issue' => $issue,
+        ));
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        
+        file_put_contents($rootDir . '/../web/uploads/issue.xml', $response->getContent());
+        
         return array(
             'issue' => $issue
         );
