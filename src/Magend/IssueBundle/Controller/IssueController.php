@@ -113,6 +113,20 @@ class IssueController extends Controller
         )));
     }
     
+    private function sureRemoveDir($dir, $DeleteMe = false)
+    {
+        if(!$dh = @opendir($dir)) return;
+        while (false !== ($obj = readdir($dh))) {
+            if($obj=='.' || $obj=='..') continue;
+            if (!@unlink($dir.'/'.$obj)) SureRemoveDir($dir.'/'.$obj, true);
+        }
+    
+        closedir($dh);
+        if ($DeleteMe){
+            @rmdir($dir);
+        }
+    }
+    
     /**
      * Compress all asset files of the issue
      * 
@@ -134,6 +148,8 @@ class IssueController extends Controller
         $uploadDir = $rootDir . '/../web/uploads/';
         if (!file_exists($uploadDir . $id)) {
             mkdir($uploadDir . $id);
+        } else {
+            $this->sureRemoveDir($uploadDir . $id);
         }
         $totalNo = $issue->getTotalIssueNo();
         $zipName = $uploadDir . "issue$totalNo.zip";
@@ -155,7 +171,7 @@ class IssueController extends Controller
             foreach ($pages as $page) {
                 $this->copyResource($id, $page->getLandscapeImg());
                 // @todo refactor, DRY
-                if ($page->getLandscapeImgThumbnail() == null && $page->getLandscapeImg() != null) {
+                if ($page->getCustomLandscapeImgThumbnail() == null && $page->getLandscapeImg() != null) {
                     $thumb = new SimpleImage();
                     $thumb->load($rootDir . '/../web/uploads/' . $page->getLandscapeImg());
                     $imagineFilters = $this->container->getParameter('imagine.filters');
@@ -171,7 +187,7 @@ class IssueController extends Controller
                 }
                 
                 $this->copyResource($id, $page->getPortraitImg());
-                if ($page->getPortraitImgThumbnail() == null && $page->getPortraitImg() != null) {
+                if ($page->getCustomPortraitImgThumbnail() == null && $page->getPortraitImg() != null) {
                     $thumb = new SimpleImage();
                     $thumb->load($rootDir . '/../web/uploads/' . $page->getPortraitImg());
                     $imagineFilters = $this->container->getParameter('imagine.filters');
