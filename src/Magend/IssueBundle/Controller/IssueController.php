@@ -165,7 +165,7 @@ class IssueController extends Controller
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
             $article->getAudio();
-            $pages = $article->getPages();
+            $pages = array_merge($article->getPages(), $article->getInfoPages(), $article->getStructurePages());
             if (empty($pages)) continue;
             
             foreach ($pages as $page) {
