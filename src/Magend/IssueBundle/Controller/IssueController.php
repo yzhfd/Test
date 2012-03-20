@@ -93,25 +93,50 @@ class IssueController extends Controller
     }
     
     /**
+     * Pre-publish the issue but not update issue.publish
      * 
-     * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
+     * @Route("/{id}/prepublish", name="issue_prepublish", defaults={"_format" = "json"})
      */
-    public function publishAction($id)
+    public function prePublishAction($id)
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
             return new Response('{"msg":"期刊不存在"}'); 
         }
-        if ($issue->getPublish()) {
-            return new Response('{"msg":"期刊已发布"}'); 
-        }
         
-        $issue->setPublish(true);
-        if ($issue->getPublishedAt() === null) {
-            $issue->setPublishedAt(new \DateTime());
+        $zipName = $this->compressIssueAssets($issue);
+        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
+        return new Response(json_encode(array(
+            'msg' => '发布成功',
+            'publishedAt' => $pubAt,
+            'zip' => $zipName
+        )));
+    }
+    
+    private function sureRemoveDir($dir, $DeleteMe = false)
+    {
+        if(!$dh = @opendir($dir)) return;
+        while (false !== ($obj = readdir($dh))) {
+            if($obj=='.' || $obj=='..') continue;
+            if (!@unlink($dir.'/'.$obj)) SureRemoveDir($dir.'/'.$obj, true);
         }
+    
+        closedir($dh);
+        if ($DeleteMe){
+            @rmdir($dir);
+        }
+    }
+    
+    /**
+     * Compress all asset files of the issue
+     * 
+     * @param Issue $issue
+     * @return string
+     */
+    private function compressIssueAssets($issue)
+    {
+        $id = $issue->getId();
         $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
         
         // zip issue assets
         // 1. copy assets into same folder
@@ -123,6 +148,13 @@ class IssueController extends Controller
         $uploadDir = $rootDir . '/../web/uploads/';
         if (!file_exists($uploadDir . $id)) {
             mkdir($uploadDir . $id);
+        } else {
+            $this->sureRemoveDir($uploadDir . $id);
+        }
+        $totalNo = $issue->getTotalIssueNo();
+        $zipName = $uploadDir . "issue$totalNo.zip";
+        if (file_exists($zipName)) {
+            @unlink($zipName);
         }
         
         $this->copyResource($id, $issue->getAudio());
@@ -139,7 +171,7 @@ class IssueController extends Controller
             foreach ($pages as $page) {
                 $this->copyResource($id, $page->getLandscapeImg());
                 // @todo refactor, DRY
-                if ($page->getLandscapeImgThumbnail() == null && $page->getLandscapeImg() != null) {
+                if ($page->getCustomLandscapeImgThumbnail() == null && $page->getLandscapeImg() != null) {
                     $thumb = new SimpleImage();
                     $thumb->load($rootDir . '/../web/uploads/' . $page->getLandscapeImg());
                     $imagineFilters = $this->container->getParameter('imagine.filters');
@@ -155,7 +187,7 @@ class IssueController extends Controller
                 }
                 
                 $this->copyResource($id, $page->getPortraitImg());
-                if ($page->getPortraitImgThumbnail() == null && $page->getPortraitImg() != null) {
+                if ($page->getCustomPortraitImgThumbnail() == null && $page->getPortraitImg() != null) {
                     $thumb = new SimpleImage();
                     $thumb->load($rootDir . '/../web/uploads/' . $page->getPortraitImg());
                     $imagineFilters = $this->container->getParameter('imagine.filters');
@@ -185,7 +217,6 @@ class IssueController extends Controller
         
         // 2. zip folder of assets
         $zip = new ZipArchive();
-        $zipName = $uploadDir . "issue$id.zip";
         if (!$zip->open($zipName, ZIPARCHIVE::CREATE)) {
             exit("cannot open <$zipName>\n");
         }
@@ -198,8 +229,37 @@ class IssueController extends Controller
         }
         $zip->close();
         
+        return $zipName;
+    } 
+    
+    /**
+     * 
+     * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
+     */
+    public function publishAction($id)
+    {
+        $issue = $this->_findIssue($id);
+        if (empty($issue)) {
+            return new Response('{"msg":"期刊不存在"}'); 
+        }
+        if ($issue->getPublish()) {
+            return new Response('{"msg":"期刊已发布"}'); 
+        }
+        
+        $issue->setPublish(true);
+        if ($issue->getPublishedAt() === null) {
+            $issue->setPublishedAt(new \DateTime());
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        $zipName = $this->compressIssueAssets($issue);
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
-        return new Response('{"msg":"发布成功", "publishedAt":"' . $pubAt . '" }');
+        return new Response(json_encode(array(
+            'msg' => '发布成功',
+            'publishedAt' => $pubAt,
+            'zip' => $zipName
+        )));
     }
     
     /**

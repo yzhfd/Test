@@ -72,7 +72,7 @@
                         <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d') }}{% endif%}</td>
                         <td class="publishedAt">{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
                         <td style="width:120px;">
-                            {% if not issue.publish %}<a class="previewbtn" href="#" title="预览"><img src="{{ asset('images/preview.png') }}" alt="预览" /></a>{% endif %}
+                            {% if not issue.publish %}<a class="previewbtn" href="{{ path('issue_prepublish', { 'id':issue.id }) }}" title="预览"><img src="{{ asset('images/preview.png') }}" alt="预览" /></a>{% endif %}
                             {% if issue.publish %}已发布{% else %}<a class="publishbtn" href="{{ path('issue_publish', { 'id':issue.id }) }}" title="发布"><img src="{{ asset('images/publish.png') }}" alt="发布" /></a>{% endif %}
                             {% if not issue.publish %}<a class="editbtn" href="{{ path('issue_edit', { 'id':issue.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>{% endif %}
                             <a rel="confirm" href="{{ path('issue_flush', { 'id':issue.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
