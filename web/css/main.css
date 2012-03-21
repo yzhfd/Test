@@ -353,6 +353,14 @@ ol, ul { list-style: none; }
 	position: absolute;
 	left: 400px; top: 20px;	
 }
+.page_canvas_ruler {
+    background: transparent url('../images/canvas-ruler.png') no-repeat left top;
+    width: 1052px;
+    height: 786px;
+    padding-left: 17px;
+    padding-top: 17px;
+    margin-left: -17px;
+}
 .hot {
 	position: absolute; /*!important*/
 	padding: 0px; margin: 0px; list-style: none;
@@ -361,19 +369,55 @@ ol, ul { list-style: none; }
 	/*background: transparent url('../images/stripe.png') repeat;
 	opacity: 0.6;*/
 	opacity: 0.6;
-	overflow: hidden;
 }
 .hot:hover {
 	/*background: transparent url('../images/stripe2.png') repeat;*/
-	background-color: rgba(0, 125, 255, 0.5);
-	opacity: 0.9;
+	background-color: rgba(0, 125, 255);
 }
 .hotsel {
-	background-color: rgba(0, 125, 255, 0.7);
-	opacity: 0.9;
+	background-color: rgba(0, 125, 255, 1.0);
+	opacity: 1.0;
+	box-shadow: 0 0 0 1px royalblue;
 	/*
 	opacity: 0.8;
 	background: transparent url('../images/stripe2.png') repeat;*/
+}
+.hot .hot-toolbar {
+    display: none;
+    position: absolute;
+    top:-33px;
+    left:-2px;
+    width:100%;
+    min-width: 230px;
+    padding: 3px 2px 2px;
+    background-color: royalblue;
+    z-index: 2000;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    opacity: 1.0;
+}
+.hotsel .hot-toolbar {
+    display: block;
+}
+.hot .size-indicator {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.5;
+}
+.hotsel .size-indicator {
+    opacity: 0.8;
+}
+.hot .size-indicator-text {
+    width: 100%;
+    text-align: center;
+    color: white;
+    background-color: #333;
+    padding: 2% 0;
+    position: relative;
+    bottom: 0;
 }
 li.ui-selected {
 	background-color: rgba(255, 0, 0, 0.5);

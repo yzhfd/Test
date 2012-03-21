@@ -247,7 +247,7 @@ var page_edit = function () {
 		dlg.data('resetTo', dlg.children().clone(true, true));
 	});
 	
-	window.pageCanvas = new PageCanvas;
+	window.pageCanvas = new PageCanvas({ el: $('#page_canvas') });
 	if (initHots.length) {
 		window.pageCanvas.load(initHots);
 	}
@@ -386,6 +386,7 @@ var page_edit = function () {
 			$('#page_editor').overlay('hide');
 			pageCanvas.hots.each(function(hot, index){
 				hot.isEdited = false;
+				hot.layoutChanged = false;
 			});
 			console.log('save done');
 		});
