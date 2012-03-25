@@ -8,6 +8,7 @@ vendor/*
 web/uploads/*
 web/bundles/*
 web/media/*
+web/Publish/*
 
 # Configuration files
 app/config/parameters.ini

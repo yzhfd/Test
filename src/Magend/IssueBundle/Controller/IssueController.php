@@ -152,7 +152,8 @@ class IssueController extends Controller
             $this->sureRemoveDir($uploadDir . $id);
         }
         $totalNo = $issue->getTotalIssueNo();
-        $zipName = $uploadDir . "issue$totalNo.zip";
+        $publishDir = $rootDir . '/../web/Publish/';
+        $zipName = $publishDir . "issue$totalNo.zip";
         if (file_exists($zipName)) {
             @unlink($zipName);
         }
