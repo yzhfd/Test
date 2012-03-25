@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iMagShow>
+            
+    <MagzineList>
+                <Magzine>
+            <ID>6</ID>
+            <GroupID>1</GroupID>
+            <GroupName>世界建筑导报</GroupName>
+            <LandscapeCover></LandscapeCover>
+            <PortraitCover>issue_4f3880b0e5a32.jpg</PortraitCover>
+            <IAPProductionID>com.imagshow.demo</IAPProductionID>
+            <Period></Period>
+            <Year>2012</Year>
+            <TotalPeriod></TotalPeriod>
+            <Price>0</Price>
+            <MType>1</MType>
+            <Preview>issue_4f43ba54c28bb.jpg</Preview>
+            <Audio></Audio>
+            <Publish>2012-03-25</Publish>
+        </Magzine>
+                <Magzine>
+            <ID>4</ID>
+            <GroupID>1</GroupID>
+            <GroupName>世界建筑导报</GroupName>
+            <LandscapeCover></LandscapeCover>
+            <PortraitCover></PortraitCover>
+            <IAPProductionID>com.imagshow.demo</IAPProductionID>
+            <Period></Period>
+            <Year>2012</Year>
+            <TotalPeriod></TotalPeriod>
+            <Price>0</Price>
+            <MType>1</MType>
+            <Preview></Preview>
+            <Audio></Audio>
+            <Publish>2012-03-25</Publish>
+        </Magzine>
+                <Magzine>
+            <ID>2</ID>
+            <GroupID>1</GroupID>
+            <GroupName>世界建筑导报</GroupName>
+            <LandscapeCover></LandscapeCover>
+            <PortraitCover></PortraitCover>
+            <IAPProductionID>com.imagshow.demo</IAPProductionID>
+            <Period></Period>
+            <Year>2012</Year>
+            <TotalPeriod></TotalPeriod>
+            <Price>2</Price>
+            <MType>1</MType>
+            <Preview></Preview>
+            <Audio></Audio>
+            <Publish>2012-03-07</Publish>
+        </Magzine>
+            </MagzineList>
+</iMagShow>

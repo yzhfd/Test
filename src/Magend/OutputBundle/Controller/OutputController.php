@@ -14,7 +14,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  */
 class OutputController extends Controller
 {
-   
     
     // @todo need some authentication
     
@@ -26,30 +25,8 @@ class OutputController extends Controller
      */
     public function issueAction($id)
     {
-        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        $issue = $repo->find($id);
-        
-        // @todo refactor query
-        $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
-                    ->setParameter('issue', $issue);
-        $query->getResult();
-        
-        $query = $em->createQuery('SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)')
-                    ->setParameter('articles', $issue->getArticleIds());
-        $query->getResult();
-        
-        // test
-        $response = $this->render('MagendOutputBundle:Output:issue.xml.twig', array(
-            'issue' => $issue,
-        ));
-        $rootDir = $this->container->getParameter('kernel.root_dir');
-        
-        file_put_contents($rootDir . '/../web/uploads/issue.xml', $response->getContent());
-        
-        return array(
-            'issue' => $issue
-        );
+        $om = $this->get('magend.output_manager');
+        return $om->outputIssue($id);
     }
     
     /**
@@ -60,16 +37,8 @@ class OutputController extends Controller
      */
     public function magzineAction($id)
     {
-        $cls = 'MagendIssueBundle:Issue';
-        $em = $this->getDoctrine()->getEntityManager();
-        // @todo which order
-        $query = $em->createQuery("SELECT s FROM $cls s WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
-                    ->setParameter('magId', $id);
-        $arr = $this->getList($cls, $query);
-        $arr['issues'] = $arr['entities'];
-        unset($arr['entities']);
-        
-        return $arr;
+        $om = $this->get('magend.output_manager');
+        return $om->outputMagazine($id);
     }
     
     /**
@@ -79,9 +48,7 @@ class OutputController extends Controller
      */
     public function magzinesAction()
     {
-        $arr = $this->getList('MagendMagzineBundle:Magzine');
-        $arr['magzines'] = $arr['entities'];
-        unset($arr['entities']);
-        return $arr;
+        $om = $this->get('magend.output_manager');
+        return $om->outputMagazines();
     }
 }

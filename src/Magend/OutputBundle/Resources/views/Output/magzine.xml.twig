@@ -26,8 +26,8 @@
         {% for issue in issues %}
         <Magzine>
             <ID>{{ issue.id }}</ID>
-            <GroupID></GroupID>
-            <GroupName></GroupName>
+            <GroupID>{{ magzine.id }}</GroupID>
+            <GroupName>{{ magzine.name }}</GroupName>
             <LandscapeCover>{{ issue.landscapeCover }}</LandscapeCover>
             <PortraitCover>{{ issue.portraitCover }}</PortraitCover>
             <IAPProductionID>com.imagshow.demo</IAPProductionID>

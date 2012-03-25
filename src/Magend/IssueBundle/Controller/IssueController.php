@@ -157,6 +157,11 @@ class IssueController extends Controller
             @unlink($zipName);
         }
         
+        // output issue's xml
+        $om = $this->get('magend.output_manager');
+        $response = $om->outputIssue($id);
+        file_put_contents($uploadDir . "$id/issue$id.xml", $response->getContent());
+        
         $this->copyResource($id, $issue->getAudio());
         $this->copyResource($id, $issue->getPortraitCover());
         $this->copyResource($id, $issue->getLandscapeCover());
@@ -246,6 +251,16 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊已发布"}'); 
         }
         
+        // output magzine's xml
+        $om = $this->get('magend.output_manager');
+        $magId = $issue->getMagzine()->getId();
+        $response = $om->outputMagazine($magId);
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        file_put_contents($rootDir . '/../web/Publish/group' . $magId . '.xml', $response->getContent());
+        
+        $zipName = $this->compressIssueAssets($issue);
+        
+        // update publish only if all files are output successfully
         $issue->setPublish(true);
         if ($issue->getPublishedAt() === null) {
             $issue->setPublishedAt(new \DateTime());
@@ -253,7 +268,6 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
-        $zipName = $this->compressIssueAssets($issue);
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
             'msg' => '发布成功',

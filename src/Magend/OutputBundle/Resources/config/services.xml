@@ -4,17 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="magend_output.example.class">Magend\OutputBundle\Example</parameter>
+        <parameter key="magend.output_manager.class">Magend\OutputBundle\Manager\OutputManager</parameter>
     </parameters>
 
     <services>
-        <service id="magend_output.example" class="%magend_output.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="magend.output_manager" class="%magend.output_manager.class%">
+            <argument type="service" id="service_container" />
         </service>
     </services>
-    -->
 </container>
