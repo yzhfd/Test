@@ -1,3 +1,8 @@
+MagendVersionBundle:
+    resource: "@MagendVersionBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendAssetBundle:
     resource: "@MagendAssetBundle/Controller/"
     type:     annotation

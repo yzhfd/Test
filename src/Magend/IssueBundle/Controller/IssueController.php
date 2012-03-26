@@ -257,7 +257,8 @@ class IssueController extends Controller
         $magId = $issue->getMagzine()->getId();
         $response = $om->outputMagazine($magId);
         $rootDir = $this->container->getParameter('kernel.root_dir');
-        file_put_contents($rootDir . '/../web/Publish/group' . $magId . '.xml', $response->getContent());
+        $publishDir = $rootDir . '/../web/Publish/';
+        file_put_contents($publishDir . "group$magId.xml", $response->getContent());
         
         $zipName = $this->compressIssueAssets($issue);
         
@@ -268,6 +269,11 @@ class IssueController extends Controller
         }
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
+        
+        // update version file
+        $vm = $this->get('magend.version_manager');
+        $vm->incIssueVersion();
+        file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
         
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
