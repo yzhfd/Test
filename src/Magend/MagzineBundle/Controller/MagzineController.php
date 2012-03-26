@@ -173,6 +173,11 @@ class MagzineController extends Controller
                     $magzine->setUpdatedAt(new \DateTime);
                 }
                 
+                if (is_null($id)) {
+                    $vm = $this->get('magend.version_manager');
+                    $vm->incGroupVersion();
+                }
+                
                 $em->persist($magzine);
                 $em->flush();
                 
