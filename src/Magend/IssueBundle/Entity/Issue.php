@@ -192,6 +192,14 @@ class Issue
      * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
      */
     private $magzine;
+    
+    /**
+     * The id in app store, for in-app purchase
+     * 
+     * @var string
+     * @ORM\Column(name="iap_id", type="string", length=255, nullable=true)
+     */
+    private $iapId;
 
 
     public function __construct()
@@ -705,5 +713,15 @@ class Issue
     public function getPreview()
     {
         return $this->preview;
+    }
+    
+    public function getIapId()
+    {
+        return $this->iapId;
+    }
+    
+    public function setIapId($iapId)
+    {
+        $this->iapId = $iapId;
     }
 }
