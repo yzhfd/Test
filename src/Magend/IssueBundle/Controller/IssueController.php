@@ -104,6 +104,16 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊不存在"}'); 
         }
         
+        // output magzine's xml
+        $this->_outputGroupXml($issue);
+        
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $publishDir = $rootDir . '/../web/Publish/';
+        // update version file
+        $vm = $this->get('magend.version_manager');
+        // $vm->incIssueVersion();
+        file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
+        
         $zipName = $this->compressIssueAssets($issue);
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
@@ -238,6 +248,26 @@ class IssueController extends Controller
     } 
     
     /**
+     * Output issue's magazine's xml
+     * 
+     * @param Issue $issue
+     */
+    private function _outputGroupXml($issue)
+    {
+        $om = $this->get('magend.output_manager');
+        // group list
+        $response = $om->outputMagazines();
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $publishDir = $rootDir . '/../web/Publish/';
+        file_put_contents($publishDir . "grouplist.xml", $response->getContent());
+        
+        // group(magzine)
+        $magId = $issue->getMagzine()->getId();
+        $response = $om->outputMagazine($magId);
+        file_put_contents($publishDir . "group$magId.xml", $response->getContent());
+    }
+    
+    /**
      * 
      * @Route("/{id}/publish", name="issue_publish", defaults={"_format" = "json"})
      */
@@ -252,12 +282,7 @@ class IssueController extends Controller
         }
         
         // output magzine's xml
-        $om = $this->get('magend.output_manager');
-        $magId = $issue->getMagzine()->getId();
-        $response = $om->outputMagazine($magId);
-        $rootDir = $this->container->getParameter('kernel.root_dir');
-        $publishDir = $rootDir . '/../web/Publish/';
-        file_put_contents($publishDir . "group$magId.xml", $response->getContent());
+        $this->_outputGroupXml($issue);
         
         $zipName = $this->compressIssueAssets($issue);
         
