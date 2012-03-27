@@ -7,6 +7,8 @@
         <div class="span6">
             <h3>最近打开的期刊</h3>
             {% if magzine is not null %}<a href="{{ path('magzine_issues', { 'id':magzine.id}) }}">{{ magzine.name }}</a>{% endif %}
+            
+            <p style=" margin-top:40px; font-size: 18px;"><a href="{{ path('published') }}">点击查看Publish了的的资源文件</a></p>
         </div>
         
         <div class="span6">

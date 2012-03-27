@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+
+{% block main %}
+    <h1 style="color:#333;">Publish下的文件列表</h1>
+    
+    <ul style="margin-top: 20px;">
+    {% for file in files %}
+        <li style="font-size: 18px; margin-bottom: 8px;">
+            <span class="timestamp" style="color:#777; margin-right: 20px;">{{ file.timestamp|date('Y-m-d H:i:s') }}</span>
+            <a title="点击查看或者下载" href="{{ asset('Publish/' ~ file.name ) }}">{{ file.name }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
