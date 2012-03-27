@@ -164,7 +164,7 @@ var HotView = Backbone.View.extend({
 			}, this)
 		});
 	    
-	    this.initToolbar();
+	    // this.initToolbar();
     },
     initToolbar: function() {
     	var hotView = this;
