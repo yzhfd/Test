@@ -170,7 +170,7 @@ class IssueController extends Controller
         // output issue's xml
         $om = $this->get('magend.output_manager');
         $response = $om->outputIssue($id);
-        file_put_contents($uploadDir . "$id/issue$id.xml", $response->getContent());
+        file_put_contents($publishDir . "$id/issue$id.xml", $response->getContent());
         
         $this->copyResource($id, $issue->getAudio());
         $this->copyResource($id, $issue->getPortraitCover());
