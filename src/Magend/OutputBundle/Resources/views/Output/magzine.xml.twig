@@ -2,7 +2,7 @@
 
 {% block body %}
     {# old output
-    <Magzine>
+    <Magazine>
         <Issues>
             {% for issue in issues %}
             <Issue
@@ -19,18 +19,19 @@
             ></Issue>
             {% endfor %}
         </Issues>
-    </Magzine>
+    </Magazine>
     #}
     
-    <MagzineList>
+    <MagazineList>
         {% for issue in issues %}
-        <Magzine>
-            <ID>{{ issue.id }}</ID>
-            <GroupID>{{ magzine.id }}</GroupID>
+        <Magazine>
+            <GroupId>{{ magzine.id }}</GroupId>
             <GroupName>{{ magzine.name }}</GroupName>
+            <IssueId>{{ issue.id }}</IssueId>
+            <IssueName>{{ issue.title }}</IssueName>
             <LandscapeCover>{{ issue.landscapeCover }}</LandscapeCover>
             <PortraitCover>{{ issue.portraitCover }}</PortraitCover>
-            <IAPProductionID>com.imagshow.demo</IAPProductionID>
+            <IAPProductionID>{{ issue.iapId }}</IAPProductionID>
             <Period>{{ issue.yearIssueNo }}</Period>
             <Year>{{ issue.year }}</Year>
             <TotalPeriod>{{ issue.totalIssueNo }}</TotalPeriod>
@@ -39,7 +40,7 @@
             <Preview>{{ issue.preview }}</Preview>
             <Audio>{{ issue.audio }}</Audio>
             <Publish>{{ issue.publishedAt|date('Y-m-d') }}</Publish>
-        </Magzine>
+        </Magazine>
         {% endfor %}
-    </MagzineList>
+    </MagazineList>
 {% endblock %}

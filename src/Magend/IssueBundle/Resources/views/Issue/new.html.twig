@@ -52,6 +52,11 @@
             <div class="input">{{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}</div>
         </div>
         
+        <div class="clearfix">
+            {{ form_label(form.iapId, 'AppStore应用ID') }}
+            <div class="input">{{ form_errors(form.iapId) }}{{ form_widget(form.iapId) }}</div>
+        </div>
+        
         {{ form_rest(form) }}
         
         <div class="actions">

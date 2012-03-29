@@ -17,7 +17,6 @@ var issue_new = function () {
 		return false;
 	}).datepicker({
 		gotoCurrent:true, 
-		minDate: 0,
 		onSelect: function(dateText, inst) {
 			/*var from = dateText == today ? now.getHours()+1 : 0;
 			feedHours(from);*/

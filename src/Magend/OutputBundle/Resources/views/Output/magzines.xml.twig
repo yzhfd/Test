@@ -6,7 +6,7 @@
         <Group>
             <GroupId>{{ magzine.id }}</GroupId>
             <GroupName>{{ magzine.name }}</GroupName>
-            <GroupCover>{% if magzine.landscapeCover is not null %}{{ asset('uploads/' ~ magzine.landscapeCover) }}{% endif %}</GroupCover>
+            <GroupCover>{% if magzine.landscapeCover is not null %}{{ magzine.landscapeCover }}{% endif %}</GroupCover>
         </Group>
         {#
         <Magzine
