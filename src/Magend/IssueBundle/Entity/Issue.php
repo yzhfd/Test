@@ -152,6 +152,14 @@ class Issue
     private $publishedAt;
     
     /**
+     * Year
+     * 
+     * @var integer
+     * @ORM\Column(name="year", type="integer")
+     */
+    private $year;
+    
+    /**
      * @var string $yearIssueNo
      *
      * @ORM\Column(name="year_issueno", type="string", length=255, nullable=true)
@@ -196,6 +204,7 @@ class Issue
 
     public function __construct()
     {
+        $this->year = date("Y");
         $this->articles = new ArrayCollection();
     }
     
@@ -221,6 +230,10 @@ class Issue
             $this->createdAt = $now;
         } else {
             $this->updatedAt = $now;
+        }
+        
+        if (!$this->getYear()) {
+            $this->setYear(date("Y"));
         }
         /*
         if ($this->coverImage) {
@@ -705,5 +718,15 @@ class Issue
     public function getPreview()
     {
         return $this->preview;
+    }
+    
+    public function getYear()
+    {
+        return $this->year;
+    }
+    
+    public function setYear($year)
+    {
+        $this->year = $year;
     }
 }

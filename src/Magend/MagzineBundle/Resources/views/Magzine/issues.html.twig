@@ -61,7 +61,7 @@
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
-                        <td>{{ issue.yearIssueNo }}</td>
+                        <td>{{ issue.year }}/{{ issue.yearIssueNo }}</td>
                         <td>{{ issue.totalIssueNo }}</td>
                         <td class="thumbup">
                             <!--<a class="media" title="竖版封面" href="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="30" height="40" src="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>-->
