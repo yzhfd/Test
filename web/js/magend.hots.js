@@ -124,7 +124,7 @@ var HotView = Backbone.View.extend({
 	    	height: parseInt(this.model.get('height'))
 	    });
 	    hotel.data('cid', this.model.cid);
-	    hotel.append('<div class="size-indicator"><div class="size-indicator-text"></div></div>'); // size indicator element
+	    // hotel.append('<div class="size-indicator"><div class="size-indicator-text"></div></div>'); // size indicator element
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
@@ -152,7 +152,7 @@ var HotView = Backbone.View.extend({
 			},
             resize: function (event, ui) {
                 // 实时更新
-                hotel.find('.size-indicator-text').text([Math.round(ui.size.width), Math.round(ui.size.height)].join('x'));
+                // hotel.find('.size-indicator-text').text([Math.round(ui.size.width), Math.round(ui.size.height)].join('x'));
             },
 			stop: _.bind(function () {
 				// $(this.el).resizable('option', 'aspectRatio', false);
@@ -479,6 +479,7 @@ var HotView = Backbone.View.extend({
         }
         
         // toolbar text
+        /*
         var toolElement = $(this.el).find('.hot-toolbar');
         var positionLockButton = toolElement.find('[role=lock-position]');
         var ratioLockButton = toolElement.find('[role=lock-ratio]');
@@ -491,10 +492,11 @@ var HotView = Backbone.View.extend({
             ratioLockButton.text(ratioLockButton.data('text-invert'));
         } else {
             ratioLockButton.text(ratioLockButton.data('text-normal'));
-        }
-        // TODO: size indicator
+        }*/
+        
+        /*
         $(this.el).find('.size-indicator-text')
-                  .text([this.model.get('width'), this.model.get('height')].join('x'));
+                  .text([this.model.get('width'), this.model.get('height')].join('x')); */
         return this;
     }
 });
