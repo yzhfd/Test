@@ -10,6 +10,7 @@ class IssueType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
+            ->add('year')
             ->add('yearIssueNo')
             ->add('totalIssueNo')
             ->add('title')
