@@ -50,6 +50,8 @@
         <li id="hot_2" class="hotobj hotlink" title="内部链接或者网页链接"><span class="hide">链接</span></li>
         <li id="hot_3" class="hotobj hotvideo" title="视频"><span class="hide">视频</span></li>
         <li id="hot_4" class="hotobj hotaudio" title="音频"><span class="hide">音频</span></li>
+        <li id="hot_5" class="hotobj hotseq" title="序列图"><span class="hide">序列图</span></li>
+        <li id="hot_6" class="hotobj hotmap" title="地图"><span class="hide">地图</span></li>
     </ul>
     
     <div id="hot_dialog" style="padding:10px;">
@@ -73,10 +75,10 @@
             </div>
         </div>
         
-        <div id="hot_1_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px; overflow-x: auto;">
+        <div id="hot_1_dialog" class="dlgcontent has-assets-panel" style="display:none;">
             <p style="position: absolute; left: 10px;">拖拽多张图片到这里</p>
-            <div style="margin-top: 30px; width: 300px; background-color: red;">
-                <ol id="hotimgs" style="min-width: 400px; height: 150px; background-color: #333;">
+            <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
+                <ol id="hotimgs" class="assets-panel">
                     <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
                 </ol>
             </div>
@@ -107,6 +109,35 @@
             </form>
             <div id="audio-upload-area">
                 拖拽音频到这里
+            </div>
+        </div>
+        
+        <div id="hot_5_dialog" class="dlgcontent has-assets-panel" style="display:none;">
+            <form action="#">
+                <input type="checkbox" name="autoplay" /> 自动播放，
+                <input type="checkbox" name="gravity" /> 方向感应
+                <p><select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度</p>
+            </form>
+            <p style="position: absolute; left: 10px;">拖拽图片到这里，顺序重要</p>
+            <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
+                <ol id="hotseq" class="assets-panel">
+                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
+                </ol>
+            </div>
+        </div>
+        
+        <div id="hot_6_dialog" class="dlgcontent has-assets-panel" style="display:none;">
+            <form action="#">
+                <p>经度: <input type="text" name="lat" class="span3" /></p>
+                <p>纬度: <input type="text" name="lng" class="span3" /></p>
+                <input type="radio" name="subtype" value="0" /> 全屏显示
+                <input type="radio" name="subtype" value="1" checked="checked" /> 窗口显示
+            </form>
+            <p style="position: absolute; left: 10px;">拖拽按钮图片到这里，依次为开按钮和关按钮</p>
+            <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
+                <ol id="hotmap" class="assets-panel">
+                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
+                </ol>
             </div>
         </div>
         

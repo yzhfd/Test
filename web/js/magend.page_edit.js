@@ -155,46 +155,52 @@ var page_edit = function () {
 		e.preventDefault();
 	});
 	
-	// images
-	var hotimgs = $('#hotimgs');
-	hotimgs.fileupload({
-		url: '',
-		paramName: 'file',
-		dropZone: hotimgs,
-		sequentialUploads: true,
-		drop: function (e, data) {
-			var hot = $('#hot_1_dialog').data('hot');
-			if (!hot.addUploads) hot.addUploads = [];
-			var count = data.files.length;
-			for (var i = 0; i < count; ++i) {
-				(function (file) {
-		            var reader = new FileReader();
-		            reader.onload = function (e) {
-		            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
-		            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
-		            	hotimg.appendTo($('#hotimgs'));
-		            	hotimg.data('file', file);
-
-		            	$('a.pagedel').live('click', function(e){
-		            		$(this).parent().remove();
-		            		return false;
-		            	});
-		            	
-		            	$('#hotimgs').width($('#hotimgs li.hotimg').length * hotimg.outerWidth(true) + 20);
-		            };
-		            
-		            reader.readAsDataURL(file);
-				})(data.files[i]);
-				hot.addUploads.push(data.files[i]);
+	// images, image seq, map that support multiple images
+	$('.has-assets-panel').each(function(index, dlg){
+		dlg = $(dlg);
+		var panel = dlg.find('.assets-panel');
+		
+		panel.fileupload({
+			url: '',
+			paramName: 'file',
+			dropZone: panel,
+			sequentialUploads: true,
+			drop: function (e, data) {
+				// dialog is cloned
+				var panel = dlg.find('.assets-panel');
+				var hot = dlg.data('hot');
+				if (!hot.addUploads) hot.addUploads = [];
+				var count = data.files.length;
+				for (var i = 0; i < count; ++i) {
+					(function (file) {
+			            var reader = new FileReader();
+			            reader.onload = function (e) {
+			            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
+			            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+			            	hotimg.appendTo(panel);
+			            	hotimg.data('file', file);
+			            	
+			            	$('a.pagedel').live('click', function(e){
+			            		$(this).parent().remove();
+			            		return false;
+			            	});
+			            	
+			            	panel.width($('li.hotimg', panel).length * hotimg.outerWidth(true) + 20);
+			            };
+			            
+			            reader.readAsDataURL(file);
+					})(data.files[i]);
+					hot.addUploads.push(data.files[i]);
+				}
+				
+				return false;
+			},
+			submit: function (e, data) {
+				// no upload immediately
+				e.stopPropagation();
+				e.preventDefault();
 			}
-			
-			return false;
-		},
-		submit: function (e, data) {
-			// no upload immediately
-			e.stopPropagation();
-			e.preventDefault();
-		}
+		});
 	});
 	
 	// single image
@@ -348,8 +354,8 @@ var page_edit = function () {
 				var when2 = $.when({});
 				when.done(function(){
 					pageCanvas.hots.each(function(hot, index){
-						// @todo only images now
-						if (!hot.assets || hot.get('type') != 1 || !hot.isEdited) {
+						// @todo refactor
+						if (!hot.assets || (hot.get('type') != 1 && hot.get('type') != 5 && hot.get('type') != 6) || !hot.isEdited) {
 							return;
 						}
 						

@@ -41,15 +41,20 @@ button::-moz-focus-inner {
 .newPages li.page.syncfail {
     border: 2px solid red !important;
 }
-
-#hotimgs li.hotimg {
+.has-assets-panel {
+	min-width: 400px; min-height: 120px; overflow-x: auto;
+}
+.assets-panel {
+	min-width: 400px; height: 150px; background-color: #333;
+}
+.assets-panel li.hotimg {
     margin-top: 10px;
     border: 2px solid #57A000;
 }
-#hotimgs li.hotimg.unsynced {
+.assets-panel li.hotimg.unsynced {
     border: 2px solid yellow;
 }
-#hotimgs li.hotimg.syncfail {
+.assets-panel li.hotimg.syncfail {
     border: 2px solid red !important;
 }
 li.hotimg { /* refer to li.page below */
@@ -328,6 +333,12 @@ ol, ul { list-style: none; }
 }
 .hotlink {
     background: #EEE url('../images/hotlib_link.png') no-repeat center center;
+}
+.hotseq {
+    background: #EEE url('../images/hotlib_imgseq.png') no-repeat center center;
+}
+.hotmap {
+	background: #EEE url('../images/hotlib_map.png') no-repeat center center;
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */

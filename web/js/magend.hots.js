@@ -55,7 +55,7 @@ var Hot = Backbone.Model.extend({
             var reader = new FileReader();
             reader.onload = function (e) {
                 examineImageAtUrl(e.target.result);
-            }
+            };
             reader.readAsDataURL(imgFile);
         } else {
             dfd.reject();
@@ -272,16 +272,19 @@ var HotView = Backbone.View.extend({
 	    		.addClass('synced')
 	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
     		}
-    	} else if (hottype == 1) {// images
+    	} else if (hottype == 1 || hottype == 5 || hottype == 6) {// images, image sequence or map
+    		var panel = typeDlg.find('.assets-panel');
+    		// assert panel is not null
+    		
     		// @todo DRY
     		if (hotModel.assets) {
     			$(hotModel.assets).each(function(index, asset){
     				if (asset.file) {
 		            	var hotimg = $('<li class="hotimg synced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" rel="' + asset.id + '" title="'
 		            			+ asset.name + '"><img width="128" height="96" src="' + basePath + '/uploads/' + asset.file + '" /></a></li>');
-		            	hotimg.appendTo($('#hotimgs'));
+		            	hotimg.appendTo(panel);
     				} else { // asset is DOM element
-    					$(asset).clone(true, true).appendTo($('#hotimgs'));
+    					$(asset).clone(true, true).appendTo(panel);
     				}
     			});
     		}
@@ -291,10 +294,10 @@ var HotView = Backbone.View.extend({
         		return false;
         	});
         	
-        	if ($('#hotimgs li.hotimg').length > 0) {
-        		$('#hotimgs').width($('#hotimgs li.hotimg').length * 150 + 20);
+        	if ($('li.hotimg', panel).length > 0) {
+        		panel.width($('li.hotimg', panel).length * 150 + 20);
         	}
-    		$('#hotimgs').sortable({containment:$('#hotimgs')});
+        	panel.sortable({containment:panel});
     	} else if (hottype == 0) {
     		// single image
     		if (hotModel.uploads) {
@@ -401,10 +404,11 @@ var HotView = Backbone.View.extend({
     						$.merge(hotModel.uploads, hotModel.addUploads);
     						hotModel.addUploads = null;
     					}
-    					if (hotModel.get('type') == 1) { // multiple assets, images here
+    					
+    					if (typeDlg.hasClass('has-assets-panel')) {// multiple assets, images here
     						hotModel.uploads = [];
     						hotModel.assets = [];
-    						$('#hotimgs').find('li.hotimg').each(function(index, hotimg){
+    						$('li.hotimg', typeDlg).each(function(index, hotimg){
     							hotimg = $(hotimg);
     							var imgFile = hotimg.data('file');
     							hotModel.assets.push(hotimg.clone(true, true)); // not file but element to avoid file read delay

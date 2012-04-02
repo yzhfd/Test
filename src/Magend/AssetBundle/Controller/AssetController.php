@@ -48,7 +48,7 @@ class AssetController extends Controller
         // @unlink existing files
         $hotType = $hot->getType();
         // @todo if !$hot->supportMultiAssets
-        if ($hotType != 1) { // non-gallery, not support multi assets
+        if ($hotType != 1 && $hotType != 5 && $hotType != 6) { // not support multi assets
             //if ($hotType == 0 || $hotType == 2 || $hotType == 3) { // video, audio or single image
             $assets = $hot->getAssets(false);
             $hot->removeAssets();
