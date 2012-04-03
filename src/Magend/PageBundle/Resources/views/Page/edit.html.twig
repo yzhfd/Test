@@ -116,7 +116,11 @@
             <form action="#">
                 <input type="checkbox" name="autoplay" /> 自动播放，
                 <input type="checkbox" name="gravity" /> 方向感应
-                <p><select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度</p>
+                <p>
+                    <select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度，
+                    <input type="checkbox" name="bar" /> 显示控制条
+                </p>
+                <p>显示位置 <input type="radio" name="position" value="0" /> 上，<input type="radio" name="position" value="1" /> 下，<input type="radio" name="position" value="2" /> 左，<input type="radio" name="position" value="3" /> 右
             </form>
             <p style="position: absolute; left: 10px;">拖拽图片到这里，顺序重要</p>
             <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
@@ -128,10 +132,10 @@
         
         <div id="hot_6_dialog" class="dlgcontent has-assets-panel" style="display:none;">
             <form action="#">
+                <p>地址: <input type="text" name="address" class="span4" /></p>
                 <p>经度: <input type="text" name="lat" class="span3" /></p>
                 <p>纬度: <input type="text" name="lng" class="span3" /></p>
-                <input type="radio" name="subtype" value="0" /> 全屏显示
-                <input type="radio" name="subtype" value="1" checked="checked" /> 窗口显示
+                <input type="radio" name="subtype" value="0" /> 全屏显示，<input type="radio" name="subtype" value="1" checked="checked" /> 窗口显示
             </form>
             <p style="position: absolute; left: 10px;">拖拽按钮图片到这里，依次为开按钮和关按钮</p>
             <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
