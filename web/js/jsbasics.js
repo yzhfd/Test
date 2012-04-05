@@ -48,8 +48,7 @@
 	};
 	
 	// serialize form to object
-	$.fn.serializeObject = function()
-	{
+	$.fn.serializeObject = function() {
 	    var o = {};
 	    var a = this.serializeArray();
 	    $.each(a, function() {
@@ -62,6 +61,12 @@
 	            o[this.name] = this.value || '';
 	        }
 	    });
+	    $('input[type=checkbox]:not(:checked)', this).map(function() {
+	    	if (!o[this.name]) {
+	    		o[this.name] = 'off';
+	    	}
+	    });
+	    console.log(o);
 	    return o;
 	};
 	

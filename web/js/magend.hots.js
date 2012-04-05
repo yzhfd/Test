@@ -249,7 +249,6 @@ var HotView = Backbone.View.extend({
     	}
     	
     	// populate the form with extra attrs
-    	// link
     	if (hotModel.extraAttrs) {
 	    	$.each(hotModel.extraAttrs, function(name, value) {
 	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
