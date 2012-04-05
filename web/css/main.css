@@ -300,6 +300,9 @@ ol, ul { list-style: none; }
 	/*padding-left: 30px;*/
 	position: relative;
 }
+#hot_essential div {
+	margin-bottom: 5px;
+}
 #hotlib {
     z-index: 9;
 	background-color: #CCC;

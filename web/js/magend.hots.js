@@ -297,6 +297,49 @@ var HotView = Backbone.View.extend({
         		panel.width($('li.hotimg', panel).length * 150 + 20);
         	}
         	panel.sortable({containment:panel});
+        	
+        	
+        	if (hottype == 6) {
+        	    var map = new google.maps.Map($('.gmap', typeDlg)[0], {
+        	    	zoom: 2,
+        	    	center: new google.maps.LatLng(48.108, 23.417),
+        	    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+        	    	scrollwheel: false
+        	    });
+        	    var marker = null;
+        	    var lat = parseFloat($('input[name=lat]', typeDlg).val());
+        	    var lng = parseFloat($('input[name=lng]', typeDlg).val());
+        	    if (lat != 0 && lng != 0) {
+        	    	var pos = new google.maps.LatLng(lat, lng);
+        	    	marker = new google.maps.Marker({ position: pos, map: map });
+        	    	map.setCenter(pos);
+        	    }
+        	    var posMark = function (latlng) {
+        	    	if (marker) {
+        	    		marker.setMap(null);
+        	    	}
+        	    	marker = new google.maps.Marker({ position: latlng, map: map });
+        	    	$('input[name=lat]', typeDlg).val(latlng.lat());
+        	    	$('input[name=lng]', typeDlg).val(latlng.lng());    	
+        	    };
+        	    
+            	typeDlg.find('input[name=address]').keypress(function(e){
+            		if (e.which != 13) return false;
+            		
+            		var locText = $(this).val();
+            		var geocoder = new google.maps.Geocoder();
+            		geocoder.geocode({ 'address': locText }, function(results, status) {
+            	        if (status == google.maps.GeocoderStatus.OK) {
+            	        	var latlng = results[0].geometry.location;
+            				map.setCenter(latlng);
+            				posMark(latlng);
+            	        } else {
+            	        	alert("地址解析失败: " + status);
+            	        }
+            	    });
+            		return false;
+            	});
+        	}
     	} else if (hottype == 0) {
     		// single image
     		if (hotModel.uploads) {

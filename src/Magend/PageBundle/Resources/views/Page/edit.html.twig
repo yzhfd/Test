@@ -2,6 +2,11 @@
 
 {% block title %}单页编辑{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+{% endblock %}
+
 {% block contentTitle %}
     <a href="{{ path('magzine_issues', { 'id':page.article.issue.magzine.id }) }}">{{ page.article.issue.magzine.name }}</a>
     <span style="color:#AAA"> / </span>
@@ -57,9 +62,7 @@
     <div id="hot_dialog" style="padding:10px;">
         <div id="hot_essential">
             <div>坐标: <input type="text" name="x" class="span1" />, <input type="text" name="y" class="span1" /></div>
-            <br/>
             <div>长宽: <input type="text" name="w" class="span1" />, <input type="text" name="h" class="span1" /> <span style="color:#FC3F4D;">（不能小于40x40）</span> <button class="btn" id="hot_use_content_size">使用图片原始大小</button></div>
-            <br />
             <div>锁定位置：<input type="checkbox" name="locked" />，锁定比例：<input type="checkbox" name="ratioLocked" /></div>
         </div>
         <br/>
@@ -130,9 +133,10 @@
             </div>
         </div>
         
-        <div id="hot_6_dialog" class="dlgcontent has-assets-panel" style="display:none;">
+        <div id="hot_6_dialog" class="dlgcontent has-assets-panel" style="display:none; position: relative;">
             <form action="#">
-                <p>地址: <input type="text" name="address" class="span4" /></p>
+                <p>地址: <input type="text" name="address" class="span3" /></p>
+                <div class="gmap" style="width:190px; height:120px; position:absolute; top:0px; left: 200px; background-color:#666;"></div>
                 <p>经度: <input type="text" name="lat" class="span3" /></p>
                 <p>纬度: <input type="text" name="lng" class="span3" /></p>
                 <input type="radio" name="subtype" value="0" /> 全屏显示，<input type="radio" name="subtype" value="1" checked="checked" /> 窗口显示
