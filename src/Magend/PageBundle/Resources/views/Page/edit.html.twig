@@ -116,17 +116,19 @@
         </div>
         
         <div id="hot_5_dialog" class="dlgcontent has-assets-panel" style="display:none;">
-            <form action="#">
-                <input type="checkbox" name="autoplay" /> 自动播放，
-                <input type="checkbox" name="gravity" /> 方向感应
-                <p>
-                    <select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度，
-                    <input type="checkbox" name="bar" /> 显示控制条
-                </p>
-                <p>显示位置 <input type="radio" name="position" value="0" /> 上，<input type="radio" name="position" value="1" /> 下，<input type="radio" name="position" value="2" /> 左，<input type="radio" name="position" value="3" /> 右
-            </form>
-            <p style="position: absolute; left: 10px;">拖拽图片到这里，顺序重要</p>
-            <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
+            <div style="position: absolute; left: 10px;">
+                <form action="#">
+                    <input type="checkbox" name="autoplay" /> 自动播放，
+                    <input type="checkbox" name="gravity" /> 方向感应
+                    <p>
+                        <select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度，
+                        <input type="checkbox" name="bar" /> 显示控制条
+                    </p>
+                    <p>显示位置 <input type="radio" name="position" value="0" /> 上，<input type="radio" name="position" value="1" /> 下，<input type="radio" name="position" value="2" /> 左，<input type="radio" name="position" value="3" /> 右
+                </form>
+                拖拽图片到这里，顺序重要
+            </div>
+            <div class="panel-wrapper" style="margin-top: 120px; width: 300px;">
                 <ol id="hotseq" class="assets-panel">
                     <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
                 </ol>

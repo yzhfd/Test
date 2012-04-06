@@ -66,7 +66,7 @@
 	    		o[this.name] = 'off';
 	    	}
 	    });
-	    console.log(o);
+	    
 	    return o;
 	};
 	

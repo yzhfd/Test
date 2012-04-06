@@ -367,7 +367,7 @@ var page_edit = function () {
 								assets.push($('.imgwrapper', asset).attr('rel'));
 							}
 						});
-						
+					
 						when2 = when2.pipe(function(){
 							return $.ajax({
 								url: Routing.generate('hot_order_assets', { 'id':hot.id }),
