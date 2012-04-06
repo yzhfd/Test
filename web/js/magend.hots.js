@@ -448,14 +448,39 @@ var HotView = Backbone.View.extend({
     					}
     					
     					if (typeDlg.hasClass('has-assets-panel')) {// multiple assets, images here
+    						var oldAssetIds = [];
+    						$(hotModel.assets).each(function(index, asset){
+    							if (asset.id) {
+    								oldAssetIds.push(asset.id);
+    							} else {
+	    							var assetId = $('a.imgwrapper', asset).attr('rel');
+	    							if (assetId) {
+	    								oldAssetIds.push(parseInt(assetId));
+	    							}
+    							}
+    						});
+    						
     						hotModel.uploads = [];
     						hotModel.assets = [];
+    						var leftAssetIds = [];
     						$('li.hotimg', typeDlg).each(function(index, hotimg){
     							hotimg = $(hotimg);
     							var imgFile = hotimg.data('file');
     							hotModel.assets.push(hotimg.clone(true, true)); // not file but element to avoid file read delay
     							if (imgFile) {
     								hotModel.uploads.push(imgFile);
+    							}
+    							var assetId = $('a.imgwrapper', hotimg).attr('rel');
+    							if (assetId) {
+    								leftAssetIds.push(parseInt(assetId)); 
+    							}
+    						});
+    						
+    						hotModel.delAssetIds = [];
+    						// _.indexOf thinks 4 and "4" are different
+    						$(oldAssetIds).each(function(index, assetId) {
+    							if (_.indexOf(leftAssetIds, assetId) == -1) {
+    								hotModel.delAssetIds.push(assetId);
     							}
     						});
     					}

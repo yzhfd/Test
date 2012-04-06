@@ -339,7 +339,13 @@ var page_edit = function () {
 							// uploader.fileupload('option', 'formData', { name:file.name });
 							uploader.fileupload('option', 'success', function(result){
 								// according setting is done on dialog open
-								hot.assets = result;
+								hot.assets = [];
+								$(result).each(function(index, asset){
+									if (_.indexOf(hot.delAssetIds, asset.id) == -1) {
+										hot.assets.push(asset);
+									}
+								});
+								
 								hot.uploads = null;
 							});
 							
