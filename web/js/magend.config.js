@@ -42,8 +42,11 @@ $(document).ready(function(){
 		window.location = $(this).val();
 	});
 	
-	$('a[rel*=confirm]').live('click', function(e){
-		return confirm('确定' + $(this).attr('title') + '吗？');
+	//$('a[rel*=tipsy]').twipsy();
+	$('a[rel*=confirm]').live('click', function(e){		
+		var title = $(this).attr('title');
+		if (!title) title = $(this).attr('data-original-title');
+		return confirm('确定' + title + '吗？');
 	});
 	$('a.dblclick').click( function(e){
 		return false;
