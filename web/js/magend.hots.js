@@ -638,18 +638,31 @@ var PageCanvas = Backbone.View.extend({
 		// remove is bound in HotView
 		
 		//this.hots.fetch();
-		/*
+		var pageHots = this.hots;
 		$.contextMenu({
 			selector: 'li.hot',
+			zIndex: 2000,
 			items: {
-				one: {
+				'delete': {
 					name: "去除", icon:"delete", callback: function(key, opt){
+						var hot = pageHots.getByCid(this.data('cid'));
+						pageHots.remove(hot);
+					}
+				},
+				edit: {
+					name: "编辑", icon:"edit", callback: function(key, opt){
+						console.log(key, opt);
+					}
+				},
+				separator1: '-----',
+				save: {
+					name: "保存", icon:"save", callback: function(key, opt){
 						console.log(key, opt);
 					}
 				}
 			}
 		});
-		*/
+		
 		window.undomanager = new UndoManager(this.hots);
 	},
 	// on load
@@ -772,7 +785,7 @@ var PageCanvas = Backbone.View.extend({
 	},
 	_endDraw: function (e) {
 		this.began = false;
-		this.canvasImgEl.focus();
+		// this.canvasImgEl.focus();
 		if (this.hot) {
 			this.hots.add(this.hot);
 			// this.hot.save();
