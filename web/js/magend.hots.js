@@ -638,7 +638,18 @@ var PageCanvas = Backbone.View.extend({
 		// remove is bound in HotView
 		
 		//this.hots.fetch();
-		
+		/*
+		$.contextMenu({
+			selector: 'li.hot',
+			items: {
+				one: {
+					name: "去除", icon:"delete", callback: function(key, opt){
+						console.log(key, opt);
+					}
+				}
+			}
+		});
+		*/
 		window.undomanager = new UndoManager(this.hots);
 	},
 	// on load
