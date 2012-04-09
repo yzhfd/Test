@@ -70,6 +70,9 @@ var Hot = Backbone.Model.extend({
 		this.selected = false;
 		this.trigger('deselect');
 	},
+	edit: function () {
+		this.trigger('edit');
+	},
 	validate: function (attrs) {
 		if (attrs) {
 			if (attrs.width < this.minWidth || attrs.height < this.minHeight) {
@@ -112,6 +115,7 @@ var HotView = Backbone.View.extend({
     	this.model.bind('select', this.toggle, this);
     	this.model.bind('deselect', this.toggle, this);
     	this.model.bind('remove', this.remove, this);
+    	this.model.bind('edit', this.edit, this);
     	// this.model.bind('destroy', this.remove, this); // loop as destroy on remove
     	
     	var hotel = $(this.el);
@@ -651,13 +655,14 @@ var PageCanvas = Backbone.View.extend({
 				},
 				edit: {
 					name: "编辑", icon:"edit", callback: function(key, opt){
-						console.log(key, opt);
+						var hot = pageHots.getByCid(this.data('cid'));
+						hot.edit();
 					}
 				},
 				separator1: '-----',
 				save: {
-					name: "保存", icon:"save", callback: function(key, opt){
-						console.log(key, opt);
+					name: "关于", icon:"save", callback: function(key, opt){
+						alert('感谢点击');
 					}
 				}
 			}
