@@ -73,6 +73,32 @@ class OutputManager {
     }
     
     /**
+     * Output magzine xml to Publish directory
+     * 
+     * @param integer $id
+     */
+    public function outputMagazineXML($id)
+    {
+        $response = $this->outputMagazine($id);
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $publishDir = $rootDir . '/../web/Publish/';
+        file_put_contents($publishDir . "group$id.xml", $response->getContent());
+    }
+    
+    /**
+     * Output magzines xml to Publish directory
+     * 
+     * @param integer $id
+     */
+    public function outputMagazinesXML()
+    {
+        $response = $this->outputMagazines();
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $publishDir = $rootDir . '/../web/Publish/';
+        file_put_contents($publishDir . "grouplist.xml", $response->getContent());
+    }
+    
+    /**
      * 
      * @return Response
      */

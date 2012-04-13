@@ -134,6 +134,9 @@ class MagzineController extends Controller
         $em->remove($magzine);
         $em->flush();
         
+        $om = $this->get('magend.output_manager');
+        $om->outputMagazinesXML();
+        
         return new RedirectResponse($this->generateUrl('magzine_list'));
     }
     

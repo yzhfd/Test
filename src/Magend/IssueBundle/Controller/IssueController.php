@@ -255,16 +255,8 @@ class IssueController extends Controller
     private function _outputGroupXml($issue)
     {
         $om = $this->get('magend.output_manager');
-        // group list
-        $response = $om->outputMagazines();
-        $rootDir = $this->container->getParameter('kernel.root_dir');
-        $publishDir = $rootDir . '/../web/Publish/';
-        file_put_contents($publishDir . "grouplist.xml", $response->getContent());
-        
-        // group(magzine)
-        $magId = $issue->getMagzine()->getId();
-        $response = $om->outputMagazine($magId);
-        file_put_contents($publishDir . "group$magId.xml", $response->getContent());
+        $om->outputMagazinesXML();
+        $om->outputMagazineXML($issue->getMagzine()->getId());
     }
     
     /**
@@ -769,6 +761,9 @@ class IssueController extends Controller
         
         $em->remove($issue);        
         $em->flush();
+        
+        $om = $this->get('magend.output_manager');
+        $om->outputMagazineXML($issue->getMagzine()->getId());
         
         return $this->redirect($this->generateUrl('issue_list'));
     }
