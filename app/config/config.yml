@@ -106,7 +106,6 @@ sonata_block:
 
         #sonata.admin_doctrine_orm.block.audit:
         #    contexts:   [admin]
-        pq.sonata.block.service.stats:
         sonata.block.service.text:
         sonata.block.service.action:
         sonata.block.service.rss:
