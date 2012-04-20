@@ -20,6 +20,10 @@ $loader->registerNamespaces(array(
     'Avalanche'        => __DIR__.'/../vendor/bundles',
     'Pagerfanta'       => __DIR__.'/../vendor/pagerfanta/src',
     'WhiteOctober\\PagerfantaBundle' => __DIR__.'/../vendor/bundles',
+    'Sonata'     => __DIR__.'/../vendor/bundles',
+    'Exporter'   => __DIR__.'/../vendor/exporter/lib',
+    'Knp\Bundle' => __DIR__.'/../vendor/bundles',
+    'Knp\Menu'   => __DIR__.'/../vendor/knp/menu/src',
 ));
 $loader->registerPrefixes(array(
     'Twig_Extensions_' => __DIR__.'/../vendor/twig-extensions/lib',

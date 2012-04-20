@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- USER -->
+        <parameter key="magend.user.admin.user.class">Magend\BackendBundle\Admin\Entity\UserAdmin</parameter>
+        <parameter key="magend.user.admin.user.controller">MagendBackendBundle:UserAdmin</parameter>
+        <parameter key="magend.user.admin.user.entity">Magend\UserBundle\Entity\User</parameter>
+        <parameter key="magend.user.admin.user.translation_domain">SonataAdminBundle</parameter>
+
+        <!-- GROUP -->
+        <parameter key="magend.user.admin.group.class">Magend\BackendBundle\Admin\Entity\GroupAdmin</parameter>
+        <parameter key="magend.user.admin.group.controller"></parameter>
+        <parameter key="magend.user.admin.group.entity">Magend\UserBundle\Entity\Group</parameter>
+        <parameter key="magend.user.admin.group.translation_domain">%magend.user.admin.user.translation_domain%</parameter>
+
+        <parameter key="magend.user.admin.groupname">用户相关</parameter>
+    </parameters>
+
+    <services>
+        <service id="magend.user.admin.user" class="%magend.user.admin.user.class%">
+            <tag name="sonata.admin" manager_type="orm" group="%magend.user.admin.groupname%" label="用户" />
+            <argument />
+            <argument>%magend.user.admin.user.entity%</argument>
+            <argument>%magend.user.admin.user.controller%</argument>
+            <call method="setUserManager">
+                <argument type="service" id="fos_user.user_manager" />
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <call method="setTranslationDomain">
+                <argument>%magend.user.admin.user.translation_domain%</argument>
+            </call>
+        </service>
+
+        <service id="magend.user.admin.group" class="%magend.user.admin.group.class%">
+            <tag name="sonata.admin" manager_type="orm" group="%magend.user.admin.groupname%" label="用户组" />
+            <argument />
+            <argument>%magend.user.admin.group.entity%</argument>
+            <argument />
+            <call method="setTranslationDomain">
+                <argument>%magend.user.admin.group.translation_domain%</argument>
+            </call>
+        </service>
+    </services>
+    
+</container>

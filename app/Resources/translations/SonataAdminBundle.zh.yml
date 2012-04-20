@@ -1,0 +1,51 @@
+flash_create_success: 创建成功
+flash_create_error: 创建失败
+flash_edit_success: 编辑成功
+flash_edit_error: 编辑失败
+flash_delete_success: 删除成功
+flash_delete_error: 删除失败
+flash_batch_delete_success: 批量删除成功
+no_result: 没有结果
+
+link_add: 添加
+link_list: 列表
+
+title_dashboard: 管理中心
+label_filters: 过滤器
+link_previous_pager: 上一页
+link_next_pager: 下一页
+link_last_pager: 最后一页
+all_elements: 所有元素
+action_delete: 删除
+btn_batch: 批量执行
+title_create: 创建
+btn_create: 创建
+title_edit: 编辑
+
+message_batch_confirmation: 请确认执行该次批量操作
+title_batch_confirmation: 批量执行确认
+btn_execute_batch_action: 批量执行
+
+link_action_show: 查看
+link_action_create: 创建
+link_action_edit: 编辑
+link_action_list: 返回列表
+btn_create_and_edit_again: 创建并编辑
+btn_create_and_create_a_new_one: 创建并继续
+btn_update_and_edit_again: 更新并继续编辑
+btn_update_and_return_to_list: 更新并返回列表
+delete_or: 或者
+link_delete: 删除
+
+btn_filter: 过滤
+link_reset_filter: 重置
+label_type_contains: 包含
+label_type_not_contains: 不包含
+label_type_equals: 等于
+label_type_equal: 等于
+label_type_greater_equal: 不小于
+label_type_greater_than: 大于
+label_type_less_equal: 不大于
+label_type_less_than: 小于
+label_type_yes: 是
+label_type_no: 不是

@@ -97,3 +97,38 @@ avalanche_imagine:
         portraitThumb:
             type:    thumbnail
             options: { size: [96, 128], mode: outbound }
+            
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+
+        #sonata.admin_doctrine_orm.block.audit:
+        #    contexts:   [admin]
+        pq.sonata.block.service.stats:
+        sonata.block.service.text:
+        sonata.block.service.action:
+        sonata.block.service.rss:
+
+sonata_admin:
+    security:
+        handler: sonata.admin.security.handler.role
+        information:
+            GUEST:    [VIEW, LIST]
+            STAFF:    [EDIT, LIST, CREATE]
+            EDITOR:   [OPERATOR]
+            ADMIN:    [MASTER]
+    title: iMagShow
+    #title_logo: images/logo_black.gif
+    dashboard:
+        blocks:
+            # display a dashboard block
+            - { position: left, type: sonata.admin.block.admin_list }
+            # Customize this part to add new block configuration
+            - { position: right, type: sonata.block.service.text, settings: { content: "欢迎使用iMagShow后台"} }
+            #- { position: right, type: pq.sonata.block.service.stats }
+        #groups:
+        #    user_admin:
+        #        label: 用户
+        #        items: [pq.user.admin.user]

@@ -38,6 +38,13 @@ class AppKernel extends Kernel
             new Magend\OutputBundle\MagendOutputBundle(),
             new Magend\AssetBundle\MagendAssetBundle(),
             new Magend\VersionBundle\MagendVersionBundle(),
+            new Magend\BackendBundle\MagendBackendBundle(),
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\jQueryBundle\SonatajQueryBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
+            new Sonata\CacheBundle\SonataCacheBundle(),
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

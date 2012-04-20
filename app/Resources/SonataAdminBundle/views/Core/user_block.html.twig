@@ -1,0 +1,1 @@
+{% block user_block %}{% if app.user %}<span style="color:yellow">{{ app.user.username }}</span> - <a href="{{ url('fos_user_security_logout') }}">登出</a> {% endif %}{% endblock %}
