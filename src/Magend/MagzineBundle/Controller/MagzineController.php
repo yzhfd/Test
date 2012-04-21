@@ -179,6 +179,8 @@ class MagzineController extends Controller
                 if (is_null($id)) {
                     $vm = $this->get('magend.version_manager');
                     $vm->incGroupVersion();
+                    $user = $this->get('security.context')->getToken()->getUser();
+                    $magzine->setUser($user);
                 }
                 
                 $em->persist($magzine);

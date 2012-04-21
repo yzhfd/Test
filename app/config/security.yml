@@ -9,19 +9,13 @@ security:
             - ROLE_SONATA_PAGE_ADMIN_PAGE_EDIT  # if you are not using acl then this line must be uncommented
 
     providers:
-        chain_provider:
-            providers: [mag_bundle, in_memory]
         mag_bundle:
             id: magend.user_manager
-        in_memory:
-            users:
-                Erick:  { password: 5dscape2011, roles: [ 'ROLE_SUPER_ADMIN' ] }
-                Kail: { password: 5dscape2011, roles: [ 'ROLE_SUPER_ADMIN' ] }
 
     firewalls:
         main:
             pattern: ^/
-            provider: chain_provider
+            provider: mag_bundle
             form_login:
                 always_use_default_target_path: true
                 default_target_path: /dashboard

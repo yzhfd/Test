@@ -25,6 +25,7 @@
     <MagazineList>
         {% for issue in issues %}
         <Magazine>
+            <Username>{% if magzine.user is not null %}{{ magzine.user.username }}{% endif %}</Username>
             <GroupId>{{ magzine.id }}</GroupId>
             <GroupName>{{ magzine.name }}</GroupName>
             <IssueId>{{ issue.id }}</IssueId>
