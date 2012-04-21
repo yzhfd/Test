@@ -1,0 +1,7 @@
+{% extends "SonataAdminBundle:CRUD:base_list_field.html.twig" %}
+
+{% block field %}
+    {% if value is not empty %}
+        <a style="display:block" href="{{ path('profile', {'username':object.username}) }}"><img width="80" height="80" src="{{ asset('uploads/avatars/' ~ value) }}" /></a>
+    {% endif %}
+{% endblock %}

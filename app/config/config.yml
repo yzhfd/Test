@@ -9,7 +9,7 @@ framework:
     charset:         UTF-8
     router:          { resource: "%kernel.root_dir%/config/routing.yml" }
     form:            true
-    csrf_protection: false
+    csrf_protection: true
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
     session:
@@ -82,9 +82,9 @@ fos_user:
     #from_email:
     #    address: admin@paiqoo.com
     #    sender_name: Paiqoo Admin
-    #registration:
-    #    form:
-    #        type: pq_user_registration
+    registration:
+        form:
+            type: magend_user_registration
     #        handler: pq.registration.form.handler
     #    confirmation:
     #        enabled: false

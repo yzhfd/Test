@@ -22,6 +22,13 @@ class Magzine
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * 
+     * @var User
+     * @ORM\ManyToOne(targetEntity="Magend\UserBundle\Entity\User")
+     */
+    private $user;
 
     /**
      * @var string $name
@@ -345,5 +352,15 @@ class Magzine
     public function getCopyrightArticles()
     {
         return $this->copyrightArticles;
+    }
+    
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 }

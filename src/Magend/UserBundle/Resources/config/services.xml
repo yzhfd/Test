@@ -22,6 +22,14 @@
                  <argument type="service" id="service_container" />
             </call>
         </service>
+        
+        <service id="magend.registration.form.type" class="Magend\UserBundle\Form\Type\RegistrationFormType">
+            <tag name="form.type" alias="magend_user_registration" />
+            <argument>%fos_user.model.user.class%</argument>
+            <call method="setContainer">
+                 <argument type="service" id="service_container" />
+            </call>
+        </service>
     </services>
     
 </container>

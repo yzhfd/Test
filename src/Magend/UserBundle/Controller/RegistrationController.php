@@ -54,7 +54,10 @@ class RegistrationController extends BaseController
             return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
         } else if ($this->container->get('request')->getMethod() == 'POST') {
             $errors = $this->getErrorMessages($form);
-            return $this->container->get('templating')->renderResponse('MagendUserBundle:Registration:regerr.xml.twig', array('errors' => $errors));
+            return $this->container->get('templating')->renderResponse(
+                'MagendUserBundle:Registration:regerr.xml.twig',
+                array('errors' => $errors)
+            );
         }
         
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Registration:register.html.'.$this->getEngine(), array(

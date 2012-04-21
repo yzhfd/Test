@@ -17,6 +17,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  */
 class Issue
 {
+    const PUBLISH_PREVIEW  = 0;
+    const PUBLISH_OFFICIAL = 1;
+    
     /**
      * @var integer $id
      *
@@ -129,13 +132,14 @@ class Issue
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
-
+    
     /**
-     * @var boolean $publish
-     *
-     * @ORM\Column(name="publish", type="boolean")
+     * For test or official release
+     * 
+     * @var integer
+     * @ORM\Column(name="publish_mode", type="integer", nullable=true)
      */
-    private $publish = false;
+    private $publishMode;
 
     /**
      * @var integer $publisher
@@ -569,26 +573,6 @@ class Issue
     }
 
     /**
-     * Set publish
-     *
-     * @param boolean $publish
-     */
-    public function setPublish($publish)
-    {
-        $this->publish = $publish;
-    }
-
-    /**
-     * Get publish
-     *
-     * @return boolean 
-     */
-    public function getPublish()
-    {
-        return $this->publish;
-    }
-
-    /**
      * Set publisher
      *
      * @param integer $publisher
@@ -746,5 +730,25 @@ class Issue
     public function setIapId($iapId)
     {
         $this->iapId = $iapId;
+    }
+    
+    public function getPublishMode()
+    {
+        return $this->publishMode === null ? self::PUBLISH_PREVIEW : $this->publishMode;
+    }
+    
+    public function setPublishMode($publishMode)
+    {
+        $this->publishMode = $publishMode;
+    }
+    
+    public function isPublishedForPreview()
+    {
+        return $this->publishMode === self::PUBLISH_PREVIEW;
+    }
+    
+    public function isPublishedOfficially()
+    {
+        return $this->publishMode === self::PUBLISH_OFFICIAL;
     }
 }

@@ -6,7 +6,7 @@
     <parameters>
         <!-- USER -->
         <parameter key="magend.user.admin.user.class">Magend\BackendBundle\Admin\Entity\UserAdmin</parameter>
-        <parameter key="magend.user.admin.user.controller">MagendBackendBundle:UserAdmin</parameter>
+        <parameter key="magend.user.admin.user.controller"></parameter>
         <parameter key="magend.user.admin.user.entity">Magend\UserBundle\Entity\User</parameter>
         <parameter key="magend.user.admin.user.translation_domain">SonataAdminBundle</parameter>
 
@@ -24,10 +24,7 @@
             <tag name="sonata.admin" manager_type="orm" group="%magend.user.admin.groupname%" label="用户" />
             <argument />
             <argument>%magend.user.admin.user.entity%</argument>
-            <argument>%magend.user.admin.user.controller%</argument>
-            <call method="setUserManager">
-                <argument type="service" id="fos_user.user_manager" />
-            </call>
+            <argument />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>

@@ -104,6 +104,10 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊不存在"}'); 
         }
         
+        $em = $this->getDoctrine()->getEntityManager();
+        $issue->setPublishMode(Issue::PUBLISH_PREVIEW);
+        $em->flush();
+        
         // output magzine's xml
         $this->_outputGroupXml($issue);
         
@@ -269,8 +273,8 @@ class IssueController extends Controller
         if (empty($issue)) {
             return new Response('{"msg":"期刊不存在"}'); 
         }
-        if ($issue->getPublish()) {
-            return new Response('{"msg":"期刊已发布"}'); 
+        if ($issue->isPublishedOfficially()) {
+            return new Response('{"msg":"期刊已正式发布"}'); 
         }
         
         // output magzine's xml
@@ -518,8 +522,7 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         
-        $isPublished = $issue->getPublish();
-        if ($isPublished) {
+        if ($issue->isPublishedOfficially()) {
             return $this->container->get('templating')->renderResponse(
                 'MagendIssueBundle:Issue:noedit.html.twig'
             );
