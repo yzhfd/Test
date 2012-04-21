@@ -58,7 +58,12 @@ class MagzineController extends Controller
      */
     public function listAction()
     {
-        $arr = $this->getList('MagendMagzineBundle:Magzine');
+        $user = $this->get('security.context')->getToken()->getUser();
+        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.user = :user';
+        $em = $this->getDoctrine()->getEntityManager();
+        $q = $em->createQuery($dql)->setParameter('user', $user);
+        
+        $arr = $this->getList('MagendMagzineBundle:Magzine', $q);
         $arr['magzines'] = $arr['entities'];
         unset($arr['entities']);
         return $arr;
@@ -87,7 +92,8 @@ class MagzineController extends Controller
         unset($arr['entities']);
         
         $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $arr['magzines'] = $repo->findAll();
+        $user = $this->get('security.context')->getToken()->getUser();
+        $arr['magzines'] = $repo->findBy(array('user' => $user->getId()));
         
         $response = $this->container->get('templating')->renderResponse(
             'MagendMagzineBundle:Magzine:issues.html.twig',
