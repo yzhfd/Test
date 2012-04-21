@@ -277,7 +277,6 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊已正式发布"}'); 
         }
         
-        // update publish only if all files are output successfully
         $issue->setPublishMode(Issue::PUBLISH_OFFICIAL);
         if ($issue->getPublishedAt() === null) {
             $issue->setPublishedAt(new \DateTime());
