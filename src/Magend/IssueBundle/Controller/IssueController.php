@@ -277,11 +277,6 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊已正式发布"}'); 
         }
         
-        // output magzine's xml
-        $this->_outputGroupXml($issue);
-        
-        $zipName = $this->compressIssueAssets($issue);
-        
         // update publish only if all files are output successfully
         $issue->setPublishMode(Issue::PUBLISH_OFFICIAL);
         if ($issue->getPublishedAt() === null) {
@@ -289,6 +284,10 @@ class IssueController extends Controller
         }
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
+        
+        // output magzine's xml
+        $this->_outputGroupXml($issue);
+        $zipName = $this->compressIssueAssets($issue);
         
         // update version file
         $vm = $this->get('magend.version_manager');
