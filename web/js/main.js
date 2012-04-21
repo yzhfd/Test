@@ -29,6 +29,7 @@ $(function () {
 						}
 						tr.find('.editbtn').remove();
 						publishBtn.replaceWith('已发布');
+						alert('成功发布');
 					}
 				});
 			}

@@ -283,7 +283,7 @@ class IssueController extends Controller
         $zipName = $this->compressIssueAssets($issue);
         
         // update publish only if all files are output successfully
-        $issue->setPublish(true);
+        $issue->setPublishMode(Issue::PUBLISH_OFFICIAL);
         if ($issue->getPublishedAt() === null) {
             $issue->setPublishedAt(new \DateTime());
         }
@@ -293,6 +293,8 @@ class IssueController extends Controller
         // update version file
         $vm = $this->get('magend.version_manager');
         $vm->incIssueVersion();
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $publishDir = $rootDir . '/../web/Publish/';
         file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
         
         $pubAt = $issue->getPublishedAt()->format('Y-m-d');
