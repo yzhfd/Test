@@ -37,6 +37,7 @@ class OutputController extends Controller
      */
     public function magzineAction($id)
     {
+        /*
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if (!$isAdmin) {
             $user = $this->get('security.context')->getToken()->getUser();
@@ -48,7 +49,7 @@ class OutputController extends Controller
             if (empty($mag)) {
                 $id = null;
             }
-        }
+        }*/
         
         $om = $this->get('magend.output_manager');
         return $om->outputMagazine($id);

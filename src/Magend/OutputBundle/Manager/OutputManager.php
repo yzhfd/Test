@@ -3,6 +3,7 @@
 namespace Magend\OutputBundle\Manager;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Magend\UserBundle\Entity\User;
 
 class OutputManager {
     
@@ -110,6 +111,11 @@ class OutputManager {
      */
     public function outputMagazines($user = null)
     {
+        // from api?
+        if (!($user instanceof User)) {
+            $user = null;
+        }
+        
         $em = $this->container->get('doctrine.orm.entity_manager');
         $where = $user == null ? '' : 'WHERE m.user = :user';
         $params = $user == null ? array() : array('user' => $user->getId());
