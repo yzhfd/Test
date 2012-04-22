@@ -19,12 +19,21 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
-        $req = $this->getRequest();
-        $magId = $req->cookies->get('magzine_id');
+        $magId = $this->getRequest()->cookies->get('magzine_id');
         $magzine = null;
+        
         if ($magId !== null) {
             $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $magzine = $repo->find($magId);
+            $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+            if (!$isAdmin) {
+                $user = $this->get('security.context')->getToken()->getUser();
+                $magzine = $repo->findOneBy(array(
+                    'id' => $magId,
+                    'user' => $user,
+                ));
+            } else {
+                $magzine = $repo->find($magId);
+            }
         }
         
         return array(

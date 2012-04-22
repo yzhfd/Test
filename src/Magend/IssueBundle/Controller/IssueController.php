@@ -19,6 +19,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\ Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\IssueBundle\Util\SimpleImage;
+use Doctrine\ORM\NoResultException;
 
 /**
  * 
@@ -598,17 +599,40 @@ class IssueController extends Controller
     /**
      * 
      * @Route("/list", name="issue_list")
+     * @Template()
      */
     public function listAction()
     {
-        $req = $this->getRequest();
-        $magId = $req->cookies->get('magzine_id');
+        $user = $this->get('security.context')->getToken()->getUser();
+        
+        $magId = $this->getRequest()->cookies->get('magzine_id');
+        
+        if ($magId !== null) {
+            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $mag = $repo->findOneBy(array(
+                'id' => $magId,
+                'user' => $user->getId()
+            ));
+            if ($mag == null) {
+                $magId = null;
+            }
+        }
+        
         if ($magId === null) {
             $em = $this->getDoctrine()->getEntityManager();
-            $query = $em->createQuery('SELECT m.id FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC');
+            $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+            $where = $isAdmin ? '' : 'WHERE m.user = :user';
+            $params = $isAdmin ? array() : array('user' => $user->getId());
+            $dql = 'SELECT m.id FROM MagendMagzineBundle:Magzine m '. $where . ' ORDER BY m.createdAt DESC';
+            $query = $em->createQuery($dql)->setParameters($params);
             $query->setMaxResults(1);
-            $magId = $query->getSingleScalarResult();
+            try {
+                $magId = $query->getSingleScalarResult();
+            } catch (NoResultException $e) {
+                return array();
+            }
         }
+        
         return new RedirectResponse($this->generateUrl('magzine_issues', array(
             'id' => $magId
         )));

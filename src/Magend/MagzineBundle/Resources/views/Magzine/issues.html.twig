@@ -11,6 +11,7 @@
             <h3>期刊列表</h3>
             <div style="padding-top: 6px">
                 <select id="magtype_sel" class="medium urlSelect">
+                    <option value="">请选择杂志</option>
                     {% for magzine in magzines %}
                         <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if magzine.id == app.request.get('id') %}selected="selected"{% endif %}>{{ magzine.name }}</option>
                     {% endfor %}

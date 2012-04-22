@@ -58,10 +58,14 @@ class MagzineController extends Controller
      */
     public function listAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.user = :user';
-        $em = $this->getDoctrine()->getEntityManager();
-        $q = $em->createQuery($dql)->setParameter('user', $user);
+        $q = null;
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        if (!$isAdmin) {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.user = :user';
+            $em = $this->getDoctrine()->getEntityManager();
+            $q = $em->createQuery($dql)->setParameter('user', $user);
+        }
         
         $arr = $this->getList('MagendMagzineBundle:Magzine', $q);
         $arr['magzines'] = $arr['entities'];
@@ -93,7 +97,12 @@ class MagzineController extends Controller
         
         $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $user = $this->get('security.context')->getToken()->getUser();
-        $arr['magzines'] = $repo->findBy(array('user' => $user->getId()));
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        if ($isAdmin) {
+            $arr['magzines'] = $repo->findAll();
+        } else {
+            $arr['magzines'] = $repo->findBy(array('user' => $user->getId()));
+        }
         
         $response = $this->container->get('templating')->renderResponse(
             'MagendMagzineBundle:Magzine:issues.html.twig',

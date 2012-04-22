@@ -37,6 +37,19 @@ class OutputController extends Controller
      */
     public function magzineAction($id)
     {
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        if (!$isAdmin) {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $mag = $repo->findBy(array(
+                'id' => $id,
+                'user' => $user->getId()
+            ));
+            if (empty($mag)) {
+                $id = null;
+            }
+        }
+        
         $om = $this->get('magend.output_manager');
         return $om->outputMagazine($id);
     }
@@ -48,7 +61,9 @@ class OutputController extends Controller
      */
     public function magzinesAction()
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $om = $this->get('magend.output_manager');
-        return $om->outputMagazines();
+        return $om->outputMagazines($user);
     }
 }

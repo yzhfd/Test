@@ -30,6 +30,8 @@ class UserController extends Controller
      */
     public function listAction()
     {
+        // @todo only consumers, excluding admins and publishers
+        
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
         $arr = $this->getList('MagendUserBundle:User');
         $arr['users'] = $arr['entities'];

@@ -54,15 +54,20 @@ class OutputManager {
      */
     public function outputMagazine($id)
     {
-        $repo = $this->container->get('doctrine')->getRepository('MagendMagzineBundle:Magzine');
-        $magzine = $repo->find($id);
-        
-        $em = $this->container->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery("SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
-                    ->setParameter('magId', $id);
-        $issues = $query->getResult();
-        if (empty($issues)) {
+        if ($id !== null) {
+            $repo = $this->container->get('doctrine')->getRepository('MagendMagzineBundle:Magzine');
+            $magzine = $repo->find($id);
+            
+            $em = $this->container->get('doctrine.orm.entity_manager');
+            $query = $em->createQuery("SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
+                        ->setParameter('magId', $id);
+            $issues = $query->getResult();
+            if (empty($issues)) {
+                $issues = array();
+            }
+        } else {
             $issues = array();
+            $magzine = array();
         }
         
         $response = $this->render('MagendOutputBundle:Output:magzine.xml.twig', array(
@@ -100,12 +105,16 @@ class OutputManager {
     
     /**
      * 
+     * @param User $user
      * @return Response
      */
-    public function outputMagazines()
+    public function outputMagazines($user = null)
     {
         $em = $this->container->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery("SELECT m FROM MagendMagzineBundle:Magzine m ORDER BY m.createdAt DESC");
+        $where = $user == null ? '' : 'WHERE m.user = :user';
+        $params = $user == null ? array() : array('user' => $user->getId());
+        $query = $em->createQuery("SELECT m FROM MagendMagzineBundle:Magzine m $where ORDER BY m.createdAt DESC")
+                    ->setParameters($params);
         $magzines = $query->getResult();
         if (empty($magzines)) {
             $magzines = array();
