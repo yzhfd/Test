@@ -25,9 +25,6 @@ class CommentController extends Controller
      */
     public function listAction($id)
     {
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find($id);
-        
         $dql = 'SELECT c, u FROM MagendArticleBundle:Comment c LEFT JOIN c.user u WHERE c.article = :article';
         $em = $this->getDoctrine()->getEntityManager();
         $q = $em->createQuery($dql)->setParameter('article', $id);
@@ -38,6 +35,10 @@ class CommentController extends Controller
         );
         if ($this->getRequest()->get('_format') == 'xml') {
             return $this->container->get('templating')->renderResponse('MagendArticleBundle:Comment:list.xml.twig', $tplVars);
+        } else {
+            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+            $article = $repo->find($id);
+            $tplVars['article'] = $article;
         }
         return $tplVars;
     }

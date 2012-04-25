@@ -1,8 +1,8 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}文章评论{% endblock %}
+{% block contentTitle %}文章评论<span style="font-size:50%; color:#777;">{{ article.title }}</span>{% endblock %}
 
-{% block main %}    
+{% block main %}
     <div class="content-box"><!-- Start Content Box -->
         <div class="content-box-header">
             <h3>评论列表</h3>
