@@ -163,6 +163,21 @@ class Article
     private $pages;
     
     /**
+     * Article's comments
+     * 
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(
+     *     targetEntity="Comment",
+     *     mappedBy="article",
+     *     indexBy="id",
+     *     cascade={"persist", "remove"},
+     *     fetch="EXTRA_LAZY"
+     * )
+     */
+    private $comments;
+    
+    /**
      * Institutes
      * Only articles of type TYPE_PROJ have
      * 
@@ -241,6 +256,7 @@ class Article
     
     public function __construct()
     {
+        $this->comments = new ArrayCollection();
         $this->pages = new ArrayCollection();
         $this->architects = new ArrayCollection();
         $this->issues = new ArrayCollection();
@@ -797,5 +813,19 @@ class Article
     public function getCopyrightMagzine()
     {
         return $this->copyrightMagzine;
+    }
+    
+    /**
+     * 
+     * @return ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    public function addComment(Comment $cmt)
+    {
+        $this->comments[] = $cmt;
     }
 }

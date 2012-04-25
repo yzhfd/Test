@@ -7,7 +7,7 @@
         <div class="content-box-header">
             <h3>评论列表</h3>
             <!--<div style="padding-top: 6px">
-                <a class="btn info" rel="dialog" href="{{ path('article_comment_new') }}">添加</a>
+                <a class="btn info" rel="dialog" href="{{ path('article_comment_new', { 'id':app.request.get('id') }) }}">添加</a>
             </div>
             <div class="clear"></div>-->
         </div> <!-- End .content-box-header -->
@@ -27,12 +27,14 @@
                     {% for comment in comments %}
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>XX</td>
-                        <td>哈哈哈</td>
-                        <td>2012-03-11 22:22:00</td>
+                        <td>{{ comment.user.username }}</td>
+                        <td>{{ comment.body }}</td>
+                        <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:50px;">
-                             <a rel="dialog" href="{{ path('proj_edit', { 'id':project.id } ) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                             <a rel="confirm" href="{{ path('proj_del', { 'id':project.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
+                        {#
+                             <a rel="dialog" href="#" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                             <a rel="confirm" href="#" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
+                        #} 
                         </td>
                     </tr>
                     {% endfor %}

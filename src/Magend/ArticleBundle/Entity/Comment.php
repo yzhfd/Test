@@ -2,6 +2,7 @@
 
 namespace Magend\ArticleBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Magend\UserBundle\Entity\User;
 use Magend\ArticleBundle\Entity\Article;
@@ -11,6 +12,7 @@ use Magend\ArticleBundle\Entity\Article;
  *
  * @ORM\Table(name="mag_comment")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Comment
 {

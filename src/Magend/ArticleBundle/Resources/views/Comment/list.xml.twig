@@ -1,0 +1,14 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Article>
+        {% for comment in comments %}
+        <Comment>
+            <ID>{{ comment.id }}</ID>
+            <User>{{ comment.user.username }}</User>
+            <Body>{{ comment.body }}</Body>
+            <CreatedAt>{{ comment.createdAt|date('Y-m-d H:i') }}</CreatedAt>
+        </Comment>
+        {% endfor %}
+    </Article>
+{% endblock %}

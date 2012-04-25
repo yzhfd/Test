@@ -55,7 +55,7 @@
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">文章</a>
                     <ul>
                         <li><a {% if currentRoute == 'article_new' %}class="current"{% endif %} href="{{ path('article_new') }}">创建</a></li>
-                        <li><a {% if currentRoute == 'article_comment_list' %}class="current"{% endif %} href="{{ path('article_comment_list') }}">用户评论</a></li>
+                        {# <li><a {% if currentRoute == 'article_comment_list' %}class="current"{% endif %} href="{{ path('article_comment_list') }}">用户评论</a></li> #}
                         <!-- <li><a href="#">文章检索</a></li> -->
                     </ul>
                 </li>
