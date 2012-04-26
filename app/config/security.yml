@@ -58,6 +58,7 @@ security:
         # first matched rules apply
         - { path: ^/access, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/output, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/article/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         
         - { path: ^/admin/, role: ROLE_ADMIN }
         

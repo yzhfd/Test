@@ -83,7 +83,7 @@ class CommentController extends Controller
     /**
      * New comment by API
      * 
-     * @Route("/{id}/comment/api/new", name="article_comment_api_new", requirements={"id"="\d+"})
+     * @Route("/api/{id}/comment/new", name="article_api_comment_new", requirements={"id"="\d+"})
      * @Method("POST")
      */
     public function newApiAction($id)
