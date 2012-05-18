@@ -81,6 +81,15 @@ class User extends BaseUser
      * )
      */
     protected $groups;
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Company name
+     * 
+     * @var string
+     * @ORM\Column(name="corp_name", type="string", length=128, nullable=true)
+     */
+    private $corpName;
 
     /**
      * Get id
@@ -235,5 +244,15 @@ class User extends BaseUser
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+    
+    public function getCorpName()
+    {
+        return $this->corpName;
+    }
+    
+    public function setCorpName($corpName)
+    {
+        $this->corpName = $corpName;
     }
 }
