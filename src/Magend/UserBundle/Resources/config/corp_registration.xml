@@ -20,7 +20,7 @@
             <argument>%fos_user.model.user.class%</argument>
         </service>
 
-        <service id="magend.corp_registration.form.handler" class="FOS\UserBundle\Form\Handler\RegistrationFormHandler" scope="request">
+        <service id="magend.corp_registration.form.handler" class="Magend\UserBundle\Form\Handler\CorpRegistrationFormHandler" scope="request">
             <argument type="service" id="magend.corp_registration.form" />
             <argument type="service" id="request" />
             <argument type="service" id="fos_user.user_manager" />

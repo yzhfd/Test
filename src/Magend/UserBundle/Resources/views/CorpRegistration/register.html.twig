@@ -7,13 +7,13 @@
         <style>
             body { background-color: #333; }
             h2, label { color: #EEE; }
-            h2 { margin: 10px auto; width: 120px; }
+            h2 { margin: 10px auto; padding-left: 120px; }
             .clearfix { clear:both; }
         </style>
     </head>
     <body>
         <div class="container span6">
-        <h2>新用户注册</h2>
+        <h2>企业用户注册</h2>
         <form id="register_form" action="{{ path('corp_registration') }}" {{ form_enctype(form) }} method="POST" class="form_vertical fos_user_registration_register">
             <div class="clearfix">
                 {{ form_label(form.username, '用户ID') }}
@@ -23,6 +23,11 @@
             <div class="clearfix">
                 {{ form_label(form.email, '邮箱') }}
                 <div class="input">{{ form_errors(form.email) }}{{ form_widget(form.email, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corpName, '企业名称') }}
+                <div class="input">{{ form_errors(form.corpName) }}{{ form_widget(form.corpName, { 'attr':{'class':'span3'} }) }}</div>
             </div>
             
             <div class="clearfix">
