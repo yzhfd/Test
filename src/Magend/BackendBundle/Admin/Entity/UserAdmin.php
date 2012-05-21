@@ -22,6 +22,11 @@ class UserAdmin extends Admin
      */
     protected $container;
     
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_sort_order' => 'DESC', // sort direction
+    );
+    
     protected $userManager;
     
     protected $formOptions = array(
@@ -39,6 +44,7 @@ class UserAdmin extends Admin
             ))*/
             //->add('lastLogin', 'datetime', array('label' => '最近登录'))
             ->add('created_at', 'datetime', array('label' => '注册时间'))
+            ->add('enabled', 'boolean', array('label' => '激活', 'editable' => true))
             ->add('_action', 'actions', array('label' => '操作',
                 'actions' => array(
                     'edit'    => array(),

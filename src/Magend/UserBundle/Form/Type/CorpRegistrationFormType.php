@@ -22,7 +22,15 @@ class CorpRegistrationFormType extends BaseType
         $builder
             ->add('username', null, array('error_bubbling' => false))
             ->add('email', 'email', array('error_bubbling' => false))
+            ->add('nickname', null, array('error_bubbling' => false))
+            ->add('mobile', null, array('error_bubbling' => false))
+            ->add('phone', null, array('error_bubbling' => false))
             ->add('corpName', null, array('error_bubbling' => false))
+            ->add('corpLegal', null, array('error_bubbling' => false))
+            ->add('corpCodeFile', 'file', array('error_bubbling' => false))
+            ->add('corpLicenseFile', 'file', array('error_bubbling' => false))
+            ->add('corpContactId', null, array('error_bubbling' => false))
+            ->add('corpPledgeFile', 'file', array('error_bubbling' => false))
             ->add('plainPassword', 'repeated', array('type' => 'password', 'invalid_message' => 'password.unmatched', 'error_bubbling' => false))
             ;
     }
