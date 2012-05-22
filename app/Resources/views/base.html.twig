@@ -48,7 +48,7 @@
                 <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit'] %}current{% endif %}">期刊</a>
                     <ul>
                         <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magzine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">查看</a></li>
-                        <li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">创建</a></li>
+                        {% if is_granted('ROLE_CORP') %}<li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">创建</a></li>{% endif %}
                     </ul>
                 </li>
                 
