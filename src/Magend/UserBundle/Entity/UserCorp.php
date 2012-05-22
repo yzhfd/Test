@@ -40,7 +40,7 @@ class UserCorp
     private $phone;
     
     /**
-     * Corporate name
+     * Corporation name
      * 
      * @var string
      * @ORM\Column(name="name", type="string", length=128)
@@ -48,7 +48,7 @@ class UserCorp
     private $name;
     
     /**
-     * Corporate legal person's name
+     * Corporation legal person's name
      * 
      * @var string
      * @ORM\Column(name="legal_person", type="string", length=32)
@@ -84,7 +84,7 @@ class UserCorp
     public $licenseFile;
     
     /**
-     * Identity of corporate contact person
+     * Identity of Corporation contact person
      * 
      * @var string
      * @ORM\Column(name="contact_id", type="string", length=255)

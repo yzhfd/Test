@@ -45,6 +45,42 @@
                 <div class="input">{{ form_errors(form.mobile) }}{{ form_widget(form.mobile, { 'attr':{'class':'span3'} }) }}</div>
             </div>
             
+            <!-- corp related -->
+            <div class="clearfix">
+                {{ form_label(form.corp.phone, '电话') }}
+                <div class="input">{{ form_errors(form.corp.phone) }}{{ form_widget(form.corp.phone, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corp.name, '公司名称') }}
+                <div class="input">{{ form_errors(form.corp.name) }}{{ form_widget(form.corp.name, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corp.legalPerson, '法人代表') }}
+                <div class="input">{{ form_errors(form.corp.legalPerson) }}{{ form_widget(form.corp.legalPerson, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corp.contactId, '联系人身份证') }}
+                <div class="input">{{ form_errors(form.corp.contactId) }}{{ form_widget(form.corp.contactId, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corp.orgCodeFile, '组织机构代码') }}
+                <div class="input">{{ form_errors(form.corp.orgCodeFile) }}{{ form_widget(form.corp.orgCodeFile, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+
+            <div class="clearfix">
+                {{ form_label(form.corp.licenseFile, '营业执照') }}
+                <div class="input">{{ form_errors(form.corp.licenseFile) }}{{ form_widget(form.corp.licenseFile, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
+                {{ form_label(form.corp.pledgeFile, '安全承诺书') }}
+                <div class="input">{{ form_errors(form.corp.pledgeFile) }}{{ form_widget(form.corp.pledgeFile, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
             {{ form_rest(form) }}
             
             <div class="clearfix">

@@ -24,6 +24,7 @@ class CorpRegistrationFormType extends BaseType
             ->add('email', 'email', array('error_bubbling' => false))
             ->add('nickname', null, array('error_bubbling' => false))
             ->add('mobile', null, array('error_bubbling' => false))
+            ->add('corp', new CorpFormType(), array('error_bubbling' => false))
             ->add('plainPassword', 'repeated', array('type' => 'password', 'invalid_message' => 'password.unmatched', 'error_bubbling' => false))
             ;
     }
