@@ -66,6 +66,12 @@ class UserCorp
     /**
      * 
      * @var UploadedFile
+     * 
+     * @Assert\Image(
+     *     mimeTypesMessage = "不是有效图片",
+     *     maxSize = "2000000",
+     *     maxSizeMessage = "图片大小需小于2M"
+     * ) 
      */
     public $orgCodeFile;
     
@@ -80,6 +86,12 @@ class UserCorp
     /**
      * 
      * @var UploadedFile
+     * 
+     * @Assert\Image(
+     *     mimeTypesMessage = "不是有效图片",
+     *     maxSize = "2000000",
+     *     maxSizeMessage = "图片大小需小于2M"
+     * ) 
      */
     public $licenseFile;
     
@@ -102,6 +114,12 @@ class UserCorp
     /**
      * 
      * @var UploadedFile
+     * 
+     * @Assert\Image(
+     *     mimeTypesMessage = "不是有效图片",
+     *     maxSize = "2000000",
+     *     maxSizeMessage = "图片大小需小于2M"
+     * ) 
      */
     public $pledgeFile;
 
@@ -114,7 +132,67 @@ class UserCorp
     {
         return $this->id;
     }
+    
+    /**
+     * 
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preFlush()
+    {
+        if ($this->orgCodeFile) {
+            $fileName = uniqid('org_') . '.' . $this->orgCodeFile->guessExtension();
+            $this->orgCodeFile->move(__DIR__.'/../../../../web/uploads/corp/', $fileName);
+            
+            if ($this->getOrgCode()) {
+                @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getOrgCode());
+            }
+            
+            $this->setOrgCode($fileName);
+        }
+        
+        if ($this->licenseFile) {
+            $fileName = uniqid('lcs_') . '.' . $this->licenseFile->guessExtension();
+            $this->licenseFile->move(__DIR__.'/../../../../web/uploads/corp/', $fileName);
+            
+            if ($this->getLicense()) {
+                @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getLicense());
+            }
+            
+            $this->setLicense($fileName);
+        }
 
+        if ($this->pledgeFile) {
+            $fileName = uniqid('plg_') . '.' . $this->pledgeFile->guessExtension();
+            $this->pledgeFile->move(__DIR__.'/../../../../web/uploads/corp/', $fileName);
+            
+            if ($this->getPledge()) {
+                @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getPledge());
+            }
+            
+            $this->setPledge($fileName);
+        }
+    }
+    
+    /**
+     * 
+     * @ORM\PostRemove()
+     */
+    public function postRemove()
+    {
+        if ($this->getOrgCode()) {
+            @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getOrgCode());
+        }
+        
+        if ($this->getLicense()) {
+            @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getLicense());
+        }
+        
+        if ($this->getPledge()) {
+            @unlink(__DIR__.'/../../../../web/uploads/corp/' . $this->getPledge());
+        }
+    }
+    
     /**
      * Set phone
      *
@@ -273,5 +351,10 @@ class UserCorp
     public function getUser()
     {
         return $this->user;
+    }
+    
+    public function __toString()
+    {
+        return $this->name;
     }
 }

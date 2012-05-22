@@ -64,12 +64,6 @@ class CorpRegistrationController extends BaseController
                 $this->authenticateUser($user);
             }
             return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
-        } else if ($this->container->get('request')->getMethod() == 'POST') {
-            $errors = $this->getErrorMessages($form);
-            return $this->container->get('templating')->renderResponse(
-                'MagendUserBundle:CorpRegistration:regerr.xml.twig',
-                array('errors' => $errors)
-            );
         }
         
         return array(

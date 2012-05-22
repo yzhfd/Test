@@ -44,10 +44,12 @@ class UserAdmin extends Admin
             ))*/
             //->add('lastLogin', 'datetime', array('label' => '最近登录'))
             ->add('created_at', 'datetime', array('label' => '注册时间'))
+            ->add('corp', null, array('label' => '企业'))
             ->add('enabled', 'boolean', array('label' => '激活', 'editable' => true))
             ->add('_action', 'actions', array('label' => '操作',
                 'actions' => array(
-                    'edit'    => array(),
+                    'edit' => array(),
+                    'corp' => array('template' => 'MagendBackendBundle:User:corp.html.twig'),
                 )
             ))
         ;

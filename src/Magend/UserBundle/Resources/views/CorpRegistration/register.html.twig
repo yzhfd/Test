@@ -14,6 +14,7 @@
     <body>
         <div class="container span6">
         <h2>企业用户注册</h2>
+        {{ form_errors(form) }}
         <form id="register_form" action="{{ path('corp_registration') }}" {{ form_enctype(form) }} method="POST" class="form_vertical fos_user_registration_register">
             <div class="clearfix">
                 {{ form_label(form.username, '用户ID') }}
