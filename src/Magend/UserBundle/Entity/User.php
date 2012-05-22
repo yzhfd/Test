@@ -27,6 +27,21 @@ class User extends BaseUser
     protected $id;
     
     /**
+     * OneToOne cannot be lazy loaded,
+     * fetch LAZY is actually default
+     * 
+     * @ORM\OneToOne(
+     *     targetEntity="UserCorp",
+     *     cascade={"persist", "remove"},
+     *     inversedBy="user",
+     *     fetch="LAZY"
+     * )
+     * @ORM\JoinColumn(name="corp_id")
+     * @var UserCorp
+     */
+    private $corp;
+    
+    /**
      * Nickname
      * repeatable, and can be Unicode
      * 
@@ -64,9 +79,6 @@ class User extends BaseUser
      */
     public $mobile;
     
-    // @todo weibo
-    
-    
     /**
      * The time user updated its profile
      * Use this to avoid changing doctrine's tracking policy
@@ -94,82 +106,6 @@ class User extends BaseUser
      * )
      */
     protected $groups;
-    
-    //Corp user properties//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * Phone number
-     * 
-     * @var string
-     * @ORM\Column(name="phone", type="string", length=64, nullable=true)
-     */
-    private $phone;
-    
-    /**
-     * Company name
-     * 
-     * @var string
-     * @ORM\Column(name="corp_name", type="string", length=128, nullable=true)
-     */
-    private $corpName;
-    
-    /**
-     * Corporate legal person's name
-     * 
-     * @var string
-     * @ORM\Column(name="corp_legal", type="string", length=32, nullable=true)
-     */
-    private $corpLegal;
-    
-    /**
-     * Code
-     * 
-     * @var string
-     * @ORM\Column(name="corp_code", type="string", length=255, nullable=true)
-     */
-    private $corpCode;
-    
-    /**
-     * 
-     * @var UploadedFile
-     */
-    public $corpCodeFile;
-    
-    /**
-     * License
-     * 
-     * @var string
-     * @ORM\Column(name="corp_license", type="string", length=255, nullable=true)
-     */
-    private $corpLicense;
-    
-    /**
-     * 
-     * @var UploadedFile
-     */
-    public $corpLicenseFile;
-    
-    /**
-     * Identity of corporate contact person
-     * 
-     * @var string
-     * @ORM\Column(name="corp_contactId", type="string", length=255, nullable=true)
-     */
-    private $corpContactId;
-    
-    /**
-     * Pledge not to do anything evil
-     * 
-     * @var string
-     * @ORM\Column(name="corp_pledge", type="string", length=255, nullable=true)
-     */
-    private $corpPledge;
-    
-    /**
-     * 
-     * @var UploadedFile
-     */
-    public $corpPledgeFile;
     
     /**
      * Get id
@@ -326,16 +262,6 @@ class User extends BaseUser
         return $this->createdAt;
     }
     
-    public function getCorpName()
-    {
-        return $this->corpName;
-    }
-    
-    public function setCorpName($corpName)
-    {
-        $this->corpName = $corpName;
-    }
-    
     /**
      * Set nickname
      *
@@ -355,124 +281,14 @@ class User extends BaseUser
     {
         return $this->nickname;
     }
-
-    /**
-     * Set phone
-     *
-     * @param string $phone
-     */
-    public function setPhone($phone)
+    
+    public function getCorp()
     {
-        $this->phone = $phone;
+        return $this->corp;
     }
-
-    /**
-     * Get phone
-     *
-     * @return string 
-     */
-    public function getPhone()
+    
+    public function setCorp($corp)
     {
-        return $this->phone;
-    }
-
-    /**
-     * Set corpLegal
-     *
-     * @param string $corpLegal
-     */
-    public function setCorpLegal($corpLegal)
-    {
-        $this->corpLegal = $corpLegal;
-    }
-
-    /**
-     * Get corpLegal
-     *
-     * @return string 
-     */
-    public function getCorpLegal()
-    {
-        return $this->corpLegal;
-    }
-
-    /**
-     * Set corpCode
-     *
-     * @param string $corpCode
-     */
-    public function setCorpCode($corpCode)
-    {
-        $this->corpCode = $corpCode;
-    }
-
-    /**
-     * Get corpCode
-     *
-     * @return string 
-     */
-    public function getCorpCode()
-    {
-        return $this->corpCode;
-    }
-
-    /**
-     * Set corpLicense
-     *
-     * @param string $corpLicense
-     */
-    public function setCorpLicense($corpLicense)
-    {
-        $this->corpLicense = $corpLicense;
-    }
-
-    /**
-     * Get corpLicense
-     *
-     * @return string 
-     */
-    public function getCorpLicense()
-    {
-        return $this->corpLicense;
-    }
-
-    /**
-     * Set corpContactId
-     *
-     * @param string $corpContactId
-     */
-    public function setCorpContactId($corpContactId)
-    {
-        $this->corpContactId = $corpContactId;
-    }
-
-    /**
-     * Get corpContactId
-     *
-     * @return string 
-     */
-    public function getCorpContactId()
-    {
-        return $this->corpContactId;
-    }
-
-    /**
-     * Set corpPledge
-     *
-     * @param string $corpPledge
-     */
-    public function setCorpPledge($corpPledge)
-    {
-        $this->corpPledge = $corpPledge;
-    }
-
-    /**
-     * Get corpPledge
-     *
-     * @return string 
-     */
-    public function getCorpPledge()
-    {
-        return $this->corpPledge;
+        $this->corp = $corp;
     }
 }
