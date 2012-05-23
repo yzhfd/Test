@@ -60,6 +60,15 @@
                     </ul>
                 </li>
                 
+                {% if is_granted('ROLE_CORP') %}
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['inner_user_create', 'inner_user_list'] %}current{% endif %}">内部用户</a>
+                    <ul>
+                        <li><a {% if currentRoute == 'inner_user_create' %}class="current"{% endif %} href="#">创建</a></li>
+                        <li><a {% if currentRoute == 'inner_user_list' %}class="current"{% endif %} href="#">管理</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+                
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['user_list', 'feedback_list'] %}current{% endif %}">普通用户</a>
                     <ul>
                         <li><a {% if currentRoute == 'user_list' %}class="current"{% endif %} href="{{ path('user_list') }}">管理</a></li>

@@ -1,5 +1,5 @@
 {% extends '::base.html.twig' %}
 
 {% block main %}
-    <h2>你还没有创建任何杂志，请先<a href="{{ path('magzine_list') }}">创建杂志</a></h2>
+    <h2>你还没有任何杂志{% if is_granted('ROLE_CORP') %}，请先<a href="{{ path('magzine_list') }}">创建杂志</a>{% endif %}</h2>
 {% endblock %}
