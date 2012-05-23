@@ -63,7 +63,8 @@ class CorpRegistrationController extends BaseController
             } else {
                 $this->authenticateUser($user);
             }
-            return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
+            
+            return $this->redirect($this->generateUrl('home'));
         }
         
         return array(
