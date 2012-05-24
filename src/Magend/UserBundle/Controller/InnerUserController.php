@@ -7,23 +7,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Magend\UserBundle\Entity\User;
 
 /**
  * For admin and corp user
  * 
- * @Route("/user/inner/")
+ * @Route("/inner/user")
  * @author Kail
  */
 class InnerUserController extends Controller
 {
     /**
-     * @Route("/list", name="user_list")
+     * @Route("/list", name="inner_user_list")
      * @Template()
      */
     public function listAction()
     {
-        // @todo only consumers, excluding admins and publishers
-        
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
         $arr = $this->getList('MagendUserBundle:User');
         $arr['users'] = $arr['entities'];
@@ -43,6 +42,37 @@ class InnerUserController extends Controller
         $em->remove($user);
         $em->flush();
         return $this->redirect($this->generateUrl('user_list'));
+    }
+    
+    /**
+     * Create user under the corporation
+     * 
+     * @Route("/new", name="inner_user_new")
+     * @Template()
+     */
+    public function newAction()
+    {
+        $user = new User();
+        $formBuilder = $this->createFormBuilder($user);
+        $form = $formBuilder->add('username', null, array('label' => 'ID'))
+                            ->add('email', null, array('label' => '邮箱'))
+                            ->add('nickname', null, array('label' => '昵称'))
+                            ->add('plainPassword', 'repeated', array('type' => 'password'))
+                            ->getForm();
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $user->setEnabled(true);
+                $um = $this->get('magend.user_manager');
+                $um->updateUser($user);
+        
+                return $this->redirect($this->generateUrl('inner_user_list'));
+            }
+        }
+        return array(
+                'form' => $form->createView()
+        );
     }
     
     /**

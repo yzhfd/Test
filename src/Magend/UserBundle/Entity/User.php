@@ -42,6 +42,18 @@ class User extends BaseUser
     private $corp;
     
     /**
+     *
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(
+     *     name="boss_id",
+     *     referencedColumnName="id",
+     *     onDelete="CASCADE"
+     * )
+     */
+    private $boss;
+    
+    /**
      * Nickname
      * repeatable, and can be Unicode
      * 
@@ -290,5 +302,15 @@ class User extends BaseUser
     public function setCorp($corp)
     {
         $this->corp = $corp;
+    }
+    
+    public function getBoss()
+    {
+        return $this->boss;
+    }
+    
+    public function setBoss($boss)
+    {
+        $this->boss = $boss;
     }
 }

@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Magend\UserBundle\Entity\User;
+use Magend\UserBundle\Form\Type\CorpFormType;
 
 /**
  * 
@@ -46,12 +48,38 @@ class CorpUserController extends Controller
 
     /**
      * 
-     * @Route("/{id}/trial/new", name="corp_trial_new")
+     * @Route("/trial/new", name="corp_trial_new")
      * @Template()
      */
     public function newTrialAction()
     {
-        return array();
+        $user = new User();
+        $formBuilder = $this->createFormBuilder($user);
+        $form = $formBuilder->add('username', null, array('label' => 'ID'))
+                            ->add('email', null, array('label' => '邮箱'))
+                            ->add('nickname', null, array('label' => '昵称'))
+                            ->add('plainPassword', 'repeated', array('type' => 'password'))
+                            ->add('corp', new CorpFormType(false))
+                            ->getForm();
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $corp = $user->getCorp();
+                $corp->setName('imagshow试用');
+                $corp->setLegalPerson('imagshow试用');
+                $corp->setContactId('201212345678');
+                $corp->setTrial(true);
+                $user->setEnabled(true);
+                $um = $this->get('magend.user_manager');
+                $um->updateUser($user);
+                
+                return $this->redirect($this->generateUrl('corp_user_list'));
+            }
+        }
+        return array(
+            'form' => $form->createView()
+        );
     }
     
     /**

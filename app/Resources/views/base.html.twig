@@ -61,13 +61,13 @@
                 </li>
                 
                 {% if is_granted('ROLE_CORP') %}
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['inner_user_create', 'inner_user_list', 'corp_user_list', 'corp_user_show'] %}current{% endif %}">内部用户</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['inner_user_create', 'inner_user_list', 'inner_user_new', 'corp_user_list', 'corp_user_show'] %}current{% endif %}">内部用户</a>
                     <ul>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li><a {% if currentRoute == 'corp_user_list' or currentRoute == 'corp_user_show' %}class="current"{% endif %} href="{{ path('corp_user_list') }}">企业用户</a></li>
                         {% endif %}
-                        <li><a {% if currentRoute == 'inner_user_create' %}class="current"{% endif %} href="#">创建</a></li>
-                        <li><a {% if currentRoute == 'inner_user_list' %}class="current"{% endif %} href="#">管理</a></li>
+                        <li><a {% if currentRoute == 'inner_user_new' %}class="current"{% endif %} href="{{ path('inner_user_new') }}">创建</a></li>
+                        <li><a {% if currentRoute == 'inner_user_list' %}class="current"{% endif %} href="{{ path('inner_user_list') }}">管理</a></li>
                     </ul>
                 </li>
                 {% endif %}
