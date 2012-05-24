@@ -35,10 +35,13 @@ class CorpUserController extends Controller
     /**
      * 
      * @Route("/{id}/show", name="corp_user_show", requirements={"id" = "\d+"})
+     * @Template()
      */
     public function showAction($id)
     {
-        return array();
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $user = $repo->find($id);
+        return array('user' => $user);
     }
     
     /**

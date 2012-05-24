@@ -64,7 +64,7 @@ class CorpRegistrationController extends BaseController
                 $this->authenticateUser($user);
             }
             
-            return $this->redirect($this->generateUrl('home'));
+            return new RedirectResponse($this->container->get('router')->generate('home'));
         }
         
         return array(
