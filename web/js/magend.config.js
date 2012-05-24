@@ -36,7 +36,16 @@ $(document).ready(function(){
 	
 	$('.alert-message').alert();
 	
-	$('a[rel*=colorbox]').colorbox();
+    $('a[rel^=colorbox]').each(function(index, a){
+    	a = $(a);
+    	a.colorbox({
+    		loop:false,
+    		current:'',
+    		inline:_(a.attr('href')).startsWith('#'),
+    		maxWidth: '800px',
+    		maxHeight: '600px'
+    	});
+    });
 	
 	$('select.urlSelect').live('change', function(e){
 		window.location = $(this).val();

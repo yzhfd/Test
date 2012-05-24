@@ -122,6 +122,14 @@ class UserCorp
      * ) 
      */
     public $pledgeFile;
+    
+    /**
+     * Is this account only for trial
+     * 
+     * @var boolean
+     * @ORM\Column(name="trial", type="boolean")
+     */
+    private $trial = false;
 
     /**
      * Get id
@@ -356,5 +364,15 @@ class UserCorp
     public function __toString()
     {
         return $this->name;
+    }
+    
+    public function isTrial()
+    {
+        return $this->trial;
+    }
+    
+    public function setTrial($trial)
+    {
+        $this->trial = $trial;
     }
 }

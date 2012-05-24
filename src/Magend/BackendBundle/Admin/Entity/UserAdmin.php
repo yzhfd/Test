@@ -12,6 +12,7 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Magend\UserBundle\Entity\User;
+use Magend\UserBundle\Form\Type\CorpFormType;
 
 class UserAdmin extends Admin
 {
@@ -84,7 +85,8 @@ class UserAdmin extends Admin
                 ->add('username', null, array('label' => '用户ID'))
                 ->add('email', null, array('read_only' => $targetUser->getId() != null))
                 ->add('plainPassword', 'text', array('required' => false, 'label' => '密码'))
-                //->add('avatar', null, array('label' => '头像'))
+                ->add('mobile', null, array('label' => '手机'))
+                ->add('corp', new CorpFormType(false), array('label' => '企业信息'))
         ->end()
         ->with('管理')
                 ->add('locked', null, array('required' => false, 'label' => '封禁'))

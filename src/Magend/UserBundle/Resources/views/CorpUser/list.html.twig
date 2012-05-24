@@ -17,12 +17,11 @@
             <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
             <table>
                 <thead><tr>
-                    <th><input class="check-all" type="checkbox" /></th>
                     <th>用户名</th>
                     <th>企业名</th>
                     <th>邮箱</th>
                     <th>注册时间</th>
-                    <th>操作</th>
+                    <th>激活</th>
                 </tr></thead>
              
                 <tfoot><tr>
@@ -43,15 +42,11 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td><input type="checkbox" /></td>
                         <td><a title="查看该用户详情" href="{{ path('corp_user_show', { 'id':user.id }) }}">{{ user.username }}</a></td>
                         <td><a title="查看该用户详情" href="{{ path('corp_user_show', { 'id':user.id }) }}">{{ user.corp.name }}</a></td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
-                        <td style="width:50px;">
-                            <a rel="dialog" href="{{ path('user_edit', {'id':user.id}) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                            <a rel="confirm" href="{{ path('user_del', { 'id':user.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
-                        </td>
+                        <td style="width:50px;"><img src="{{ asset(user.enabled ? 'images/accept.png' : 'images/exclamation.png') }}"</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -34,7 +34,7 @@ class CorpUserController extends Controller
     
     /**
      * 
-     * @Route("/{id}/show", name="corp_user_show", requirements={"id" = "\d+"})
+     * @Route("/{id}/show", name="corp_user_show", requirements={"id"="\d+"})
      * @Template()
      */
     public function showAction($id)
@@ -43,32 +43,30 @@ class CorpUserController extends Controller
         $user = $repo->find($id);
         return array('user' => $user);
     }
-    
+
     /**
-     * @Route("/{id}/del", name="corp_user_del")
+     * 
+     * @Route("/{id}/trial/new", name="corp_trial_new")
+     * @Template()
      */
-    public function delAction($id)
+    public function newTrialAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
-        $user = $repo->find($id);
-        
-        $em->remove($user);
-        $em->flush();
-        return $this->redirect($this->generateUrl('user_list'));
+        return array();
     }
     
     /**
-     * User edits its profile(not administration)
+     * Enable the user
      * 
-     * @Route("/edit", name="user_edit")
+     * @Route("/{id}/enable", name="corp_user_enable", requirements={"id"="\d+"})
      */
-    public function editAction()
+    public function enableAction($id)
     {
-        // @todo ROLE_ADMIN and $req->getParameter('id')
-        $user = $this->get('security.context')->getToken()->getUser();
-        $formBuilder = $this->createFormBuilder($user);
-        /*$form = $formBuilder->add('mobile', null, array('label' => '手机号'))
-                            ->getForm();*/
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $user = $repo->find($id);
+        $user->setEnabled(true);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('corp_user_show', array('id'=>$id)));
     }
 }

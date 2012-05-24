@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}企业用户详情{% endblock %}
+{% block contentTitle %}企业用户详情{% if user.enabled %}<small>已通过审核</small>{% endif %}{% endblock %}
 
 {% block main %}
     <table class="bordered-table zebra-striped">
@@ -27,22 +27,23 @@
             </tr>
             <tr>
                 <th>组织机构代码</th>
-                <td><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.orgCode) }}" /></td>
+                <td><a rel="colorbox" title="组织机构代码" href="{{ asset('uploads/corp/' ~ user.corp.orgCode) }}"><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.orgCode) }}" /></a></td>
             </tr>
             <tr>
                 <th>营业执照</th>
-                <td><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.license) }}" /></td>
+                <td><a rel="colorbox" title="营业执照" href="{{ asset('uploads/corp/' ~ user.corp.license) }}"><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.license) }}" /></a></td>
             </tr>
             <tr>
                 <th>安全承诺书</th>
-                <td><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.pledge) }}" /></td>
+                <td><a rel="colorbox" title="安全承诺书" href="{{ asset('uploads/corp/' ~ user.corp.pledge) }}"><img style="height:80px;" src="{{ asset('uploads/corp/' ~ user.corp.pledge) }}" /></a></td>
             </tr>
         </tbody>
     </table>
     
     <div class="well">
         <a class="btn" href="{{ path('corp_user_list') }}">返回列表</a>
-        <a class="primary btn" href="#">编辑信息</a>
+        <a class="info btn" href="{{ path('admin_magend_user_user_edit', { 'id':user.id }) }}">编辑</a>
+        {% if not user.enabled %}<a class="primary btn" href="{{ path('corp_user_enable', { 'id':user.id }) }}">审核通过</a>{% endif %}
         <a class="danger btn" style="float:right;" href="#">删除</a>
     </div>
 {% endblock %}

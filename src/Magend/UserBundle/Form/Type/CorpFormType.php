@@ -11,6 +11,13 @@ class CorpFormType extends AbstractType
 {
     private $container = null;
     
+    private $isRegister = true;
+    
+    public function __construct($isRegister = true)
+    {
+        $this->isRegister = $isRegister;
+    }
+    
     /**
      * Errors are bubbled up for better looking
      * 
@@ -18,13 +25,13 @@ class CorpFormType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-            ->add('phone', null, array('error_bubbling' => false))
-            ->add('name', null, array('error_bubbling' => false))
-            ->add('legalPerson', null, array('error_bubbling' => false))
-            ->add('contactId', null, array('error_bubbling' => false))
-            ->add('orgCodeFile', 'file', array('error_bubbling' => false))
-            ->add('licenseFile', 'file', array('error_bubbling' => false))
-            ->add('pledgeFile', 'file', array('error_bubbling' => false))
+            ->add('phone', null, array('error_bubbling' => false, 'label' => '电话'))
+            ->add('name', null, array('error_bubbling' => false, 'label' => '企业名称'))
+            ->add('legalPerson', null, array('error_bubbling' => false, 'label' => '法人代表'))
+            ->add('contactId', null, array('error_bubbling' => false, 'label' => '联系人身份证'))
+            ->add('orgCodeFile', 'file', array('error_bubbling' => false, 'label' => '组织机构代码', 'required' => $this->isRegister))
+            ->add('licenseFile', 'file', array('error_bubbling' => false, 'label' => '营业执照', 'required' => $this->isRegister))
+            ->add('pledgeFile', 'file', array('error_bubbling' => false, 'label' => '安全承诺书', 'required' => $this->isRegister))
             ;
     }
     
