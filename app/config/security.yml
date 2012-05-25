@@ -64,6 +64,7 @@ security:
         - { path: ^/output, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/article/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         
+        - { path: ^/inner/, role: ROLE_CORP }
         - { path: ^/admin/, role: ROLE_ADMIN }
         
         - { path: ^/.*, role: ROLE_OPERATOR }

@@ -1,7 +1,7 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block main %}
-
+{% if not app.request.isXmlHTTPRequest() %}<h2>创建{{ currentUser.corp is not null ? currentUser.corp.name : '企业' }}内部用户</h2>{% endif %}
 <form id="corp_trial_form" style="width:680px; margin-top:10px;" action="{{ path('inner_user_new') }}" method="post" {{ form_enctype(form) }}>
 
     <div class="clearfix">

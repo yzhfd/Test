@@ -2,6 +2,7 @@
 
 namespace Magend\UserBundle\Controller;
 
+use Exception;
 use Magend\BaseBundle\Controller\BaseController as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,10 +25,13 @@ class InnerUserController extends Controller
     public function listAction()
     {
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
-        $arr = $this->getList('MagendUserBundle:User');
-        $arr['users'] = $arr['entities'];
-        unset($arr['entities']);
-        return $arr;
+        $dql = 'SELECT u FROM MagendUserBundle:User u WHERE u.boss IS NOT NULL ORDER BY u.createdAt DESC';
+        $em = $this->getDoctrine()->getEntityManager();
+        $tplVars = $this->getList('MagendUserBundle:User', $em->createQuery($dql));
+        $tplVars['users'] = $tplVars['entities'];
+        unset($tplVars['entities']);
+        $tplVars['currentUser'] = $this->get('security.context')->getToken()->getUser();
+        return $tplVars;
     }
     
     /**
@@ -38,6 +42,10 @@ class InnerUserController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
         $user = $repo->find($id);
+        $currentUser = $this->get('security.context')->getToken()->getUser();
+        if ($user->getBoss() != $currentUser) {
+            throw new Exception('inner.not_boss');
+        }
         
         $em->remove($user);
         $em->flush();
@@ -52,6 +60,7 @@ class InnerUserController extends Controller
      */
     public function newAction()
     {
+        $currentUser = $this->get('security.context')->getToken()->getUser();
         $user = new User();
         $formBuilder = $this->createFormBuilder($user);
         $form = $formBuilder->add('username', null, array('label' => 'ID'))
@@ -64,15 +73,29 @@ class InnerUserController extends Controller
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $user->setEnabled(true);
+                $user->setBoss($currentUser);
                 $um = $this->get('magend.user_manager');
                 $um->updateUser($user);
         
                 return $this->redirect($this->generateUrl('inner_user_list'));
             }
         }
+        
         return array(
-                'form' => $form->createView()
+            'form' => $form->createView(),
+            'currentUser' => $currentUser
         );
+    }
+    
+    /**
+     * Show the user
+     * 
+     * @Route("/show", name="inner_user_show")
+     * @Template()
+     */
+    public function showAction()
+    {
+        return new Response();
     }
     
     /**
