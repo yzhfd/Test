@@ -4,6 +4,8 @@ namespace Magend\MagzineBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Magend\ArticleBundle\Entity\Article;
+use Magend\UserBundle\Entity\User;
 
 /**
  * Magend\MagzineBundle\Entity\Magzine
@@ -24,11 +26,22 @@ class Magzine
     private $id;
     
     /**
+     * Owner, who is normally corp user
      * 
      * @var User
      * @ORM\ManyToOne(targetEntity="Magend\UserBundle\Entity\User")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $user;
+
+    /**
+     * Staff user who are permitted to edit this magzine
+     *
+     * @var User
+     * @ORM\ManyToMany(targetEntity="Magend\UserBundle\Entity\User", inversedBy="grantedMags")
+     * @ORM\JoinTable(name="pq_magazine_staff")
+     */
+    private $staffUsers;
 
     /**
      * @var string $name
@@ -126,6 +139,7 @@ class Magzine
     {
         $this->issues = new ArrayCollection();
         $this->copyrightArticles = new ArrayCollection();
+        $this->staffUsers = new ArrayCollection();
     }
     
     public function __toString()
@@ -339,7 +353,7 @@ class Magzine
      *
      * @param Magend\ArticleBundle\Entity\Article $copyrightArticle
      */
-    public function addCopyrightArticle(\Magend\ArticleBundle\Entity\Article $copyrightArticle)
+    public function addCopyrightArticle(Article $copyrightArticle)
     {
         $this->copyrightArticles[] = $copyrightArticle;
     }
@@ -362,5 +376,15 @@ class Magzine
     public function setUser($user)
     {
         $this->user = $user;
+    }
+    
+    public function getStaffUsers()
+    {
+        return $this->staffUsers;
+    }
+    
+    public function addStaffUser($user)
+    {
+        $this->staffUsers[] = $user;
     }
 }

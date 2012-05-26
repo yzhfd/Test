@@ -8,7 +8,7 @@
         <div class="content-box-header">
             <h3>用户列表</h3>
             <div style="padding-top: 6px">
-                <a rel="dialog" class="btn info" href="{{ path('inner_user_new') }}">创建内部人员帐号</a>
+                <a rel="dialog" class="btn info" href="{{ path('staff_user_new') }}">创建内部人员帐号</a>
             </div>
             <div class="clear"></div>
         </div> <!-- End .content-box-header -->
@@ -20,6 +20,7 @@
                     <th>用户名</th>
                     <th>邮箱</th>
                     <th>注册时间</th>
+                    <th>杂志</th>
                     <th>操作</th>
                 </tr></thead>
              
@@ -33,9 +34,10 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td><a title="查看该用户详情" href="{{ path('inner_user_show', { 'id':user.id }) }}">{{ user.username }}</a></td>
+                        <td><a title="查看该用户详情" href="{{ path('staff_user_show', { 'id':user.id }) }}">{{ user.username }}</a></td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>-</td>
                         <td style="width:100px;">
                             <a rel="dialog" href="#" title="Edit"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
                             <a rel="confirm" href="#" title="Delete"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 

@@ -7,6 +7,7 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Magend\UserBundle\Entity\User
@@ -40,6 +41,14 @@ class User extends BaseUser
      * @var UserCorp
      */
     private $corp;
+    
+    /**
+     * Magzines that this user have rights to edit
+     *
+     * @var Magzine
+     * @ORM\ManyToMany(targetEntity="Magend\MagzineBundle\Entity\Magzine", mappedBy="staffUsers")
+     */
+    private $grantedMags;
     
     /**
      *
@@ -127,6 +136,11 @@ class User extends BaseUser
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __construct()
+    {
+        $this->grantedMags = new ArrayCollection();
     }
     
     /**
@@ -312,5 +326,15 @@ class User extends BaseUser
     public function setBoss($boss)
     {
         $this->boss = $boss;
+    }
+    
+    public function getGrantedMags()
+    {
+        return $this->grantedMags;
+    }
+    
+    public function addGrantedMag($mag)
+    {
+        $this->grantedMags[] = $mag;
     }
 }

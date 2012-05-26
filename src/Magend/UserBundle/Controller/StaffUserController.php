@@ -11,15 +11,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\UserBundle\Entity\User;
 
 /**
- * For admin and corp user
+ * For staff user, under some corp
  * 
- * @Route("/inner/user")
+ * @Route("/staff/user")
  * @author Kail
  */
-class InnerUserController extends Controller
+class StaffUserController extends Controller
 {
     /**
-     * @Route("/list", name="inner_user_list")
+     * @Route("/list", name="staff_user_list")
      * @Template()
      */
     public function listAction()
@@ -44,7 +44,7 @@ class InnerUserController extends Controller
         $user = $repo->find($id);
         $currentUser = $this->get('security.context')->getToken()->getUser();
         if ($user->getBoss() != $currentUser) {
-            throw new Exception('inner.not_boss');
+            throw new Exception('staff.not_boss');
         }
         
         $em->remove($user);
@@ -55,7 +55,7 @@ class InnerUserController extends Controller
     /**
      * Create user under the corporation
      * 
-     * @Route("/new", name="inner_user_new")
+     * @Route("/new", name="staff_user_new")
      * @Template()
      */
     public function newAction()
@@ -77,7 +77,7 @@ class InnerUserController extends Controller
                 $um = $this->get('magend.user_manager');
                 $um->updateUser($user);
         
-                return $this->redirect($this->generateUrl('inner_user_list'));
+                return $this->redirect($this->generateUrl('staff_user_list'));
             }
         }
         
@@ -90,7 +90,7 @@ class InnerUserController extends Controller
     /**
      * Show the user
      * 
-     * @Route("/show", name="inner_user_show")
+     * @Route("/show", name="staff_user_show")
      * @Template()
      */
     public function showAction()
