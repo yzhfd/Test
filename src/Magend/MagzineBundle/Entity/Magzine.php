@@ -32,7 +32,7 @@ class Magzine
      * @ORM\ManyToOne(targetEntity="Magend\UserBundle\Entity\User")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $user;
+    private $owner;
 
     /**
      * Staff user who are permitted to edit this magzine

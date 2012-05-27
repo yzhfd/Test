@@ -62,7 +62,7 @@ class MagzineController extends Controller
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if (!$isAdmin) {
             $user = $this->get('security.context')->getToken()->getUser();
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.user = :user';
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
             $em = $this->getDoctrine()->getEntityManager();
             $q = $em->createQuery($dql)->setParameter('user', $user);
         }
@@ -195,7 +195,7 @@ class MagzineController extends Controller
                     $vm = $this->get('magend.version_manager');
                     $vm->incGroupVersion();
                     $user = $this->get('security.context')->getToken()->getUser();
-                    $magzine->setUser($user);
+                    $magzine->setOwner($user);
                 }
                 
                 $em->persist($magzine);

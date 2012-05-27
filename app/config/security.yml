@@ -4,8 +4,8 @@ security:
 
     # ROLE_USER as consumer
     role_hierarchy:
-        ROLE_OPERATOR:    ROLE_USER
-        ROLE_CORP:        ROLE_OPERATOR
+        ROLE_STAFF:       ROLE_USER
+        ROLE_CORP:        ROLE_STAFF
         ROLE_ADMIN:       ROLE_CORP
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_SONATA_ADMIN, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
         SONATA:
@@ -67,4 +67,4 @@ security:
         - { path: ^/staff/, role: ROLE_CORP }
         - { path: ^/admin/, role: ROLE_ADMIN }
         
-        - { path: ^/.*, role: ROLE_OPERATOR }
+        - { path: ^/.*, role: ROLE_STAFF }

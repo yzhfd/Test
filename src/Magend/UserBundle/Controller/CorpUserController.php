@@ -53,7 +53,8 @@ class CorpUserController extends Controller
      */
     public function newTrialAction()
     {
-        $user = new User();
+        $um = $this->get('magend.user_manager');
+        $user = $um->createUser();
         $formBuilder = $this->createFormBuilder($user);
         $form = $formBuilder->add('username', null, array('label' => 'ID'))
                             ->add('email', null, array('label' => '邮箱'))

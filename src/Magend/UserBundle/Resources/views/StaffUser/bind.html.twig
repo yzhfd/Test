@@ -1,0 +1,7 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+    {% for mag in mags %}
+        {{ mag.name }}
+    {% endfor %}
+{% endblock %}

@@ -35,7 +35,7 @@ class StaffUserController extends Controller
     }
     
     /**
-     * @Route("/{id}/del", name="user_del")
+     * @Route("/{id}/del", name="staff_user_del")
      */
     public function delAction($id)
     {
@@ -49,7 +49,7 @@ class StaffUserController extends Controller
         
         $em->remove($user);
         $em->flush();
-        return $this->redirect($this->generateUrl('user_list'));
+        return $this->redirect($this->generateUrl('staff_user_list'));
     }
     
     /**
@@ -61,7 +61,8 @@ class StaffUserController extends Controller
     public function newAction()
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
-        $user = new User();
+        $um = $this->get('magend.user_manager');
+        $user = $um->createUser();
         $formBuilder = $this->createFormBuilder($user);
         $form = $formBuilder->add('username', null, array('label' => 'ID'))
                             ->add('email', null, array('label' => '邮箱'))
@@ -73,8 +74,8 @@ class StaffUserController extends Controller
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $user->setEnabled(true);
+                $user->addRole('ROLE_STAFF');
                 $user->setBoss($currentUser);
-                $um = $this->get('magend.user_manager');
                 $um->updateUser($user);
         
                 return $this->redirect($this->generateUrl('staff_user_list'));
@@ -88,27 +89,52 @@ class StaffUserController extends Controller
     }
     
     /**
-     * Show the user
+     * bind(unbind), bind users with mags
      * 
-     * @Route("/show", name="staff_user_show")
+     * @Route("/{id}/bind-mags", name="staff_user_bind", requirements={"id"="\d+"})
      * @Template()
      */
-    public function showAction()
+    public function bindAction($id)
     {
-        return new Response();
+        $currentUser = $this->get('security.context')->getToken()->getUser();
+        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
+        $em = $this->getDoctrine()->getEntityManager();
+        $q = $em->createQuery($dql)->setParameter('user', $currentUser);
+        $mags = $q->getResult();
+        
+        return array(
+            'mags' => $mags
+        );
     }
     
     /**
-     * User edits its profile(not administration)
      * 
-     * @Route("/edit", name="user_edit")
+     * @Route("/{id}/edit", name="staff_user_edit", requirements={"id"="\d+"})
+     * @Template("MagendUserBundle:StaffUser:new.html.twig")
      */
-    public function editAction()
+    public function editAction($id)
     {
-        // @todo ROLE_ADMIN and $req->getParameter('id')
-        $user = $this->get('security.context')->getToken()->getUser();
+        $um = $this->get('magend.user_manager');
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $user = $repo->find($id);
         $formBuilder = $this->createFormBuilder($user);
-        /*$form = $formBuilder->add('mobile', null, array('label' => '手机号'))
-                            ->getForm();*/
+        $form = $formBuilder->add('username', null, array('label' => 'ID'))
+                            ->add('email', null, array('label' => '邮箱'))
+                            ->add('nickname', null, array('label' => '昵称'))
+                            ->add('plainPassword', 'repeated', array('type' => 'password', 'required' => false))
+                            ->getForm();
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $um->updateUser($user);
+        
+                return $this->redirect($this->generateUrl('staff_user_list'));
+            }
+        }
+        
+        return array(
+            'form' => $form->createView()
+        );
     }
 }
