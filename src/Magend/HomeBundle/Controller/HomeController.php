@@ -27,10 +27,14 @@ class HomeController extends Controller
             $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
             if (!$isAdmin) {
                 $user = $this->get('security.context')->getToken()->getUser();
-                $magzine = $repo->findOneBy(array(
-                    'id' => $magId,
-                    'user' => $user,
-                ));
+                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
+                $em = $this->getDoctrine()->getEntityManager();
+                $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
+                try {
+                    $magzine = $q->getSingleResult();
+                } catch (Exception $e) {
+                    $magzine = null;
+                }
             } else {
                 $magzine = $repo->find($magId);
             }

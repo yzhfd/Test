@@ -38,8 +38,7 @@ class Magzine
      * Staff user who are permitted to edit this magzine
      *
      * @var User
-     * @ORM\ManyToMany(targetEntity="Magend\UserBundle\Entity\User", inversedBy="grantedMags")
-     * @ORM\JoinTable(name="pq_magazine_staff")
+     * @ORM\ManyToMany(targetEntity="Magend\UserBundle\Entity\User", mappedBy="grantedMags")
      */
     private $staffUsers;
 
@@ -368,14 +367,14 @@ class Magzine
         return $this->copyrightArticles;
     }
     
-    public function getUser()
+    public function getOwner()
     {
-        return $this->user;
+        return $this->owner;
     }
     
-    public function setUser($user)
+    public function setOwner($user)
     {
-        $this->user = $user;
+        $this->owner = $user;
     }
     
     public function getStaffUsers()

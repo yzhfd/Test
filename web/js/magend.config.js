@@ -15,13 +15,23 @@ $(document).ready(function(){
 	                	modal: true,
 	                	position: [265, 115],
 	                	width: 'auto',
-	                	height: 'auto'
+	                	height: 'auto',
+	                	open: function(event, ui){
+	                		// for dialog
+		                    if (jQuery().chosen) {
+		                    	$('select.chosen').chosen({ 'no_results_text':'没有结果能匹配' });
+		                    }
+	                	}
 	                });
 	            }
 	        );
 	    //prevent the browser to follow the link
 	    return false;
 	});
+	
+    if (jQuery().chosen) {
+    	$('select.chosen').chosen({ 'no_results_text':'没有结果能匹配' });
+    }
 	
 	$('.tabs').tabs();
 	$('.pills').pills();

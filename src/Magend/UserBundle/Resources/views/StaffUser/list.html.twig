@@ -39,7 +39,11 @@
                         <td><a title="查看该用户详情" href="#">{{ user.nickname }}</a></td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
-                        <td>-</td>
+                        <td>
+                        {% for mag in user.grantedMags %}
+                            <a href="{{ path('magzine_issues', { 'id':mag.id }) }}">{{ mag.name }}</a>{% if not loop.last %}、{% endif %}
+                        {% endfor %}
+                        </td>
                         <td style="width:100px;">
                             <a rel="dialog" href="{{ path('staff_user_bind', {'id':user.id}) }}" title="关联杂志编辑"><img src="{{ asset('images/book_link.png') }}" alt="关联杂志编辑" /></a>
                             <a rel="dialog" href="{{ path('staff_user_edit', {'id':user.id}) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>

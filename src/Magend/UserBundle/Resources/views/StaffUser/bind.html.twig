@@ -1,7 +1,15 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block main %}
-    {% for mag in mags %}
-        {{ mag.name }}
-    {% endfor %}
+
+    <form id="corp_trial_form" style="width:680px; margin-top:10px;" action="{{ path('staff_user_bind', {'id':app.request.get('id')}) }}" method="post" {{ form_enctype(form) }}>
+        <div class="clearfix">
+            {{ form_label(form.grantedMags, '绑定杂志') }}
+            <div class="input">{{ form_errors(form.grantedMags) }}{{ form_widget(form.grantedMags, { 'attr':{'class':'chosen'} }) }}</div>
+        </div>
+        
+        {{ form_widget(form._token) }}
+        
+        <div class="actions"><button class="btn primary" type="submit">提 交</button></div>
+    </form>
 {% endblock %}

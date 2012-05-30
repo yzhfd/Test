@@ -101,7 +101,9 @@ class MagzineController extends Controller
         if ($isAdmin) {
             $arr['magzines'] = $repo->findAll();
         } else {
-            $arr['magzines'] = $repo->findBy(array('user' => $user->getId()));
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+            $q = $em->createQuery($dql)->setParameter('user', $user->getId());
+            $arr['magzines'] = $q->getResult();
         }
         
         $response = $this->container->get('templating')->renderResponse(

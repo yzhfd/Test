@@ -2,6 +2,7 @@
 
 namespace Magend\IssueBundle\Controller;
 
+use Exception;
 use ZipArchive;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -605,21 +606,22 @@ class IssueController extends Controller
     {
         $user = $this->get('security.context')->getToken()->getUser();
         
+        $em = $this->getDoctrine()->getEntityManager();
         $magId = $this->getRequest()->cookies->get('magzine_id');
-        
         if ($magId !== null) {
-            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $mag = $repo->findOneBy(array(
-                'id' => $magId,
-                'user' => $user->getId()
-            ));
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
+            $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
+            try {
+                $mag = $q->getSingleResult();
+            } catch (Exception $e) {
+                $mag = null;
+            }
             if ($mag == null) {
                 $magId = null;
             }
         }
         
         if ($magId === null) {
-            $em = $this->getDoctrine()->getEntityManager();
             $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
             $where = $isAdmin ? '' : 'WHERE m.user = :user';
             $params = $isAdmin ? array() : array('user' => $user->getId());

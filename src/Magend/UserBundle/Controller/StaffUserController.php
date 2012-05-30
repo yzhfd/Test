@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Magend\UserBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * For staff user, under some corp
@@ -31,6 +32,15 @@ class StaffUserController extends Controller
         $tplVars['users'] = $tplVars['entities'];
         unset($tplVars['entities']);
         $tplVars['currentUser'] = $this->get('security.context')->getToken()->getUser();
+        /*
+        $uids = array();
+        foreach ($tplVars['users'] as $user) {
+            $uids[] = $user->getId();
+        }
+        $dql = 'SELECT u FROM MagendUserBundle:User u LEFT JOIN u.grantedMags m WHERE u in (:users)';
+        $q = $em->createQuery($dql)->setParameter('users', $uids);
+        $q->getResult();*/
+        
         return $tplVars;
     }
     
@@ -97,13 +107,30 @@ class StaffUserController extends Controller
     public function bindAction($id)
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
-        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
-        $em = $this->getDoctrine()->getEntityManager();
-        $q = $em->createQuery($dql)->setParameter('user', $currentUser);
-        $mags = $q->getResult();
+        
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $user = $repo->find($id);
+        $formBuilder = $this->createFormBuilder($user);
+        
+        $form = $formBuilder->add('grantedMags', 'entity', array(
+            'class' => 'MagendMagzineBundle:Magzine',
+            'multiple' => true,
+            'query_builder' => function (EntityRepository $er) use ($currentUser) {
+                return $er->createQueryBuilder('m')->where('m.owner = :owner')->setParameter('owner', $currentUser);
+            },
+        ))->getForm();
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getEntityManager();
+                $em->flush();
+                return $this->redirect($this->generateUrl('staff_user_list'));
+            }
+        }
         
         return array(
-            'mags' => $mags
+            'form' => $form->createView(),
         );
     }
     
