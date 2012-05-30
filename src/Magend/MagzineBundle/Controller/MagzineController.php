@@ -2,6 +2,7 @@
 
 namespace Magend\MagzineBundle\Controller;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Magend\BaseBundle\Controller\BaseController as Controller;
@@ -28,7 +29,7 @@ class MagzineController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $magzine = $repo->find($id);
         if (!$magzine) {
-            throw new \ Exception('Magzine not found');
+            throw new Exception('Magzine not found');
         }
         
         $req = $this->getRequest();
@@ -62,7 +63,7 @@ class MagzineController extends Controller
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if (!$isAdmin) {
             $user = $this->get('security.context')->getToken()->getUser();
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $em = $this->getDoctrine()->getEntityManager();
             $q = $em->createQuery($dql)->setParameter('user', $user);
         }
@@ -121,7 +122,16 @@ class MagzineController extends Controller
      */
     public function newAction()
     {
-        return $this->submit();
+        $ret = $this->submit();
+        if (is_array($ret)) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $user = $this->get('security.context')->getToken()->getUser();
+            $dql = 'SELECT COUNT(m.id) FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
+            $q = $em->createQuery($dql)->setParameter('user', $user);
+            $ret['nbMags'] = $q->getSingleScalarResult();
+        }
+        
+        return $ret;
     }
     
     /**
@@ -144,7 +154,7 @@ class MagzineController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
         $magzine = $repo->find($id);
         if (!$magzine) {
-            throw new \ Exception('Magzine not found');
+            throw new Exception('Magzine not found');
         }
         
         $em = $this->getDoctrine()->getEntityManager();
@@ -172,7 +182,7 @@ class MagzineController extends Controller
             $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
             $magzine = $repo->find($id);
             if (!$magzine) {
-                throw new \ Exception('Magzine not found');
+                throw new Exception('Magzine not found');
             }
         }
         

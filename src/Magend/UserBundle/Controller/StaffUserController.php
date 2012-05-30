@@ -25,13 +25,15 @@ class StaffUserController extends Controller
      */
     public function listAction()
     {
+        $currentUser = $this->get('security.context')->getToken()->getUser();
+        
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
-        $dql = 'SELECT u FROM MagendUserBundle:User u WHERE u.boss IS NOT NULL ORDER BY u.createdAt DESC';
+        $dql = 'SELECT u FROM MagendUserBundle:User u WHERE u.boss = :user ORDER BY u.createdAt DESC';
         $em = $this->getDoctrine()->getEntityManager();
-        $tplVars = $this->getList('MagendUserBundle:User', $em->createQuery($dql));
+        $tplVars = $this->getList('MagendUserBundle:User', $em->createQuery($dql)->setParameter('user', $currentUser));
         $tplVars['users'] = $tplVars['entities'];
         unset($tplVars['entities']);
-        $tplVars['currentUser'] = $this->get('security.context')->getToken()->getUser();
+        $tplVars['currentUser'] = $currentUser;
         /*
         $uids = array();
         foreach ($tplVars['users'] as $user) {

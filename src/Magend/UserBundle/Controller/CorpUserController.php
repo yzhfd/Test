@@ -72,6 +72,7 @@ class CorpUserController extends Controller
                 $corp->setContactId('201212345678');
                 $corp->setTrial(true);
                 $user->setEnabled(true);
+                $user->addRole('ROLE_CORP');
                 $um = $this->get('magend.user_manager');
                 $um->updateUser($user);
                 
@@ -97,5 +98,19 @@ class CorpUserController extends Controller
         $em->flush();
         
         return $this->redirect($this->generateUrl('corp_user_show', array('id'=>$id)));
+    }
+    
+    /**
+     * @Route("/{id}/del", name="corp_user_del", requirements={"id"="\d+"})
+     */
+    public function delAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $user = $repo->find($id);
+    
+        $em->remove($user);
+        $em->flush();
+        return $this->redirect($this->generateUrl('corp_user_list'));
     }
 }

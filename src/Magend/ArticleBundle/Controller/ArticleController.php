@@ -298,8 +298,10 @@ class ArticleController extends Controller
      * @Template()
      */
     public function newAction()
-    {        
+    {
         $article = new Article();
+        
+        $em = $this->getDoctrine()->getEntityManager();
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
         $kws = $kwRepo->findAll();
@@ -324,7 +326,6 @@ class ArticleController extends Controller
                 }
                 
                 $article->setIssue($issue);
-                $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($article);
                 $em->flush();
                 
@@ -342,8 +343,10 @@ class ArticleController extends Controller
             }
         }
         
-        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $mags = $magRepo->findAll();
+        $user = $this->get('security.context')->getToken()->getUser();
+        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+        $q = $em->createQuery($dql)->setParameter('user', $user);
+        $mags = $q->getResult();
         $tplVars = array(
             //'institutes' => $institutes,
             'keywords'   => $kws,

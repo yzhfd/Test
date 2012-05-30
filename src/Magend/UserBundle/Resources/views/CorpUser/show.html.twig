@@ -44,6 +44,6 @@
         <a class="btn" href="{{ path('corp_user_list') }}">返回列表</a>
         <a class="info btn" href="{{ path('admin_magend_user_user_edit', { 'id':user.id }) }}">编辑</a>
         {% if not user.enabled %}<a class="primary btn" href="{{ path('corp_user_enable', { 'id':user.id }) }}">审核通过</a>{% endif %}
-        <a class="danger btn" style="float:right;" href="#">删除</a>
+        <a rel="confirm" title="删除用户" class="danger btn" style="float:right;" href="{{ path('corp_user_del', { 'id':user.id }) }}">删除</a>
     </div>
 {% endblock %}

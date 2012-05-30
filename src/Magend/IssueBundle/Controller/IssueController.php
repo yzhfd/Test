@@ -17,7 +17,7 @@ use Magend\IssueBundle\Form\IssueType;
 use Magend\IssueBundle\Entity\Issue;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\ Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\IssueBundle\Util\SimpleImage;
 use Doctrine\ORM\NoResultException;
@@ -45,13 +45,13 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
-            throw new \ Exception('Issue not found'); 
+            throw new Exception('Issue not found'); 
         }
         
         $cpr = $issue->getMagzine()->getCopyrightArticle();
         $articleIds = $issue->getArticleIds();
         if (in_array($cpr->getId(), $articleIds)) {
-            throw new \ Exception('Already inserted'); 
+            throw new Exception('Already inserted'); 
         }
         $issue->addArticle($cpr);
         $articleIds[] = $cpr->getId(); 
@@ -71,7 +71,7 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         if (empty($issue)) {
-            throw new \ Exception('Issue not found'); 
+            throw new Exception('Issue not found'); 
         }
         
         $cpArticle = $issue->getMagzine()->getCopyrightArticle();
@@ -320,8 +320,17 @@ class IssueController extends Controller
             }
         }
         
-        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $mags = $magRepo->findAll();
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        if ($isAdmin) {
+            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $mags = $magRepo->findAll();
+        } else {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+            $em = $this->getDoctrine()->getEntityManager();
+            $q = $em->createQuery($dql)->setParameter('user', $user);
+            $mags = $q->getResult();
+        }
         return array(
             'issue'    => $issue,
             'magzines' => $mags,
@@ -547,7 +556,7 @@ class IssueController extends Controller
             $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
             $mag = $magRepo->find($magzineId);
             if (empty($mag)) {
-                throw new \ Exception('magzine ' . $magzineId . ' not found');
+                throw new Exception('magzine ' . $magzineId . ' not found');
             }
             $issue->setMagzine($mag);
             $em->persist($issue);
@@ -582,7 +591,7 @@ class IssueController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
+            throw new Exception('issue ' . $id . ' not found');
         }
         
         $req = $this->getRequest();
@@ -608,9 +617,16 @@ class IssueController extends Controller
         
         $em = $this->getDoctrine()->getEntityManager();
         $magId = $this->getRequest()->cookies->get('magzine_id');
+        
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if ($magId !== null) {
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
-            $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
+            if ($isAdmin) {
+                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m  WHERE m.id = :mag';
+                $q = $em->createQuery($dql)->setParameter('mag', $magId);
+            } else {
+                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
+                $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
+            }
             try {
                 $mag = $q->getSingleResult();
             } catch (Exception $e) {
@@ -622,8 +638,7 @@ class IssueController extends Controller
         }
         
         if ($magId === null) {
-            $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
-            $where = $isAdmin ? '' : 'WHERE m.user = :user';
+            $where = $isAdmin ? '' : 'LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $params = $isAdmin ? array() : array('user' => $user->getId());
             $dql = 'SELECT m.id FROM MagendMagzineBundle:Magzine m '. $where . ' ORDER BY m.createdAt DESC';
             $query = $em->createQuery($dql)->setParameters($params);
@@ -653,7 +668,7 @@ class IssueController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
+            throw new Exception('issue ' . $id . ' not found');
         }
         
         $issue->setArticleIds($req->get('articleIds'));
@@ -702,7 +717,7 @@ class IssueController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
+            throw new Exception('issue ' . $id . ' not found');
         }
         
         // select pages and associate with articles
@@ -735,7 +750,7 @@ class IssueController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
+            throw new Exception('issue ' . $id . ' not found');
         }
 
         $req = $this->getRequest();
@@ -777,7 +792,7 @@ class IssueController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         if (!$issue) {
-            throw new \ Exception('No such issue');
+            throw new Exception('No such issue');
         }
         
         $em = $this->getDoctrine()->getEntityManager();
@@ -805,7 +820,7 @@ class IssueController extends Controller
     {
         $issue = $this->_findIssue($id);
         if (!$issue) {
-            throw new \ Exception('issue ' . $id . ' not found');
+            throw new Exception('issue ' . $id . ' not found');
         }
         
         return array(
