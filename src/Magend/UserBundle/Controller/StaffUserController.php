@@ -34,14 +34,16 @@ class StaffUserController extends Controller
         $tplVars['users'] = $tplVars['entities'];
         unset($tplVars['entities']);
         $tplVars['currentUser'] = $currentUser;
-        /*
+        
         $uids = array();
         foreach ($tplVars['users'] as $user) {
             $uids[] = $user->getId();
         }
-        $dql = 'SELECT u FROM MagendUserBundle:User u LEFT JOIN u.grantedMags m WHERE u in (:users)';
-        $q = $em->createQuery($dql)->setParameter('users', $uids);
-        $q->getResult();*/
+        if (!empty($uids)) {
+            $dql = 'SELECT u, m FROM MagendUserBundle:User u LEFT JOIN u.grantedMags m WHERE u in (:users)';
+            $q = $em->createQuery($dql)->setParameter('users', $uids);
+            $q->getResult();
+        }
         
         return $tplVars;
     }

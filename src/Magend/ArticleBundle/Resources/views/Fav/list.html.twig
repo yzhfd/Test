@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+{% block contentTitle %}文章收藏列表{% endblock %}
+
+{% block main %}
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>收藏列表</h3>
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content">
+            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+            <table>
+                <thead><tr>
+                    <th style="width: 20px;"><input class="check-all" type="checkbox" /></th>
+                    <th>标题</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr></thead>
+             
+                <tbody>
+                    {% for fav in favs %}
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td><a href="{{ path('article_edit', { 'id':fav.article.id}) }}">{{ fav.article.title }}</a></td>
+                        <td>{{ fav.createdAt|date('Y-m-d H:i') }}</td>
+                        <td style="width:50px;">
+                             <a rel="confirm" href="#" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div><!-- End Content Box -->
+                    
+{% endblock %}

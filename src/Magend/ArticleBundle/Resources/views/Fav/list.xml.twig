@@ -1,0 +1,14 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Favs>
+        {% for fav in favs %}
+        <Article>
+            <ID>{{ fav.id }}</ID>
+            <ArticleID>{{ fav.article.id }}</ArticleID>
+            <Title>{{ fav.article.title }}</Title>
+            <CreatedAt>{{ fav.createdAt|date('Y-m-d H:i') }}</CreatedAt>
+        </Article>
+        {% endfor %}
+    </Favs>
+{% endblock %}

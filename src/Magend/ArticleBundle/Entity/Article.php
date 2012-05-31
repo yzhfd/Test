@@ -36,6 +36,16 @@ class Article
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * @var Article
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Fav",
+     *     mappedBy="article"
+     * )
+     */
+    private $favs;
 
     /**
      * Now(and normally) article only belongs to just one issue
@@ -230,6 +240,14 @@ class Article
      * @ORM\Column(name="nb_shared", type="integer")
      */
     private $nbShared = 0;
+    
+    /**
+     * 
+     * @var integer
+     * 
+     * @ORM\Column(name="nb_favs", type="integer")
+     */
+    private $nbFavs = 0;
 
     /**
      * @var datetime $createdAt
@@ -256,6 +274,7 @@ class Article
     
     public function __construct()
     {
+        $this->favs = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->pages = new ArrayCollection();
         $this->architects = new ArrayCollection();
@@ -459,6 +478,36 @@ class Article
     public function getNbShared()
     {
         return $this->nbShared;
+    }
+    
+    /**
+     * Set nbFavs
+     *
+     * @param integer $nbFavs
+     */
+    public function setNbFavs($nbFavs)
+    {
+        $this->nbFavs = $nbFavs;
+    }
+    
+    public function incNbFavs()
+    {
+        ++$this->nbFavs;
+    }
+    
+    public function decNbFavs()
+    {
+        --$this->nbFavs;
+    }
+    
+    /**
+     * Get nbFavs
+     *
+     * @return integer
+     */
+    public function getNbFavs()
+    {
+        return $this->nbFavs;
     }
 
     /**
