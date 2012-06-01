@@ -1,20 +1,15 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}用户列表{% endblock %}
+{% block contentTitle %}试用用户列表{% endblock %}
 
 {% block main %}
 
     <div class="content-box"><!-- Start Content Box -->
         <div class="content-box-header">
-            <h3>分用户表</h3>
-            <!-- <div style="padding-top: 6px">
-                <a rel="dialog" class="btn info" href="{{ path('magzine_new') }}">添加杂志</a>
-            </div> -->
-            <!-- href must be unique and match the id of target div -->
-            <!--<ul class="content-box-tabs">
-                <li><a href="#tab1" class="default-tab">Table</a></li>
-                <li><a href="#tab2">Forms</a></li>
-            </ul>-->
+            <h3>用户列表</h3>
+            <div style="padding-top: 6px">
+                <a rel="dialog" class="btn info" href="{{ path('trial_user_new') }}">创建试用帐号</a>
+            </div>
             <div class="clear"></div>
         </div> <!-- End .content-box-header -->
                 
@@ -22,11 +17,10 @@
             <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
             <table>
                 <thead><tr>
-                    <th><input class="check-all" type="checkbox" /></th>
                     <th>用户名</th>
+                    <th>企业名</th>
                     <th>邮箱</th>
                     <th>注册时间</th>
-                    <th>操作</th>
                 </tr></thead>
              
                 <tfoot><tr>
@@ -47,14 +41,10 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>{{ user.username }}</td>
+                        <td><a title="查看该用户详情" href="{{ path('trial_user_show', { 'id':user.id }) }}">{{ user.username }}</a></td>
+                        <td><a title="查看该用户详情" href="{{ path('trial_user_show', { 'id':user.id }) }}">{{ user.corp.name }}</a></td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
-                        <td style="width:50px;">
-                            {% if is_granted('ROLE_ADMIN') or app.user.id == user.id %}<a rel="dialog" href="{{ path('user_edit', {'id':user.id}) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>{% endif %}
-                            {% if is_granted('ROLE_ADMIN') %}<a rel="confirm" href="{{ path('user_del', { 'id':user.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>{% endif %}
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

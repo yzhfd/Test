@@ -26,7 +26,7 @@ class CorpUserController extends Controller
     public function listAction()
     {
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
-        $dql = 'SELECT u FROM MagendUserBundle:User u WHERE u.corp IS NOT NULL ORDER BY u.createdAt DESC';
+        $dql = 'SELECT u FROM MagendUserBundle:User u LEFT JOIN u.corp corp WHERE corp.trial <> true ORDER BY u.createdAt DESC';
         $em = $this->getDoctrine()->getEntityManager();
         $arr = $this->getList('MagendUserBundle:User', $em->createQuery($dql));
         $arr['users'] = $arr['entities'];
@@ -44,44 +44,6 @@ class CorpUserController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
         $user = $repo->find($id);
         return array('user' => $user);
-    }
-
-    /**
-     * 
-     * @Route("/trial/new", name="corp_trial_new")
-     * @Template()
-     */
-    public function newTrialAction()
-    {
-        $um = $this->get('magend.user_manager');
-        $user = $um->createUser();
-        $formBuilder = $this->createFormBuilder($user);
-        $form = $formBuilder->add('username', null, array('label' => 'ID'))
-                            ->add('email', null, array('label' => '邮箱'))
-                            ->add('nickname', null, array('label' => '昵称'))
-                            ->add('plainPassword', 'repeated', array('type' => 'password'))
-                            ->add('corp', new CorpFormType(false))
-                            ->getForm();
-        $req = $this->getRequest();
-        if ($req->getMethod() == 'POST') {
-            $form->bindRequest($req);
-            if ($form->isValid()) {
-                $corp = $user->getCorp();
-                $corp->setName('imagshow试用');
-                $corp->setLegalPerson('imagshow试用');
-                $corp->setContactId('201212345678');
-                $corp->setTrial(true);
-                $user->setEnabled(true);
-                $user->addRole('ROLE_CORP');
-                $um = $this->get('magend.user_manager');
-                $um->updateUser($user);
-                
-                return $this->redirect($this->generateUrl('corp_user_list'));
-            }
-        }
-        return array(
-            'form' => $form->createView()
-        );
     }
     
     /**

@@ -279,6 +279,11 @@ class IssueController extends Controller
             return new Response('{"msg":"期刊已正式发布"}'); 
         }
         
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ($user->getCorp() && $user->getCorp()->isTrial()) {
+            return new Response('{"msg":"对不起，试用用户不能发布期刊"}');
+        }
+        
         $issue->setPublishMode(Issue::PUBLISH_OFFICIAL);
         if ($issue->getPublishedAt() === null) {
             $issue->setPublishedAt(new \DateTime());

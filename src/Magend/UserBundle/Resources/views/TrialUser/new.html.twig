@@ -2,7 +2,7 @@
 
 {% block main %}
 
-<form id="corp_trial_form" style="width:680px; margin-top:10px;" action="{{ path('corp_trial_new') }}" method="post" {{ form_enctype(form) }}>
+<form id="corp_trial_form" style="width:680px; margin-top:10px;" action="{{ path('trial_user_new') }}" method="post" {{ form_enctype(form) }}>
 
     <div class="clearfix">
         {{ form_label(form.username) }}

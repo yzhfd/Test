@@ -61,22 +61,16 @@
                     </ul>
                 </li>
                 
-                {% if is_granted('ROLE_CORP') %}
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['staff_user_create', 'staff_user_list', 'staff_user_new', 'corp_user_list', 'corp_user_show'] %}current{% endif %}">内部用户</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['staff_user_list', 'staff_user_new', 'corp_user_list', 'corp_user_show', 'trial_user_list', 'trial_user_show', 'trial_user_new', 'consumer_list'] %}current{% endif %}">用户管理</a>
                     <ul>
+                        <li><a {% if currentRoute == 'consumer_list' %}class="current"{% endif %} href="{{ path('consumer_list') }}">消费用户</a></li>
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li><a {% if currentRoute == 'corp_user_list' or currentRoute == 'corp_user_show' %}class="current"{% endif %} href="{{ path('corp_user_list') }}">企业用户</a></li>
+                            <li><a {% if currentRoute == 'corp_user_list' or currentRoute == 'corp_user_show' %}class="current"{% endif %} href="{{ path('corp_user_list') }}">杂志组用户</a></li>
+                            <li><a {% if currentRoute == 'trial_user_list' %}class="current"{% endif %} href="{{ path('trial_user_list') }}">试用用户</a></li>
                         {% endif %}
-                        <li><a {% if currentRoute == 'staff_user_new' %}class="current"{% endif %} href="{{ path('staff_user_new') }}">创建</a></li>
-                        <li><a {% if currentRoute == 'staff_user_list' %}class="current"{% endif %} href="{{ path('staff_user_list') }}">管理</a></li>
-                    </ul>
-                </li>
-                {% endif %}
-                
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['user_list', 'feedback_list'] %}current{% endif %}">普通用户</a>
-                    <ul>
-                        <li><a {% if currentRoute == 'user_list' %}class="current"{% endif %} href="{{ path('user_list') }}">管理</a></li>
-                        <li><a {% if currentRoute == 'feedback_list' %}class="current"{% endif %} href="{{ path('feedback_list') }}">用户反馈</a></li>
+                        {% if is_granted('ROLE_CORP') and not is_granted('ROLE_ADMIN') %}
+                            <li><a {% if currentRoute == 'staff_user_list' or currentRoute == 'staff_user_show' %}class="current"{% endif %} href="{{ path('staff_user_list') }}">杂志用户</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             </ul> <!-- End #main-nav -->

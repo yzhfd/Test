@@ -10,10 +10,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * 
- * @Route("/user")
+ * @Route("/consumer")
  * @author Kail
  */
-class UserController extends Controller
+class ConsumerController extends Controller
 {
     /**
      * @Route("/hello/{name}")
@@ -25,22 +25,22 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/list", name="user_list")
+     * @Route("/list", name="consumer_list")
      * @Template()
      */
     public function listAction()
     {
-        // @todo only consumers, excluding admins and publishers
-        
         $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
-        $arr = $this->getList('MagendUserBundle:User');
+        $dql = 'SELECT u FROM MagendUserBundle:User u WHERE u.corp IS NULL ORDER BY u.createdAt DESC';
+        $em = $this->getDoctrine()->getEntityManager();
+        $arr = $this->getList('MagendUserBundle:User', $em->createQuery($dql));
         $arr['users'] = $arr['entities'];
         unset($arr['entities']);
         return $arr;
     }
     
     /**
-     * @Route("/{id}/del", name="user_del")
+     * @Route("/{id}/del", name="consumer_del")
      */
     public function delAction($id)
     {
@@ -56,7 +56,7 @@ class UserController extends Controller
     /**
      * User edits its profile(not administration)
      * 
-     * @Route("/edit", name="user_edit")
+     * @Route("/edit", name="consumer_edit")
      */
     public function editAction()
     {
