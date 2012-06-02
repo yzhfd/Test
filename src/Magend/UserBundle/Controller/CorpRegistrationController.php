@@ -61,14 +61,27 @@ class CorpRegistrationController extends BaseController
             if ($confirmationEnabled) {
                 $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
             } else {
-                $this->authenticateUser($user);
+                // no damn login if user is not enabled
+                if ($user->isEnabled()) {
+                    $this->authenticateUser($user);
+                }
             }
             
-            return new RedirectResponse($this->container->get('router')->generate('home'));
+            return new RedirectResponse($this->container->get('router')->generate('corp_register_confirmed'));
         }
         
         return array(
             'form' => $form->createView(),
         );
+    }
+    
+    /**
+     * 
+     * @Route("/register/confirmed", name="corp_register_confirmed")
+     * @Template()
+     */
+    public function confirmedAction()
+    {
+        return array();
     }
 }
