@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block contentTitle %}{{ currentUser.corp is not null ? currentUser.corp.name : '企业' }}内部人员列表{% endblock %}
+{% block contentTitle %}{{ currentUser.corp is not null ? currentUser.corp.name : '企业' }}杂志用户列表{% endblock %}
 
 {% block main %}
 
@@ -8,7 +8,7 @@
         <div class="content-box-header">
             <h3>用户列表</h3>
             <div style="padding-top: 6px">
-                <a rel="dialog" class="btn info" href="{{ path('staff_user_new') }}">创建内部人员帐号</a>
+                <a rel="dialog" class="btn info" href="{{ path('staff_user_new') }}">创建杂志用户帐号</a>
             </div>
             <div class="clear"></div>
         </div> <!-- End .content-box-header -->
