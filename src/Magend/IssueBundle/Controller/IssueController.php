@@ -185,6 +185,11 @@ class IssueController extends Controller
         
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
+            // output article xml
+            $response = $om->outputArticle($article->getId());
+            $aid = $article->getId();
+            file_put_contents($publishDir . "article$aid.xml", $response->getContent());
+            
             $article->getAudio();
             $pages = array_merge($article->getPages(), $article->getInfoPages(), $article->getStructurePages());
             if (empty($pages)) continue;

@@ -30,6 +30,18 @@ class OutputController extends Controller
     }
     
     /**
+     * Output article content
+     *
+     * @Route("/article/{id}", name="output_article", requirements={"id"="\d+"}, defaults={"_format" = "xml"})
+     * @Template()
+     */
+    public function articleAction($id)
+    {
+        $om = $this->get('magend.output_manager');
+        return $om->outputArticle($id);
+    }
+    
+    /**
      * Output magzine's content(issues)
      * 
      * @Route("/magzine/{id}", name="output_magzine", requirements={"id"="\d+"}, defaults={"_format" = "xml"})

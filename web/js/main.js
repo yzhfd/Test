@@ -42,7 +42,7 @@ $(function () {
 					url: $(this).attr('href'),
 					success: function (result) {
 						// @todo do something
-						alert('已成功生成期刊压缩包');
+						alert('已成功生成相关文件');
 					}
 				});
 			}

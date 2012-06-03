@@ -21,29 +21,37 @@ class OutputManager {
     
     /**
      * 
+     * @param integer $id
+     * @return Response
+     */
+    public function outputArticle($id)
+    {
+        $em = $this->container->get('doctrine.orm.entity_manager');
+        $query = $em->createQuery('SELECT a, k, p, h FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE a = :article')
+                    ->setParameter('article', $id);
+        $article = $query->getSingleResult();
+        
+        $response = $this->render('MagendOutputBundle:Output:article.xml.twig', array(
+            'article' => $article
+        ));
+        return $response;
+    }
+    
+    /**
+     * 
      * 
      * @param integer $id
      * @return Response
      */
     public function outputIssue($id)
     {
-        $repo = $this->container->get('doctrine')->getRepository('MagendIssueBundle:Issue');
-        $issue = $repo->find($id);
-        
-        // @todo refactor query
         $em = $this->container->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT s, a, p, h FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE s = :issue')
-                    ->setParameter('issue', $issue);
-        $query->getResult();
-        
-        $query = $em->createQuery('SELECT a, k FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k WHERE a in (:articles)')
-                    ->setParameter('articles', $issue->getArticleIds());
-        $query->getResult();
-        
-        $tplVars = array(
+        $query = $em->createQuery('SELECT s, a FROM MagendIssueBundle:Issue s LEFT JOIN s.articles a WHERE s = :issue')
+                    ->setParameter('issue', $id);
+        $issue = $query->getSingleResult();
+        $response = $this->render('MagendOutputBundle:Output:issue.xml.twig', array(
             'issue' => $issue
-        );
-        $response = $this->render('MagendOutputBundle:Output:issue.xml.twig', $tplVars);
+        ));
         return $response;
     }
     

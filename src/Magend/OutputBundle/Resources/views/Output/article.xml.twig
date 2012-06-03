@@ -1,0 +1,79 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <Article articleid="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" keywords="{% for keyword in article.keywords %}{{ keyword }}{% if not loop.last %}、{% endif %}{% endfor %}" lat="{{ article.lat }}"  lng="{{ article.lng }}" project_addr="{{ article.projectAddr }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
+        {% for page in article.pages %}
+        <Page id="{{ loop.index }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}" landscape_preview="{% if page.landscapeImg is not null %}{{ page.landscapeImgThumbnail }}{% endif %}" portrait_preview="{% if page.portraitImg is not null %}{{ page.portraitImgThumbnail }}{% endif %}">
+            {% for hot in page.hots %}
+            <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                
+                <Assets>
+                {% for asset in hot.assets %}
+                    <Asset>{{ asset.file }}</Asset>
+                {% endfor %}
+                </Assets>
+                
+                <Attrs>
+                {% for key, val in hot.extraAttrs %}
+                    <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
+                {% endfor %}
+                </Attrs>
+            
+            </Hot>
+            {% endfor %}
+        </Page>
+        {% endfor %}
+        
+        {% set pageIndex = article.pages|length %}
+        
+        {% if article.infopages|length > 0 %}
+        {% for page in article.infopages %}
+        <Page id="{{ loop.index + pageIndex }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
+            {% for hot in page.hots %}
+            <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                
+                <Assets>
+                {% for asset in hot.assets %}
+                    <Asset>{{ asset.file }}</Asset>
+                {% endfor %}
+                </Assets>
+                
+                <Attrs>
+                {% for key, val in hot.extraAttrs %}
+                    <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
+                {% endfor %}
+                </Attrs>
+            
+            </Hot>
+            {% endfor %}
+        </Page>
+        {% endfor %}
+        {% endif %}
+        
+        {% set pageIndex = pageIndex + article.infopages|length %}
+        
+        {% if article.structurepages|length > 0 %}
+        {% for page in article.structurepages %}
+        <Page id="{{ loop.index + pageIndex }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}">
+            {% for hot in page.hots %}
+            <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.width }}" height="{{ hot.height }}">
+                
+                <Assets>
+                {% for asset in hot.assets %}
+                    <Asset>{{ asset.file }}</Asset>
+                {% endfor %}
+                </Assets>
+                
+                <Attrs>
+                {% for key, val in hot.extraAttrs %}
+                    <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
+                {% endfor %}
+                </Attrs>
+            
+            </Hot>
+            {% endfor %}
+        </Page>
+        {% endfor %}
+        {% endif %}
+    </Article>
+{% endblock %}
