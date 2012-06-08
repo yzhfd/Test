@@ -61,6 +61,13 @@ class Article
     private $title;
     
     /**
+     * @var string $enTitle
+     *
+     * @ORM\Column(name="en_title", type="string", length=255, nullable=true)
+     */
+    private $enTitle;    
+    
+    /**
      * Name of audio file on the server
      * 
      * @var string $audio
@@ -479,6 +486,26 @@ class Article
     public function getTitle()
     {
         return $this->title;
+    }
+    
+    /**
+     * Set enTitle
+     *
+     * @param string $enTitle
+     */
+    public function setEnTitle($enTitle)
+    {
+        $this->enTitle = $enTitle;
+    }
+
+    /**
+     * Get enTitle
+     *
+     * @return string 
+     */
+    public function getEnTitle()
+    {
+        return $this->enTitle;
     }
 
     /**

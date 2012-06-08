@@ -27,6 +27,11 @@
         {{ form_label(form.title, '标题') }}
         <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
     </div>
+    
+    <div class="clearfix">
+        {{ form_label(form.enTitle, '英文标题') }}
+        <div class="input">{{ form_errors(form.enTitle) }}{{ form_widget(form.enTitle, { 'attr':{'class':'span6'} }) }}</div>
+    </div>
 
     <div class="clearfix">
         {{ form_label(form.keywordsText, '关键词') }}
