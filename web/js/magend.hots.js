@@ -613,12 +613,13 @@ var PageCanvas = Backbone.View.extend({
 		canvasImgEl.blur(function (e) {
 			// console.log('focus off');
 		});
-		canvasImgEl.keydown(_.bind(function (e) {
+		// canvas has no focus
+		$('html').keydown(_.bind(function (e) {
 			if ($(e.target).is('input') || $(e.target).is('textarea')) {
 				// do
 				return;
 			}
-			if (e.which == 8 || e.which == 46) {
+			if (e.which == 46) { // delete
 				var delHots = [];
 				this.hots.each(function (hot) {
 					if (hot.selected) {
@@ -628,9 +629,6 @@ var PageCanvas = Backbone.View.extend({
 				// destroyed in HotView
 				this.hots.remove(delHots);
 			}
-			// @todo if esc, what to do, like cancel the creation of the hot
-			e.stopPropagation();
-			return false;
 		}, this));
 		this.canvasImgEl = canvasImgEl;
 		
