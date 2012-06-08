@@ -1,7 +1,7 @@
 {% extends '::base.xml.twig' %}
 
 {% block body %}
-    <Article articleid="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" keywords="{% for keyword in article.keywords %}{{ keyword }}{% if not loop.last %}、{% endif %}{% endfor %}" lat="{{ article.lat }}"  lng="{{ article.lng }}" project_addr="{{ article.projectAddr }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
+    <Article articleid="{{ article.id }}" type="{{ article.type }}" title="{{ article.title }}" en_title="{{ article.enTitle }}" keywords="{% for keyword in article.keywords %}{{ keyword }}{% if not loop.last %}、{% endif %}{% endfor %}" lat="{{ article.lat }}"  lng="{{ article.lng }}" project_addr="{{ article.projectAddr }}" audio="{% if article.audio is not null %}{{ article.audio }}{% endif %}">
         {% for page in article.pages %}
         <Page id="{{ loop.index }}" type="{{ page.type }}" landscape="{% if page.landscapeImg is not null %}{{ page.landscapeImg }}{% endif %}" portrait="{% if page.portraitImg is not null %}{{ page.portraitImg }}{% endif %}" landscape_preview="{% if page.landscapeImg is not null %}{{ page.landscapeImgThumbnail }}{% endif %}" portrait_preview="{% if page.portraitImg is not null %}{{ page.portraitImgThumbnail }}{% endif %}">
             {% for hot in page.hots %}
