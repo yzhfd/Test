@@ -182,6 +182,7 @@ class IssueController extends Controller
         $this->copyResource($id, $issue->getPortraitCover());
         $this->copyResource($id, $issue->getLandscapeCover());
         $this->copyResource($id, $issue->getPreview());
+        $this->copyResource($id, $issue->getEnPreview());
         
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
@@ -389,7 +390,8 @@ class IssueController extends Controller
         $landscapeCover = $req->files->get('landscapeCover');
         $portraitCover = $req->files->get('portraitCover');
         $preview = $req->files->get('preview');
-        if ($issueId === null || (empty($landscapeCover) && empty($portraitCover) && empty($preview))) {
+        $enPreview = $req->files->get('enPreview');
+        if ($issueId === null || (empty($landscapeCover) && empty($portraitCover) && empty($preview) && empty($enPreview))) {
             return new Response('no file');
         }
         
@@ -415,6 +417,10 @@ class IssueController extends Controller
             $oldImg = $issue->getPreview();
             $imgFile = $preview;
             $setterName = 'setPreview';
+        } else if ($enPreview) {
+            $oldImg = $issue->getEnPreview();
+            $imgFile = $enPreview;
+            $setterName = 'setEnPreview';
         }
         if (!empty($oldImg)) {
             @unlink("$rootDir/../web/uploads/$oldImg");
