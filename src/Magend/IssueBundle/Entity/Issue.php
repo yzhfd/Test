@@ -199,6 +199,13 @@ class Issue
     private $preview;
     
     /**
+     * @var string $enPreview
+     *
+     * @ORM\Column(name="en_preview", type="string", length=255, nullable=true)
+     */
+    private $enPreview;
+    
+    /**
      * @var Magzine
      * 
      * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
@@ -274,6 +281,9 @@ class Issue
         }
         if ($this->getPreview()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPreview());
+        }
+        if ($this->getEnPreview()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getEnPreview());
         }
     }
     
@@ -710,6 +720,26 @@ class Issue
     public function getPreview()
     {
         return $this->preview;
+    }
+    
+    /**
+     * Set enPreview
+     *
+     * @param string $enPreview
+     */
+    public function setEnPreview($enPreview)
+    {
+        $this->enPreview = $enPreview;
+    }
+
+    /**
+     * Get enPreview
+     *
+     * @return string 
+     */
+    public function getEnPreview()
+    {
+        return $this->enPreview;
     }
     
     public function getYear()

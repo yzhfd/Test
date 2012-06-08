@@ -24,7 +24,7 @@ var issue_new = function () {
 	});
 	
 	// covers and preview
-	$('#landscape-cover, #portrait-cover, #preview').each(function(index, img){
+	$('.issueImg').each(function(index, img){
 		img = $(img);
 		
 		$('.pagedel', img).click(function(){

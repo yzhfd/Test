@@ -86,12 +86,17 @@
     <p style="clear:both;"></p>
     
     <p>预览图</p>
-    <div id="preview" class="issueImg {% if issue.preview is null %}noImg{% endif %}" rel="preview" style="background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+    <div id="preview" class="issueImg {% if issue.preview is null %}noImg{% endif %}" rel="preview" style="float:left; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
         <a href="{{ path('issue_imgDel') }}" class="pagedel">
         <a title="预览图" href="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% endif %}" /></a>
     </div> 
     
-    <p></p>
+    <div id="en-preview" class="issueImg {% if issue.enPreview is null %}noImg{% endif %}" rel="enPreview" style="float:left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
+        <a href="{{ path('issue_imgDel') }}" class="pagedel">
+        <a title="英文预览图" href="{% if issue.enPreview is not null %}{{ asset('uploads/' ~ issue.enPreview) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.enPreview is not null %}{{ asset('uploads/' ~ issue.enPreview) }}{% endif %}" /></a>
+    </div>
+    
+    <p style="clear:both;"></p>
     
     <div id="attachAudio">
         拖拽音频文件到这里
