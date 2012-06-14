@@ -134,7 +134,7 @@ class IssueController extends Controller
         if(!$dh = @opendir($dir)) return;
         while (false !== ($obj = readdir($dh))) {
             if($obj=='.' || $obj=='..') continue;
-            if (!@unlink($dir.'/'.$obj)) SureRemoveDir($dir.'/'.$obj, true);
+            if (!@unlink($dir.'/'.$obj)) sureRemoveDir($dir.'/'.$obj, true);
         }
     
         closedir($dh);
