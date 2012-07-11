@@ -79,4 +79,19 @@ class OutputController extends Controller
         $om = $this->get('magend.output_manager');
         return $om->outputMagazines($user);
     }
+
+    /**
+     * id is magazine owner's id
+     * 
+     * @Route("/app/{id}", name="output_app", defaults={"_format" = "xml"}, requirements={"id"="\d+"})
+     * @Template()
+     */
+    public function appAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $owner = $repo->find($id);
+        
+        $om = $this->get('magend.output_manager');
+        return $om->outputMagazines($owner, false);
+    }
 }

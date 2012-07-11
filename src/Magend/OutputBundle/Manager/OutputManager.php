@@ -113,11 +113,13 @@ class OutputManager {
     }
     
     /**
+     * $user owns these magazines
      * 
      * @param User $user
+     * @param bool $bResponse
      * @return Response
      */
-    public function outputMagazines($user = null)
+    public function outputMagazines($user = null, $bResponse = true)
     {
         // from api?
         if (!($user instanceof User)) {
@@ -125,7 +127,7 @@ class OutputManager {
         }
         
         $em = $this->container->get('doctrine.orm.entity_manager');
-        $where = $user == null ? '' : 'WHERE m.user = :user';
+        $where = $user == null ? '' : 'WHERE m.owner = :user';
         $params = $user == null ? array() : array('user' => $user->getId());
         $query = $em->createQuery("SELECT m FROM MagendMagzineBundle:Magzine m $where ORDER BY m.createdAt DESC")
                     ->setParameters($params);
@@ -135,7 +137,11 @@ class OutputManager {
         }
         
         $tplVars = array('magzines' => $magzines);
-        $response = $this->render('MagendOutputBundle:Output:magzines.xml.twig', $tplVars);
-        return $response;
+        if ($bResponse) {
+            $response = $this->render('MagendOutputBundle:Output:magzines.xml.twig', $tplVars);
+            return $response;
+        } else {
+            return $tplVars;
+        }
     }
 }
