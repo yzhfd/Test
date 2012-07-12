@@ -22,14 +22,14 @@
     </Magazine>
     #}
     
-    <MagazineList>
+    <Magazine>
         {% for issue in issues %}
-        <Magazine>
+        <Issue>
             <Username>{% if magzine.owner is not null %}{{ magzine.owner.username }}{% endif %}</Username>
-            <GroupId>{{ magzine.id }}</GroupId>
-            <GroupName>{{ magzine.name }}</GroupName>
-            <IssueId>{{ issue.id }}</IssueId>
-            <IssueName>{{ issue.title }}</IssueName>
+            <MagazineId>{{ magzine.id }}</MagazineId>
+            <MagazineName>{{ magzine.name }}</MagazineName>
+            <Id>{{ issue.id }}</Id>
+            <Name>{{ issue.title }}</Name>
             <LandscapeCover>{{ issue.landscapeCover }}</LandscapeCover>
             <PortraitCover>{{ issue.portraitCover }}</PortraitCover>
             <IAPProductionID>{{ issue.iapId }}</IAPProductionID>
@@ -43,7 +43,7 @@
             <Audio>{{ issue.audio }}</Audio>
             <Publish>{{ issue.publishedAt|date('Y-m-d') }}</Publish>
             <PublishMode>{{ issue.publishMode }}</PublishMode>
-        </Magazine>
+        </Issue>
         {% endfor %}
-    </MagazineList>
+    </Magazine>
 {% endblock %}
