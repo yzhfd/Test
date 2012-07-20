@@ -4,17 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
-    <parameters>
-        <parameter key="magend_hot.example.class">Magend\HotBundle\Example</parameter>
-    </parameters>
-
     <services>
-        <service id="magend_hot.example" class="%magend_hot.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
-        </service>
+<service id="form.type.dynamic" class="Magend\HotBundle\Form\Type\DynamicType">
+    <tag name="form.type" alias="dynamic" />
+</service>
     </services>
-    -->
+    
 </container>
