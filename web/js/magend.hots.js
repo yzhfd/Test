@@ -167,60 +167,6 @@ var HotView = Backbone.View.extend({
 				hotel.css('overflow', 'visible');
 			}, this)
 		});
-	    
-	    // this.initToolbar();
-    },
-    initToolbar: function() {
-    	var hotView = this;
-        // 工具栏，选中时可见
-        var toolbar = $('<div class="hot-toolbar"></div>');
-        toolbar.append('&nbsp;<button class="btn info" role="lock-position"></button>&nbsp;<button class="btn info" role="lock-ratio"></button>&nbsp;<button class="btn danger" role="delete" style="float:right;">删除</button>');
-        toolbar.prependTo($(this.el));
-
-        toolbar.find('button[role=lock-position]').data('text-normal', '锁定位置').data('text-invert', '解锁位置').end()
-               .find('button[role=lock-ratio]').data('text-normal', '锁定比例').data('text-invert', '解锁比例');
-        toolbar.find('button').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            var role = $(this).attr('role');
-            switch (role) {
-                case "lock-position":
-                    var locked = parseInt(hotView.model.get('locked'), 10);
-                    var value, text;
-                    if (locked) {
-                        value = 0;
-                        text  = $(this).data('text-normal');
-                    } else {
-                        value = 1;
-                        text  = $(this).data('text-invert');
-                    }
-                    // @todo upgrade backbone will allow
-                    hotView.model.set('locked', value);
-                    $(this).text(text);
-                    break;
-                case "lock-ratio":
-                    var ratioLocked = parseInt(hotView.model.get('ratioLocked'), 10);
-                    var value, text;
-                    if (ratioLocked) {
-                        value = 0;
-                        text  = $(this).data('text-normal');
-                    } else {
-                        value = 1;
-                        text  = $(this).data('text-invert');
-                    }
-                    hotView.model.set('ratioLocked', value);
-                    $(this).text(text);
-                    break;
-                case "delete":
-                    var e = jQuery.Event('keydown');
-                    e.which = 46;
-                    $('#page_canvas_img').trigger(e);
-                    break;
-                default:
-                    break;
-            }
-        });
     },
     onMousedown: function (e) {
     	this.model.select();

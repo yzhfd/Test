@@ -1,0 +1,12 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}热点测试{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/test.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+    <div class="upload"></div>
+{% endblock %}

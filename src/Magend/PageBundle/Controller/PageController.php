@@ -23,11 +23,19 @@ class PageController extends Controller
     
     
     // @todo DRY create thumbnail code
-    
-    
+    /**
+     * 
+     * @Route("/test", options={"expose" = true})
+     * @Template()
+     */
+    public function testAction()
+    {
+        return array();
+    }
     
     
     /**
+     * 
      * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
      * @Template()
      */
