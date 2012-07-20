@@ -28,6 +28,7 @@ class HotController extends Controller
         // $vars = get_object_vars($hot->stdProperty);
         // print_r($vars);exit;
         $form = $formBuilder->add('type', null, array('label' => 'type'))
+                            ->add('mode', null, array('label' => 'mode', 'attr' => array('class' => 'fk')))
                             ->add('stdProperty', 'dynamic', array('label' => 'dynamic'))
                             ->getForm();
         // $form = $this->createForm(new DynamicType(), $hot->stdProperty);
