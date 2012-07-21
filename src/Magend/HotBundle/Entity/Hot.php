@@ -109,6 +109,12 @@ class Hot
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
+    
+    /**
+     * 
+     * @var stdClass
+     */
+    public $stdProperty;
 
 
     /**
@@ -124,6 +130,9 @@ class Hot
     public function __construct()
     {
         $this->assets = new ArrayCollection();
+        $this->stdProperty = new \stdClass();
+        $this->stdProperty->name = 'wtf';
+        $this->stdProperty->val = 2;
     }
     
     /**
