@@ -23,7 +23,7 @@ class HotAttrContainer
             ),
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试资源', 'type' => 'text', 'allow_add' => true, 'prototype' => true)),
+                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'text', 'allow_add' => true, 'prototype' => true)),
                 'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'text')),
             ),
             3 => array(
@@ -67,6 +67,11 @@ class HotAttrContainer
         return $attrs;
     }
     
+    /**
+     * Used in Hot on load
+     * 
+     * @param Asset $asset
+     */
     public function addAsset($asset)
     {
         $groupedTo = $asset->getGroupedTo();
