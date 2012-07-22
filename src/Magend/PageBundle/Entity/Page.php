@@ -2,11 +2,14 @@
 
 namespace Magend\PageBundle\Entity;
 
+use stdClass;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\ArticleBundle\Entity\Article;
 use Magend\HotBundle\Entity\Hot;
+use Magend\HotBundle\Entity\HotContainer;
 
 /**
  * Magend\PageBundle\Entity\Page
@@ -57,6 +60,12 @@ class Page
      * )
      */
     private $hots;
+    
+    /**
+     * 
+     * @var HotContainer
+     */
+    private $hotContainer;
     
     /**
      * 
@@ -141,6 +150,19 @@ class Page
     public function __construct()
     {
         $this->hots = new ArrayCollection();
+        $this->hotContainer = new HotContainer();
+    }
+    
+    /**
+     * 
+     * @ORM\PostLoad()
+     */
+    public function postLoad()
+    {
+        $this->hotContainer = new HotContainer();
+        foreach ($this->hots as $hot) {
+            $this->hotContainer->addHot($hot);
+        }
     }
     
     /**
@@ -150,12 +172,14 @@ class Page
      */
     public function prePersist()
     {
-        $now = new \DateTime;
+        $now = new DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
         } else {
             $this->updatedAt = $now;
         }
+        
+        $this->hots = $this->hotContainer->toHots();
     }
     
     public function unlinkLandscapeImg($withThumbnail = true)
@@ -385,6 +409,21 @@ class Page
     public function setHots($hots)
     {
         $this->hots = $hots;
+    }
+    
+    /**
+     * Add hot to the hotContainer
+     * 
+     * @param Hot $hot
+     */
+    public function addHot($hot)
+    {
+        $this->hotContainer->addHot($hot);
+    }
+    
+    public function getHotContainer()
+    {
+        return $this->hotContainer;
     }
     
     /**

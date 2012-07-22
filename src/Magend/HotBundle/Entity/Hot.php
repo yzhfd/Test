@@ -2,6 +2,8 @@
 
 namespace Magend\HotBundle\Entity;
 
+use stdClass;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -44,6 +46,38 @@ class Hot
     private $type = 0;
     
     /**
+     * 
+     * @var integer
+     * 
+     * @ORM\Column(name="x", type="integer")
+     */
+    private $x = 0;
+
+    /**
+     *
+     * @var integer
+     * 
+     * @ORM\Column(name="y", type="integer")
+     */
+    private $y = 0;
+
+    /**
+     *
+     * @var integer
+     * 
+     * @ORM\Column(name="w", type="integer")
+     */
+    public $w = 0;
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\Column(name="h", type="integer")
+     */
+    public $h = 0;
+    
+    /**
      * Landscape(0) or portrait(1)
      * 
      * @var integer $mode
@@ -53,7 +87,7 @@ class Hot
     private $mode = self::MODE_LANDSCAPE;
     
     /**
-     * Serialized array of position, dimension and other essential attributes
+     * Serialized array of attrs
      * 
      * @var text $attrs
      *
@@ -62,13 +96,10 @@ class Hot
     private $attrs;
     
     /**
-     * Serialized array of extra attributes
-     * 
-     * @var text $extraAttrs
      *
-     * @ORM\Column(name="extra_attrs", type="text", nullable=true)
-     */    
-    private $extraAttrs;
+     * @var HotAttrContainer
+     */
+    public $attrContainer;
 
     /**
      * comma separated asset ids
@@ -109,13 +140,6 @@ class Hot
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
-    
-    /**
-     * 
-     * @var stdClass
-     */
-    public $stdProperty;
-
 
     /**
      * Get id
@@ -127,12 +151,34 @@ class Hot
         return $this->id;
     }
     
-    public function __construct()
+    /**
+     * Create a new Hot from HotFactory
+     * 
+     * @param integer $type
+     */
+    public function __construct($type = null)
     {
         $this->assets = new ArrayCollection();
-        $this->stdProperty = new \stdClass();
-        $this->stdProperty->name = 'wtf';
-        $this->stdProperty->val = 2;
+        $this->type = $type;
+        $this->attrContainer = new HotAttrContainer();
+    }
+    
+    /**
+     * __construct won't be called on load
+     *
+     * @ORM\PostLoad()
+     */
+    public function postLoad()
+    {
+        $attrs = $this->getAttrs();
+        $this->attrContainer = new HotAttrContainer();
+        foreach ($attrs as $name => $val) {
+            $this->attrContainer->$name = $val;
+        }
+        
+        $this->attrContainer->testAssets = new ArrayCollection();
+        $this->attrContainer->testAssets[] = 'mm';
+        $this->attrContainer->testAssets[] = '2';
     }
     
     /**
@@ -142,14 +188,16 @@ class Hot
      */
     public function prePersist()
     {
-        $now = new \DateTime;
+        $now = new DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
         } else {
             $this->updatedAt = $now;
         }
+        
+        $this->setAttrs($this->attrContainer->toAttrs());
     }
-
+    
     /**
      * @ORM\PostRemove()
      */
@@ -187,6 +235,66 @@ class Hot
         return $this->type;
     }
 
+    public function getPage()
+    {
+        return $this->page;
+    }
+    
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+    
+    public function getMode()
+    {
+        return $this->mode;
+    }
+    
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+    
+    public function getX()
+    {
+        return $this->x;
+    }
+    
+    public function setX($x)
+    {
+        $this->x = $x;
+    }
+    
+    public function getY()
+    {
+        return $this->y;
+    }
+    
+    public function setY($y)
+    {
+        $this->y = $y;
+    }
+    
+    public function getW()
+    {
+        return $this->w;
+    }
+    
+    public function setW($w)
+    {
+        $this->w = $w;
+    }
+    
+    public function getH()
+    {
+        return $this->h;
+    }
+    
+    public function setH($h)
+    {
+        $this->h = $h;
+    }
+    
     /**
      * Set attrs
      *
@@ -196,59 +304,15 @@ class Hot
     {
         $this->attrs = is_array($attrs) ? serialize($attrs) : $attrs;
     }
-
+    
     /**
      * Get attrs
      *
-     * @return array 
+     * @return array
      */
     public function getAttrs()
     {
         return unserialize($this->attrs);
-    }
-    
-    public function getX()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['x'];
-    }
-    
-    public function getY()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['y'];
-    }
-    
-    public function getWidth()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['width'];
-    }
-    
-    public function getHeight()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['height'];
-    }
-    
-    /**
-     * Set extra attrs
-     *
-     * @param array $extaAttrs
-     */
-    public function setExtraAttrs($extraAttrs)
-    {
-        $this->extraAttrs = is_array($extraAttrs) ? serialize($extraAttrs) : $extraAttrs;
-    }
-
-    /**
-     * Get extra attrs
-     *
-     * @return array 
-     */
-    public function getExtraAttrs()
-    {
-        return unserialize($this->extraAttrs);
     }
     
     /**
@@ -342,16 +406,6 @@ class Hot
         return $this->createdAt;
     }
     
-    public function getPage()
-    {
-        return $this->page;
-    }
-    
-    public function setPage($page)
-    {
-        $this->page = $page;
-    }
-    
     /**
      * Set updatedAt
      *
@@ -370,15 +424,5 @@ class Hot
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-    
-    public function getMode()
-    {
-        return $this->mode;
-    }
-    
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
     }
 }

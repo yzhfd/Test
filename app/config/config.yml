@@ -21,9 +21,9 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
-    #form:
-    #    resources:
-    #        - 'MagendHotBundle:Form:fields.html.twig'
+    form:
+        resources:
+            - 'MagendHotBundle:Form:fields.html.twig'
             
 services:
     twig.extension.txt:
@@ -100,7 +100,7 @@ avalanche_imagine:
         portraitThumb:
             type:    thumbnail
             options: { size: [96, 128], mode: outbound }
-            
+
 sonata_block:
     default_contexts: [cms]
     blocks:

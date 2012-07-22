@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\HotBundle\Entity\Hot;
+use Magend\HotBundle\Form\Type\HotType;
+use Magend\HotBundle\Form\Type\HotContainerType;
 use Magend\IssueBundle\Util\SimpleImage;
 
 /**
@@ -25,12 +27,36 @@ class PageController extends Controller
     // @todo DRY create thumbnail code
     /**
      * 
-     * @Route("/test", options={"expose" = true})
+     * @Route("/test", name="page_test", options={"expose" = true})
      * @Template()
      */
     public function testAction()
     {
-        return array();
+        // $page = new Page();
+        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $page = $repo->find(5);
+        
+        $req = $this->getRequest();
+        $formBuilder = $this->createFormBuilder($page);
+        $form = $formBuilder->add('label', null, array('label' => 'label'))
+                            ->add('hotContainer', new HotContainerType(), array('label' => 'hots'))
+                            ->getForm();
+        
+        
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getEntityManager();
+                $em->persist($page);
+                $em->flush();
+                
+                return $this->redirect($this->generateUrl('page_test'));
+            }
+        }
+        
+        return array(
+                'form' => $form->createView()
+        );
     }
     
     
