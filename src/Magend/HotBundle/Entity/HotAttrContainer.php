@@ -3,7 +3,14 @@
 namespace Magend\HotBundle\Entity;
 
 use Magend\HotBundle\Form\Type\AssetsType;
+use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * HotAttrContainer
+ * 
+ * 
+ * @author Kail
+ */
 class HotAttrContainer
 {
     public static $attrsDefs = array(
@@ -16,7 +23,8 @@ class HotAttrContainer
             ),
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试资源', 'type' => 'text')),
+                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试资源', 'type' => 'text', 'allow_add' => true, 'prototype' => true)),
+                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'text')),
             ),
             3 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述')),
@@ -40,8 +48,31 @@ class HotAttrContainer
         $this->attrs[$name] = $val;
     }
     
-    public function toAttrs()
+    /**
+     * Used in Hot on persist
+     * 
+     * NOT store assetIds in attrs
+     * 
+     * @param integer $hotType
+     */
+    public function toAttrs($hotType)
     {
-        return $this->attrs;
+        $attrsDefs = self::$attrsDefs;
+        $attrs = array();
+        foreach ($this->attrs as $name => $attr) {
+            if (isset($attrsDefs[$hotType][$name]) && $attrsDefs[$hotType][$name]['type'] != 'assets') {
+                $attrs[$name] = $attr;
+            }
+        }
+        return $attrs;
+    }
+    
+    public function addAsset($asset)
+    {
+        $groupedTo = $asset->getGroupedTo();
+        if (!isset($this->attrs[$groupedTo])) {
+            $this->attrs[$groupedTo] = new ArrayCollection();
+        }
+        $this->attrs[$groupedTo][] = $asset->getId();
     }
 }

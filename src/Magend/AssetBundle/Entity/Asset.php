@@ -30,6 +30,15 @@ class Asset
      * @ORM\Column(name="type", type="smallint")
      */
     private $type = 0;
+
+    /**
+     * We use a string to group assets
+     *
+     * @var string $groupedTo
+     *
+     * @ORM\Column(name="grouped_to", type="string", length=255, nullable=true)
+     */
+    private $groupedTo;
     
     /**
      * Currently name of the file
@@ -132,6 +141,16 @@ class Asset
     public function getType()
     {
         return $this->type;
+    }
+    
+    public function getGroupedTo()
+    {
+        return $this->groupedTo;
+    }
+    
+    public function setGroupedTo($groupedTo)
+    {
+        $this->groupedTo = $groupedTo;
     }
 
     /**

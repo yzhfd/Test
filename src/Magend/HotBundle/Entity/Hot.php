@@ -102,11 +102,11 @@ class Hot
     public $attrContainer;
 
     /**
-     * comma separated asset ids
+     * serialized array of asset ids
      * 
-     * @var text $assetIds
+     * @var string $assetIds
      *
-     * @ORM\Column(name="asset_ids", type="text", nullable=true)
+     * @ORM\Column(name="asset_ids", type="string", nullable=true)
      */
     private $assetIds;
     
@@ -176,9 +176,10 @@ class Hot
             $this->attrContainer->$name = $val;
         }
         
-        $this->attrContainer->testAssets = new ArrayCollection();
-        $this->attrContainer->testAssets[] = 'mm';
-        $this->attrContainer->testAssets[] = '2';
+        $assets = $this->getAssets();
+        foreach ($assets as $asset) {
+            $this->attrContainer->addAsset($asset);
+        } // @todo by order
     }
     
     /**
@@ -195,7 +196,7 @@ class Hot
             $this->updatedAt = $now;
         }
         
-        $this->setAttrs($this->attrContainer->toAttrs());
+        $this->setAttrs($this->attrContainer->toAttrs($this->type));
     }
     
     /**
@@ -316,26 +317,23 @@ class Hot
     }
     
     /**
-     * Set assets
+     * Set assetIds
      *
-     * @param array|string $assets
+     * @param array $assetIds
      */
     public function setAssetIds($assetIds)
     {
-        if (is_array($assetIds)) {
-            $assetIds = implode(',', $assetIds);
-        }
-        $this->assetIds = $assetIds;
+        $this->assetIds = serialize($assetIds);
     }
 
     /**
-     * Get assets
+     * Get assetIds
      *
      * @return array 
      */
     public function getAssetIds()
     {
-        return $this->assetIds ? explode(',', $this->assetIds) : array();
+        return unserialize($this->assetIds);
     }
     
     /**
@@ -364,6 +362,7 @@ class Hot
      * @param bool $partial
      * @return ArrayCollection
      */
+    /*
     public function getAssets($partial = true)
     {
         $assets = array();
@@ -384,6 +383,11 @@ class Hot
             }
         }
         return $assets;
+    }*/
+    
+    public function getAssets()
+    {
+        return $this->assets;
     }
     
     /**
