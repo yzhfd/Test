@@ -34,13 +34,14 @@ class PageController extends Controller
     {
         // $page = new Page();
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find(329);
+        $page = $repo->find(5);
         if (!$page) {
             $page = new Page();
         }
         
         $req = $this->getRequest();
-        $form = $this->createForm(new HotContainerType(), $page->getHotContainer());
+        $hotContainer = $page->getHotContainer();
+        $form = $this->createForm(new HotContainerType(), $hotContainer);
         /*$form = $formBuilder->add('label', null, array('label' => 'label'))
                             ->add('hotContainer', new HotContainerType(), array('label' => 'hots'))
                             ->getForm();*/
@@ -50,6 +51,7 @@ class PageController extends Controller
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getEntityManager();
+                $page->setHotContainer($hotContainer);
                 $em->persist($page);
                 $em->flush();
                 

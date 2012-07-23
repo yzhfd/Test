@@ -150,7 +150,6 @@ class Page
     public function __construct()
     {
         $this->hots = new ArrayCollection();
-        $this->hotContainer = new HotContainer();
     }
     
     /**
@@ -178,8 +177,6 @@ class Page
         } else {
             $this->updatedAt = $now;
         }
-        
-        $this->setHots($this->hotContainer->toHots());
     }
     
     public function unlinkLandscapeImg($withThumbnail = true)
@@ -423,12 +420,19 @@ class Page
     public function addHot($hot)
     {
         $hot->setPage($this);
-        $this->hotContainer->addHot($hot);
+        // $this->hotContainer->addHot($hot);
+        $this->hots[] = $hot;
     }
     
     public function getHotContainer()
     {
         return $this->hotContainer;
+    }
+    
+    public function setHotContainer($hotContainer)
+    {
+        $this->hotContainer = $hotContainer;
+        $this->setHots($hotContainer->toHots());
     }
     
     /**
