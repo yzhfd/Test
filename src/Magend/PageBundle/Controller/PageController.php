@@ -40,10 +40,10 @@ class PageController extends Controller
         }
         
         $req = $this->getRequest();
-        $formBuilder = $this->createFormBuilder($page);
-        $form = $formBuilder->add('label', null, array('label' => 'label'))
+        $form = $this->createForm(new HotContainerType(), $page->getHotContainer());
+        /*$form = $formBuilder->add('label', null, array('label' => 'label'))
                             ->add('hotContainer', new HotContainerType(), array('label' => 'hots'))
-                            ->getForm();
+                            ->getForm();*/
         
         
         if ($req->getMethod() == 'POST') {
