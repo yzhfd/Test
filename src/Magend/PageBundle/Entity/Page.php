@@ -179,7 +179,7 @@ class Page
             $this->updatedAt = $now;
         }
         
-        $this->hots = $this->hotContainer->toHots();
+        $this->setHots($this->hotContainer->toHots());
     }
     
     public function unlinkLandscapeImg($withThumbnail = true)
@@ -408,6 +408,10 @@ class Page
     
     public function setHots($hots)
     {
+        foreach ($hots as $hot) {
+            $hot->setPage($this);
+        }
+        
         $this->hots = $hots;
     }
     
@@ -418,6 +422,7 @@ class Page
      */
     public function addHot($hot)
     {
+        $hot->setPage($this);
         $this->hotContainer->addHot($hot);
     }
     

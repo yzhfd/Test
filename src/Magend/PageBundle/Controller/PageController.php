@@ -34,7 +34,10 @@ class PageController extends Controller
     {
         // $page = new Page();
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find(5);
+        $page = $repo->find(329);
+        if (!$page) {
+            $page = new Page();
+        }
         
         $req = $this->getRequest();
         $formBuilder = $this->createFormBuilder($page);

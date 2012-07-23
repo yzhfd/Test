@@ -34,7 +34,10 @@ class Hot
     /**
      * @var Page
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\PageBundle\Entity\Page", inversedBy="hots")
+     * @ORM\ManyToOne(
+     *     targetEntity="Magend\PageBundle\Entity\Page",
+     *     inversedBy="hots"
+     * )
      */
     private $page;
 
@@ -243,6 +246,10 @@ class Hot
     
     public function setPage($page)
     {
+        /*
+        if (!$page->getHots()->contains($this)) {
+            $page->addHot($this);
+        }*/
         $this->page = $page;
     }
     

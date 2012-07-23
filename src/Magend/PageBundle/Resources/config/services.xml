@@ -4,17 +4,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="magend_page.example.class">Magend\PageBundle\Example</parameter>
+        <parameter key="magend.page.doctrine.event_listener.class">Magend\PageBundle\EventListener\Doctrine\PageEventListener</parameter>
     </parameters>
-
+    
     <services>
-        <service id="magend_page.example" class="%magend_page.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="magend.page.doctrine.event_listener" class="%magend.page.doctrine.event_listener.class%">
+            <argument type="service" id="service_container" />
+            <tag name="doctrine.event_listener" event="onFlush" method="onFlush" />
         </service>
     </services>
-    -->
+    
 </container>

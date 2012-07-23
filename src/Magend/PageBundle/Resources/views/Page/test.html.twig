@@ -1,7 +1,12 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
-{% block main %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/test.js') }}" type="text/javascript"></script>
+{% endblock %}
 
+{% block main %}
+    <a id="furnitureDetail_add" href="#">+单品家具展示热区</a> <a id="slideLayer_add" href="#">+滑动图层热区</a> <a id="furnitureSkinnable_add" href="#">+家具换肤热区</a>
     <form style="width:680px; margin-top:10px;" action="{{ path('page_test') }}" method="post" {{ form_enctype(form) }}>
         {#
         <div class="clearfix">
