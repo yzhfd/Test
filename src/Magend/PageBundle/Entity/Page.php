@@ -150,6 +150,7 @@ class Page
     public function __construct()
     {
         $this->hots = new ArrayCollection();
+        $this->hotContainer = new HotContainer();
     }
     
     /**
@@ -220,7 +221,17 @@ class Page
         }
         $this->landscapeImg = $landscapeImg;
     }
-
+    
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+    
     /**
      * Get landscapeImg
      *
@@ -413,15 +424,15 @@ class Page
     }
     
     /**
-     * Add hot to the hotContainer
+     * Add hot
      * 
      * @param Hot $hot
      */
     public function addHot($hot)
     {
         $hot->setPage($this);
-        // $this->hotContainer->addHot($hot);
         $this->hots[] = $hot;
+        // $this->hotContainer->addHot($hot);
     }
     
     public function getHotContainer()
@@ -460,15 +471,5 @@ class Page
     public function getPortraitHots()
     {
         return $this->_getHotsByMode(Hot::MODE_PORTRAIT);
-    }
-    
-    public function getType()
-    {
-        return $this->type;
-    }
-    
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 }

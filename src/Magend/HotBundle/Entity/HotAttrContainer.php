@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class HotAttrContainer
 {
+    // @todo required => false
     public static $attrsDefs = array(
             1 => array(
                 'interaction' => array('type' => null, 'options' => array('label' => '互动效果')),

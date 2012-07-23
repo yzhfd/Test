@@ -32,7 +32,6 @@ class PageController extends Controller
      */
     public function testAction()
     {
-        // $page = new Page();
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
         $page = $repo->find(5);
         if (!$page) {
@@ -42,11 +41,6 @@ class PageController extends Controller
         $req = $this->getRequest();
         $hotContainer = $page->getHotContainer();
         $form = $this->createForm(new HotContainerType(), $hotContainer);
-        /*$form = $formBuilder->add('label', null, array('label' => 'label'))
-                            ->add('hotContainer', new HotContainerType(), array('label' => 'hots'))
-                            ->getForm();*/
-        
-        
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
