@@ -24,8 +24,8 @@ class HotAttrContainer
             ),
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'text', 'allow_add' => true, 'prototype' => true)),
-                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'text')),
+                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'text', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true)),
+                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'text', 'file_formats' => 'mp4,avi,txt', 'allow_add' => true, 'prototype' => true)),
             ),
             3 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述')),

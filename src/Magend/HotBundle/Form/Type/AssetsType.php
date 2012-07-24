@@ -18,7 +18,8 @@ class AssetsType extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'multiple' => true,
+            'nb_max' => null,
+            'file_note' => '图片文件',
             'file_formats' => 'jpg,jpeg,png'
         );
     }
@@ -26,7 +27,8 @@ class AssetsType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-            ->setAttribute('multiple', $options['multiple'])
+            ->setAttribute('nb_max', $options['nb_max'])
+            ->setAttribute('file_note', $options['file_note'])
             ->setAttribute('file_formats', $options['file_formats'])
         ;
     }
@@ -34,7 +36,8 @@ class AssetsType extends AbstractType
     public function buildView(FormView $view, FormInterface $form)
     {
         $view
-            ->set('multiple', $form->getAttribute('multiple'))
+            ->set('nb_max', $form->getAttribute('nb_max'))
+            ->set('file_note', $form->getAttribute('file_note'))
             ->set('file_formats', $form->getAttribute('file_formats'))
         ;
     }

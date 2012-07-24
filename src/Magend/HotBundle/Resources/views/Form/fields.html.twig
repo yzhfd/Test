@@ -5,8 +5,7 @@
             {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
         {% endif %}
         
-        {% if multiple %}{{ name }}{% endif %}
-        <div class="assets" style="width:300px; height:200px; background:#333;"></div>
+        <div class="upload_panel" {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}" style="width:300px; height:200px; background:#333;"></div>
         {{ block('form_widget') }}
     {% endspaceless %}
 {% endblock %}
