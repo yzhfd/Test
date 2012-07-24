@@ -64,7 +64,8 @@ $(function () {
 			            	hotimg.appendTo(panel);
 			            	
 							panel.fileupload('option', 'success', function(result){
-								console.log(result);
+								hotimg.find('.pagedel').attr('href', result.delUrl);
+								hotimg.find('img').attr('src', result.asset);
 							});
 							panel.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':72 }));
 							panel.fileupload('send', { files:[file] });
