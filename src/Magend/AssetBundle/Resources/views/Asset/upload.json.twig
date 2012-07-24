@@ -1,0 +1,2 @@
+{% set ret = { 'asset':asset|apply_filter('landscapeThumb'), 'id':id, 'delUrl': delUrl } %}
+{{ ret|json_encode()|raw }}

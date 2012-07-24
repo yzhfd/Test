@@ -19,6 +19,12 @@ $(function () {
 		$('#HotContainer_slideLayerHots_' + index + '_type').val(2);
 	});
 	
+	$('html').on('click', 'a.pagedel', function(e){
+		// @todo if there is url, then request it by ajax
+		$(this).parent().remove();
+		return false;
+	});
+	
 	// upload
 	$('.upload_panel').each(function(index, panel){
 		panel = $(panel);
@@ -41,6 +47,7 @@ $(function () {
 					alert('最多允许添加' + nbMax + '个文件');
 					return;
 				}
+				
 				var nbValid = 0;
 				for (var i=0; i<count; ++i) {
 					(function (file) {
@@ -49,17 +56,18 @@ $(function () {
 						}
 						
 						++nbValid;
+						
 			            var reader = new FileReader();
 			            reader.onload = function (e) {
 			            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
 			            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 			            	hotimg.appendTo(panel);
 			            	
-			            	$('a.pagedel').live('click', function(e){
-			            		$(this).parent().remove();
-			            		return false;
-			            	});
-			            	
+							panel.fileupload('option', 'success', function(result){
+								console.log(result);
+							});
+							panel.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':72 }));
+							panel.fileupload('send', { files:[file] });
 			            	// panel.width($('li.hotimg', panel).length * hotimg.outerWidth(true) + 20);
 			            };
 			            
