@@ -25,10 +25,10 @@ class HotType extends AbstractType
     {
         $builder
              ->add('type', 'hidden', array('label' => '类型'))
-             ->add('x', null, array('label' => '横坐标'))
-             ->add('y', null, array('label' => '纵坐标'))
-             ->add('w', null, array('label' => '宽'))
-             ->add('h', null, array('label' => '高'))
+             ->add('x', null, array('label' => '横坐标', 'data' => 0))
+             ->add('y', null, array('label' => '纵坐标', 'data' => 0))
+             ->add('w', null, array('label' => '宽', 'data' => 40))
+             ->add('h', null, array('label' => '高', 'data' => 40))
              ->add('attrContainer', new HotAttrContainerType($this->type), array('label' => '属性'))
         ;
     }
