@@ -61,6 +61,12 @@ class Page
      */
     private $hots;
     
+    /**
+     * 
+     * Hots that'll be removed from this page
+     * 
+     * @var array
+     */
     public $hotsToRemove;
     
     /**
