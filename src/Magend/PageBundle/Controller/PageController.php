@@ -33,7 +33,7 @@ class PageController extends Controller
     public function testAction()
     {
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find(329);
+        $page = $repo->find(6);
         if (!$page) {
             $page = new Page();
         }

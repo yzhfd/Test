@@ -33,6 +33,17 @@ class HotContainer
         $this->hotCollections[$name] = $val;
     }
     
+    public function containsHot($hot)
+    {
+        foreach ($this->hotCollections as $hotCollection) {
+            if ($hotCollection->contains($hot)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public function toHots()
     {
         $hots = array();

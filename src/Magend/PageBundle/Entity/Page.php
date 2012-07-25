@@ -61,6 +61,8 @@ class Page
      */
     private $hots;
     
+    public $hotsToRemove;
+    
     /**
      * 
      * @var HotContainer
@@ -443,6 +445,13 @@ class Page
     public function setHotContainer($hotContainer)
     {
         $this->hotContainer = $hotContainer;
+        $hots = $this->getHots();
+        $this->hotsToRemove = array();
+        foreach ($hots as $hot) {
+            if (!$hotContainer->containsHot($hot)) {
+                $this->hotsToRemove[] = $hot;
+            }
+        }
         $this->setHots($hotContainer->toHots());
     }
     

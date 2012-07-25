@@ -12,11 +12,11 @@ use Symfony\Component\Form\FormBuilder;
  */
 class HotType extends AbstractType
 {
-    private $type;
+    private $hotType;
     
-    public function __construct($type)
+    public function __construct($hotType)
     {
-        $this->type = $type;
+        $this->hotType = $hotType;
     }
     
     //@todo __construct
@@ -24,12 +24,12 @@ class HotType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-             ->add('type', 'hidden', array('label' => '类型'))
+             ->add('type', 'hidden', array('label' => '类型', 'data' => $this->hotType))
              ->add('x', null, array('label' => '横坐标', 'data' => 0))
              ->add('y', null, array('label' => '纵坐标', 'data' => 0))
              ->add('w', null, array('label' => '宽', 'data' => 40))
              ->add('h', null, array('label' => '高', 'data' => 40))
-             ->add('attrContainer', new HotAttrContainerType($this->type), array('label' => '属性'))
+             ->add('attrContainer', new HotAttrContainerType($this->hotType), array('label' => '属性'))
         ;
     }
 

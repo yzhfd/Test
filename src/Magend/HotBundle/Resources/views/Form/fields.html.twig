@@ -1,4 +1,15 @@
 {# collection is parent #}
+{% block hot_widget %}
+    {% spaceless %}
+        <div class="hot_form">
+            {{ block('field_rows') }}
+            {{ form_rest(form) }}
+            
+            <a class="hot_del" href="#">-删除</a>
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
 {% block assets_widget %}
     {% spaceless %}
         {% if prototype is defined %}

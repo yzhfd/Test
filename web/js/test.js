@@ -1,32 +1,6 @@
 $(function () {
-	$('#furnitureDetail_add').click(function(e){
-		var holder = $('#HotContainer_furnitureDetailHots');
-		var prototype = holder.attr('data-prototype');
-		var index = holder.children().length;
-		var newForm = prototype.replace(/\$\$name\$\$/g, index);
-		holder.append(newForm);
-		
-		$('#HotContainer_furnitureDetailHots_' + index + '_type').val(1);
-	});
 	
-	$('#slideLayer_add').click(function(e){
-		var holder = $('#HotContainer_slideLayerHots');
-		var prototype = holder.attr('data-prototype');
-		var index = holder.children().length;
-		var newForm = prototype.replace(/\$\$name\$\$/g, index);
-		holder.append(newForm);
-		
-		$('#HotContainer_slideLayerHots_' + index + '_type').val(2);
-	});
-	
-	$('html').on('click', 'a.pagedel', function(e){
-		// @todo if there is url, then request it by ajax
-		$(this).parent().remove();
-		return false;
-	});
-	
-	// upload
-	$('.upload_panel').each(function(index, panel){
+	var fileUploadable = function(panel) {
 		panel = $(panel);
 		panel.fileupload({
 			paramName: 'file',
@@ -42,8 +16,8 @@ $(function () {
 				var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
 				var count = data.files.length;
 				var nbMax = panel.attr('nb_max');
-				// @todo how many already exist
-				if (nbMax && count > nbMax) {
+				var nbExist = panel.find('li').length;
+				if (nbMax && count + nbExist> nbMax) {
 					alert('最多允许添加' + nbMax + '个文件');
 					return;
 				}
@@ -85,6 +59,40 @@ $(function () {
 			// no upload immediately
 			e.stopPropagation();
 			e.preventDefault();
+		});		
+	};
+	
+	$('.hot_add').click(function(e){
+		var rel = $(this).attr('rel');
+		var holder = $('#HotContainer_' + rel);
+		var prototype = holder.attr('data-prototype');
+		var index = holder.children().length;
+		var newForm = $(prototype.replace(/\$\$name\$\$/g, index));
+		holder.append(newForm);
+		newForm.attr('class', rel);
+		
+		// for test
+		var delLink = $('<a class="hot_del" href="#">-删除</a>');
+		newForm.append(delLink);
+		
+		newForm.find('.upload_panel').each(function(index, panel) {
+			fileUploadable(panel);
 		});
+	});
+	
+	$('html').on('click', 'a.hot_del', function(e){
+		$(this).parent().remove();
+		return false;
+	});
+	
+	$('html').on('click', 'a.pagedel', function(e){
+		// @todo if there is url, then request it by ajax
+		$(this).parent().remove();
+		return false;
+	});
+	
+	// upload
+	$('.upload_panel').each(function(index, panel){
+		fileUploadable(panel);
 	});
 });
