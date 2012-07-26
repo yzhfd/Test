@@ -30,16 +30,16 @@
             <MagazineName>{{ magzine.name }}</MagazineName>
             <Id>{{ issue.id }}</Id>
             <Name>{{ issue.title }}</Name>
-            <LandscapeCover>{{ issue.landscapeCover }}</LandscapeCover>
-            <PortraitCover>{{ issue.portraitCover }}</PortraitCover>
+            <LandscapeCover>{% if issue.landscapeCover %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}</LandscapeCover>
+            <PortraitCover>{% if issue.portraitCover %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ issue.portraitCover) }}{% endif %}</PortraitCover>
             <IAPProductionID>{{ issue.iapId }}</IAPProductionID>
             <Period>{{ issue.yearIssueNo }}</Period>
             <Year>{{ issue.year }}</Year>
             <TotalPeriod>{{ issue.totalIssueNo }}</TotalPeriod>
             <Price>{{ issue.priceLevel }}</Price>
             <MType>1</MType>
-            <Preview>{{ issue.preview }}</Preview>
-            <EnPreview>{{ issue.enPreview }}</EnPreview>
+            <Preview>{% if issue.preview %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ issue.preview) }}{% endif %}</Preview>
+            <EnPreview>{% if issue.enPreview %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ issue.enPreview) }}{% endif %}</EnPreview>
             <Audio>{{ issue.audio }}</Audio>
             <Publish>{{ issue.publishedAt|date('Y-m-d') }}</Publish>
             <PublishMode>{{ issue.publishMode }}</PublishMode>
