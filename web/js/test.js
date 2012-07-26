@@ -72,8 +72,9 @@ $(function () {
 		newForm.attr('class', rel);
 		
 		// for test
+		/*
 		var delLink = $('<a class="hot_del" href="#">-删除</a>');
-		newForm.append(delLink);
+		newForm.append(delLink);*/
 		
 		newForm.find('.upload_panel').each(function(index, panel) {
 			fileUploadable(panel);
@@ -81,7 +82,7 @@ $(function () {
 	});
 	
 	$('html').on('click', 'a.hot_del', function(e){
-		$(this).parent().remove();
+		$(this).parent().parent().remove(); // hot_form -> xxxHots
 		return false;
 	});
 	
