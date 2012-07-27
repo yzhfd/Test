@@ -12,12 +12,28 @@
 
 {% block assets_widget %}
     {% spaceless %}
-        {% if prototype is defined %}
-            {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
-        {% endif %}
-        
-        <ul class="upload_panel" {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}" style="width:300px; height:200px; background:#333;">
+        <ul class="upload_panel" {% if prototype is defined %}data-prototype='{{ form_widget(prototype) }}'{% endif %} {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}" style="width:300px; height:200px; background:#333;">
+        {% for child in form %}
+            {{ form_widget(child) }}
+        {% endfor %}
         </ul>
-        {{ block('form_widget') }}
+        
+        {{ form_rest(form) }}
+    {% endspaceless %}
+{% endblock %}
+
+{% block asset_widget %}
+    {% spaceless %}
+    <li class="hotimg unsynced">
+        {% set asset = form.get('value') %}
+        <a href="{% if asset is empty %}#{% else %}{{ path('page_del', { 'id':asset.id }) }}{% endif %}" class="pagedel"></a>
+        <a class="imgwrapper" href="#" title="{% if asset is empty %}#{% else %}{{ asset.tag }}{% endif %}">
+            <img width="128" height="96" src="{% if asset is not empty %}{{ ('uploads/' ~ asset.resource)|apply_filter('landscapeThumb') }}{% endif %}" />
+        </a>
+        
+        {% for child in form %}
+            {{ form_widget(child) }}
+        {% endfor %}
+    </li>
     {% endspaceless %}
 {% endblock %}

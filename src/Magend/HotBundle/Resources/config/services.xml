@@ -7,7 +7,11 @@
     <services>
         <service id="form.type.assets" class="Magend\HotBundle\Form\Type\AssetsType">
             <tag name="form.type" alias="assets" />
-        </service> 
+        </service>
+        
+        <service id="form.type.asset" class="Magend\HotBundle\Form\Type\AssetType">
+            <tag name="form.type" alias="asset" />
+        </service>
     </services>
     
 </container>
