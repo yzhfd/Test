@@ -65,11 +65,16 @@ $(function () {
 	$('.hot_add').click(function(e){
 		var rel = $(this).attr('rel');
 		var holder = $('#HotContainer_' + rel);
+		var index = holder.data('index');
+		if (index == null) {
+			index = holder.children().length;
+		}
 		var prototype = holder.attr('data-prototype');
-		var index = holder.children().length;
 		var newForm = $(prototype.replace(/\$\$name\$\$/g, index));
 		holder.append(newForm);
 		newForm.attr('class', rel);
+		
+		holder.data('index', index+1);
 		
 		// for test
 		/*
