@@ -36,7 +36,7 @@ $(function () {
 			            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
 			            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
 			            	hotimg.appendTo(panel);
-			            	
+                            
 							panel.fileupload('option', 'success', function(result){
 								hotimg.find('.pagedel').attr('href', result.delUrl);
 								hotimg.find('img').attr('src', result.asset);
@@ -59,7 +59,7 @@ $(function () {
 			// no upload immediately
 			e.stopPropagation();
 			e.preventDefault();
-		});		
+		});
 	};
 	
 	$('.hot_add').click(function(e){

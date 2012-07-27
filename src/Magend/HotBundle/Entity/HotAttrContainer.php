@@ -24,8 +24,8 @@ class HotAttrContainer
             ),
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'text', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true)),
-                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'text', 'file_formats' => 'mp4,avi,txt', 'allow_add' => true, 'prototype' => true)),
+                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true)),
+                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'file_formats' => 'mp4,avi,txt', 'allow_add' => true, 'prototype' => true)),
             ),
             3 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述')),
@@ -79,6 +79,6 @@ class HotAttrContainer
         if (!isset($this->attrs[$groupedTo])) {
             $this->attrs[$groupedTo] = new ArrayCollection();
         }
-        $this->attrs[$groupedTo][] = $asset->getId();
+        $this->attrs[$groupedTo][] = $asset;
     }
 }
