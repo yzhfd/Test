@@ -3,6 +3,11 @@ $(function () {
 	var fileUploadable = function(panel) {
 	    panel = $(panel);
 	    
+		var index = panel.data('index');
+		if (index == null) {
+			index = panel.children().length;
+		}
+	    
         var fileFormats = panel.attr('file_formats');
         var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
 	    var prototype = panel.attr('data-prototype');
@@ -38,20 +43,23 @@ $(function () {
 						
 			            var reader = new FileReader();
 			            reader.onload = function (e) {
-			                // var assetTpl = $(prototype.replace(/\$\$name\$\$/g, index));
-			                var asset = $(prototype);
+			                var assetTpl = $(prototype.replace(/\$\$asset_name\$\$/g, index));
+			                var asset = $(assetTpl);
 			                asset.find('a.imgwrapper').attr('title', file.name);
 			                asset.find('img').attr('src', e.target.result);
+			                asset.find('input.asset_tag').val(file.name);
 			            	asset.appendTo(panel);
-                            
+			            	
 							panel.fileupload('option', 'success', function(result){
 								asset.find('.pagedel').attr('href', result.delUrl);
 								asset.find('img').attr('src', result.asset);
-								asset.find('input').val(result.id);
+								asset.find('input.asset_resource').val(result.resource);
 							});
-							panel.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':72 }));
-							// panel.fileupload('send', { files:[file] });
+							panel.fileupload('option', 'url', Routing.generate('asset_upload'));
+							panel.fileupload('send', { files:[file] });
 			            	// panel.width($('li.hotimg', panel).length * asset.outerWidth(true) + 20);
+							
+							panel.data('index', index+1);
 			            };
 			            
 			            reader.readAsDataURL(file);

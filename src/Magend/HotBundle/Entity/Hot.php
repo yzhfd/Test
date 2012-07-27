@@ -198,8 +198,6 @@ class Hot
         } else {
             $this->updatedAt = $now;
         }
-        
-        $this->setAttrs($this->attrContainer->toAttrs($this->type));
     }
     
     /**
@@ -395,6 +393,14 @@ class Hot
     public function getAssets()
     {
         return $this->assets;
+    }
+    
+    public function setAssets($assets)
+    {
+        foreach ($assets as $asset) {
+            $asset->addHot($this);
+        }
+        $this->assets = $assets;
     }
     
     /**

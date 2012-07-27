@@ -18,15 +18,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class AssetController extends Controller
 {
     /**
-     * Upload file to create a new asset
+     * Upload asset's resource
      * 
-     * @Route("/upload", name="asset_upload", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true})
+     * @Route("/upload", name="asset_upload", defaults={"_format" = "json"}, options={"expose" = true})
      * @Template()
      */
     public function uploadAction()
     {
-        // @todo there is hot id in request
-        
         $req = $this->getRequest();
         $file = $req->files->get('file');
         $ext = $file->guessExtension();
@@ -39,19 +37,29 @@ class AssetController extends Controller
         $fileName = uniqid('asset_') . ".$ext";
         $file->move($rootDir . '/../web/uploads/', $fileName);
         
-        $em = $this->getDoctrine()->getEntityManager();
-        $asset = new Asset();
-        $asset->setTag($file->getClientOriginalName());
-        $asset->setResource($fileName);
-        $em->persist($asset);
-        $em->flush();
-        
-        // return new Response();
         return array(
-            'id' => $asset->getId(),
             'asset' => "uploads/$fileName",
-            'delUrl' => $this->generateUrl('asset_del', array('id' => $asset->getId()))
+            'resource' => $fileName,
+            'delUrl' => $this->generateUrl('asset_file_del', array('file' => $fileName))
         );
+    }
+    
+    /**
+     * Delete the file
+     * Used when the file has not been set to any asset
+     * 
+     * @Route("/file/del", name="asset_file_del", defaults={"_format" = "json"}, options={"expose" = true})
+     */
+    public function fileDelAction()
+    {
+        $fileName = $this->getRequest()->get('file');
+        if ($fileName == null) {
+            return new Response(json_encode(array('error' => 'no file provided')));
+        }
+        
+        $rootDir = $this->container->getParameter('kernel.root_dir');
+        @unlink("$rootDir/../web/uploads/$fileName");
+        return new Response(json_encode(array('success' => true)));
     }
 
     /**

@@ -26,6 +26,12 @@ class AssetsType extends AbstractType
     
     public function buildForm(FormBuilder $builder, array $options)
     {
+        // override to use $$asset_name$$ as prototype's placeholder instead of $$name$$
+        if ($options['allow_add'] && $options['prototype']) {
+            $prototype = $builder->create('$$asset_name$$', $options['type'], $options['options']);
+            $builder->setAttribute('prototype', $prototype->getForm());
+        }
+        
         $builder
             ->setAttribute('nb_max', $options['nb_max'])
             ->setAttribute('file_note', $options['file_note'])

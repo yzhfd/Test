@@ -14,6 +14,9 @@ html, body {
 button::-moz-focus-inner {
   border: 0;
 }
+.hidden {
+	display:none;
+}
 
 .copyright {
     font-size:18px; font-weight: bold;

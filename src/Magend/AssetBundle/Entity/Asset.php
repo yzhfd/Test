@@ -3,6 +3,7 @@
 namespace Magend\AssetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Magend\AssetBundle\Entity\Asset
@@ -39,6 +40,16 @@ class Asset
      * @ORM\Column(name="grouped_to", type="string", length=255, nullable=true)
      */
     private $groupedTo;
+    
+    /**
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="Magend\HotBundle\Entity\Hot",
+     *     mappedBy="assets",
+     *     fetch="EXTRA_LAZY"
+     * )
+     */
+    private $hots;
     
     /**
      * Currently name of the file
@@ -85,6 +96,11 @@ class Asset
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __construct()
+    {
+        $this->hots = new ArrayCollection();
     }
     
     /**
@@ -211,6 +227,16 @@ class Asset
     public function getInfo()
     {
         return $this->info;
+    }
+    
+    public function getHots()
+    {
+        return $this->hots;
+    }
+    
+    public function addHot($hot)
+    {
+        $this->hots[] = $hot;
     }
 
     /**

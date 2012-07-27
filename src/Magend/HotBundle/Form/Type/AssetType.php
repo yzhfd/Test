@@ -17,7 +17,8 @@ class AssetType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-             ->add('id', 'hidden', array('label' => 'ID', 'read_only' => true))
+             ->add('tag', 'text', array('label' => '标签', 'attr' => array('class' => 'asset_tag hidden')))
+             ->add('resource', 'text', array('label' => '文件名', 'attr' => array('class' => 'asset_resource hidden')))
         ;
     }
 

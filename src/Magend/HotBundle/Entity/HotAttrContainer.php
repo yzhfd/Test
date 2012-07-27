@@ -25,7 +25,7 @@ class HotAttrContainer
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
                 'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true)),
-                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'file_formats' => 'mp4,avi,txt', 'allow_add' => true, 'prototype' => true)),
+                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true)),
             ),
             3 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述')),
@@ -52,9 +52,10 @@ class HotAttrContainer
     /**
      * Used in Hot on persist
      * 
-     * NOT store assetIds in attrs
+     * NOT store assets in attrs
      * 
      * @param integer $hotType
+     * @return array
      */
     public function toAttrs($hotType)
     {
@@ -66,6 +67,29 @@ class HotAttrContainer
             }
         }
         return $attrs;
+    }
+    
+    /**
+     * Used in Hot on persist
+     *
+     * @param integer $hotType
+     * @return array
+     */
+    public function getAssets($hotType)
+    {
+        $attrsDefs = self::$attrsDefs;
+        $assets = array();
+        foreach ($this->attrs as $name => $attr) {
+            if (!isset($attrsDefs[$hotType][$name]) || $attrsDefs[$hotType][$name]['type'] != 'assets' || empty($attr)) {
+                continue;
+            }
+            foreach ($attr as $asset) {
+                $asset->setGroupedTo($name);
+                $assets[] = $asset;
+            }
+        }
+        
+        return $assets;
     }
     
     /**
