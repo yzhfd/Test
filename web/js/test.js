@@ -1,9 +1,14 @@
 $(function () {
 	
 	var fileUploadable = function(panel) {
-		panel = $(panel);
+	    panel = $(panel);
+	    
+        var fileFormats = panel.attr('file_formats');
+        var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
+	    var prototype = panel.attr('data-prototype');
 		panel.fileupload({
 			paramName: 'file',
+			acceptFileTypes: fileFormatsPattern,
 			dropZone: panel,
 			sequentialUploads: true,
 			success: function (result) {
@@ -12,9 +17,9 @@ $(function () {
 				alert('上传失败');
 			},
 			drop: function (e, data) {
-				var fileFormats = panel.attr('file_formats');
-				var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
 				var count = data.files.length;
+				if (count == 0) return false;
+				
 				var nbMax = panel.attr('nb_max');
 				var nbExist = panel.find('li').length;
 				if (nbMax && count + nbExist> nbMax) {
@@ -33,17 +38,20 @@ $(function () {
 						
 			            var reader = new FileReader();
 			            reader.onload = function (e) {
-			            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
-			            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
-			            	hotimg.appendTo(panel);
+			                // var assetTpl = $(prototype.replace(/\$\$name\$\$/g, index));
+			                var asset = $(prototype);
+			                asset.find('a.imgwrapper').attr('title', file.name);
+			                asset.find('img').attr('src', e.target.result);
+			            	asset.appendTo(panel);
                             
 							panel.fileupload('option', 'success', function(result){
-								hotimg.find('.pagedel').attr('href', result.delUrl);
-								hotimg.find('img').attr('src', result.asset);
+								asset.find('.pagedel').attr('href', result.delUrl);
+								asset.find('img').attr('src', result.asset);
+								asset.find('input').val(result.id);
 							});
 							panel.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':72 }));
-							panel.fileupload('send', { files:[file] });
-			            	// panel.width($('li.hotimg', panel).length * hotimg.outerWidth(true) + 20);
+							// panel.fileupload('send', { files:[file] });
+			            	// panel.width($('li.hotimg', panel).length * asset.outerWidth(true) + 20);
 			            };
 			            
 			            reader.readAsDataURL(file);
