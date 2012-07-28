@@ -2,6 +2,7 @@
 
 namespace Magend\AssetBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -110,7 +111,7 @@ class Asset
      */
     public function prePersist()
     {
-        $now = new \DateTime;
+        $now = new DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
         }
@@ -126,6 +127,8 @@ class Asset
             
             $this->setResource($assetName);
         }
+        
+        // echo $this->getTag();exit;
     }
     
     /**

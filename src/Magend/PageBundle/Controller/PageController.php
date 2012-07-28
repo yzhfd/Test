@@ -46,6 +46,16 @@ class PageController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getEntityManager();
                 $page->setHotContainer($hotContainer);
+                $hots = $page->getHots();
+                foreach ($hots as $hot) {
+                    $hotType = $hot->getType();
+                    $hot->setAttrs($hot->attrContainer->toAttrs($hotType));
+                    $assets = $hot->attrContainer->getAssets($hotType);
+                    $hot->setAssets($assets);
+                    foreach ($assets as $asset) {
+                        $em->persist($asset);
+                    }
+                }
                 $em->persist($page);
                 $em->flush();
                 

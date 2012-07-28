@@ -198,6 +198,10 @@ class Hot
         } else {
             $this->updatedAt = $now;
         }
+        /*
+        $this->setAttrs($this->attrContainer->toAttrs($this->type));
+        $assets = $this->attrContainer->getAssets($this->type);
+        $this->setAssets($assets);*/
     }
     
     /**
