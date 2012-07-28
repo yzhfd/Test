@@ -3,11 +3,6 @@ $(function () {
 	var fileUploadable = function(panel) {
 	    panel = $(panel);
 	    
-		var index = panel.data('index');
-		if (index == null) {
-			index = panel.children().length;
-		}
-	    
         var fileFormats = panel.attr('file_formats');
         var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
 	    var prototype = panel.attr('data-prototype');
@@ -43,6 +38,11 @@ $(function () {
 						
 			            var reader = new FileReader();
 			            reader.onload = function (e) {
+                            var index = panel.data('index');
+                            if (index == null) {
+                                index = panel.children().length;
+                            }
+			                
 			                var assetTpl = $(prototype.replace(/\$\$asset_name\$\$/g, index));
 			                var asset = $(assetTpl);
 			                asset.find('a.imgwrapper').attr('title', file.name);

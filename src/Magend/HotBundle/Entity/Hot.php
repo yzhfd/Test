@@ -192,11 +192,6 @@ class Hot
     public function prePersist()
     {
         $this->createdAt = new DateTime;
-        
-        // it's no problem to setAssets in prePersist but not preUpdate
-        $this->setAttrs($this->attrContainer->toAttrs($this->type));
-        $assets = $this->attrContainer->getAssets($this->type);
-        $this->setAssets($assets);
     }
     
     /**

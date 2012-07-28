@@ -16,9 +16,18 @@ class PageManager
         $this->container = $container;
     }
     
+    /**
+     * UpdateHot
+     * 
+     * hot will be persisted, and updated with 
+     * persisting or removing assets respectively 
+     * 
+     * @param Hot $hot
+     */
     private function updateHot($hot)
     {
         $em = $this->container->get('doctrine.orm.entity_manager');
+        $em->persist($hot);
         
         $hotType = $hot->getType();
         $attrContainer = $hot->getAttrContainer();
@@ -39,21 +48,32 @@ class PageManager
         $hot->setAssets($assets);
     }
     
+    /**
+     * UpdatePage
+     * 
+     * @param Page $page
+     */
     public function updatePage($page)
     {
         $em = $this->container->get('doctrine.orm.entity_manager');
         
-        $hotContainer = $page->getHotContainer();
         $hots = $page->getHots();
         $hotsToRemove = array();
+        $hotContainer = $page->getHotContainer();
         foreach ($hots as $hot) {
             if (!$hotContainer->containsHot($hot)) {
                 $hotsToRemove[] = $hot;
             }
+        }
+        
+        // persist or update hots
+        $newHots = $hotContainer->toHots();
+        $page->setHots($newHots);
+        foreach ($newHots as $hot) {
             $this->updateHot($hot);
         }
-        $page->setHots($hotContainer->toHots());
         
+        // remove hot and its assets
         if (!empty($hotsToRemove)) {
             foreach ($hotsToRemove as $hot) {
                 $assets = $hot->getAssets();
