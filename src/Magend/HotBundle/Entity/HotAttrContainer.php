@@ -3,6 +3,7 @@
 namespace Magend\HotBundle\Entity;
 
 use Magend\HotBundle\Form\Type\AssetsType;
+use Magend\AssetBundle\Entity\Asset;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -13,6 +14,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class HotAttrContainer
 {
+    
+    private $hot;
+    
     // @todo required => false
     public static $attrsDefs = array(
             1 => array(
@@ -24,8 +28,8 @@ class HotAttrContainer
             ),
             2 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true)),
-                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true)),
+                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
+                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             3 => array(
                 'description' => array('type' => null, 'options' => array('label' => '描述')),
@@ -34,9 +38,15 @@ class HotAttrContainer
     
     private $attrs;
     
-    public function __construct()
+    /**
+     * If constructed by Hot on load
+     * 
+     * @param Hot $hot
+     */
+    public function __construct($hot = null)
     {
         $this->attrs = array();
+        $this->hot = $hot;
     }
     
     public function __get($name)

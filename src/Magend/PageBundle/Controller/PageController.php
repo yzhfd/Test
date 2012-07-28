@@ -33,7 +33,7 @@ class PageController extends Controller
     public function testAction()
     {
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find(9);
+        $page = $repo->find(329);
         if (!$page) {
             $page = new Page();
         }
@@ -44,27 +44,16 @@ class PageController extends Controller
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
-                $em = $this->getDoctrine()->getEntityManager();
                 $page->setHotContainer($hotContainer);
-                $hots = $page->getHots();
-                foreach ($hots as $hot) {
-                    $hotType = $hot->getType();
-                    $hot->setAttrs($hot->attrContainer->toAttrs($hotType));
-                    $assets = $hot->attrContainer->getAssets($hotType);
-                    $hot->setAssets($assets);
-                    foreach ($assets as $asset) {
-                        $em->persist($asset);
-                    }
-                }
-                $em->persist($page);
-                $em->flush();
+                $pm = $this->get('magend.page_manager');
+                $pm->updatePage($page);
                 
                 return $this->redirect($this->generateUrl('page_test'));
             }
         }
         
         return array(
-                'form' => $form->createView()
+            'form' => $form->createView()
         );
     }
     

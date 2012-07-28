@@ -102,7 +102,7 @@ class Hot
      *
      * @var HotAttrContainer
      */
-    public $attrContainer;
+    private $attrContainer;
 
     /**
      * serialized array of asset ids
@@ -174,7 +174,7 @@ class Hot
     public function postLoad()
     {
         $attrs = $this->getAttrs();
-        $this->attrContainer = new HotAttrContainer();
+        $this->attrContainer = new HotAttrContainer($this);
         foreach ($attrs as $name => $val) {
             $this->attrContainer->$name = $val;
         }
@@ -188,20 +188,24 @@ class Hot
     /**
      * 
      * @ORM\PrePersist()
-     * @ORM\PreUpdate()
      */
     public function prePersist()
     {
-        $now = new DateTime;
-        if (null === $this->createdAt) {
-            $this->createdAt = $now;
-        } else {
-            $this->updatedAt = $now;
-        }
-        /*
+        $this->createdAt = new DateTime;
+        
+        // it's no problem to setAssets in prePersist but not preUpdate
         $this->setAttrs($this->attrContainer->toAttrs($this->type));
         $assets = $this->attrContainer->getAssets($this->type);
-        $this->setAssets($assets);*/
+        $this->setAssets($assets);
+    }
+    
+    /**
+     * 
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    { 
+        $this->updatedAt = new DateTime;
     }
     
     /**
@@ -405,6 +409,16 @@ class Hot
             $asset->addHot($this);
         }
         $this->assets = $assets;
+    }
+    
+    public function getAttrContainer()
+    {
+        return $this->attrContainer;
+    }
+    
+    public function setAttrContainer($attrContainer)
+    {
+        $this->attrContainer = $attrContainer;
     }
     
     /**
