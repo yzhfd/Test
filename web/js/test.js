@@ -119,11 +119,6 @@ $(function () {
 		
 		holder.data('index', index+1);
 		
-		// for test
-		/*
-		var delLink = $('<a class="hot_del" href="#">-删除</a>');
-		newForm.append(delLink);*/
-		
 		newForm.find('.upload_panel').each(function(index, panel) {
 			initPanel(panel);
 		});

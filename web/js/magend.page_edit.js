@@ -10,14 +10,131 @@ function parseSize(size) {
 	return Math.round(size * 10) / 10 + " " + suffix[tier];
 }
 
+var fileUploadable = function(panel) {
+    panel = $(panel);
+    
+    var fileFormats = panel.attr('file_formats');
+    var fileFormatsPattern = new RegExp('(\\.|\\/)(' + fileFormats.replace(/,/g, '|') + ')$', 'i');
+    var prototype = panel.attr('data-prototype');
+	panel.fileupload({
+		paramName: 'file',
+		acceptFileTypes: fileFormatsPattern,
+		dropZone: panel,
+		sequentialUploads: true,
+		success: function (result) {
+		},
+		fail: function () {
+			alert('上传失败');
+		},
+		drop: function (e, data) {
+			var count = data.files.length;
+			if (count == 0) return false;
+			
+			var nbMax = panel.attr('nb_max');
+			var nbExist = panel.find('li').length;
+			if (nbMax && count + nbExist> nbMax) {
+				alert('最多允许添加' + nbMax + '个文件');
+				return;
+			}
+			
+			var nbValid = 0;
+			for (var i=0; i<count; ++i) {
+				(function (file) {
+					if (!fileFormatsPattern.test(file.type) && !fileFormatsPattern.test(file.name)) {
+						return;
+					}
+					
+					++nbValid;
+					
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+                        var index = panel.data('index');
+                        if (index == null) {
+                            index = panel.children().length;
+                        }
+		                
+		                var assetTpl = $(prototype.replace(/\$\$asset_name\$\$/g, index));
+		                var asset = $(assetTpl);
+		                asset.find('a.imgwrapper').attr('title', file.name);
+		                asset.find('img').attr('src', e.target.result);
+		                asset.find('input.asset_tag').val(file.name);
+		            	asset.appendTo(panel);
+		            	
+						panel.fileupload('option', 'success', function(result){
+							asset.find('.pagedel').attr('href', result.delUrl);
+							asset.find('img').attr('src', result.asset);
+							asset.find('input.asset_resource').val(result.resource);
+						});
+						panel.fileupload('option', 'url', Routing.generate('asset_upload'));
+						panel.fileupload('send', { files:[file] });
+		            	// panel.width($('li.hotimg', panel).length * asset.outerWidth(true) + 20);
+						
+						panel.data('index', index+1);
+		            };
+		            
+		            reader.readAsDataURL(file);
+				})(data.files[i]);
+			}
+			if (nbValid == 0) {
+				alert('请上传' + panel.attr('file_note'));
+			}
+			
+			return false;
+		}
+	}).bind('fileuploadsubmit', function (e, data) {
+		// no upload immediately
+		e.stopPropagation();
+		e.preventDefault();
+	});
+};
+
+var initPanel = function(panel){
+	fileUploadable(panel);
+	var panel = $(panel);
+	var nbMax = panel.attr('nb_max');
+	if (nbMax > 1) {
+		panel.find('li').each(function(index, li){
+			$(li).find('input.asset_order').val(index);
+		});
+		$(panel).sortable({
+			// axis: 'x',
+			// helper: 'clone',
+			opacity: 0.6,
+			containment: panel,
+			cursor: 'crosshair',
+			tolerance: 'pointer',
+			delay: 100,
+			start: function (e, ui) {
+				
+			},
+			update: function(e, ui) {
+				panel.find('li').each(function(index, li){
+					$(li).find('input.asset_order').val(index);
+				});
+			}
+		});
+	}
+};
+
 var page_edit = function () {
 
 	// Backbone.sync = Backbone.localSync;
 	
-	/*$(window).bind('beforeunload', function(){ 
-		alert('dont leave me alone');
+	$('html').on('click', 'a.hot_del', function(e){
+		$(this).parent().parent().remove(); // hot_form -> xxxHots
 		return false;
-	});*/
+	});
+
+	$('html').on('click', 'a.pagedel', function(e){
+		// @todo if there is url, then request it by ajax
+		$(this).parent().remove();
+		return false;
+	});
+
+	// upload
+	$('.upload_panel').each(function(index, panel){
+		initPanel(panel);
+	});
 	
 	$('#page_canvas').fileupload({
 		url: Routing.generate('page_replace', { id:$('#pageid').text() }),
@@ -62,201 +179,7 @@ var page_edit = function () {
 		return false;
 	});
 	
-	// link
-	$('#internRadio').click(function(){
-		$('#linkInput').val('0');
-	});
-	$('#externRadio').click(function(){
-		$('#linkInput').val('http://');
-	});
-	
-	// audio
-	$('#audio-upload-area').fileupload({
-		paramName: 'file',
-		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
-		dropZone: $('#audio-upload-area'),
-		limitMultiFileUploads: 1,
-		success: function (result) {
-			$('#audio-upload-area').text('拖拽音频到这里');
-			$('#audio-upload-area').overlay('hide');
-		},
-		fail: function () {
-			$('#audio-upload-area').text('拖拽音频到这里');
-			$('#audio-upload-area').overlay('hide');
-			alert('上传失败');
-		},
-		drop: function (e, data) {
-			var file = data.files[0];
-			var acceptFileTypes = $('#audio-upload-area').fileupload('option', 'acceptFileTypes');
-			
-			if (!(acceptFileTypes.test(file.type) ||
-	              acceptFileTypes.test(file.name))) {
-				alert('请上传MP3、WAV格式的视频文件');
-				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
-	            return false;
-	        }
-			
-			$('#audio-upload-area')
-			.removeClass('synced')
-			.addClass('unsynced')
-			.html(file.name + '<br/>' + parseSize(file.size));
-			
-			var hot = $('#hot_4_dialog').data('hot');
-			hot.addUploads = [ file ];
-			
-			return false;
-		}
-	}).bind('fileuploadsubmit', function (e, data) {
-		// no upload immediately
-		e.stopPropagation();
-		e.preventDefault();
-	});
-	
-	// video
-	$('#video-upload-area').fileupload({
-		paramName: 'file',
-		acceptFileTypes: /(\.|\/)mp4$/i,
-		dropZone: $('#video-upload-area'),
-		limitMultiFileUploads: 1,
-		success: function (result) {
-			$('#video-upload-area').text('拖拽视频到这里');
-			$('#video-upload-area').overlay('hide');
-			
-		},
-		fail: function () {
-			$('#video-upload-area').text('拖拽视频到这里');
-			$('#video-upload-area').overlay('hide');
-			alert('上传失败');
-		},
-		drop: function (e, data) {
-			var videoFile = data.files[0];
-			var acceptFileTypes = $('#video-upload-area').fileupload('option', 'acceptFileTypes');
-			
-			if (!(acceptFileTypes.test(videoFile.type) ||
-	              acceptFileTypes.test(videoFile.name))) {
-				alert('请上传MP4格式的视频文件');
-				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
-	            return false;
-	        }
-			
-			$('#video-upload-area')
-			.removeClass('synced')
-			.addClass('unsynced')
-			.html(videoFile.name + '<br/>' + parseSize(videoFile.size));
-			
-			var hot = $('#hot_3_dialog').data('hot');
-			hot.addUploads = [ videoFile ];
-			
-			return false;
-		}
-	}).bind('fileuploadsubmit', function (e, data) {
-		// no upload immediately
-		e.stopPropagation();
-		e.preventDefault();
-	});
-	
-	// images, image seq, map that support multiple images
-	$('.has-assets-panel').each(function(index, dlg){
-		dlg = $(dlg);
-		var panel = dlg.find('.assets-panel');
-		
-		panel.fileupload({
-			url: '',
-			paramName: 'file',
-			dropZone: panel,
-			sequentialUploads: true,
-			drop: function (e, data) {
-				// dialog is cloned
-				var panel = dlg.find('.assets-panel');
-				var hot = dlg.data('hot');
-				if (!hot.addUploads) hot.addUploads = [];
-				var count = data.files.length;
-				for (var i = 0; i < count; ++i) {
-					(function (file) {
-			            var reader = new FileReader();
-			            reader.onload = function (e) {
-			            	var hotimg = $('<li class="hotimg unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
-			            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
-			            	hotimg.appendTo(panel);
-			            	hotimg.data('file', file);
-			            	
-			            	$('a.pagedel').live('click', function(e){
-			            		$(this).parent().remove();
-			            		return false;
-			            	});
-			            	
-			            	panel.width($('li.hotimg', panel).length * hotimg.outerWidth(true) + 20);
-			            };
-			            
-			            reader.readAsDataURL(file);
-					})(data.files[i]);
-					hot.addUploads.push(data.files[i]);
-				}
-				
-				return false;
-			},
-			submit: function (e, data) {
-				// no upload immediately
-				e.stopPropagation();
-				e.preventDefault();
-			}
-		});
-	});
-	
-	// single image
-	$('#image-upload-area').fileupload({
-		paramName: 'file',
-		acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
-		dropZone: $('#image-upload-area'),
-		limitMultiFileUploads: 1,
-		success: function (result) {
-			$('#image-upload-area').overlay('hide');
-		},
-		fail: function () {
-			$('#image-upload-area').overlay('hide');
-			alert('上传失败');
-		},
-		drop: function (e, data) {
-			var imgFile = data.files[0];
-			var acceptFileTypes = $('#image-upload-area').fileupload('option', 'acceptFileTypes');
-			
-			if (!(acceptFileTypes.test(imgFile.type) ||
-	              acceptFileTypes.test(imgFile.name))) {
-				alert('请上传有效的图片文件');
-				for (var i=0; i<100; ++i) {} // may freeze the page if return right away
-	            return false;
-	        }
-			
-            var reader = new FileReader();
-            reader.onload = function (e) {
-            	$('#image-upload-area').html('<img class="unsynced" style="width:120px;" title="' + imgFile.name + '" src="' + e.target.result + '" />');
-            };
-            reader.readAsDataURL(imgFile);
-			
-			var hot = $('#hot_0_dialog').data('hot');
-			hot.addUploads = [ imgFile ];
-			
-			return false;
-		}
-	}).bind('fileuploadsubmit', function (e, data) {
-		// no upload immediately
-		e.stopPropagation();
-		e.preventDefault();
-	});
-	
-	// store original dialog content
-	$('.dlgcontent').each(function(index, dlg){
-		dlg = $(dlg);
-		$('form', dlg).submit(function(e){
-			return false;
-		});
-		dlg.data('resetTo', dlg.children().clone(true, true));
-	});
-	
 	window.pageCanvas = new PageCanvas({ el: $('#page_canvas') });
-	if (initHots.length) {
-		window.pageCanvas.load(initHots);
-	}
 
 	$('li', '#hotlib').draggable({
 		revert: "invalid", // when not dropped, the item will revert back to its initial position
@@ -269,148 +192,40 @@ var page_edit = function () {
 	$('#page_canvas').droppable({
 		accept: '#hotlib > li',
 		drop: function(event, ui) {
-			var typeText = ui.draggable.attr('title');
-			var typeId = ui.draggable.attr('id').split('_')[1];
-			
 			// use ui.draggable to determine what type it is
+			
+			var rel = ui.draggable.attr('rel');
+			var holder = $('#HotContainer_' + rel);
+			var index = holder.data('index');
+			if (index == null) {
+				index = holder.children().length;
+			}
+			var prototype = holder.attr('data-prototype');
+			var newForm = $(prototype.replace(/\$\$name\$\$/g, index));
+			holder.append(newForm);
+			holder.data('index', index+1);
+			newForm.attr('class', rel);
+			newForm.find('.upload_panel').each(function(index, panel) {
+				initPanel(panel);
+			});
+			
 			var hot = new Hot({
-				type: typeId,
 				x: Math.max(ui.offset.left - $(this).offset().left, 0),
 				y: Math.max(ui.offset.top - $(this).offset().top, 0),
 				width: $(ui.helper).width(),
 				height: $(ui.helper).height()
 			});
 			pageCanvas.hots.add(hot);
+			newForm.attr('id', hot.cid + '_form');
 		}
 	});
-	
-	var saveAll = function () {
-		var dfd = $.Deferred();
-		var promise = dfd.promise();
-		
-		var pageId = $('#pageid').text();
-		
-		var hots = [];
-		pageCanvas.hots.each(function(hot){
-			//delete hot.attributes['id'];
-			var attrs = hot.attributes;
-			if (hot.extraAttrs) {
-				attrs['extras'] = hot.extraAttrs;
-			}
-			hots.push(attrs);
-		});
-		
-		$.ajax({
-			url: Routing.generate('page_hots_save'),
-			type: 'POST',
-			data: { 'hots':hots, 'id':pageId },
-			fail: function () {
-				dfd.reject();
-			},
-			success: function (response) {
-				if (!pageCanvas.hots || pageCanvas.hots.length == 0) {
-					dfd.resolve();
-					return;
-				}
-				
-				pageCanvas.hots.each(function(hot, index){
-					if (!hot.id) {
-						hot.set({ id:response[index] });
-					}
-				});
-				
-				// upload hot's video, audio or image
-				var uploader = $('<div/>');
-				uploader.fileupload({
-					paramName: 'file'
-				}).bind('fileuploadsubmit', function (e, data) {
-					e.stopPropagation();
-					e.preventDefault();
-				});
-				
-				var when = $.when({});
-				pageCanvas.hots.each(function(hot, index){
-					if (!hot.uploads || hot.uploads.length == 0) {
-						return;
-					}
-					$(hot.uploads).each(function(index, file){
-						noUpload = false;
-						when = when.pipe(function(){
-							// uploader.fileupload('option', 'formData', { name:file.name });
-							uploader.fileupload('option', 'success', function(result){
-								// according setting is done on dialog open
-								hot.assets = [];
-								$(result).each(function(index, asset){
-									if (_.indexOf(hot.delAssetIds, asset.id) == -1) {
-										hot.assets.push(asset);
-									}
-								});
-								
-								hot.uploads = null;
-							});
-							
-							uploader.fileupload('option', 'url', Routing.generate('asset_upload', { 'id':hot.id }));
-							// @todo on success, map id with li
-							return uploader.fileupload('send', { files:[file] });
-						});
-					});
-				});
-				
-				// To order pages must wait for complete of all uploads
-				var when2 = $.when({});
-				when.done(function(){
-					pageCanvas.hots.each(function(hot, index){
-						// @todo refactor
-						if (!hot.assets || (hot.get('type') != 1 && hot.get('type') != 5 && hot.get('type') != 6) || !hot.isEdited) {
-							return;
-						}
-						
-						var assets = [];
-						$(hot.assets).each(function(index, asset){
-							if (asset.id) {
-								assets.push(asset.id);
-							} else {
-								assets.push($('.imgwrapper', asset).attr('rel'));
-							}
-						});
-					
-						when2 = when2.pipe(function(){
-							return $.ajax({
-								url: Routing.generate('hot_order_assets', { 'id':hot.id }),
-								type: 'POST',
-								data: { assets:assets }
-							});
-						});
-					});
-					
-					when2.done( dfd.resolve ).fail( dfd.reject );
-				}).fail( dfd.reject );
-			}
-		});
-		
-		return promise;
-	};
 	
 	// @todo landscape or portrait
 	$('#saveall').click(function () {
 		$('#page_editor').overlay('loading');
-		saveAll().always(function(){
-			$('#page_editor').overlay('hide');
-			pageCanvas.hots.each(function(hot, index){
-				hot.isEdited = false;
-				hot.layoutChanged = false;
-			});
-			console.log('save done');
-		});
 	});
 	
 	$('#flushall').click(function () {
 		localStorage.clear();
-	});
-	$('#undo').click(function () {
-		undomanager.undo();
-	});
-	$('#redo').click(function () {
-		undomanager.redo();
 	});
 };

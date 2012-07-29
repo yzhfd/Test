@@ -27,16 +27,13 @@ class PageController extends Controller
     // @todo DRY create thumbnail code
     /**
      * 
-     * @Route("/test", name="page_test", options={"expose" = true})
+     * @Route("/{id}/test", name="page_test", options={"expose" = true}, requirements={"id"="\d+"})
      * @Template()
      */
-    public function testAction()
+    public function testAction($id)
     {
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find(9);
-        if (!$page) {
-            $page = new Page();
-        }
+        $page = $repo->find($id);
         
         $req = $this->getRequest();
         $hotContainer = $page->getHotContainer();
@@ -52,7 +49,22 @@ class PageController extends Controller
             }
         }
         
+        $pageIds = $page->getArticle()->getPageIds();
+        $index = array_search($id, $pageIds);
+        $prev = $next = null; // id of previous and next page
+        if ($index !== false) {
+            if (isset($pageIds[$index - 1])) {
+                $prev = $pageIds[$index - 1];
+            }
+            if (isset($pageIds[$index + 1])) {
+                $next = $pageIds[$index + 1];
+            }
+        }
+        
         return array(
+            'page' => $page,
+            'prev' => $prev,
+            'next' => $next,
             'form' => $form->createView()
         );
     }
