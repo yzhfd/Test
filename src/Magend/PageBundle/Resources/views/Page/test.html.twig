@@ -1,8 +1,6 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block contentTitle %}
-    <a href="{{ path('magzine_issues', { 'id':page.article.issue.magzine.id }) }}">{{ page.article.issue.magzine.name }}</a>
-    <span style="color:#AAA"> / </span>
     <a href="{{ path('issue_article_list', { 'id':page.article.issue.id }) }}">{{ page.article.issue.title }}</a>
     <span style="color:#AAA"> / </span>
     <a href="{{ path('article_edit', { 'id':page.article.id }) }}">{{ page.article.title|default('(文章' ~ page.article.id ~ ')') }}</a>
