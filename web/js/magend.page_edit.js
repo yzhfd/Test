@@ -94,7 +94,7 @@ var initPanel = function(panel){
 	var nbMax = panel.attr('nb_max');
 	if (nbMax > 1) {
 		panel.find('li').each(function(index, li){
-			$(li).find('input.asset_order').val(index);
+			$(li).find('input.asset_seq').val(index);
 		});
 		$(panel).sortable({
 			// axis: 'x',
@@ -109,7 +109,7 @@ var initPanel = function(panel){
 			},
 			update: function(e, ui) {
 				panel.find('li').each(function(index, li){
-					$(li).find('input.asset_order').val(index);
+					$(li).find('input.asset_seq').val(index);
 				});
 			}
 		});
@@ -179,8 +179,23 @@ var page_edit = function () {
 		return false;
 	});
 	
-	window.pageCanvas = new PageCanvas({ el: $('#page_canvas') });
-
+	window.pageCanvas = new PageCanvas({ el:$('#page_canvas') });
+	
+	$('#HotContainer').find('.hot_form').each(function(index, form){
+		form = $(form);
+		var hot = new Hot({
+			x: form.find('input.hot_x').val(),
+			y: form.find('input.hot_y').val(),
+			width: form.find('input.hot_w').val(),
+			height: form.find('input.hot_h').val()
+		});
+		form.attr('id', hot.cid + '_form');
+		form.attr('title', form.closest('.hots_group').parent().find('label.hots_group').text());
+		
+		// last step
+		pageCanvas.hots.add(hot);
+	});
+	
 	$('li', '#hotlib').draggable({
 		revert: "invalid", // when not dropped, the item will revert back to its initial position
 		containment: 'document',
@@ -215,8 +230,12 @@ var page_edit = function () {
 				width: $(ui.helper).width(),
 				height: $(ui.helper).height()
 			});
+			var hotForm = newForm.find('.hot_form');
+			hotForm.attr('id', hot.cid + '_form');
+			hotForm.attr('title', ui.draggable.attr('title'));
+			
+			// last step
 			pageCanvas.hots.add(hot);
-			newForm.attr('id', hot.cid + '_form');
 		}
 	});
 	

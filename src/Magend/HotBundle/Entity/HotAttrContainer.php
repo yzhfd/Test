@@ -27,12 +27,11 @@ class HotAttrContainer
                 'specs' => array('type' => null, 'options' => array('label' => '规格')),
             ),
             2 => array(
-                'description' => array('type' => null, 'options' => array('label' => '描述图片')),
-                'testAssets' => array('type' => 'assets', 'options' => array('label' => '测试图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
-                'otherAssets' => array('type' => 'assets', 'options' => array('label' => '更多图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
+                'guideAssets' => array('type' => 'assets', 'options' => array('label' => '导引图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
+                'descriptionAssets' => array('type' => 'assets', 'options' => array('label' => '描述图片', 'type' => 'asset', 'nb_max' => 1, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             3 => array(
-                'description' => array('type' => null, 'options' => array('label' => '描述')),
+                'imgAssets' => array('type' => 'assets', 'options' => array('label' => '图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
     );
     

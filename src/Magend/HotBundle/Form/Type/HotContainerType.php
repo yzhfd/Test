@@ -15,7 +15,7 @@ class HotContainerType extends AbstractType
             $builder->add(
                 $def['name'],
                 'collection',
-                array('label' => $def['label'], 'type' => new HotType($type), 'prototype' => true, 'allow_add' => true, 'allow_delete' => true));
+                array('label' => $def['label'], 'type' => new HotType($type), 'attr' => array('class' => 'hots_group'), 'prototype' => true, 'allow_add' => true, 'allow_delete' => true));
         }
     }
 

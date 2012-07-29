@@ -100,7 +100,10 @@ var HotView = Backbone.View.extend({
       // "mouseup": "onMouseup",
       "dblclick": "dblclick"
     },
+    _modelBinder:undefined,
     initialize: function () {
+    	this._modelBinder = new Backbone.ModelBinder();
+    	
     	this.model.rendered = true;
     	
     	this.model.bind('change:width', this.resize, this);
@@ -193,13 +196,13 @@ var HotView = Backbone.View.extend({
 			close: function () {
 			},
     		buttons: { 
-    			"Cancel": {
+    			/*"Cancel": {
     				class: 'btn',
     				text: '取消',
     				click: function() {
     					hotForm.dialog('close');
     				}
-    			},
+    			},*/
     			"Ok": {
     				class: 'btn primary',
     				text: '确认',
@@ -265,6 +268,19 @@ var HotView = Backbone.View.extend({
         } else {
             $(this.el).removeClass('ratio-locked');
         }
+        
+        var rounder = function(direction, value){
+        	return Math.round(value);
+        };
+        
+        var bindings = {
+            x: { selector: 'input.hot_x', converter: rounder},
+            y: { selector: 'input.hot_y', converter: rounder},
+            width: { selector: 'input.hot_w', converter: rounder},
+            height: { selector: 'input.hot_h', converter: rounder},
+        };
+        
+        this._modelBinder.bind(this.model, $('#' + this.model.cid + '_form'), bindings);
         
         return this;
     }
