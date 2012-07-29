@@ -37,51 +37,6 @@ class IssueController extends Controller
         return $issue;
     }
     
-    /**
-     * 
-     * @Route("/{id}/insert-copyright", name="insert_copyright")
-     */
-    public function insertCopyrightAction($id)
-    {
-        $issue = $this->_findIssue($id);
-        if (empty($issue)) {
-            throw new Exception('Issue not found'); 
-        }
-        
-        $cpr = $issue->getMagzine()->getCopyrightArticle();
-        $articleIds = $issue->getArticleIds();
-        if (in_array($cpr->getId(), $articleIds)) {
-            throw new Exception('Already inserted'); 
-        }
-        $issue->addArticle($cpr);
-        $articleIds[] = $cpr->getId(); 
-        $issue->setArticleIds($articleIds);
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issue->getId())));
-    }
-    
-    /**
-     * Remove copyright article
-     *
-     * @Route("/{id}/remove-copyright", name="remove_copyright", requirements={"id"="\d+"})
-     */
-    public function removeCopyrightAction($id)
-    {
-        $issue = $this->_findIssue($id);
-        if (empty($issue)) {
-            throw new Exception('Issue not found'); 
-        }
-        
-        $cpArticle = $issue->getMagzine()->getCopyrightArticle();
-        $issue->removeArticle($cpArticle);
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $id)));
-    }
-    
     private function copyResource($issueId, $resourceFile)
     {
         if ($resourceFile == null) return;
@@ -181,8 +136,6 @@ class IssueController extends Controller
         $this->copyResource($id, $issue->getAudio());
         $this->copyResource($id, $issue->getPortraitCover());
         $this->copyResource($id, $issue->getLandscapeCover());
-        $this->copyResource($id, $issue->getPreview());
-        $this->copyResource($id, $issue->getEnPreview());
         
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
@@ -514,29 +467,7 @@ class IssueController extends Controller
      */
     public function newAction()
     {
-        $req = $this->getRequest();
-        $issue = new Issue();
-        $em = $this->getDoctrine()->getEntityManager();
-        $magId = $req->get('magzineId', $req->cookies->get('magzine_id'));
-        if ($req->getMethod() == 'GET' && $magId !== null) {
-            $magzine = $em->getReference('MagendMagzineBundle:Magzine', $magId);
-            $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
-                        ->setParameter('magId', $magId)
-                        ->setMaxResults(1);
-            try {
-                $latestIssue = $query->getSingleResult();
-                
-                $totalIssueNo = $latestIssue->getTotalIssueNo();
-                $yearIssueNo = $latestIssue->getYearIssueNo();
-                //$yearIssueNo
-                $issue->setMagzine($magzine);
-                $issue->setYearIssueNo($yearIssueNo);
-                $issue->setTotalIssueNo($totalIssueNo + 1);
-            } catch (\ Exception $e) {
-                // do nothing
-            }
-        }
-        
+        $issue = new Issue();   
         return $this->_formRet($issue);
     }
     
