@@ -1,5 +1,4 @@
 $(function () {
-	
 	var fileUploadable = function(panel) {
 	    panel = $(panel);
 	    
@@ -78,6 +77,34 @@ $(function () {
 		});
 	};
 	
+	var initPanel = function(panel){
+		fileUploadable(panel);
+		var panel = $(panel);
+		var nbMax = panel.attr('nb_max');
+		if (nbMax > 1) {
+			panel.find('li').each(function(index, li){
+				$(li).find('input.asset_order').val(index);
+			});
+			$(panel).sortable({
+				// axis: 'x',
+				// helper: 'clone',
+				opacity: 0.6,
+				containment: panel,
+				cursor: 'crosshair',
+				tolerance: 'pointer',
+				delay: 100,
+				start: function (e, ui) {
+					
+				},
+				update: function(e, ui) {
+					panel.find('li').each(function(index, li){
+						$(li).find('input.asset_order').val(index);
+					});
+				}
+			});
+		}
+	};
+	
 	$('.hot_add').click(function(e){
 		var rel = $(this).attr('rel');
 		var holder = $('#HotContainer_' + rel);
@@ -98,7 +125,7 @@ $(function () {
 		newForm.append(delLink);*/
 		
 		newForm.find('.upload_panel').each(function(index, panel) {
-			fileUploadable(panel);
+			initPanel(panel);
 		});
 	});
 	
@@ -115,6 +142,6 @@ $(function () {
 	
 	// upload
 	$('.upload_panel').each(function(index, panel){
-		fileUploadable(panel);
+		initPanel(panel);
 	});
 });

@@ -103,15 +103,6 @@ class Hot
      * @var HotAttrContainer
      */
     private $attrContainer;
-
-    /**
-     * serialized array of asset ids
-     * 
-     * @var string $assetIds
-     *
-     * @ORM\Column(name="asset_ids", type="string", nullable=true)
-     */
-    private $assetIds;
     
     /**
      * 
@@ -119,13 +110,14 @@ class Hot
      * assets will be removed when its hot is removed, by
      * cascade={"all"} annotation below
      * 
-     * @ORM\ManyToMany(
+     * @ORM\OneToMany(
      *     targetEntity="Magend\AssetBundle\Entity\Asset",
-     *     inversedBy="hots",
+     *     mappedBy="hot",
      *     indexBy="id",
      *     fetch="EXTRA_LAZY",
      *     cascade={"all"}
      * )
+     * @ORM\OrderBy({"seq" = "ASC"})
      * @ORM\JoinTable(name="mag_hot_asset")
      */
     private $assets;
@@ -325,26 +317,6 @@ class Hot
     }
     
     /**
-     * Set assetIds
-     *
-     * @param array $assetIds
-     */
-    public function setAssetIds($assetIds)
-    {
-        $this->assetIds = serialize($assetIds);
-    }
-
-    /**
-     * Get assetIds
-     *
-     * @return array 
-     */
-    public function getAssetIds()
-    {
-        return unserialize($this->assetIds);
-    }
-    
-    /**
      * Add asset
      * 
      * @param Asset $asset
@@ -352,10 +324,6 @@ class Hot
     public function addAsset($asset)
     {
         $this->assets[$asset->getId()] = $asset;
-        
-        $assetIds = $this->getAssetIds();
-        $assetIds[] = $asset->getId();
-        $this->setAssetIds($assetIds);
     }
     
     public function removeAssets()
@@ -401,7 +369,7 @@ class Hot
     public function setAssets($assets)
     {
         foreach ($assets as $asset) {
-            $asset->addHot($this);
+            $asset->setHot($this);
         }
         $this->assets = $assets;
     }

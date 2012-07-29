@@ -32,6 +32,14 @@ class Asset
      * @ORM\Column(name="type", type="smallint")
      */
     private $type = 0;
+    
+    /**
+     * Sequence number of the asset
+     * 
+     * @var integer $seq
+     * @ORM\Column(name="seq", type="integer")
+     */
+    private $seq = 0;
 
     /**
      * We use a string to group assets
@@ -44,13 +52,13 @@ class Asset
     
     /**
      *
-     * @ORM\ManyToMany(
+     * @ORM\ManyToOne(
      *     targetEntity="Magend\HotBundle\Entity\Hot",
-     *     mappedBy="assets",
+     *     inversedBy="assets",
      *     fetch="EXTRA_LAZY"
      * )
      */
-    private $hots;
+    private $hot;
     
     /**
      * Currently name of the file
@@ -232,14 +240,24 @@ class Asset
         return $this->info;
     }
     
-    public function getHots()
+    public function getHot()
     {
-        return $this->hots;
+        return $this->hot;
     }
     
-    public function addHot($hot)
+    public function setHot($hot)
     {
-        $this->hots[] = $hot;
+        $this->hot = $hot;
+    }
+    
+    public function getSeq()
+    {
+        return $this->seq;
+    }
+    
+    public function setSeq($seq)
+    {
+        $this->seq = $seq;
     }
 
     /**
