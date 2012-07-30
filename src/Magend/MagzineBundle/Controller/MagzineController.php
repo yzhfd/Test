@@ -83,36 +83,12 @@ class MagzineController extends Controller
     {
         $cls = 'MagendIssueBundle:Issue';
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
-                    ->setParameter('magId', $id);
-        if ($this->getRequest()->isXmlHTTPRequest()) {
-            $response = $this->container->get('templating')->renderResponse(
-                'MagendMagzineBundle:Magzine:issueOptions.html.twig',
-                array('issues' => $query->getResult()));
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
-        }
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id ORDER BY s.createdAt DESC");
         $arr = $this->getList($cls, $query);
         $arr['issues'] = $arr['entities'];
         unset($arr['entities']);
         
-        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $user = $this->get('security.context')->getToken()->getUser();
-        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
-        if ($isAdmin) {
-            $arr['magzines'] = $repo->findAll();
-        } else {
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-            $q = $em->createQuery($dql)->setParameter('user', $user->getId());
-            $arr['magzines'] = $q->getResult();
-        }
-        
-        $response = $this->container->get('templating')->renderResponse(
-            'MagendMagzineBundle:Magzine:issues.html.twig',
-            $arr
-        );
-        $response->headers->setCookie(new Cookie('magzine_id', $id, time() + (3600 * 30 * 24)));
-        return $response;
+        return $arr;
     }
     
     /**

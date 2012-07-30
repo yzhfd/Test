@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Magend\ArticleBundle\Entity\Article;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Magend\IssueBundle\Entity\Issue
@@ -48,9 +49,34 @@ class Issue
     /**
      * 
      * @var File
-     * 
      */
     public $audioFile;
+    
+    /**
+     * 
+     * @var string $poster
+     * @ORM\Column(name="poster", type="string", length=255, nullable=true)
+     */
+    private $poster;
+    
+    /**
+     * 
+     * @var File
+     */
+    public $posterFile;
+    
+    /**
+     * 
+     * @var string
+     * @ORM\Column(name="video", type="string", length=255, nullable=true)
+     */
+    private $video;
+    
+    /**
+     * 
+     * @var File
+     */
+    public $videoFile;
     
     /**
      * @var string $landscapeCover
@@ -60,11 +86,23 @@ class Issue
     private $landscapeCover;
     
     /**
+     * 
+     * @var File
+     */
+    public $landscapeCoverFile;
+    
+    /**
      * @var string $portraitCover
      *
      * @ORM\Column(name="portrait_cover", type="string", length=255, nullable=true)
      */
     private $portraitCover;
+    
+    /**
+     *
+     * @var File
+     */
+    public $portraitCoverFile;
 
     /**
      * Comma separated article ids
@@ -153,13 +191,6 @@ class Issue
      */
     private $nbDownloaded = 0;
     
-    /**
-     * @var string $preview
-     *
-     * @ORM\Column(name="preview", type="string", length=255, nullable=true)
-     */
-    private $preview;
-    
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -189,17 +220,60 @@ class Issue
             $this->updatedAt = $now;
         }
         
-        /*
-        if ($this->coverImage) {
-            $imgName = uniqid('issue_') . '.' . $this->coverImage->guessExtension();
-            $this->coverImage->move(__DIR__.'/../../../../web/uploads/', $imgName);
+        if ($this->landscapeCoverFile) {
+            $imgName = uniqid('landscape_') . '.' . $this->landscapeCoverFile->guessExtension();
+            $this->landscapeCoverFile->move(__DIR__.'/../../../../web/uploads/', $imgName);
             
-            if ($this->getCover()) {
-                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
+            if ($this->getLandscapeCover()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeCover());
             }
             
-            $this->setCover($imgName);
-        }*/
+            $this->setLandscapeCover($imgName);
+        }
+        
+        if ($this->portraitCoverFile) {
+            $imgName = uniqid('portrait_') . '.' . $this->portraitCoverFile->guessExtension();
+            $this->portraitCoverFile->move(__DIR__.'/../../../../web/uploads/', $imgName);
+        
+            if ($this->getPortraitCover()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitCover());
+            }
+        
+            $this->setPortraitCover($imgName);
+        }
+        
+        if ($this->audioFile) {
+            $fileName = uniqid('audio_') . '.' . $this->audioFile->guessExtension();
+            $this->audioFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+            
+            if ($this->getAudio()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
+            }
+        
+            $this->setAudio($fileName);
+        }
+        
+        if ($this->posterFile) {
+            $fileName = uniqid('poster_') . '.' . $this->posterFile->guessExtension();
+            $this->posterFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+            
+            if ($this->getPoster()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPoster());
+            }
+        
+            $this->setPoster($fileName);
+        }
+        
+        if ($this->videoFile) {
+            $fileName = uniqid('video_') . '.' . $this->videoFile->guessExtension();
+            $this->videoFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+        
+            if ($this->getVideo()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getVideo());
+            }
+        
+            $this->setVideo($fileName);
+        }
     }
     
     /**
@@ -213,6 +287,15 @@ class Issue
         }
         if ($this->getLandscapeCover()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeCover());
+        }
+        if ($this->getAudio()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
+        }
+        if ($this->getVideo()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getVideo());
+        }
+        if ($this->getPoster()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPoster());
         }
     }
 
@@ -254,6 +337,26 @@ class Issue
     public function getAudio()
     {
         return $this->audio;
+    }
+
+    public function setVideo($video)
+    {
+        $this->video = $video;
+    }
+    
+    public function getVideo()
+    {
+        return $this->video;
+    }
+    
+    public function setPoster($poster)
+    {
+        $this->video = $poster;
+    }
+    
+    public function getPoster()
+    {
+        return $this->poster;
     }
     
     /**
@@ -503,7 +606,7 @@ class Issue
     {
         return $this->nbDownloaded;
     }
-
+    
     /**
      * Set publishedAt
      *

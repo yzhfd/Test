@@ -12,6 +12,31 @@
             <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
         </div>
         
+        <div class="clearfix">
+            {{ form_label(form.landscapeCoverFile, '横屏封面') }}
+            <div class="input">{{ form_errors(form.landscapeCoverFile) }}{{ form_widget(form.landscapeCoverFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.portraitCoverFile, '竖屏封面') }}
+            <div class="input">{{ form_errors(form.portraitCoverFile) }}{{ form_widget(form.portraitCoverFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.posterFile, '宣传图片') }}
+            <div class="input">{{ form_errors(form.posterFile) }}{{ form_widget(form.posterFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.audioFile, '背景音乐') }}
+            <div class="input">{{ form_errors(form.audioFile) }}{{ form_widget(form.audioFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.videoFile, '开篇视频') }}
+            <div class="input">{{ form_errors(form.videoFile) }}{{ form_widget(form.videoFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
         {{ form_rest(form) }}
         
         <div class="actions">

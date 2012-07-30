@@ -10,15 +10,7 @@
         <div class="content-box-header">
             <h3>套系列表</h3>
             <div style="padding-top: 6px">
-            {#
-                <select id="magtype_sel" class="medium urlSelect">
-                    <option value="">请选择杂志</option>
-                    {% for magzine in magzines %}
-                        <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if magzine.id == app.request.get('id') %}selected="selected"{% endif %}>{{ magzine.name }}</option>
-                    {% endfor %}
-                </select>
-            #}
-                <a class="btn info" href="{{ path('issue_new') }}">添加套系</a>
+                <a rel='dialog' class="btn info" href="{{ path('issue_new') }}">添加套系</a>
             </div>
             <!-- href must be unique and match the id of target div -->
             <!--<ul class="content-box-tabs">
@@ -34,13 +26,8 @@
                 <thead><tr>
                     <th style="width:18px;"><input class="check-all" type="checkbox" /></th>
                     <th>标题</th>
-                    <th>年/期</th>
-                    <th>总期数</th>
                     <th>封面</th>
-                    <th>价格</th>
-                    <th>下载数</th>
                     <th>创建日期</th>
-                    <th>发布日期</th>
                     <th>操作</th>
                 </tr></thead>
                 
@@ -64,16 +51,11 @@
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('issue_article_list', { 'id':issue.id }) }}" title="查看编排文章">{{ issue.title|truncate(10) }}</a></td>
-                        <td>{{ issue.year }}/{{ issue.yearIssueNo }}</td>
-                        <td>{{ issue.totalIssueNo }}</td>
                         <td class="thumbup">
                             <!--<a class="media" title="竖版封面" href="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="facebox"><img width="30" height="40" src="{% if issue.portraitCover is not empty %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>-->
                             <a class="media" title="横版封面" href="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}"><img width="40" height="30" src="{% if issue.landscapeCover is not empty %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
                         </td>
-                        <td>{{ issue.priceDescription }}</td>
-                        <td>{{ issue.nbDownloaded }}</td>
-                        <td>{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d') }}{% endif%}</td>
-                        <td class="publishedAt">{% if issue.publishedAt %}{{ issue.publishedAt|date('Y-m-d') }}{% endif%}</td>
+                        <td style="width:100px;">{% if issue.createdAt %}{{ issue.createdAt|date('Y-m-d') }}{% endif%}</td>
                         <td style="width:120px;">
                             {% if not issue.isPublishedOfficially %}<a class="previewbtn" href="{{ path('issue_prepublish', { 'id':issue.id }) }}" title="预览"><img src="{{ asset('images/preview.png') }}" alt="预览" /></a>{% endif %}
                             {% if is_granted('ROLE_ADMIN') or (app.user.corp and not app.user.corp.trial) %}
