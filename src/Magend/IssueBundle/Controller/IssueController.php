@@ -29,6 +29,21 @@ use Doctrine\ORM\NoResultException;
  */
 class IssueController extends Controller
 {
+    /**
+     * 
+     * 
+     * @param integer $id
+     * @Template()
+     */
+    public function optionsAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        return array(
+            'id' => $id,
+            'issues' => $repo->findAll()
+        );
+    }
+    
     private function _findIssue($id)
     {
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
@@ -499,13 +514,6 @@ class IssueController extends Controller
         $form->bindRequest($req);
         if ($form->isValid()) {                
             $em = $this->getDoctrine()->getEntityManager();
-            $magzineId = $req->get('magzineId');
-            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $mag = $magRepo->find($magzineId);
-            if (empty($mag)) {
-                throw new Exception('magzine ' . $magzineId . ' not found');
-            }
-            $issue->setMagzine($mag);
             $em->persist($issue);
             $em->flush();
             
@@ -560,46 +568,14 @@ class IssueController extends Controller
      */
     public function listAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        
+        $cls = 'MagendIssueBundle:Issue';
         $em = $this->getDoctrine()->getEntityManager();
-        $magId = $this->getRequest()->cookies->get('magzine_id');
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id ORDER BY s.createdAt DESC");
+        $arr = $this->getList($cls, $query);
+        $arr['issues'] = $arr['entities'];
+        unset($arr['entities']);
         
-        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
-        if ($magId !== null) {
-            if ($isAdmin) {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m  WHERE m.id = :mag';
-                $q = $em->createQuery($dql)->setParameter('mag', $magId);
-            } else {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
-                $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
-            }
-            try {
-                $mag = $q->getSingleResult();
-            } catch (Exception $e) {
-                $mag = null;
-            }
-            if ($mag == null) {
-                $magId = null;
-            }
-        }
-        
-        if ($magId === null) {
-            $where = $isAdmin ? '' : 'LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-            $params = $isAdmin ? array() : array('user' => $user->getId());
-            $dql = 'SELECT m.id FROM MagendMagzineBundle:Magzine m '. $where . ' ORDER BY m.createdAt DESC';
-            $query = $em->createQuery($dql)->setParameters($params);
-            $query->setMaxResults(1);
-            try {
-                $magId = $query->getSingleScalarResult();
-            } catch (NoResultException $e) {
-                return array();
-            }
-        }
-        
-        return new RedirectResponse($this->generateUrl('magzine_issues', array(
-            'id' => $magId
-        )));
+        return $arr;
     }
     
     /**

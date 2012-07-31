@@ -13,7 +13,7 @@ class ArticleType extends AbstractType
         $types = array();
         // article types
         // @todo better from Article
-        for ($i=0; $i<9; ++$i) {
+        for ($i=0; $i<2; ++$i) {
             $types[] = "article.$i";
         }
         
@@ -21,21 +21,6 @@ class ArticleType extends AbstractType
             ->add('type', 'choice', array('choices'=>$types, 'empty_value' => ''))
             ->add('title')
             ->add('enTitle')
-            //->add('audioFile', 'file', array('required'=>false, 'label' => '音频文件'))
-            ->add('keywordsText', null, array('required'=>false))
-            ->add('project', 'entity', array(
-                'required' => false,
-                'class' => 'MagendProjectBundle:Project'
-            ))
-            ->add('institutes', 'entity', array(
-                'required' => false,
-                'class' => 'MagendInstituteBundle:Institute',
-                'expanded' => false,
-                'multiple' => true
-            ))
-            ->add('lat')
-            ->add('lng')
-            ->add('projectAddr', null, array( 'required' => false ))
         ;
     }
 

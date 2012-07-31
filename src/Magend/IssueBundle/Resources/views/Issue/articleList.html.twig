@@ -1,8 +1,6 @@
 {% extends '::base.html.twig' %}
 
 {% block contentTitle %}
-    <a href="{{ path('magzine_issues', { 'id':issue.magzine.id }) }}">{{ issue.magzine.name }}</a>
-    <span style="color:#AAA"> / </span>
     {{ issue.title }}
 {% endblock %}
 
@@ -17,9 +15,6 @@
             <h3>文章列表</h3>
             <div style="padding-top: 6px; width: 300px; float: left;">
                 <a id="layout_save" class="btn info" href="{{ path('issue_layout', { 'id':issue.id }) }}" data-loading-text="保存中...">保存修改</a>
-                {# insert copyright if there is copyright article in the issue #}
-                <a id="insert_copyright" class="btn primary {% if issue.magzine.copyrightArticle is null %}disabled{% endif %}" href="{% if issue.magzine.copyrightArticle is null %}#{% else %}{{ path('insert_copyright', { 'id':issue.id }) }}{% endif %}" title="{% if issue.magzine.copyrightArticle is null %}请先设置所属杂志默认版权页{% else %}插入杂志默认版权页{% endif %}">插入版权页</a>
-                <!-- <button id="layout_cancel" class="btn danger">放弃修改</button> -->
             </div>
             
             <!-- href must be unique and match the id of target div -->
@@ -85,7 +80,6 @@
                             <a rel="confirm" class="copyright {% if article.isCopyright %}copyright_on{% else %}copyright_off{% endif %}" title="{% if article.isCopyright %}取消作为版权页{% else %}设置为版权页{% endif %}" href="{{ path('article_copyright', { 'id':article.id }) }}?on={% if article.isCopyright %}0{% else %}1{% endif %}">©</a>
                             <a href="{{ path('article_edit', { 'id':article.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
                             <a rel="confirm" href="{{ path('article_del', { 'id':article.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
-                            {% if issue.magzine.copyrightArticle is not null and issue.magzine.copyrightArticle.id == article.id %}<a rel="confirm" href="{{ path('remove_copyright', {'id':issue.id}) }}" title="移除版权页（文章不会被删除）">移除</a>{% endif %} 
                         </td>
                     </tr>
                     {% endfor %}

@@ -1,19 +1,10 @@
 <form id="article_form" action="{% if article.id is null %}{{ path('article_new') }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-
-    <div class="clearfix">
-        {{ form_label(form.title, '杂志选择') }}
-        <div class="input"><select id="magsel" class="medium">
-            {% for magzine in magzines %}
-            <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if issue is defined and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
-            {% endfor %}            
-        </select></div>
-    </div>
     
     <div class="clearfix">
-        {{ form_label(form.title, '期刊选择') }}
+        {{ form_label(form.title, '套系选择') }}
         <div class="input"><select id="issuesel" class="medium" name="issueId" required=true>
             {% if issue is defined %}
-            {% include 'MagendMagzineBundle:Magzine:issueOptions.html.twig' with {'issues':issue.magzine.issues} %}
+            {% render 'MagendIssueBundle:Issue:options' with { 'id':app.request.get('id') } %}
             {% endif %}
         </select></div>
     </div>
@@ -31,66 +22,6 @@
     <div class="clearfix">
         {{ form_label(form.enTitle, '英文标题') }}
         <div class="input">{{ form_errors(form.enTitle) }}{{ form_widget(form.enTitle, { 'attr':{'class':'span6'} }) }}</div>
-    </div>
-
-    <div class="clearfix">
-        {{ form_label(form.keywordsText, '关键词') }}
-        <div class="input">
-            <select id="keywordsel" class="medium" style="margin-bottom:5px;">
-                <option value=""></option>
-                {% for keyword in keywords %}
-                <option value="{{ loop.index }}">{{ keyword.keyword }}</option>
-                {% endfor %}
-            </select>
-            {{ form_errors(form.keywordsText) }}
-            <div class="span5">{{ form_widget(form.keywordsText, { 'attr': {'class':'taggable'} }) }}</div>
-        </div>
-    </div>
-    
-    <div class="clearfix">
-        <label>背景音乐</label>
-        <div class="input">
-            <div id="attachAudio">
-                拖拽音频文件到这里
-            </div>
-            <p/>
-            音频文件：<a id="attachedAudio" target="_blank" href="{% if article.audio %}{{ asset('uploads/' ~ article.audio) }}{% else %}#{% endif %}">{{ article.audioName|default('尚未上传') }}</a>
-        </div>
-    </div>
-    
-    <div class="clearfix article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}>
-        {{ form_label(form.project, '项目类型') }}
-        <div class="input">
-            {{ form_errors(form.project) }}
-            <div class="span5">{{ form_widget(form.project, { 'attr':{'class':'medium'} }) }}</div>
-        </div>
-    </div>
-
-    <div class="clearfix article-uncommon article-type4 article-type5" {% if article.type != 4 and article.type != 5 %}style="display:none;"{% endif %}>
-        {{ form_label(form.institutes, '设计机构') }}
-        <div class="input">
-            {{ form_errors(form.institutes) }}
-            <div class="span5">{{ form_widget(form.institutes, { 'attr':{'class':'medium'} }) }}</div>
-        </div>
-    </div>
-    
-    <div class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}>
-        <div class="clearfix">
-            <label class="required">经纬度</label>
-            <div class="input">
-                <span id="latdiv">{{ form_errors(form.lat) }}{{ form_widget(form.lat, { 'attr':{'class':'small'} }) }}</span>
-                &nbsp;
-                <span id="lngdiv">{{ form_errors(form.lng) }}{{ form_widget(form.lng, { 'attr':{'class':'small'} }) }}</span>
-            </div>
-        </div>
-        
-        <div class="clearfix">
-            <div class="input">
-                {{ form_widget(form.projectAddr, { 'attr':{'class':'span6' }, 'id':'geoinput' }) }} <button id="geobtn" class="btn">获取该地址经纬度</button>
-                <p/>
-                <div id="map_canvas" style="width:600px; height:300px; background-color:#CCC;"></div>
-            </div>
-        </div>
     </div>
     
     {{ form_rest(form) }}

@@ -351,7 +351,7 @@ class Issue
     
     public function setPoster($poster)
     {
-        $this->video = $poster;
+        $this->poster = $poster;
     }
     
     public function getPoster()

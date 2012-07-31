@@ -18,15 +18,8 @@ USE Magend\PageBundle\Entity\Page;
  */
 class Article
 {
-    const TYPE_ADS    = 0;
-    const TYPE_COVER  = 1;
-    const TYPE_INDEX  = 2;
-    const TYPE_RIGHT  = 3;
-    const TYPE_PROJ   = 4;
-    const TYPE_INST   = 5;
-    const TYPE_PEOPLE = 6;
-    const TYPE_ARCTH  = 7;
-    const TYPE_ELSE   = 8;
+    const TYPE_COMMON = 0;
+    const TYPE_INDEX  = 1;
     
     /**
      * @var integer $id

@@ -2,6 +2,7 @@
 
 namespace Magend\ArticleBundle\Controller;
 
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -27,7 +28,7 @@ class ArticleController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
         $article = $repo->find($id);
         if (empty($article)) {
-            throw new \ Exception('Article not found');
+            throw new Exception('Article not found');
         }
         
         return $article;
@@ -49,13 +50,13 @@ class ArticleController extends Controller
         $issue = $article->getIssue();
         if (empty($issue)) {
             if ($asCopyright) {
-                throw new \ Exception('Article not belongs to any issue');
+                throw new Exception('Article not belongs to any issue');
             } 
         } else {
             $mag = $issue->getMagzine();
             if (empty($issue)) {
                 if ($asCopyright) {
-                    throw new \ Exception('Article not belongs to any magzine');
+                    throw new Exception('Article not belongs to any magzine');
                 } 
             } else {
                 $article->setCopyrightMagzine($asCopyright ? $mag : null);
@@ -150,7 +151,7 @@ class ArticleController extends Controller
         $pageEntites = array();
         foreach ($pages as $page) {
             if (!isset($page['id'])) {
-                throw new \ Exception('Page need be persisted first');
+                throw new Exception('Page need be persisted first');
             }
             
             $pageEntity = null;
@@ -221,7 +222,7 @@ class ArticleController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
         $article = $repo->find($id);
         if (empty($article)) {
-            throw new \ Exception('Article not found');
+            throw new Exception('Article not found');
         }
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
@@ -238,7 +239,7 @@ class ArticleController extends Controller
                     $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
                     $newIssue = $issueRepo->find($issueId);
                     if (empty($newIssue)) {
-                        throw new \ Exception('Issue not found');
+                        throw new Exception('Issue not found');
                     }
                     
                     $newIssue->addArticle($article);
@@ -301,31 +302,20 @@ class ArticleController extends Controller
     {
         $article = new Article();
         
-        $em = $this->getDoctrine()->getEntityManager();
-        
-        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
-        $kws = $kwRepo->findAll();
-                
-        $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
         $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        
+        $req = $this->getRequest();
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $issueId = $req->get('issueId');
                 $issue = $issueRepo->find($issueId);
                 if (empty($issue)) {
-                    throw new \ Exception('Issue not found');
-                }
-                
-                $kwText = trim($article->getKeywordsText());
-                if (!empty($kwText)) {
-                    $keywords = $kwRepo->toEntities(explode(',', $kwText));
-                    $article->setKeywords($keywords);
+                    throw new Exception('Issue not found');
                 }
                 
                 $article->setIssue($issue);
+                $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($article);
                 $em->flush();
                 
@@ -343,14 +333,7 @@ class ArticleController extends Controller
             }
         }
         
-        $user = $this->get('security.context')->getToken()->getUser();
-        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-        $q = $em->createQuery($dql)->setParameter('user', $user);
-        $mags = $q->getResult();
         $tplVars = array(
-            //'institutes' => $institutes,
-            'keywords'   => $kws,
-            'magzines'   => $mags,
             'article'    => $article,
             'form'       => $form->createView()
         );
