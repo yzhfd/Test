@@ -115,56 +115,6 @@ var article_new = function () {
 		$('.article-type' + $(this).val()).show();
 	});
 	
-	// map & lat,lng
-    var map = new google.maps.Map($("#map_canvas")[0], {
-    	zoom: 2,
-    	center: new google.maps.LatLng(48.108, 23.417),
-    	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    	scrollwheel: false
-    });
-    var marker = null;
-    var lat = $('#latdiv  input').val();
-    var lng = $('#lngdiv  input').val();
-    if (lat != 0 && lng != 0) { // @todo what if lat, lng is zero
-    	var pos = new google.maps.LatLng(lat, lng);
-    	marker = new google.maps.Marker({
-    		position: pos,
-    		map: map
-    	});
-    	map.setCenter(pos);
-    }
-    var posMark = function (latlng) {
-    	if (marker) {
-    		marker.setMap(null);
-    	}
-    	marker = new google.maps.Marker({
-    		position: latlng, 
-    		map: map
-    	});
-    	$('#latdiv  input').val(latlng.lat());
-    	$('#lngdiv  input').val(latlng.lng());    	
-    };
-    google.maps.event.addListener(map, 'click', function(event) {
-    	posMark(event.latLng);
-    });
-    // geocoding
-	$('#geobtn').click(function () {
-		var locText = $('#geoinput').val();
-		if (locText.trim(' ') == '') return false;
-		
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({ 'address': locText }, function(results, status) {
-	        if (status == google.maps.GeocoderStatus.OK) {
-	        	var latlng = results[0].geometry.location;
-				map.setCenter(latlng);
-				posMark(latlng);
-	        } else {
-	        	alert("地址解析失败: " + status);
-	        }
-	    });
-		return false;
-	});
-	
 	// pages
 	$('a.pagedel').live('click', function(e){
 		var href = $(this).attr('href');

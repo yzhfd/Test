@@ -27,10 +27,10 @@ class PageController extends Controller
     // @todo DRY create thumbnail code
     /**
      * 
-     * @Route("/{id}/test", name="page_test", options={"expose" = true}, requirements={"id"="\d+"})
+     * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
      * @Template()
      */
-    public function testAction($id)
+    public function editAction($id)
     {
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
         $page = $repo->find($id);
@@ -66,48 +66,6 @@ class PageController extends Controller
             'prev' => $prev,
             'next' => $next,
             'form' => $form->createView()
-        );
-    }
-    
-    
-    /**
-     * 
-     * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
-     * @Template()
-     */
-    public function editAction($id)
-    {
-        $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
-        $page = $repo->find($id);
-        
-        $hots = $page->getHots();
-        if (!empty($hots)) {
-            $em = $this->getDoctrine()->getEntityManager();
-            $dql = 'SELECT h, a FROM MagendHotBundle:Hot h LEFT JOIN h.assets a WHERE h in (:hots)';
-            if (!is_array($hots) && method_exists($hots, 'toArray')) $hots = $hots->toArray();
-            $hots = array_values($hots);
-            if (!empty($hots)) {
-                $q = $em->createQuery($dql)->setParameter('hots', $hots);
-                $q->getResult();
-            }
-        }
-        
-        $pageIds = $page->getArticle()->getPageIds();
-        $index = array_search($id, $pageIds);
-        $prev = $next = null; // id of previous and next page
-        if ($index !== false) {
-            if (isset($pageIds[$index - 1])) {
-                $prev = $pageIds[$index - 1];
-            }
-            if (isset($pageIds[$index + 1])) {
-                $next = $pageIds[$index + 1];
-            }
-        }
-        
-        return array(
-            'page' => $page,
-            'prev' => $prev,
-            'next' => $next
         );
     }
     

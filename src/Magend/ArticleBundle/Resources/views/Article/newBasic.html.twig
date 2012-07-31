@@ -3,9 +3,7 @@
     <div class="clearfix">
         {{ form_label(form.title, '套系选择') }}
         <div class="input"><select id="issuesel" class="medium" name="issueId" required=true>
-            {% if issue is defined %}
             {% render 'MagendIssueBundle:Issue:options' with { 'id':app.request.get('id') } %}
-            {% endif %}
         </select></div>
     </div>
     

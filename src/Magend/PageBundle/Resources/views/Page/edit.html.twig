@@ -1,15 +1,6 @@
-{% extends '::base.html.twig' %}
-
-{% block title %}单页编辑{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-{% endblock %}
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block contentTitle %}
-    <a href="{{ path('magzine_issues', { 'id':page.article.issue.magzine.id }) }}">{{ page.article.issue.magzine.name }}</a>
-    <span style="color:#AAA"> / </span>
     <a href="{{ path('issue_article_list', { 'id':page.article.issue.id }) }}">{{ page.article.issue.title }}</a>
     <span style="color:#AAA"> / </span>
     <a href="{{ path('article_edit', { 'id':page.article.id }) }}">{{ page.article.title|default('(文章' ~ page.article.id ~ ')') }}</a>
@@ -17,27 +8,10 @@
     热点编辑
 {% endblock %}
 
+{% form_theme form 'MagendHotBundle:Form:fields.html.twig' %}
+
 {% block main %}
-
-<script type="text/javascript">
-    var basePath = '{{ app.request.basePath }}';
-    var initHots = [];
-{% for hot in page.landscapeHots %}
-    {% set hotsData = { 'attrs':hot.attrs|merge({ 'id':hot.id }) } %}
-    {% if hot.extraAttrs %}
-        {% set hotsData = hotsData|merge({ 'extras':hot.extraAttrs }) %}
-    {% endif %}
-    {% if hot.assets %}
-        {% set hotsData = hotsData|merge({ 'assets':hot.assets }) %}
-    {% endif %}
-    
-    initHots.push({{ hotsData|json_encode()|raw }});
-{% endfor %}
-</script>
-
 <div id="page_editor">
-    <!--<input type="checkbox" id="selenable" />
-    <div id="info_panel"></div>-->
     <div style="width: 1024px;">        
         <div id="pageid" style="display:none;">{{page.id}}</div>
         <button id="saveall" class="btn primary">保存</button>
@@ -48,112 +22,12 @@
         <button id="redo" class="btn">重做</button>
         <button id="flushall" class="btn danger" style="float: right;">清空</button>-->
     </div>
-    <ul id="hotlib">
-        <!-- hot_type as li's id, type will be model's type -->
-        <li id="hot_0" class="hotobj hotsimg" title="单张图片将显示在热点区域内，一般图片可滚动"><span class="hide">单图</span></li>
-        <li id="hot_1" class="hotobj hotimgs" title="用于画廊、相片流等"><span class="hide">多图</span></li>
-        <li id="hot_2" class="hotobj hotlink" title="内部链接或者网页链接"><span class="hide">链接</span></li>
-        <li id="hot_3" class="hotobj hotvideo" title="视频"><span class="hide">视频</span></li>
-        <li id="hot_4" class="hotobj hotaudio" title="音频"><span class="hide">音频</span></li>
-        <li id="hot_5" class="hotobj hotseq" title="序列图"><span class="hide">序列图</span></li>
-        <li id="hot_6" class="hotobj hotmap" title="地图"><span class="hide">地图</span></li>
-    </ul>
     
-    <div id="hot_dialog" style="padding:10px;">
-        <div id="hot_essential">
-            <div>坐标: <input type="text" name="x" class="span1" />, <input type="text" name="y" class="span1" /></div>
-            <div>长宽: <input type="text" name="w" class="span1" />, <input type="text" name="h" class="span1" /> <span style="color:#FC3F4D;">（不能小于40x40）</span> <button class="btn" id="hot_use_content_size">使用图片原始大小</button></div>
-            <div>锁定位置：<input type="checkbox" name="locked" />，锁定比例：<input type="checkbox" name="ratioLocked" /></div>
-        </div>
-        <br/>
-        
-        <div id="hot_0_dialog" class="dlgcontent" style="display:none; min-width: 400px; min-height: 120px;">
-            <form action="#">
-                <input type="radio" name="subtype" value="0" checked="checked" /> <span>嵌入</span>
-                <input type="radio" name="subtype" value="1" /> <span>点击全屏浏览</span>
-            </form>
-            <p>拖拽单张图片到下面</p>
-            <div id="image-upload-area" style="width: 400px; height: 120px; background-color: #CCC; padding: 20px; overflow-x: auto;">
-                
-            </div>
-        </div>
-        
-        <div id="hot_1_dialog" class="dlgcontent has-assets-panel" style="display:none;">
-            <p style="position: absolute; left: 10px;">拖拽多张图片到这里</p>
-            <div class="panel-wrapper" style="margin-top: 30px; width: 300px;">
-                <ol id="hotimgs" class="assets-panel">
-                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
-                </ol>
-            </div>
-        </div>
-        
-        <div id="hot_2_dialog" class="dlgcontent" style="display:none;">
-            <form action="#">
-                <input id="internRadio" type="radio" name="subtype" value="0" /> 内部页面
-                <input id="externRadio" type="radio" name="subtype" value="1" checked="checked" /> 外部链接
-                <p/>
-                <input id="linkInput" type="text" class="span6" name="link" value="" />
-            </form>
-        </div>
-        
-        <div id="hot_3_dialog" class="dlgcontent" style="display:none; min-width: 300px; ">
-            <form action="#">
-                <input type="radio" name="subtype" value="0" checked="checked" /> <span>嵌入</span>
-                <input type="radio" name="subtype" value="1" /> <span>点击全屏浏览</span></form>
-            <div id="video-upload-area">
-                拖拽视频到这里
-            </div>
-        </div>
-        
-        <div id="hot_4_dialog" class="dlgcontent" style="display:none; min-width: 300px; ">
-            <form action="#">
-                <input type="radio" name="subtype" value="0" checked="checked" /> <span>自动播放</span>
-                <input type="radio" name="subtype" value="1" /> <span>手动播放</span>
-            </form>
-            <div id="audio-upload-area">
-                拖拽音频到这里
-            </div>
-        </div>
-        
-        <div id="hot_5_dialog" class="dlgcontent has-assets-panel" style="display:none;">
-            <div style="position: absolute; left: 10px;">
-                <form action="#">
-                    <input type="checkbox" name="autoplay" /> 自动播放，
-                    <input type="checkbox" name="gravity" /> 方向感应
-                    <p>
-                        <select style="width:50px;" name="speed"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> 滑动速度，
-                        <input type="checkbox" name="bar" /> 显示控制条
-                    </p>
-                    <p>显示位置 <input type="radio" name="position" value="0" /> 上，<input type="radio" name="position" value="1" /> 下，<input type="radio" name="position" value="2" /> 左，<input type="radio" name="position" value="3" /> 右
-                </form>
-                拖拽图片到这里，顺序重要
-            </div>
-            <div class="panel-wrapper" style="margin-top: 120px; width: 300px;">
-                <ol id="hotseq" class="assets-panel">
-                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
-                </ol>
-            </div>
-        </div>
-        
-        <div id="hot_6_dialog" class="dlgcontent has-assets-panel" style="display:none;">
-            <div style="position: absolute; left: 10px;">
-                <form action="#">
-                    <p>地址: <input type="text" name="address" class="span3" /></p>
-                    <div class="gmap" style="width:190px; height:120px; position:absolute; top:0px; left: 200px; background-color:#666;"></div>
-                    <p>经度: <input type="text" name="lat" class="span3" /></p>
-                    <p>纬度: <input type="text" name="lng" class="span3" /></p>
-                    <input type="radio" name="subtype" value="0" /> 全屏显示，<input type="radio" name="subtype" value="1" checked="checked" /> 窗口显示
-                </form>
-                <p>拖拽按钮图片到这里，依次为开按钮和关按钮</p>
-            </div>
-            <div class="panel-wrapper" style="margin-top: 175px; width: 300px;">
-                <ol id="hotmap" class="assets-panel">
-                    <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
-                </ol>
-            </div>
-        </div>
-        
-    </div><!-- end of dialogs -->
+    <ul id="hotlib">
+        <li rel="furnitureDetailHots" class="hot_add" title="单品家具展示热区"><span>单品家具</span></li>
+        <li rel="slideLayerHots" class="hot_add" title="滑动图层热区"><span>滑动图层</span></li>
+        <li rel="furnitureSkinnableHots" class="hot_add" title="家具换肤热区"><span>家具换肤</span></li>
+    </ul>
     
     <div class="page_canvas_ruler">
         <div id="page_canvas_img" tabIndex="1">
@@ -166,5 +40,11 @@
         <ul id="page_canvas">
         </ul>
     </div>
-</div>
+    
+    <form style="width:680px; margin-top:10px;" action="{{ path('page_edit', { 'id':app.request.get('id') }) }}" method="post" {{ form_enctype(form) }}>
+        <div class="hide">{{ form_widget(form) }}</div>
+        
+        <div class="actions"><button class="btn primary" type="submit">提交</button></div>
+    </form>
+</div> 
 {% endblock %}
