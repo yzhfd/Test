@@ -8,6 +8,5 @@
             {% if article.copyrightMagzine %}copyrt{% set copyrt = article.id %}{% else %}{{ article.id }}{% endif %}{% if not loop.last %},{% endif %}
         {% endfor %}
         </articles>
-        <copyrt>{{ copyrt }}</copyrt>
     </Issue>
 {% endblock %}
