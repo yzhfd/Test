@@ -21,6 +21,11 @@
             </div>
             
             <div class="clearfix">
+                {{ form_label(form.nickname, '昵称') }}
+                <div class="input">{{ form_errors(form.nickname) }}{{ form_widget(form.nickname, { 'attr':{'class':'span3'} }) }}</div>
+            </div>
+            
+            <div class="clearfix">
                 {{ form_label(form.email, '邮箱') }}
                 <div class="input">{{ form_errors(form.email) }}{{ form_widget(form.email, { 'attr':{'class':'span3'} }) }}</div>
             </div>

@@ -49,9 +49,12 @@ class RegistrationController extends BaseController
             if ($confirmationEnabled) {
                 $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
             } else {
+                $user->addRole('ROLE_ADMIN');
+                $this->container->get('doctrine.orm.entity_manager')->flush();
                 $this->authenticateUser($user);
             }
-            return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
+            
+            return new RedirectResponse($this->container->get('router')->generate('home'));
         } else if ($this->container->get('request')->getMethod() == 'POST') {
             $errors = $this->getErrorMessages($form);
             return $this->container->get('templating')->renderResponse(
