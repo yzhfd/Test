@@ -45,7 +45,7 @@ class PageController extends Controller
                 $pm = $this->get('magend.page_manager');
                 $pm->updatePage($page);
                 
-                return $this->redirect($this->generateUrl('page_test', array('id' => $id)));
+                return $this->redirect($this->generateUrl('page_edit', array('id' => $id)));
             }
         }
         

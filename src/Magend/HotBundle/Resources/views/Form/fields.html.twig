@@ -19,7 +19,7 @@
 
 {% block assets_widget %}
     {% spaceless %}
-        <ul class="upload_panel" {% if prototype is defined %}data-prototype='{{ form_widget(prototype) }}'{% endif %} {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}" style="width:300px; height:200px; background:#333;">
+        <ul class="assets-panel" {% if prototype is defined %}data-prototype='{{ form_widget(prototype) }}'{% endif %} {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}">
         {% for child in form %}
             {{ form_widget(child) }}
         {% endfor %}
@@ -31,7 +31,7 @@
 
 {% block asset_widget %}
     {% spaceless %}
-    <li class="hotimg unsynced">
+    <li class="hotimg">
         {% set asset = form.get('value') %}
         <a href="{% if asset is empty %}#{% else %}{{ path('page_del', { 'id':asset.id }) }}{% endif %}" class="pagedel"></a>
         <a class="imgwrapper" href="#" title="{% if asset is empty %}#{% else %}{{ asset.tag }}{% endif %}">

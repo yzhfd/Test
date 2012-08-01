@@ -50,57 +50,10 @@ label.hidelabel { display:none; }
 .newPages li.page.syncfail {
     border: 2px solid red !important;
 }
-.has-assets-panel {
-	min-width: 400px; min-height: 120px; overflow-x: auto;
-}
-.assets-panel {
-	min-width: 400px; height: 150px; background-color: #333;
-}
-.assets-panel li.hotimg {
-    margin-top: 10px;
-    border: 2px solid #57A000;
-}
-.assets-panel li.hotimg.unsynced {
-    border: 2px solid yellow;
-}
-.assets-panel li.hotimg.syncfail {
-    border: 2px solid red !important;
-}
-li.hotimg { /* refer to li.page below */
-    float: left;
-    margin-left: 18px;
-    position: relative;
-}
-
-#attachAudio {
-    width: 300px; height: 120px;
-    border: 1px solid gray; background-color: #CCC;
-    text-align: center; line-height: 120px; font-size: 2em; color: #777;
-    overflow: hidden; text-overflow: ellipsis;
-}
-
-/* hots */
-#video-upload-area, #audio-upload-area {
-	border: 1px solid #777;
-	background-color: #CCC;
-	text-align: center;
-	height: 100px;
-	padding-top: 40px;
-	color: #777;
-}
-#video-upload-area a {
-	color: #57A000;
-}
-#video-upload-area.unsynced, #audio-upload-area.unsynced, img.unsynced {
-	border: 2px solid yellow;
-}
-#video-upload-area.synced, #audio-upload-area.synced, img.synced {
-    border: 2px solid #57A000;
-}
-#video-upload-area.syncfail, #audio-upload-area.syncfail, img.syncfail {
-    border: 2px solid red !important;
-}
-
+.assets-panel { width: 340px; height: 150px; background-color: #333; overflow: auto; }
+.assets-panel li.hotimg { position: relative;  float: left; margin: 10px 0 0 18px; border: 2px solid #57A000; }
+.assets-panel li.hotimg.unsynced { border: 2px solid yellow; }
+.assets-panel li.hotimg.syncfail { border: 2px solid red !important; }
 #articles_layout ol.articles {
 	float: left;
 }
@@ -330,27 +283,6 @@ ol, ul { list-style: none; }
 }
 .hot_add:hover {
 	color: green;
-}
-.hotimgs {
-	background: #EEE url('../images/hotlib_imgs.png') no-repeat center center;
-}
-.hotsimg {
-    background: #EEE url('../images/hotlib_img.png') no-repeat center center;
-}
-.hotvideo {
-    background: #EEE url('../images/hotlib_video.png') no-repeat center center;
-}
-.hotaudio {
-    background: #EEE url('../images/hotlib_audio.png') no-repeat center center;
-}
-.hotlink {
-    background: #EEE url('../images/hotlib_link.png') no-repeat center center;
-}
-.hotseq {
-    background: #EEE url('../images/hotlib_imgseq.png') no-repeat center center;
-}
-.hotmap {
-	background: #EEE url('../images/hotlib_map.png') no-repeat center center;
 }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */

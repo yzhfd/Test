@@ -58,16 +58,17 @@ var fileUploadable = function(panel) {
 		                asset.find('a.imgwrapper').attr('title', file.name);
 		                asset.find('img').attr('src', e.target.result);
 		                asset.find('input.asset_tag').val(file.name);
+		                asset.addClass('unsynced');
 		            	asset.appendTo(panel);
 		            	
 						panel.fileupload('option', 'success', function(result){
 							asset.find('.pagedel').attr('href', result.delUrl);
 							asset.find('img').attr('src', result.asset);
 							asset.find('input.asset_resource').val(result.resource);
+							asset.removeClass('unsynced');
 						});
 						panel.fileupload('option', 'url', Routing.generate('asset_upload'));
 						panel.fileupload('send', { files:[file] });
-		            	// panel.width($('li.hotimg', panel).length * asset.outerWidth(true) + 20);
 						
 						panel.data('index', index+1);
 		            };
@@ -92,10 +93,11 @@ var initPanel = function(panel){
 	fileUploadable(panel);
 	var panel = $(panel);
 	var nbMax = panel.attr('nb_max');
-	if (nbMax > 1) {
+	if (!nbMax || nbMax > 1) {
 		panel.find('li').each(function(index, li){
 			$(li).find('input.asset_seq').val(index);
 		});
+		
 		$(panel).sortable({
 			// axis: 'x',
 			// helper: 'clone',
@@ -132,12 +134,12 @@ var page_edit = function () {
 	});
 
 	// upload
-	$('.upload_panel').each(function(index, panel){
+	$('.assets-panel').each(function(index, panel){
 		initPanel(panel);
 	});
 	
 	$('#page_canvas').fileupload({
-		url: Routing.generate('page_replace', { id:$('#pageid').text() }),
+		url: Routing.generate('page_replace', { id:$('#page_editor').attr('rel') }),
 		paramName: 'file',
 		dropZone: $('#page_canvas'),
 		acceptFileTypes: /(\.|\/)(jpg|jpeg|png)$/i,
@@ -220,7 +222,7 @@ var page_edit = function () {
 			holder.append(newForm);
 			holder.data('index', index+1);
 			newForm.attr('class', rel);
-			newForm.find('.upload_panel').each(function(index, panel) {
+			newForm.find('.assets-panel').each(function(index, panel) {
 				initPanel(panel);
 			});
 			

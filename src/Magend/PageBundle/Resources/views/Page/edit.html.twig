@@ -11,10 +11,12 @@
 {% form_theme form 'MagendHotBundle:Form:fields.html.twig' %}
 
 {% block main %}
-<div id="page_editor">
-    <div style="width: 1024px;">        
-        <div id="pageid" style="display:none;">{{page.id}}</div>
-        <button id="saveall" class="btn primary">保存</button>
+<div id="page_editor" rel="{{ page.id }}">
+    <div style="width: 1024px;">
+        <form style="display:inline;" action="{{ path('page_edit', { 'id':app.request.get('id') }) }}" method="post" {{ form_enctype(form) }}>
+            <div class="hide">{{ form_widget(form) }}</div>
+            <button class="btn primary" type="submit">保存</button>
+        </form>
         {% if prev is not null %}<a href="{{ path('page_edit', { 'id':prev }) }}" class="btn info">上一页</a>{% endif %}
         {% if next is not null %}<a href="{{ path('page_edit', { 'id':next }) }}" class="btn info">下一页</a>{% endif %}
         <span style="margin-left:20px;">拖拽图片至图片区替换背景图片</span>
@@ -40,11 +42,5 @@
         <ul id="page_canvas">
         </ul>
     </div>
-    
-    <form style="width:680px; margin-top:10px;" action="{{ path('page_edit', { 'id':app.request.get('id') }) }}" method="post" {{ form_enctype(form) }}>
-        <div class="hide">{{ form_widget(form) }}</div>
-        
-        <div class="actions"><button class="btn primary" type="submit">提交</button></div>
-    </form>
 </div> 
 {% endblock %}
