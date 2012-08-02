@@ -47,6 +47,13 @@ class Hot
      * @ORM\Column(name="type", type="integer")
      */
     private $type = 0;
+
+    /**
+     * @var string $label
+     *
+     * @ORM\Column(name="label", type="string", nullable=true)
+     */
+    private $label;
     
     /**
      * 
@@ -294,6 +301,16 @@ class Hot
     public function setH($h)
     {
         $this->h = $h;
+    }
+    
+    public function getLabel()
+    {
+        return $this->label;
+    }
+    
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
     
     /**

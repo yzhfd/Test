@@ -17,14 +17,15 @@ class HotAttrContainer
     
     private $hot;
     
-    // @todo required => false
+    // @todo 'required' => false
     public static $attrsDefs = array(
             1 => array(
-                'interaction' => array('type' => null, 'options' => array('label' => '互动效果')),
-                'name' => array('type' => null, 'options' => array('label' => '单品名称')),
-                'price' => array('type' => null, 'options' => array('label' => '价格')),
-                'material' => array('type' => null, 'options' => array('label' => '材质')),
-                'specs' => array('type' => null, 'options' => array('label' => '规格')),
+                'interaction' => array('type' => null, 'options' => array('label' => '互动效果', 'required' => false)),
+                'name' => array('type' => null, 'options' => array('label' => '单品名称', 'required' => false)),
+                'price' => array('type' => null, 'options' => array('label' => '价格', 'required' => false)),
+                'material' => array('type' => null, 'options' => array('label' => '材质', 'required' => false)),
+                'specs' => array('type' => null, 'options' => array('label' => '规格', 'required' => false)),
+                'furnitureAssets' => array('type' => 'assets', 'options' => array('label' => '家具图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             2 => array(
                 'guideAssets' => array('type' => 'assets', 'options' => array('label' => '导引图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),

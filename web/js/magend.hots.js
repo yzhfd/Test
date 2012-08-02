@@ -274,10 +274,10 @@ var HotView = Backbone.View.extend({
         };
         
         var bindings = {
-            x: { selector: 'input.hot_x', converter: rounder},
-            y: { selector: 'input.hot_y', converter: rounder},
-            width: { selector: 'input.hot_w', converter: rounder},
-            height: { selector: 'input.hot_h', converter: rounder},
+            x: { selector: 'input.hot_x', converter: rounder },
+            y: { selector: 'input.hot_y', converter: rounder },
+            width: { selector: 'input.hot_w', converter: rounder },
+            height: { selector: 'input.hot_h', converter: rounder }
         };
         
         this._modelBinder.bind(this.model, $('#' + this.model.cid + '_form'), bindings);
