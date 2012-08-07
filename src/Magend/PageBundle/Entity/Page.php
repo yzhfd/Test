@@ -19,11 +19,7 @@ use Magend\HotBundle\Entity\HotContainer;
  * @ORM\HasLifecycleCallbacks
  */
 class Page
-{
-    const TYPE_MAIN      = 0;
-    const TYPE_INFO      = 1;
-    const TYPE_STRUCTURE = 2;
-    
+{   
     /**
      * @var integer $id
      *
@@ -45,7 +41,7 @@ class Page
      * @var int
      * @ORM\Column(name="type", type="smallint")
      */
-    private $type = self::TYPE_MAIN;
+    private $type = 0;
     
     /**
      * @var ArrayCollection
@@ -168,8 +164,10 @@ class Page
     public function postLoad()
     {
         $this->hotContainer = new HotContainer();
-        foreach ($this->hots as $hot) {
-            $this->hotContainer->addHot($hot);
+        if (!empty($this->hots)) {
+            foreach ($this->hots as $hot) {
+                $this->hotContainer->addHot($hot);
+            }
         }
     }
     

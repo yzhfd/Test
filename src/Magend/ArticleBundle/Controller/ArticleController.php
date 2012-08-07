@@ -184,14 +184,13 @@ class ArticleController extends Controller
     /**
      * 
      * @Route(
-     *     "/orderpages/{type}",
+     *     "/orderpages",
      *     name="article_orderpages",
      *     defaults={"_format" = "json"},
-     *     requirements={"type"="[0-2]"},
      *     options={"expose" = true}
      * )
      */
-    public function orderPagesAction($type = Page::TYPE_MAIN)
+    public function orderPagesAction()
     {
         $req = $this->getRequest();
         $articleId = $req->get('id');
@@ -202,7 +201,7 @@ class ArticleController extends Controller
         }
         
         $pageIds = $req->get('pageIds');
-        $article->setPageIds($pageIds, $type);
+        $article->setPageIds($pageIds);
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($article);
