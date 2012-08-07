@@ -24,32 +24,10 @@ label.hidelabel { display:none; }
     width: auto !important;
     float: none;
 }
-.copyright {
-    font-size:18px; font-weight: bold;
-}
-.copyright_on, .copyright_off:hover {
-	color: #57A000; text-decoration: none;
-}
-.copyright_off, .copyright_on:hover {
-    color: #CCC; text-decoration: none;
-}
-.copyright_chosen {
-    color: red;
-}
-
-.newPages {
-	padding: 10px 0 0 60px;
-}
-.newPages li.page {
-	margin-top: 10px;
-	border: 2px solid #57A000;
-}
-.newPages li.page.unsynced {
-	border: 2px solid yellow;
-}
-.newPages li.page.syncfail {
-    border: 2px solid red !important;
-}
+.newPages { padding: 10px 0 0 0px; }
+.newPages li.page { margin-top: 10px; border: 2px solid #57A000; }
+.newPages li.page.unsynced { border: 2px solid yellow; }
+.newPages li.page.syncfail { border: 2px solid red !important; }
 .assets-panel { width: 340px; height: 150px; background-color: #333; overflow: auto; }
 .assets-panel li.hotimg { position: relative;  float: left; margin: 10px 0 0 18px; border: 2px solid #57A000; }
 .assets-panel li.hotimg.unsynced { border: 2px solid yellow; }

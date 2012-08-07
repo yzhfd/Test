@@ -40,7 +40,7 @@
         {{ form_rest(form) }}
         
         <div class="actions">
-            <button class="btn primary" type="submit" data-loading-text="提交中...">提交</button>
+            <button class="btn btn-primary" type="submit" data-loading-text="提交中...">提交</button>
             <a style="display:none;" id="issue_next" class="btn" href="{% if issue.id is not null %}{{ url('issue_editor', { 'id':issue.id }) }}{% else %}#{% endif %}">创建编排文章</a>
         </div>
     </form>

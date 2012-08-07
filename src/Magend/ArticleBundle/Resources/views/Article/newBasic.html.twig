@@ -1,30 +1,22 @@
 <form id="article_form" action="{% if article.id is null %}{{ path('article_new') }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     
-    <div class="clearfix">
-        {{ form_label(form.title, '套系选择') }}
-        <div class="input"><select id="issuesel" class="medium" name="issueId" required=true>
-            {% render 'MagendIssueBundle:Issue:options' with { 'id':app.request.get('id') } %}
-        </select></div>
-    </div>
+    {{ form_label(form.title, '套系选择') }}
+    <select id="issuesel" class="medium" name="issueId" required=true>
+        {% render 'MagendIssueBundle:Issue:options' with { 'id':app.request.get('id') } %}
+    </select>
     
-    <div class="clearfix">
-        {{ form_label(form.type, '文章类型') }}
-        <div class="input">{{ form_errors(form.type) }}{{ form_widget(form.type, { 'attr':{'class':'small'}, 'id':'article_typesel' }) }}</div>
-    </div>
+    {{ form_label(form.type, '文章类型') }}
+    {{ form_widget(form.type, { 'attr':{'class':'small'}, 'id':'article_typesel' }) }}
 
-    <div class="clearfix">
-        {{ form_label(form.title, '标题') }}
-        <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
-    </div>
+    {{ form_label(form.title, '标题') }}
+    {{ form_widget(form.title, { 'attr':{'class':'span5'} }) }}
     
-    <div class="clearfix">
-        {{ form_label(form.enTitle, '英文标题') }}
-        <div class="input">{{ form_errors(form.enTitle) }}{{ form_widget(form.enTitle, { 'attr':{'class':'span6'} }) }}</div>
-    </div>
+    {{ form_label(form.enTitle, '英文标题') }}
+    {{ form_widget(form.enTitle, { 'attr':{'class':'span5'} }) }}
     
     {{ form_rest(form) }}
     
     <div class="actions">
-        <button class="btn primary" type="submit">提交</button>
+        <button class="btn btn-primary" type="submit">提交</button>
     </div>
 </form>
