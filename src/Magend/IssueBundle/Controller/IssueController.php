@@ -308,10 +308,10 @@ class IssueController extends Controller
         $publishDir = $rootDir . '/../web/Publish/';
         file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
         
-        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
+        // $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
             'msg' => '发布成功',
-            'publishedAt' => $pubAt,
+            // 'publishedAt' => $pubAt,
             'zip' => $zipName
         )));
     }
