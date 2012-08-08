@@ -28,11 +28,28 @@ class HotAttrContainer
                 'furnitureAssets' => array('type' => 'assets', 'options' => array('label' => '家具图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             2 => array(
+                'direction' => array('type' => 'choice', 'options' => array('label' => '导引图位置', 'attr' => array('class' => 'span1'), 'required' => false, 'choices' => array('0' => '上', '1' => '下', '2' => '左', '3' => '右'))),
                 'guideAssets' => array('type' => 'assets', 'options' => array('label' => '导引图片', 'type' => 'asset', 'file_note' => '图片文件', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
                 'descriptionAssets' => array('type' => 'assets', 'options' => array('label' => '描述图片', 'type' => 'asset', 'nb_max' => 1, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             3 => array(
+                 'colorx' => array('type' => null, 'options' => array('label' => '替换横坐标', 'data' => 0, 'attr' => array('class' => 'span2'))),
+                 'colory' => array('type' => null, 'options' => array('label' => '替换纵坐标', 'data' => 0, 'attr' => array('class' => 'span2'))),
                 'imgAssets' => array('type' => 'assets', 'options' => array('label' => '图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
+            ),
+            4 => array(
+            ),
+            5 => array(
+            ),
+            6 => array(
+            ),
+            7 => array(
+            ),
+            8 => array(
+            ),
+            9 => array(
+            ),
+            10 => array(
             ),
     );
     

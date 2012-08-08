@@ -10,6 +10,13 @@ class HotContainer
             1 => array('name' => 'furnitureDetailHots',  'label' => '单品家具展示热区'),
             2 => array('name' => 'slideLayerHots', 'label' => '滑动图层热区'),
             3 => array('name' => 'furnitureSkinnableHots', 'label' => '家具换肤热区'),
+            4 => array('name' => 'singleImageHots', 'label' => '单图热区'),
+            5 => array('name' => 'multiImagesHots', 'label' => '多图热区'),
+            6 => array('name' => 'linkHots', 'label' => '链接热区'),
+            7 => array('name' => 'videoHots', 'label' => '视频热区'),
+            8 => array('name' => 'audioHots', 'label' => '音频热区'),
+            9 => array('name' => 'seqImagesHots', 'label' => '序列图热区'),
+            10 => array('name' => 'mapHots', 'label' => '地图热区'),
     );
     
     private $hotCollections;

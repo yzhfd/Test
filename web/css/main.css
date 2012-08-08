@@ -259,9 +259,15 @@ ol, ul { list-style: none; }
 	background-color: #DDD;
 	cursor: pointer;
 }
-.hot_add:hover {
-	color: green;
-}
+.hot_add:hover { color: green; }
+.hotimgs { background: #EEE url('../images/hotlib_imgs.png') no-repeat center center; }
+.hotsimg { background: #EEE url('../images/hotlib_img.png') no-repeat center center; }
+.hotvideo { background: #EEE url('../images/hotlib_video.png') no-repeat center center; }
+.hotaudio { background: #EEE url('../images/hotlib_audio.png') no-repeat center center; }
+.hotlink { background: #EEE url('../images/hotlib_link.png') no-repeat center center; }
+.hotseq { background: #EEE url('../images/hotlib_imgseq.png') no-repeat center center; }
+.hotmap { background: #EEE url('../images/hotlib_map.png') no-repeat center center; }
+.hotimgs span, .hotsimg span, .hotvideo span, .hotaudio span, .hotlink span, .hotseq span, .hotmap span { display: none; }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
 	width: 1024px;
