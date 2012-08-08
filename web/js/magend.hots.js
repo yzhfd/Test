@@ -204,7 +204,7 @@ var HotView = Backbone.View.extend({
     				}
     			},*/
     			"Ok": {
-    				class: 'btn primary',
+    				class: 'btn btn-primary',
     				text: '确认',
     				click: function() {
     					hotForm.dialog('close');

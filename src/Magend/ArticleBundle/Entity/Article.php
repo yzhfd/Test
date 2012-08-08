@@ -20,6 +20,8 @@ class Article
 {
     const TYPE_COMMON = 0;
     const TYPE_INDEX  = 1;
+    const TYPE_SUITE  = 2;
+    const TYPE_FUNC   = 3;
     
     /**
      * @var integer $id
@@ -259,6 +261,15 @@ class Article
         $this->architects = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->institutes = new ArrayCollection();
+    }
+    
+    public static function getTypeList()
+    {
+        $types = array();
+        for ($i=0; $i<4; ++$i) {
+            $types[] = "article.$i";
+        }
+        return $types;
     }
 
     /**
