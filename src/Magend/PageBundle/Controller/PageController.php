@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\HotBundle\Entity\Hot;
+use Magend\HotBundle\Entity\HotContainer;
 use Magend\HotBundle\Form\Type\HotType;
 use Magend\HotBundle\Form\Type\HotContainerType;
 use Magend\IssueBundle\Util\SimpleImage;
@@ -62,6 +63,7 @@ class PageController extends Controller
         }
         
         return array(
+            'hotdefs' => HotContainer::$hotsDefs,
             'page' => $page,
             'prev' => $prev,
             'next' => $next,

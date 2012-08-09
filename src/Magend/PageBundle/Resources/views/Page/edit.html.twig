@@ -26,16 +26,9 @@
     </div>
     
     <ul id="hotlib">
-        <li rel="furnitureDetailHots" class="hot_add" title="单品家具展示热区"><span>单品家具</span></li>
-        <li rel="slideLayerHots" class="hot_add" title="滑动图层热区"><span>滑动图层</span></li>
-        <li rel="furnitureSkinnableHots" class="hot_add" title="家具换肤热区"><span>家具换肤</span></li>
-        <li rel="singleImageHots" class="hot_add hotsimg" title="单图热区"><span>单图</span></li>
-        <li rel="multiImagesHots" class="hot_add hotimgs" title="多图热区"><span>多图</span></li>
-        <li rel="linkHots" class="hot_add hotlink" title="链接热区"><span>链接</span></li>
-        <li rel="videoHots" class="hot_add hotvideo" title="视频热区"><span>视频</span></li>
-        <li rel="audioHots" class="hot_add hotaudio" title="音频热区"><span>音频</span></li>
-        <li rel="seqImagesHots" class="hot_add hotseq" title="序列图热区"><span>序列图</span></li>
-        <li rel="mapHots" class="hot_add hotmap" title="地图热区"><span>地图</span></li>
+    {% for hotdef in hotdefs %}
+        <li rel="{{ hotdef.name }}" class="hot_add {% if hotdef.class is defined %}{{ hotdef.class }}{% endif %}" title="{{ hotdef.label }}"><span>{{ hotdef.span }}</span></li>
+    {% endfor %}
     </ul>
     
     <div class="page_canvas_ruler">

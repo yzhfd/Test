@@ -7,16 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 class HotContainer
 {
     public static $hotsDefs = array(
-            1 => array('name' => 'furnitureDetailHots',  'label' => '单品家具展示热区'),
-            2 => array('name' => 'slideLayerHots', 'label' => '滑动图层热区'),
-            3 => array('name' => 'furnitureSkinnableHots', 'label' => '家具换肤热区'),
-            4 => array('name' => 'singleImageHots', 'label' => '单图热区'),
-            5 => array('name' => 'multiImagesHots', 'label' => '多图热区'),
-            6 => array('name' => 'linkHots', 'label' => '链接热区'),
-            7 => array('name' => 'videoHots', 'label' => '视频热区'),
-            8 => array('name' => 'audioHots', 'label' => '音频热区'),
-            9 => array('name' => 'seqImagesHots', 'label' => '序列图热区'),
-            10 => array('name' => 'mapHots', 'label' => '地图热区'),
+            1 => array('name' => 'furnitureDetailHots',  'label' => '单品家具展示热区', 'span' => '单品家具'),
+            2 => array('name' => 'slideLayerHots', 'label' => '滑动图层热区', 'span' => '滑动图层'),
+            3 => array('name' => 'furnitureSkinnableHots', 'label' => '家具换肤热区', 'span' => '家具换肤'),
+            4 => array('name' => 'singleImageHots', 'label' => '单图热区', 'span' => '单图', 'class' => 'hotsimg'),
+            5 => array('name' => 'multiImagesHots', 'label' => '多图热区', 'span' => '多图', 'class' => 'hotimgs'),
+            6 => array('name' => 'linkHots', 'label' => '链接热区', 'span' => '链接', 'class' => 'hotlink'),
+            7 => array('name' => 'videoHots', 'label' => '视频热区', 'span' => '视频', 'class' => 'hotvideo'),
+            8 => array('name' => 'audioHots', 'label' => '音频热区', 'span' => '音频', 'class' => 'hotaudio'),
+            9 => array('name' => 'seqImagesHots', 'label' => '序列图热区', 'span' => '序列图', 'class' => 'hotseq'),
+            10 => array('name' => 'mapHots', 'label' => '地图热区', 'span' => '地图', 'class' => 'hotmap'),
     );
     
     private $hotCollections;
