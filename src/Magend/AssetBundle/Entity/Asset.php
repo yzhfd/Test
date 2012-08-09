@@ -259,6 +259,27 @@ class Asset
     {
         $this->seq = $seq;
     }
+    
+    public function isImage()
+    {
+        $nameArr = explode('.', $this->getResource());
+        $ext = array_pop($nameArr);
+        return in_array($ext, array('jpg', 'jpeg', 'png'));
+    }
+    
+    public function isAudio()
+    {
+        $nameArr = explode('.', $this->getResource());
+        $ext = array_pop($nameArr);
+        return in_array($ext, array('mp3', 'wav'));
+    }
+    
+    public function isVideo()
+    {
+        $nameArr = explode('.', $this->getResource());
+        $ext = array_pop($nameArr);
+        return in_array($ext, array('mp4', 'avi'));
+    }
 
     /**
      * Set createdAt

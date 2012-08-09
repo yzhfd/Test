@@ -91,10 +91,8 @@ class IssueController extends Controller
         file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
         
         $zipName = $this->compressIssueAssets($issue);
-        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
             'msg' => '发布成功',
-            'publishedAt' => $pubAt,
             'zip' => $zipName
         )));
     }
@@ -149,6 +147,8 @@ class IssueController extends Controller
         file_put_contents($publishDir . "issue$id.xml", $response->getContent());
         
         $this->copyResource($id, $issue->getAudio());
+        $this->copyResource($id, $issue->getVideo());
+        $this->copyResource($id, $issue->getPoster());
         $this->copyResource($id, $issue->getPortraitCover());
         $this->copyResource($id, $issue->getLandscapeCover());
         
@@ -160,7 +160,7 @@ class IssueController extends Controller
             file_put_contents($publishDir . "article$aid.xml", $response->getContent());
             
             $article->getAudio();
-            $pages = array_merge($article->getPages(), $article->getInfoPages(), $article->getStructurePages());
+            $pages = $article->getPages();
             if (empty($pages)) continue;
             
             foreach ($pages as $page) {
@@ -236,7 +236,6 @@ class IssueController extends Controller
     {
         $om = $this->get('magend.output_manager');
         $om->outputMagazinesXML();
-        $om->outputMagazineXML($issue->getMagzine()->getId());
     }
     
     /**

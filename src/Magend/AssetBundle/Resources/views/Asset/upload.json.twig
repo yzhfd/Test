@@ -1,2 +1,2 @@
-{% set ret = { 'asset':asset|apply_filter('landscapeThumb'), 'resource':resource, 'delUrl': delUrl } %}
+{% set ret = { 'asset':(asset is not empty) ? asset|apply_filter('landscapeThumb') : null, 'resource':resource, 'delUrl': delUrl } %}
 {{ ret|json_encode()|raw }}

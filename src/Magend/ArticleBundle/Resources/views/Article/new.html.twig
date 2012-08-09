@@ -13,7 +13,7 @@
 {% block main %}
 
 <div style="margin-bottom:10px;">
-    {% if prev is defined and prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn btn-info">上一篇</a><p/>{% endif %}
+    {% if prev is defined and prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn btn-info">上一篇</a>{% endif %}
     {% if prev is defined and next is not null %}<a href="{{ path('article_edit', { 'id':next }) }}" class="btn btn-info">下一篇</a>{% endif %}
 </div>
 

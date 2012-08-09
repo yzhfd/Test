@@ -38,7 +38,7 @@ class AssetController extends Controller
         $file->move($rootDir . '/../web/uploads/', $fileName);
         
         return array(
-            'asset' => "uploads/$fileName",
+            'asset' => in_array($ext, array('jpg', 'png', 'jpeg')) ? "uploads/$fileName" : null,
             'resource' => $fileName,
             'delUrl' => $this->generateUrl('asset_file_del', array('file' => $fileName))
         );

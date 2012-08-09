@@ -38,18 +38,37 @@ class HotAttrContainer
                 'imgAssets' => array('type' => 'assets', 'options' => array('label' => '图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             4 => array(
+                'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '嵌入', 1 => '点击全屏浏览'))),
+                'imgAssets' => array('type' => 'assets', 'options' => array('label' => '单张图片', 'type' => 'asset', 'nb_max' => 1, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             5 => array(
+                'imgAssets' => array('type' => 'assets', 'options' => array('label' => '多张图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             6 => array(
+                'subtype' => array('type' => 'choice', 'options' => array('label' => '链接方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '内部页面', 1 => '外部链接'))),
+                'link' => array('type' => null, 'options' => array('label' => '地址', 'required' => false)),
             ),
             7 => array(
+                'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '嵌入', 1 => '点击全屏浏览'))),
+                'videoAssets' => array('type' => 'assets', 'options' => array('label' => '视频', 'type' => 'asset', 'nb_max' => 1, 'file_note' => '视频文件', 'file_formats' => 'mp4,avi', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             8 => array(
+                'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '自动播放', 1 => '手动播放'))),
+                'audioAssets' => array('type' => 'assets', 'options' => array('label' => '音频', 'type' => 'asset', 'nb_max' => 1, 'file_note' => '音频文件', 'file_formats' => 'mp3,wav', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             9 => array(
+                'autoplay' => array('type' => 'checkbox', 'options' => array('label' => '自动播放')),
+                'gravity' => array('type' => 'checkbox', 'options' => array('label' => '重力感应')),
+                'speed' => array('type' => 'choice', 'options' => array('label' => '滑动速度', 'choices' => array(1, 2, 3), 'attr' => array('class' => 'span1'))),
+                'bar' => array('type' => 'checkbox', 'options' => array('label' => '显示控制条')),
+                'imgAssets' => array('type' => 'assets', 'options' => array('label' => '序列图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             10 => array(
+                'address' => array('type' => null, 'options' => array('label' => '地址', 'required' => false)),
+                'lat' => array('type' => null, 'options' => array('label' => '经度', 'required' => false)),
+                'lng' => array('type' => null, 'options' => array('label' => '纬度', 'required' => false)),
+                'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '全屏显示', 1 => '窗口显示'))),
+                'btnAssets' => array('type' => 'assets', 'options' => array('label' => '开、关按钮', 'type' => 'asset', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
     );
     
