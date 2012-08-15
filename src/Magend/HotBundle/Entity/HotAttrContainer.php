@@ -21,10 +21,11 @@ class HotAttrContainer
     public static $attrsDefs = array(
             1 => array(
                 'interaction' => array('type' => null, 'options' => array('label' => '互动效果', 'required' => false)),
-                'name' => array('type' => null, 'options' => array('label' => '单品名称', 'required' => false)),
-                'price' => array('type' => null, 'options' => array('label' => '价格', 'required' => false)),
-                'material' => array('type' => null, 'options' => array('label' => '材质', 'required' => false)),
+                'name' => array('type' => null, 'options' => array('label' => '名称', 'required' => false)),
+                'material' => array('type' => null, 'options' => array('label' => '型号', 'required' => false)),
+                'color' => array('type' => null, 'options' => array('label' => '颜色', 'required' => false)),
                 'specs' => array('type' => null, 'options' => array('label' => '规格', 'required' => false)),
+                'price' => array('type' => null, 'options' => array('label' => '价格', 'required' => false)),
                 'furnitureAssets' => array('type' => 'assets', 'options' => array('label' => '家具图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             2 => array(
