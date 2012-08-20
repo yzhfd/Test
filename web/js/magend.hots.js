@@ -188,7 +188,6 @@ var HotView = Backbone.View.extend({
     	
     	hotView = this; // used to render
     	var hotForm = $('#' + hotModel.cid + '_form');
-    	var hotFormParent = hotForm.parent();
     	hotForm.extractor({
     		show:'fade', zIndex:2000, title:'',
     		width: 'auto', height: 'auto',
@@ -241,6 +240,7 @@ var HotView = Backbone.View.extend({
     	});
     	this.model.rendered = false;
     	this.model.layoutChanged = true;
+    	$('#' + this.model.cid + '_form').remove();
     },
     render: function () {
         var self = this;
