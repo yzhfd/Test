@@ -30,7 +30,7 @@ label.hidelabel { display:none !important; }
 .newPages li.page { margin-top: 10px; border: 2px solid #57A000; }
 .newPages li.page.unsynced { border: 2px solid yellow; }
 .newPages li.page.syncfail { border: 2px solid red !important; }
-.assets-panel { width: 340px; height: 150px; background-color: #333; overflow: auto; clear:both; }
+.assets-panel { height: 150px; background-color: #333; overflow: auto; clear:both; }
 .assets-panel li.hotimg { position: relative;  float: left; margin: 10px 0 0 18px; border: 2px solid #57A000; }
 .assets-panel li.hotimg.unsynced { border: 2px solid yellow; }
 .assets-panel li.hotimg.syncfail { border: 2px solid red !important; }
