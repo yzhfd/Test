@@ -263,6 +263,18 @@ class Article
         $this->institutes = new ArrayCollection();
     }
     
+    public function clonePages()
+    {
+        $pages = $this->getPages();
+        $this->pages = new ArrayCollection();
+        foreach ($pages as $page) {
+            $clonePage = clone $page;
+            $clonePage->cloneHots();
+            $this->pages->add($clonePage);
+            $clonePage->setArticle($this);
+        }
+    }
+    
     public static function getTypeList()
     {
         $types = array();
@@ -280,6 +292,11 @@ class Article
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function setId($id)
+    {
+        $this->id = $id;
     }
     
     /**
@@ -597,6 +614,11 @@ class Article
         $this->issues = new ArrayCollection(array($issue));
     }
     
+    public function getPageCollection()
+    {
+        return $this->pages;
+    }
+    
     /**
      * 
      * @return array - pages ordered by pageIds
@@ -729,9 +751,9 @@ class Article
     /**
      * Add page
      *
-     * @param Magend\PageBundle\Entity\Page $page
+     * @param Page $page
      */
-    public function addPage(\Magend\PageBundle\Entity\Page $page)
+    public function addPage(Page $page)
     {
         $this->pages[] = $page;
     }

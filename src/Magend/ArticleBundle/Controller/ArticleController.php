@@ -35,6 +35,33 @@ class ArticleController extends Controller
     }
     
     /**
+     * Clone the article
+     * 
+     * @Route("/{id}/clone", name="article_clone", requirements={"id" = "\d+"}) 
+     */
+    public function cloneAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $article = $this->getArticleById($id);
+        $cloneArticle = clone $article;
+        $cloneArticle->setId(null);
+        $cloneArticle->clonePages();
+        $em->persist($cloneArticle);
+        $em->flush();
+        
+        $pages = $cloneArticle->getPageCollection();
+        $pageIds = array();
+        foreach ($pages as $page) {
+            $pageIds[] = $page->getId();
+        }
+        $cloneArticle->setPageIds($pageIds);
+        $article->getIssue()->addArticle($cloneArticle);
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $article->getIssue()->getId())));
+    }
+    
+    /**
      * Set the article as copyright
      * 
      * @Route("/{id}/copyright", name="article_copyright", requirements={"id" = "\d+"})

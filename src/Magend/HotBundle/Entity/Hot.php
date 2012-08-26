@@ -165,6 +165,17 @@ class Hot
         $this->attrContainer = new HotAttrContainer();
     }
     
+    public function cloneAssets()
+    {
+        $assets = $this->getAssets();
+        $this->assets = new ArrayCollection();
+        foreach ($assets as $asset) {
+            $cloneAsset = clone $asset;
+            $this->assets->add($cloneAsset);
+            $cloneAsset->setHot($this);
+        }
+    }
+    
     /**
      * __construct won't be called on load
      *

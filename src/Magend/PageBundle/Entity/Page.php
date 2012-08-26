@@ -157,6 +157,18 @@ class Page
         $this->hotContainer = new HotContainer();
     }
     
+    public function cloneHots()
+    {
+        $hots = $this->getHots();
+        $this->hots = new ArrayCollection();
+        foreach ($hots as $hot) {
+            $cloneHot = clone $hot;
+            $cloneHot->cloneAssets();
+            $this->hots->add($cloneHot);
+            $cloneHot->setPage($this);
+        }        
+    }
+    
     /**
      * 
      * @ORM\PostLoad()
@@ -211,8 +223,9 @@ class Page
      */
     public function removeImgs()
     {
-        $this->unlinkLandscapeImg();
-        $this->unlinkPortraitImg();
+        // no delete because of clone
+        // $this->unlinkLandscapeImg();
+        // $this->unlinkPortraitImg();
     }
 
     /**

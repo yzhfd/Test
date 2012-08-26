@@ -23,8 +23,6 @@ use Magend\IssueBundle\Util\SimpleImage;
 class PageController extends Controller
 {
     
-    
-    
     // @todo DRY create thumbnail code
     /**
      * 

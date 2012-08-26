@@ -145,9 +145,11 @@ class Asset
      */
     public function postRemove()
     {
+        // no delete because of clone
+        /*
         if ($this->getResource()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getResource());
-        }
+        }*/
     }
 
     /**
