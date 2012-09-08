@@ -3,7 +3,7 @@
 {% block contentTitle %}试用用户详情{% endblock %}
 
 {% block main %}
-    <table class="bordered-table zebra-striped">
+    <table class="table table-bordered table-striped">
         <tbody>
             <tr>
                 <th width="80">企业名称</th>
@@ -42,8 +42,8 @@
     
     <div class="well">
         <a class="btn" href="{{ path('corp_user_list') }}">返回列表</a>
-        <a class="info btn" href="{{ path('admin_magend_user_user_edit', { 'id':user.id }) }}">编辑</a>
-        {% if not user.enabled %}<a class="primary btn" href="{{ path('corp_user_enable', { 'id':user.id }) }}">审核通过</a>{% endif %}
-        <a rel="confirm" title="删除用户" class="danger btn" style="float:right;" href="{{ path('corp_user_del', { 'id':user.id }) }}">删除</a>
+        <a class="btn-info btn" href="{{ path('admin_magend_user_user_edit', { 'id':user.id }) }}">编辑</a>
+        {% if not user.enabled %}<a class="btn-primary btn" href="{{ path('corp_user_enable', { 'id':user.id }) }}">审核通过</a>{% endif %}
+        <a rel="confirm" title="删除用户" class="btn-danger btn" style="float:right;" href="{{ path('corp_user_del', { 'id':user.id }) }}">删除</a>
     </div>
 {% endblock %}

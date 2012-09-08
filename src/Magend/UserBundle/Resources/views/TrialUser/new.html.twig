@@ -2,37 +2,27 @@
 
 {% block main %}
 
-<form id="corp_trial_form" style="width:680px; margin-top:10px;" action="{{ path('trial_user_new') }}" method="post" {{ form_enctype(form) }}>
-
-    <div class="clearfix">
+<form id="corp_trial_form" style="width:680px;" action="{{ path('trial_user_new') }}" method="post" {{ form_enctype(form) }}>
+    <div style="margin:10px 0 0 20px;">
         {{ form_label(form.username) }}
-        <div class="input">{{ form_errors(form.username) }}{{ form_widget(form.username, { 'attr':{'class':'middle'} }) }}</div>
-    </div>
-    
-    <div class="clearfix">
+        {{ form_errors(form.username) }}{{ form_widget(form.username, { 'attr':{'class':'middle'} }) }}
+        
         {{ form_label(form.email) }}
-        <div class="input">{{ form_errors(form.email) }}{{ form_widget(form.email, { 'attr':{'class':'middle'} }) }}</div>
-    </div>
-    
-    <div class="clearfix">
+        {{ form_errors(form.email) }}{{ form_widget(form.email, { 'attr':{'class':'middle'} }) }}
+        
         {{ form_label(form.nickname) }}
-        <div class="input">{{ form_errors(form.nickname) }}{{ form_widget(form.nickname, { 'attr':{'class':'middle'} }) }}</div>
-    </div>
-    
-    <div class="clearfix">
+        {{ form_errors(form.nickname) }}{{ form_widget(form.nickname, { 'attr':{'class':'middle'} }) }}
+        
         {{ form_label(form.plainPassword.first, '密码') }}
-        <div class="input">{{ form_errors(form.plainPassword.first) }}{{ form_widget(form.plainPassword.first, { 'attr':{'class':'span3'} }) }}</div>
-    </div>
-    
-    <div class="clearfix">
+        {{ form_errors(form.plainPassword.first) }}{{ form_widget(form.plainPassword.first, { 'attr':{'class':'span3'} }) }}
+        
         {{ form_label(form.plainPassword.second, '密码确认') }}
-        <div class="input">{{ form_errors(form.plainPassword.second) }}{{ form_widget(form.plainPassword.second, { 'attr':{'class':'span3'} }) }}</div>
+        {{ form_errors(form.plainPassword.second) }}{{ form_widget(form.plainPassword.second, { 'attr':{'class':'span3'} }) }}
+        
+        {{ form_widget(form._token) }}
     </div>
     
-    {{ form_widget(form._token) }}
-    
-    <div class="actions"><button class="btn primary" type="submit">提交</button></div>
-    
+    <div class="form-actions"><button class="btn btn-primary" type="submit">提交</button></div>
 </form>
 
 {% endblock %}
