@@ -102,7 +102,7 @@ var article_new = function () {
 	$('li.page').live('dblclick', function(){
 		var pageId = $(this).attr('rel');
 		if (pageId) {
-			var editUrl = Routing.generate('page_edit', {id:pageId});
+			var editUrl = Routing.generate('page_edit', { id:pageId });
 			document.location = editUrl;
 		}
 	});
@@ -113,18 +113,30 @@ var article_new = function () {
 		var when = $.when({});
 		var lipages = pages.find('li.page');
 		var articleId = $('#newPagesTab').attr('rel');
-		var formData = articleId ? { articleId:articleId }: null;
+		var formData = articleId ? { articleId:articleId }: {};
 		// @todo pass page id for images in other modes
 		
 		lipages.each(function (index, lipage) {
 			lipage = $(lipage);
+			if (lipage.is(':hidden')) return;
 			var file = lipage.data('file');
-			if (!file) return;
+			if (!file) {
+				var seq = lipage.attr('seq');
+				if (index != seq) {
+					when = when.pipe(function(){
+						return $.ajax({
+							url: Routing.generate('page_seq', { id:lipage.attr('rel'), 'seq':index })
+						});
+					});
+				}
+				return;
+			}
 			
 			when = when.pipe(function(){
 				lipage.overlay('loading');
 				
 				var uploader = $('<div/>');
+				formData['seq'] = index;
 				return uploader.fileupload({
 					paramName: 'file',
 					formData: formData,
@@ -141,6 +153,7 @@ var article_new = function () {
 						lipage.find('img').attr('src', result.page);
 						lipage.removeData('file');
 						lipage.attr('rel', result.id);
+						lipage.attr('seq', result.seq);
 						lipage.find('.pagedel').attr('href', result.delUrl);
 					},
 					error: function (result) {
@@ -153,7 +166,7 @@ var article_new = function () {
 					e.stopPropagation();
 					e.preventDefault();
 				}).fileupload('send', { files:[file] }); // only send one file
-			});
+			}); // end of when.pipe
 		});
 		when.done( dfd.resolve ).fail( dfd.reject );
 		

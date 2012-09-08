@@ -618,19 +618,9 @@ class Article
         $this->issues = new ArrayCollection(array($issue));
     }
     
-    public function getPageCollection()
-    {
-        return $this->pages;
-    }
-    
-    /**
-     * 
-     * @todo which type
-     * @return array
-     */ 
     public function getPages()
     {
-        return $pages;
+        return $this->pages;
     }
     
     public function setPages($pages)

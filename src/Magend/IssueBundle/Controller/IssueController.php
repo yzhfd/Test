@@ -759,7 +759,6 @@ class IssueController extends Controller
     /**
      * 
      * @Route("/{id}/layout", name="issue_layout", requirements={"id"="\d+"}, defaults={"_format"="json"})
-     * 
      */
     public function layoutAction($id)
     {
@@ -782,17 +781,20 @@ class IssueController extends Controller
         
         foreach ($articles as $articleId=>$pageIds) {
             if (isset($arts[$articleId])) {
-                if ($pageIds != $arts[$articleId]->getPageIds()) {
-                    $arts[$articleId]->setPageIds($pageIds);
+                $pages = $arts[$articleId]->getPages();
+                $seq = 1;
+                foreach ($pageIds as $pageId) {
+                    $pages[$pageId]->setSeq($seq);
+                    ++$seq;
                 }
             }
         }
-        
         $articleIds = $req->get('articleIds');
         if ($issue->getArticleIds() != $articleIds) {
             $issue->setArticleIds($articleIds);
         }
         $em->flush();
+        
         return new Response('{ "success":1 }');
     }
     

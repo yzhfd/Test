@@ -2,6 +2,7 @@
 
 namespace Magend\PageBundle\Entity;
 
+use Exception;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Magend\HotBundle\Entity\HotContainer;
@@ -86,5 +87,39 @@ class PageManager
         }
         
         $em->flush();
+    }
+    
+    public function getNextPage($page)
+    {
+        $em = $this->container->get('doctrine.orm.entity_manager');
+        $dql = 'SELECT p FROM MagendPageBundle:Page p WHERE p.seq > :seq AND p.article = :article ORDER BY p.seq ASC';
+        $q = $em->createQuery($dql)
+                ->setParameter('seq', $page->getSeq())
+                ->setParameter('article', $page->getArticle())
+                ->setMaxResults(1);
+        try {
+            $next = $q->getSingleResult();
+        } catch (Exception $e) {
+            $next = null;
+        }
+        
+        return $next;
+    }
+    
+    public function getPrevPage($page)
+    {
+        $em = $this->container->get('doctrine.orm.entity_manager');
+        $dql = 'SELECT p FROM MagendPageBundle:Page p WHERE p.seq < :seq AND p.article = :article ORDER BY p.seq DESC';
+        $q = $em->createQuery($dql)
+                ->setParameter('seq', $page->getSeq())
+                ->setParameter('article', $page->getArticle())
+                ->setMaxResults(1);
+        try {
+            $prev = $q->getSingleResult();
+        } catch (Exception $e) {
+            $prev = null;
+        }
+        
+        return $prev;
     }
 }

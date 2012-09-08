@@ -23,7 +23,7 @@ class Page
     const TYPE_MAIN      = 0;    
     const TYPE_INFO      = 1;    
     const TYPE_STRUCTURE = 2;
-
+    
     /**
      * @var integer $id
      *

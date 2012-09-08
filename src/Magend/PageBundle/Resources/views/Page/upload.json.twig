@@ -1,2 +1,2 @@
-{% set ret = { 'page':page|apply_filter('landscapeThumb'), 'id':id, 'delUrl': delUrl } %}
+{% set ret = { 'page':page|apply_filter('landscapeThumb'), 'id':id, 'seq':seq, 'delUrl': delUrl } %}
 {{ ret|json_encode()|raw }}

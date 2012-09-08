@@ -18,36 +18,6 @@ use Magend\HotBundle\Entity\Hot;
 class HotController extends Controller
 {
     /**
-     * @Route("/test", name="hot_test")
-     * @Template()
-     */
-    public function testAction()
-    {
-        $hot = new Hot();
-        $formBuilder = $this->createFormBuilder($hot);
-        // $vars = get_object_vars($hot->stdProperty);
-        // print_r($vars);exit;
-        $form = $formBuilder->add('type', null, array('label' => 'type'))
-                            ->add('mode', null, array('label' => 'mode', 'attr' => array('class' => 'fk')))
-                            ->add('stdProperty', 'dynamic', array('label' => 'dynamic'))
-                            ->getForm();
-        // $form = $this->createForm(new DynamicType(), $hot->stdProperty);
-        
-        $req = $this->getRequest();
-        if ($req->getMethod() == 'POST') {
-            $form->bindRequest($req);
-            if ($form->isValid()) {
-                echo 'yes';exit;
-                // return $this->redirect($this->generateUrl('magzine_list'));
-            }
-        }
-        
-        return array(
-                'form' => $form->createView()
-        );
-    }
-    
-    /**
      * Order hot's assets and delete ones not exist any longer
      * 
      * @Route("/{id}/order_assets", name="hot_order_assets", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});

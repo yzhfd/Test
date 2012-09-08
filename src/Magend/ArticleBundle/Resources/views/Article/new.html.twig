@@ -13,8 +13,12 @@
 {% block main %}
 
 <div style="margin-bottom:10px;">
-    {% if prev is defined and prev is not null %}<a href="{{ path('article_edit', { 'id':prev }) }}" class="btn btn-info">上一篇</a>{% endif %}
-    {% if prev is defined and next is not null %}<a href="{{ path('article_edit', { 'id':next }) }}" class="btn btn-info">下一篇</a>{% endif %}
+    {% if prev is defined and prev is not null %}
+        <a href="{{ path('article_edit', { 'id':prev }) }}" class="btn btn-info">上一篇</a>
+    {% endif %}
+    {% if prev is defined and next is not null %}
+        <a href="{{ path('article_edit', { 'id':next }) }}" class="btn btn-info">下一篇</a>
+    {% endif %}
 </div>
 
 <ul class="nav nav-tabs">
@@ -34,10 +38,16 @@
         </div>
         <div class="well"><button rel="0" data-loading-text="保存中..." class="btn btn-info submit_pages">保存</button></div>
         <ol class="pages" rel="{{ path('page_upload', {'type':0}) }}">
-            <li style="display:none" class="page"><a href="#" title=""><img src="http://placehold.it/128x96" /></a></li><!-- not empty to make sortable no wrong -->
+            <li style="display:none" class="page">
+                <a href="#" title="">
+                <img src="http://placehold.it/128x96" /></a>
+            </li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
                 {% for page in article.pages %}
-                <li class="page" rel="{{ page.id }}"><a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a><a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a></li>
+                <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
+                    <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
+                    <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
+                </li>
                 {% endfor %}
             {% endif %}
         </ol>
