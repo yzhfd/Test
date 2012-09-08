@@ -5,37 +5,7 @@
 {% form_theme form '::fields.html.twig' %}
 
 {% block main %}
-    
-    <div class="alert-message block-message info">
-        <a href="#" class="close">×</a>
-        <strong>提示：</strong>
-        <p>期刊号一般为1101, 11A, 10B，将会决定期刊呈现在客户端的顺序</p>
-    </div>
-    
     <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-        <div class="clearfix">
-            {{ form_label(form.title, '杂志选择') }}
-            <div class="input"><select id="magsel" class="medium" name="magzineId">
-                {% for magzine in magzines %}
-                <option value="{{ magzine.id }}" {% if issue.magzine is not null and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
-                {% endfor %}            
-            </select></div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.year, '年') }}
-            <div class="input">{{ form_errors(form.year) }}{{ form_widget(form.year, { 'attr':{'class':'small'} }) }}</div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.yearIssueNo, '年期数') }}
-            <div class="input">{{ form_errors(form.yearIssueNo) }}{{ form_widget(form.yearIssueNo, { 'attr':{'class':'small'}, 'id':'yearIssueNo' }) }}</div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.totalIssueNo, '总期数') }}
-            <div class="input">{{ form_errors(form.totalIssueNo) }}{{ form_widget(form.totalIssueNo, { 'attr':{'class':'small'}, 'id':'totalIssueNo' }) }}</div>
-        </div>
         
         <div class="clearfix">
             {{ form_label(form.title, '标题') }}
@@ -43,65 +13,35 @@
         </div>
         
         <div class="clearfix">
-            {{ form_label(form.publishedAt, '出版日期') }}
-            <div class="input">{{ form_errors(form.publishedAt) }}{{ form_widget(form.publishedAt, { 'attr':{'class':'small'}, 'id':'publishedAt' }) }}</div>
+            {{ form_label(form.landscapeCoverFile, '横屏封面') }}
+            <div class="input">{{ form_errors(form.landscapeCoverFile) }}{{ form_widget(form.landscapeCoverFile, { 'attr':{'class':'span6'} }) }}</div>
         </div>
         
         <div class="clearfix">
-            {{ form_label(form.priceLevel, '价格') }}
-            <div class="input">{{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}</div>
+            {{ form_label(form.portraitCoverFile, '竖屏封面') }}
+            <div class="input">{{ form_errors(form.portraitCoverFile) }}{{ form_widget(form.portraitCoverFile, { 'attr':{'class':'span6'} }) }}</div>
         </div>
         
         <div class="clearfix">
-            {{ form_label(form.iapId, 'AppStore应用ID') }}
-            <div class="input">{{ form_errors(form.iapId) }}{{ form_widget(form.iapId) }}</div>
+            {{ form_label(form.posterFile, '宣传图片') }}
+            <div class="input">{{ form_errors(form.posterFile) }}{{ form_widget(form.posterFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.audioFile, '背景音乐') }}
+            <div class="input">{{ form_errors(form.audioFile) }}{{ form_widget(form.audioFile, { 'attr':{'class':'span6'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.videoFile, '开篇视频') }}
+            <div class="input">{{ form_errors(form.videoFile) }}{{ form_widget(form.videoFile, { 'attr':{'class':'span6'} }) }}</div>
         </div>
         
         {{ form_rest(form) }}
         
         <div class="actions">
-            <button class="btn primary" type="submit" data-loading-text="提交中...">提交</button>
+            <button class="btn btn-primary" type="submit" data-loading-text="提交中...">提交</button>
             <a style="display:none;" id="issue_next" class="btn" href="{% if issue.id is not null %}{{ url('issue_editor', { 'id':issue.id }) }}{% else %}#{% endif %}">创建编排文章</a>
         </div>
     </form>
-    
-    {% if issue.id is empty %}
-    <div class="alert-message block-message error">
-        <a href="#" class="close">×</a>
-        <strong>提示：</strong><p>请先提交基本信息</p>
-    </div>
-    {% endif %}
-    
-    <div>拖拽图片上传封面</div>
-    <p/>
-    <div id="landscape-cover" class="issueImg {% if issue.landscapeCover is null %}noImg{% endif %}" rel="landscapeCover" style="float: left; background-color: #CCC; border: 1px solid #777; width: 160px; height: 120px;">
-        <a href="{{ path('issue_imgDel') }}" class="pagedel">
-        <a title="横版封面" href="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% else %}#{% endif %}" rel="colorbox"><img width="160" height="120" src="{% if issue.landscapeCover is not null %}{{ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}" /></a>
-    </div>
-    <div id="portrait-cover" class="issueImg {% if issue.portraitCover is null %}noImg{% endif %}" rel="portraitCover" style="float: left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
-        <a href="{{ path('issue_imgDel') }}" class="pagedel">
-        <a title="竖版封面" href="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.portraitCover is not null %}{{ asset('uploads/' ~ issue.portraitCover) }}{% endif %}" /></a>
-    </div>
-    
-    <p style="clear:both;"></p>
-    
-    <p>预览图</p>
-    <div id="preview" class="issueImg {% if issue.preview is null %}noImg{% endif %}" rel="preview" style="float:left; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
-        <a href="{{ path('issue_imgDel') }}" class="pagedel">
-        <a title="预览图" href="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.preview is not null %}{{ asset('uploads/' ~ issue.preview) }}{% endif %}" /></a>
-    </div> 
-    
-    <div id="en-preview" class="issueImg {% if issue.enPreview is null %}noImg{% endif %}" rel="enPreview" style="float:left; margin-left: 20px; background-color: #CCC; border: 1px solid #777; width: 120px; height: 160px;">
-        <a href="{{ path('issue_imgDel') }}" class="pagedel">
-        <a title="英文预览图" href="{% if issue.enPreview is not null %}{{ asset('uploads/' ~ issue.enPreview) }}{% else %}#{% endif %}" rel="colorbox"><img width="120" height="160" src="{% if issue.enPreview is not null %}{{ asset('uploads/' ~ issue.enPreview) }}{% endif %}" /></a>
-    </div>
-    
-    <p style="clear:both;"></p>
-    
-    <div id="attachAudio">
-        拖拽音频文件到这里
-    </div>
-    <p/>
-    音频文件：<a id="attachedAudio" rel="{% if issue.id %}{{ issue.id }}{% else %}#{% endif %}" target="_blank" href="{% if issue.audio %}{{ asset('uploads/' ~ issue.audio) }}{% else %}#{% endif %}">{{ issue.audioName|default('尚未上传') }}</a>
-
 {% endblock %}

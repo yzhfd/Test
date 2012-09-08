@@ -5,12 +5,7 @@ The credentials were changed from another session.: 会话失效
 Bad credentials: 帐号无效
 
 article:
-    0: 广告
-    1: 封面
-    2: 目录
-    3: 版权页
-    4: 项目介绍
-    5: 机构介绍
-    6: 人物访谈
-    7: 建筑评论
-    8: 其他
+    0: 普通
+    1: 目录
+    2: 套系
+    3: 功能

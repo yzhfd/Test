@@ -18,15 +18,10 @@ USE Magend\PageBundle\Entity\Page;
  */
 class Article
 {
-    const TYPE_ADS    = 0;
-    const TYPE_COVER  = 1;
-    const TYPE_INDEX  = 2;
-    const TYPE_RIGHT  = 3;
-    const TYPE_PROJ   = 4;
-    const TYPE_INST   = 5;
-    const TYPE_PEOPLE = 6;
-    const TYPE_ARCTH  = 7;
-    const TYPE_ELSE   = 8;
+    const TYPE_COMMON = 0;
+    const TYPE_INDEX  = 1;
+    const TYPE_SUITE  = 2;
+    const TYPE_FUNC   = 3;
     
     /**
      * @var integer $id
@@ -145,27 +140,6 @@ class Article
     private $pageIds;
     
     /**
-     * Comma separated text of page ids
-     * Pages of TYPE_INFO
-     * 
-     * @var string $infoPageIds
-     *
-     * @ORM\Column(name="infopage_ids", type="text", nullable=true)
-     */
-    private $infoPageIds;
-    
-    /**
-     * Comma separated text of page ids
-     * Pages of TYPE_STRUCTURE
-     * 
-     * @var string $structurePageIds
-     *
-     * @ORM\Column(name="structurepage_ids", type="text", nullable=true)
-     */
-    private $structurePageIds;
-    
-    /**
-     * Include all kinds of pages: main, info and structure
      * 
      * @var ArrayCollection
      * 
@@ -288,6 +262,27 @@ class Article
         $this->issues = new ArrayCollection();
         $this->institutes = new ArrayCollection();
     }
+    
+    public function clonePages()
+    {
+        $pages = $this->getPages();
+        $this->pages = new ArrayCollection();
+        foreach ($pages as $page) {
+            $clonePage = clone $page;
+            $clonePage->cloneHots();
+            $this->pages->add($clonePage);
+            $clonePage->setArticle($this);
+        }
+    }
+    
+    public static function getTypeList()
+    {
+        $types = array();
+        for ($i=0; $i<4; ++$i) {
+            $types[] = "article.$i";
+        }
+        return $types;
+    }
 
     /**
      * Get id
@@ -297,6 +292,11 @@ class Article
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function setId($id)
+    {
+        $this->id = $id;
     }
     
     /**
@@ -334,55 +334,22 @@ class Article
      * @param mixed $pageIds
      * @param int $pageType
      */
-    public function setPageIds($pageIds, $pageType = Page::TYPE_MAIN)
+    public function setPageIds($pageIds)
     {
         if (is_array($pageIds)) {
             $pageIds = implode(',', $pageIds);
         }
         
-        if ($pageType == Page::TYPE_MAIN) {
-            $this->pageIds = $pageIds;
-        } else if ($pageType == Page::TYPE_INFO) {
-            $this->infoPageIds = $pageIds;
-        } else if ($pageType == Page::TYPE_STRUCTURE) {
-            $this->structurePageIds = $pageIds;
-        }
+        $this->pageIds = $pageIds;
     }
     
     /**
      * 
-     * @param int $pageType
      */
-    public function getPageIds($pageType = Page::TYPE_MAIN)
+    public function getPageIds()
     {
-        $pageIds = $this->pageIds;
-        if ($pageType == Page::TYPE_INFO) {
-            $pageIds = $this->infoPageIds;
-        } else if ($pageType == Page::TYPE_STRUCTURE) {
-            $pageIds = $this->structurePageIds;
-        }
-        
+        $pageIds = $this->pageIds;        
         return $pageIds ? explode(',', trim($pageIds, ',')) : array();
-    }
-    
-    public function setInfoPageIds($pageIds)
-    {
-        $this->setPageIds($pageIds, Page::TYPE_INFO);
-    }
-    
-    public function getInfoPageIds()
-    {
-        return $this->getPageIds(Page::TYPE_INFO);
-    }
-    
-    public function setStructurePageIds($pageIds)
-    {
-        $this->setPageIds($pageIds, Page::TYPE_STRUCTURE);
-    }
-    
-    public function getStructurePageIds()
-    {
-        return $this->getPageIds(Page::TYPE_STRUCTURE);
     }
     
     /**
@@ -647,31 +614,25 @@ class Article
         $this->issues = new ArrayCollection(array($issue));
     }
     
+    public function getPageCollection()
+    {
+        return $this->pages;
+    }
+    
     /**
      * 
-     * @param int $pageType
      * @return array - pages ordered by pageIds
      */ 
-    public function getPages($pageType = Page::TYPE_MAIN)
+    public function getPages()
     {
         $pages = array();
-        $pageIds = $this->getPageIds($pageType);
+        $pageIds = $this->getPageIds();
         foreach ($pageIds as $pageId) {
             if (!empty($this->pages[$pageId])) {
                 $pages[$pageId] = $this->pages[$pageId];
             }
         }
         return $pages;
-    }
-    
-    public function getInfoPages()
-    {
-        return $this->getPages(Page::TYPE_INFO);
-    }
-    
-    public function getStructurePages()
-    {
-        return $this->getPages(Page::TYPE_STRUCTURE);
     }
     
     public function setPages($pages)
@@ -790,9 +751,9 @@ class Article
     /**
      * Add page
      *
-     * @param Magend\PageBundle\Entity\Page $page
+     * @param Page $page
      */
-    public function addPage(\Magend\PageBundle\Entity\Page $page)
+    public function addPage(Page $page)
     {
         $this->pages[] = $page;
     }

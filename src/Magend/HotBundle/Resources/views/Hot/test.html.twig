@@ -1,0 +1,34 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+
+    <form style="width:680px; margin-top:10px;" action="{{ path('hot_test') }}" method="post" {{ form_enctype(form) }}>
+        {#
+        <div class="clearfix">
+            {{ form_label(form.name) }}
+            <div class="input">{{ form_errors(form.name) }}{{ form_widget(form.name, { 'attr':{'class':'middle'} }) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.landscapeCoverImage) }}
+            <div class="input">{{ form_errors(form.landscapeCoverImage) }}{{ form_widget(form.landscapeCoverImage) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.portraitCoverImage) }}
+            <div class="input">{{ form_errors(form.portraitCoverImage) }}{{ form_widget(form.portraitCoverImage) }}</div>
+        </div>
+        
+        <div class="clearfix">
+            {{ form_label(form.stdProperty.name) }}
+            <div class="input">{{ form_widget(form.stdProperty.name) }}</div>
+        </div>
+        
+        #}
+        
+        {{ form_rest(form) }}
+        
+        <div class="actions"><button class="btn primary" type="submit">提交</button></div>
+    </form>
+    
+{% endblock %}

@@ -29,57 +29,27 @@ use Doctrine\ORM\NoResultException;
  */
 class IssueController extends Controller
 {
+    /**
+     * 
+     * 
+     * @param integer $id
+     * @Template()
+     */
+    public function optionsAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
+        return array(
+            'id' => $id,
+            'issues' => $repo->findAll()
+        );
+    }
+    
     private function _findIssue($id)
     {
         $repo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
         $issue = $repo->find($id);
         
         return $issue;
-    }
-    
-    /**
-     * 
-     * @Route("/{id}/insert-copyright", name="insert_copyright")
-     */
-    public function insertCopyrightAction($id)
-    {
-        $issue = $this->_findIssue($id);
-        if (empty($issue)) {
-            throw new Exception('Issue not found'); 
-        }
-        
-        $cpr = $issue->getMagzine()->getCopyrightArticle();
-        $articleIds = $issue->getArticleIds();
-        if (in_array($cpr->getId(), $articleIds)) {
-            throw new Exception('Already inserted'); 
-        }
-        $issue->addArticle($cpr);
-        $articleIds[] = $cpr->getId(); 
-        $issue->setArticleIds($articleIds);
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $issue->getId())));
-    }
-    
-    /**
-     * Remove copyright article
-     *
-     * @Route("/{id}/remove-copyright", name="remove_copyright", requirements={"id"="\d+"})
-     */
-    public function removeCopyrightAction($id)
-    {
-        $issue = $this->_findIssue($id);
-        if (empty($issue)) {
-            throw new Exception('Issue not found'); 
-        }
-        
-        $cpArticle = $issue->getMagzine()->getCopyrightArticle();
-        $issue->removeArticle($cpArticle);
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->flush();
-        
-        return $this->redirect($this->generateUrl('issue_article_list', array('id' => $id)));
     }
     
     private function copyResource($issueId, $resourceFile)
@@ -121,10 +91,8 @@ class IssueController extends Controller
         file_put_contents($publishDir . 'version.xml', $vm->getVersionFileContents());
         
         $zipName = $this->compressIssueAssets($issue);
-        $pubAt = $issue->getPublishedAt()->format('Y-m-d');
         return new Response(json_encode(array(
             'msg' => '发布成功',
-            'publishedAt' => $pubAt,
             'zip' => $zipName
         )));
     }
@@ -179,10 +147,10 @@ class IssueController extends Controller
         file_put_contents($publishDir . "issue$id.xml", $response->getContent());
         
         $this->copyResource($id, $issue->getAudio());
+        $this->copyResource($id, $issue->getVideo());
+        $this->copyResource($id, $issue->getPoster());
         $this->copyResource($id, $issue->getPortraitCover());
         $this->copyResource($id, $issue->getLandscapeCover());
-        $this->copyResource($id, $issue->getPreview());
-        $this->copyResource($id, $issue->getEnPreview());
         
         $articles = $issue->getArticles();
         foreach ($articles as $article) {
@@ -192,7 +160,7 @@ class IssueController extends Controller
             file_put_contents($publishDir . "article$aid.xml", $response->getContent());
             
             $article->getAudio();
-            $pages = array_merge($article->getPages(), $article->getInfoPages(), $article->getStructurePages());
+            $pages = $article->getPages();
             if (empty($pages)) continue;
             
             foreach ($pages as $page) {
@@ -268,7 +236,6 @@ class IssueController extends Controller
     {
         $om = $this->get('magend.output_manager');
         $om->outputMagazinesXML();
-        $om->outputMagazineXML($issue->getMagzine()->getId());
     }
     
     /**
@@ -514,29 +481,7 @@ class IssueController extends Controller
      */
     public function newAction()
     {
-        $req = $this->getRequest();
-        $issue = new Issue();
-        $em = $this->getDoctrine()->getEntityManager();
-        $magId = $req->get('magzineId', $req->cookies->get('magzine_id'));
-        if ($req->getMethod() == 'GET' && $magId !== null) {
-            $magzine = $em->getReference('MagendMagzineBundle:Magzine', $magId);
-            $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
-                        ->setParameter('magId', $magId)
-                        ->setMaxResults(1);
-            try {
-                $latestIssue = $query->getSingleResult();
-                
-                $totalIssueNo = $latestIssue->getTotalIssueNo();
-                $yearIssueNo = $latestIssue->getYearIssueNo();
-                //$yearIssueNo
-                $issue->setMagzine($magzine);
-                $issue->setYearIssueNo($yearIssueNo);
-                $issue->setTotalIssueNo($totalIssueNo + 1);
-            } catch (\ Exception $e) {
-                // do nothing
-            }
-        }
-        
+        $issue = new Issue();   
         return $this->_formRet($issue);
     }
     
@@ -568,13 +513,6 @@ class IssueController extends Controller
         $form->bindRequest($req);
         if ($form->isValid()) {                
             $em = $this->getDoctrine()->getEntityManager();
-            $magzineId = $req->get('magzineId');
-            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $mag = $magRepo->find($magzineId);
-            if (empty($mag)) {
-                throw new Exception('magzine ' . $magzineId . ' not found');
-            }
-            $issue->setMagzine($mag);
             $em->persist($issue);
             $em->flush();
             
@@ -629,46 +567,14 @@ class IssueController extends Controller
      */
     public function listAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        
+        $cls = 'MagendIssueBundle:Issue';
         $em = $this->getDoctrine()->getEntityManager();
-        $magId = $this->getRequest()->cookies->get('magzine_id');
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id ORDER BY s.createdAt DESC");
+        $arr = $this->getList($cls, $query);
+        $arr['issues'] = $arr['entities'];
+        unset($arr['entities']);
         
-        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
-        if ($magId !== null) {
-            if ($isAdmin) {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m  WHERE m.id = :mag';
-                $q = $em->createQuery($dql)->setParameter('mag', $magId);
-            } else {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
-                $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
-            }
-            try {
-                $mag = $q->getSingleResult();
-            } catch (Exception $e) {
-                $mag = null;
-            }
-            if ($mag == null) {
-                $magId = null;
-            }
-        }
-        
-        if ($magId === null) {
-            $where = $isAdmin ? '' : 'LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-            $params = $isAdmin ? array() : array('user' => $user->getId());
-            $dql = 'SELECT m.id FROM MagendMagzineBundle:Magzine m '. $where . ' ORDER BY m.createdAt DESC';
-            $query = $em->createQuery($dql)->setParameters($params);
-            $query->setMaxResults(1);
-            try {
-                $magId = $query->getSingleScalarResult();
-            } catch (NoResultException $e) {
-                return array();
-            }
-        }
-        
-        return new RedirectResponse($this->generateUrl('magzine_issues', array(
-            'id' => $magId
-        )));
+        return $arr;
     }
     
     /**

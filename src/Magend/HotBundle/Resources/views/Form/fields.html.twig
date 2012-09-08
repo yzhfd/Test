@@ -1,0 +1,46 @@
+{% block field_row %}
+{% spaceless %}
+    <div class="hot_field">
+        {{ form_label(form, label|default(null)) }}
+        {{ form_widget(form) }}
+    </div>
+{% endspaceless %}
+{% endblock field_row %}
+
+{# collection is parent #}
+{% block hot_widget %}
+    {% spaceless %}
+        <div class="hot_form">
+            {{ block('field_rows') }}
+            {{ form_rest(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
+{% block assets_widget %}
+    {% spaceless %}
+        <ul class="assets-panel" {% if prototype is defined %}data-prototype='{{ form_widget(prototype) }}'{% endif %} {% if nb_max is not null %}nb_max="{{ nb_max}}"{% endif %} grouped_to="{{ name }}" file_note="{{ file_note}}" file_formats="{{ file_formats }}">
+        {% for child in form %}
+            {{ form_widget(child) }}
+        {% endfor %}
+        </ul>
+        
+        {{ form_rest(form) }}
+    {% endspaceless %}
+{% endblock %}
+
+{% block asset_widget %}
+    {% spaceless %}
+    <li class="hotimg">
+        {% set asset = form.get('value') %}
+        <a href="{% if asset is empty %}#{% else %}{{ path('page_del', { 'id':asset.id }) }}{% endif %}" class="pagedel"></a>
+        <a class="imgwrapper" href="#" title="{% if asset is empty %}#{% else %}{{ asset.tag }}{% endif %}">
+            <img width="128" height="96" src="{% if asset is not empty %}{% if asset.isImage %}{{ ('uploads/' ~ asset.resource)|apply_filter('landscapeThumb') }}{% elseif asset.isVideo %}{{ asset('images/video.png') }}{% elseif asset.isAudio %}{{ asset('images/audio.png') }}{% endif %}{% endif %}" />
+        </a>
+        
+        {% for child in form %}
+            {{ form_widget(child) }}
+        {% endfor %}
+    </li>
+    {% endspaceless %}
+{% endblock %}

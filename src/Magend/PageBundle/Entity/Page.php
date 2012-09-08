@@ -2,11 +2,14 @@
 
 namespace Magend\PageBundle\Entity;
 
+use stdClass;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\ArticleBundle\Entity\Article;
 use Magend\HotBundle\Entity\Hot;
+use Magend\HotBundle\Entity\HotContainer;
 
 /**
  * Magend\PageBundle\Entity\Page
@@ -16,11 +19,7 @@ use Magend\HotBundle\Entity\Hot;
  * @ORM\HasLifecycleCallbacks
  */
 class Page
-{
-    const TYPE_MAIN      = 0;
-    const TYPE_INFO      = 1;
-    const TYPE_STRUCTURE = 2;
-    
+{   
     /**
      * @var integer $id
      *
@@ -42,7 +41,7 @@ class Page
      * @var int
      * @ORM\Column(name="type", type="smallint")
      */
-    private $type = self::TYPE_MAIN;
+    private $type = 0;
     
     /**
      * @var ArrayCollection
@@ -57,6 +56,20 @@ class Page
      * )
      */
     private $hots;
+    
+    /**
+     * 
+     * Hots that'll be removed from this page
+     * 
+     * @var array
+     */
+    public $hotsToRemove;
+    
+    /**
+     * 
+     * @var HotContainer
+     */
+    private $hotContainer;
     
     /**
      * 
@@ -141,6 +154,33 @@ class Page
     public function __construct()
     {
         $this->hots = new ArrayCollection();
+        $this->hotContainer = new HotContainer();
+    }
+    
+    public function cloneHots()
+    {
+        $hots = $this->getHots();
+        $this->hots = new ArrayCollection();
+        foreach ($hots as $hot) {
+            $cloneHot = clone $hot;
+            $cloneHot->cloneAssets();
+            $this->hots->add($cloneHot);
+            $cloneHot->setPage($this);
+        }        
+    }
+    
+    /**
+     * 
+     * @ORM\PostLoad()
+     */
+    public function postLoad()
+    {
+        $this->hotContainer = new HotContainer();
+        if (!empty($this->hots)) {
+            foreach ($this->hots as $hot) {
+                $this->hotContainer->addHot($hot);
+            }
+        }
     }
     
     /**
@@ -150,7 +190,7 @@ class Page
      */
     public function prePersist()
     {
-        $now = new \DateTime;
+        $now = new DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
         } else {
@@ -183,8 +223,9 @@ class Page
      */
     public function removeImgs()
     {
-        $this->unlinkLandscapeImg();
-        $this->unlinkPortraitImg();
+        // no delete because of clone
+        // $this->unlinkLandscapeImg();
+        // $this->unlinkPortraitImg();
     }
 
     /**
@@ -199,7 +240,17 @@ class Page
         }
         $this->landscapeImg = $landscapeImg;
     }
-
+    
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+    
     /**
      * Get landscapeImg
      *
@@ -384,8 +435,34 @@ class Page
     
     public function setHots($hots)
     {
+        foreach ($hots as $hot) {
+            $hot->setPage($this);
+        }
+        
         $this->hots = $hots;
     }
+    
+    /**
+     * Add hot
+     * 
+     * @param Hot $hot
+     */
+    public function addHot($hot)
+    {
+        $hot->setPage($this);
+        $this->hots[] = $hot;
+        // $this->hotContainer->addHot($hot);
+    }
+    
+    public function getHotContainer()
+    {
+        return $this->hotContainer;
+    }
+    
+    public function setHotContainer($hotContainer)
+    {
+        $this->hotContainer = $hotContainer;
+    }    
     
     /**
      * For the sake of simplicity
@@ -412,15 +489,5 @@ class Page
     public function getPortraitHots()
     {
         return $this->_getHotsByMode(Hot::MODE_PORTRAIT);
-    }
-    
-    public function getType()
-    {
-        return $this->type;
-    }
-    
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 }

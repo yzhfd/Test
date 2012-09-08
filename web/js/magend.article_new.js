@@ -25,39 +25,6 @@ var article_new = function () {
 		tagit.tagit('createTag', tag);
 	});
 	
-	// attachment
-	$('#attachedAudio').click(function(){
-		if ($(this).attr('href') == '#') {
-			return false;
-		}
-	});
-	$('#attachAudio').fileupload({
-		url: Routing.generate('article_audioUpload'),
-		paramName: 'file',
-		acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
-		dropZone: $('#attachAudio'),
-		limitMultiFileUploads: 1
-	}).bind('fileuploaddrop', function (e, data) {
-		var audioFile = data.files[0];
-		var acceptFileTypes = $(this).fileupload('option', 'acceptFileTypes');
-		if (!(acceptFileTypes.test(audioFile.type) ||
-              acceptFileTypes.test(audioFile.name))) {
-			alert('请上传MP3格式的音频文件');
-			for (var i=0; i<100; ++i) {}
-            return false;
-        }
-		
-		$('#attachAudio').text(audioFile.name);
-		$('#article_form').data('audio', audioFile);
-		/*$('#attachAudio').overlay('loading');
-		
-		return true;*/
-	}).bind('fileuploadsubmit', function (e, data) {
-		// no upload immediately
-		e.stopPropagation();
-		e.preventDefault();
-	});
-	
 	$('#article_form').submit(function(e){
 		var articleId = $('#newPagesTab').attr('rel');
 		var submitBtn = $(this).find(':submit');
@@ -65,7 +32,6 @@ var article_new = function () {
 		submitBtn.button('loading');
 		
 		var existentArticleId = $('#newPagesTab').attr('rel');
-		var audioFile = $(this).data('audio');
 		$.ajax({
 			url: $(this).attr('action'),
 			type: 'POST',
@@ -74,36 +40,11 @@ var article_new = function () {
 				var articleId = response;
 				$('#newPagesTab, #attachmentsTab').attr('rel', articleId);
 				
-				if (!audioFile) {
-					// @todo DRY
-					submitBtn.button('reset');
-					if (!existentArticleId && confirm('前往上传页面')) {
-						$('#newPagesTab').click();
-					}
-					return;
+				submitBtn.button('reset');
+				if (!existentArticleId && confirm('前往上传页面')) {
+					$('#newPagesTab').click();
 				}
-				
-				var audioFormData = {id:articleId};
-				$('#attachAudio').fileupload('option', 'formData', audioFormData)
-							     .fileupload('send', { files:[audioFile] })
-								 .success(function (result, textStatus, jqXHR) {
-										$('#attachAudio').text('拖拽音频文件到这里');
-										$('#attachAudio').overlay('hide');
-										$('#attachedAudio').attr('href', result.audio).text(result.name);
-										
-										submitBtn.button('reset');
-										if (!existentArticleId && confirm('前往上传页面')) {
-											$('#newPagesTab').click();
-										}
-								 })
-								 .error(function (result, textStatus, jqXHR) {
-									 console.log(textStatus);
-									 $('#attachAudio').text('拖拽音频文件到这里');
-									 $('#attachAudio').overlay('hide');
-									 alert('上传背景音乐失败');
-									 
-									 submitBtn.button('reset');
-								 });
+				return;
 			}
 		});
 		
@@ -113,56 +54,6 @@ var article_new = function () {
 	$('#article_typesel').change(function(){
 		$('.article-uncommon').hide();
 		$('.article-type' + $(this).val()).show();
-	});
-	
-	// map & lat,lng
-    var map = new google.maps.Map($("#map_canvas")[0], {
-    	zoom: 2,
-    	center: new google.maps.LatLng(48.108, 23.417),
-    	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    	scrollwheel: false
-    });
-    var marker = null;
-    var lat = $('#latdiv  input').val();
-    var lng = $('#lngdiv  input').val();
-    if (lat != 0 && lng != 0) { // @todo what if lat, lng is zero
-    	var pos = new google.maps.LatLng(lat, lng);
-    	marker = new google.maps.Marker({
-    		position: pos,
-    		map: map
-    	});
-    	map.setCenter(pos);
-    }
-    var posMark = function (latlng) {
-    	if (marker) {
-    		marker.setMap(null);
-    	}
-    	marker = new google.maps.Marker({
-    		position: latlng, 
-    		map: map
-    	});
-    	$('#latdiv  input').val(latlng.lat());
-    	$('#lngdiv  input').val(latlng.lng());    	
-    };
-    google.maps.event.addListener(map, 'click', function(event) {
-    	posMark(event.latLng);
-    });
-    // geocoding
-	$('#geobtn').click(function () {
-		var locText = $('#geoinput').val();
-		if (locText.trim(' ') == '') return false;
-		
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({ 'address': locText }, function(results, status) {
-	        if (status == google.maps.GeocoderStatus.OK) {
-	        	var latlng = results[0].geometry.location;
-				map.setCenter(latlng);
-				posMark(latlng);
-	        } else {
-	        	alert("地址解析失败: " + status);
-	        }
-	    });
-		return false;
 	});
 	
 	// pages

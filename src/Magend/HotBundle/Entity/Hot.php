@@ -2,6 +2,8 @@
 
 namespace Magend\HotBundle\Entity;
 
+use stdClass;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -32,7 +34,10 @@ class Hot
     /**
      * @var Page
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\PageBundle\Entity\Page", inversedBy="hots")
+     * @ORM\ManyToOne(
+     *     targetEntity="Magend\PageBundle\Entity\Page",
+     *     inversedBy="hots"
+     * )
      */
     private $page;
 
@@ -42,6 +47,45 @@ class Hot
      * @ORM\Column(name="type", type="integer")
      */
     private $type = 0;
+
+    /**
+     * @var string $label
+     *
+     * @ORM\Column(name="label", type="string", nullable=true)
+     */
+    private $label;
+    
+    /**
+     * 
+     * @var integer
+     * 
+     * @ORM\Column(name="x", type="integer")
+     */
+    private $x = 0;
+
+    /**
+     *
+     * @var integer
+     * 
+     * @ORM\Column(name="y", type="integer")
+     */
+    private $y = 0;
+
+    /**
+     *
+     * @var integer
+     * 
+     * @ORM\Column(name="w", type="integer")
+     */
+    public $w = 0;
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\Column(name="h", type="integer")
+     */
+    public $h = 0;
     
     /**
      * Landscape(0) or portrait(1)
@@ -53,7 +97,7 @@ class Hot
     private $mode = self::MODE_LANDSCAPE;
     
     /**
-     * Serialized array of position, dimension and other essential attributes
+     * Serialized array of attrs
      * 
      * @var text $attrs
      *
@@ -62,22 +106,10 @@ class Hot
     private $attrs;
     
     /**
-     * Serialized array of extra attributes
-     * 
-     * @var text $extraAttrs
      *
-     * @ORM\Column(name="extra_attrs", type="text", nullable=true)
-     */    
-    private $extraAttrs;
-
-    /**
-     * comma separated asset ids
-     * 
-     * @var text $assetIds
-     *
-     * @ORM\Column(name="asset_ids", type="text", nullable=true)
+     * @var HotAttrContainer
      */
-    private $assetIds;
+    private $attrContainer;
     
     /**
      * 
@@ -85,13 +117,14 @@ class Hot
      * assets will be removed when its hot is removed, by
      * cascade={"all"} annotation below
      * 
-     * @ORM\ManyToMany(
+     * @ORM\OneToMany(
      *     targetEntity="Magend\AssetBundle\Entity\Asset",
-     *     inversedBy="hots",
+     *     mappedBy="hot",
      *     indexBy="id",
      *     fetch="EXTRA_LAZY",
      *     cascade={"all"}
      * )
+     * @ORM\OrderBy({"seq" = "ASC"})
      * @ORM\JoinTable(name="mag_hot_asset")
      */
     private $assets;
@@ -110,7 +143,6 @@ class Hot
      */
     private $updatedAt;
 
-
     /**
      * Get id
      *
@@ -121,26 +153,66 @@ class Hot
         return $this->id;
     }
     
-    public function __construct()
+    /**
+     * Create a new Hot from HotFactory
+     * 
+     * @param integer $type
+     */
+    public function __construct($type = null)
     {
         $this->assets = new ArrayCollection();
+        $this->type = $type;
+        $this->attrContainer = new HotAttrContainer();
+    }
+    
+    public function cloneAssets()
+    {
+        $assets = $this->getAssets();
+        $this->assets = new ArrayCollection();
+        foreach ($assets as $asset) {
+            $cloneAsset = clone $asset;
+            $this->assets->add($cloneAsset);
+            $cloneAsset->setHot($this);
+        }
+    }
+    
+    /**
+     * __construct won't be called on load
+     *
+     * @ORM\PostLoad()
+     */
+    public function postLoad()
+    {
+        $attrs = $this->getAttrs();
+        $this->attrContainer = new HotAttrContainer($this);
+        foreach ($attrs as $name => $val) {
+            $this->attrContainer->$name = $val;
+        }
+        
+        $assets = $this->getAssets();
+        foreach ($assets as $asset) {
+            $this->attrContainer->addAsset($asset);
+        } // @todo by order
     }
     
     /**
      * 
      * @ORM\PrePersist()
-     * @ORM\PreUpdate()
      */
     public function prePersist()
     {
-        $now = new \DateTime;
-        if (null === $this->createdAt) {
-            $this->createdAt = $now;
-        } else {
-            $this->updatedAt = $now;
-        }
+        $this->createdAt = new DateTime;
     }
-
+    
+    /**
+     * 
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    { 
+        $this->updatedAt = new DateTime;
+    }
+    
     /**
      * @ORM\PostRemove()
      */
@@ -178,6 +250,80 @@ class Hot
         return $this->type;
     }
 
+    public function getPage()
+    {
+        return $this->page;
+    }
+    
+    public function setPage($page)
+    {
+        /*
+        if (!$page->getHots()->contains($this)) {
+            $page->addHot($this);
+        }*/
+        $this->page = $page;
+    }
+    
+    public function getMode()
+    {
+        return $this->mode;
+    }
+    
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+    
+    public function getX()
+    {
+        return $this->x;
+    }
+    
+    public function setX($x)
+    {
+        $this->x = $x;
+    }
+    
+    public function getY()
+    {
+        return $this->y;
+    }
+    
+    public function setY($y)
+    {
+        $this->y = $y;
+    }
+    
+    public function getW()
+    {
+        return $this->w;
+    }
+    
+    public function setW($w)
+    {
+        $this->w = $w;
+    }
+    
+    public function getH()
+    {
+        return $this->h;
+    }
+    
+    public function setH($h)
+    {
+        $this->h = $h;
+    }
+    
+    public function getLabel()
+    {
+        return $this->label;
+    }
+    
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+    
     /**
      * Set attrs
      *
@@ -187,82 +333,15 @@ class Hot
     {
         $this->attrs = is_array($attrs) ? serialize($attrs) : $attrs;
     }
-
+    
     /**
      * Get attrs
      *
-     * @return array 
+     * @return array
      */
     public function getAttrs()
     {
         return unserialize($this->attrs);
-    }
-    
-    public function getX()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['x'];
-    }
-    
-    public function getY()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['y'];
-    }
-    
-    public function getWidth()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['width'];
-    }
-    
-    public function getHeight()
-    {
-        $attrs = $this->getAttrs();
-        return $attrs['height'];
-    }
-    
-    /**
-     * Set extra attrs
-     *
-     * @param array $extaAttrs
-     */
-    public function setExtraAttrs($extraAttrs)
-    {
-        $this->extraAttrs = is_array($extraAttrs) ? serialize($extraAttrs) : $extraAttrs;
-    }
-
-    /**
-     * Get extra attrs
-     *
-     * @return array 
-     */
-    public function getExtraAttrs()
-    {
-        return unserialize($this->extraAttrs);
-    }
-    
-    /**
-     * Set assets
-     *
-     * @param array|string $assets
-     */
-    public function setAssetIds($assetIds)
-    {
-        if (is_array($assetIds)) {
-            $assetIds = implode(',', $assetIds);
-        }
-        $this->assetIds = $assetIds;
-    }
-
-    /**
-     * Get assets
-     *
-     * @return array 
-     */
-    public function getAssetIds()
-    {
-        return $this->assetIds ? explode(',', $this->assetIds) : array();
     }
     
     /**
@@ -273,10 +352,6 @@ class Hot
     public function addAsset($asset)
     {
         $this->assets[$asset->getId()] = $asset;
-        
-        $assetIds = $this->getAssetIds();
-        $assetIds[] = $asset->getId();
-        $this->setAssetIds($assetIds);
     }
     
     public function removeAssets()
@@ -291,6 +366,7 @@ class Hot
      * @param bool $partial
      * @return ArrayCollection
      */
+    /*
     public function getAssets($partial = true)
     {
         $assets = array();
@@ -311,6 +387,29 @@ class Hot
             }
         }
         return $assets;
+    }*/
+    
+    public function getAssets()
+    {
+        return $this->assets;
+    }
+    
+    public function setAssets($assets)
+    {
+        foreach ($assets as $asset) {
+            $asset->setHot($this);
+        }
+        $this->assets = $assets;
+    }
+    
+    public function getAttrContainer()
+    {
+        return $this->attrContainer;
+    }
+    
+    public function setAttrContainer($attrContainer)
+    {
+        $this->attrContainer = $attrContainer;
     }
     
     /**
@@ -333,16 +432,6 @@ class Hot
         return $this->createdAt;
     }
     
-    public function getPage()
-    {
-        return $this->page;
-    }
-    
-    public function setPage($page)
-    {
-        $this->page = $page;
-    }
-    
     /**
      * Set updatedAt
      *
@@ -361,15 +450,5 @@ class Hot
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-    
-    public function getMode()
-    {
-        return $this->mode;
-    }
-    
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
     }
 }

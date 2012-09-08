@@ -15,7 +15,7 @@
             <link rel="stylesheet" href="{{ asset('css/simpla/invalid.css') }}" type="text/css" media="screen" />
             <link rel="stylesheet" href="{{ asset('css/jquery.contextMenu.css') }}" type="text/css" media="screen" />
             <link rel="stylesheet" href="{{ asset('css/chosen.css') }}" type="text/css" media="screen" />
-            <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css" />  
+            <link href="{{ asset('css/main.css') }}?v=0.1" rel="stylesheet" type="text/css" />  
         {% endblock %}
         
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
@@ -24,7 +24,7 @@
     <body><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
         <div id="sidebar"><div id="sidebar-wrapper"> <!-- Sidebar with logo and menu -->
             
-            <h1 id="sidebar-title"><a href="#">iMagShow</a></h1>
+            <h1 id="sidebar-title"><a href="#">家具移动展销</a></h1>
             <!-- Logo (221px wide) -->
             <!-- <a href="#"><img id="logo" src="resources/images/logo.png" alt="Simpla Admin logo" /></a>-->
           
@@ -37,7 +37,7 @@
             {% set currentRoute = app.request.get('_route') %}
             <ul id="main-nav">
                 <li><a href="{{ path('home') }}" class="nav-top-item no-submenu {% if currentRoute == 'home' %}current{% endif %}">首页</a></li>
-                
+                {#
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_list', 'proj_list', 'institute_list'] %}current{% endif %}">杂志组</a>
                     <ul>
                         <li><a {% if currentRoute == 'magzine_list' %}class="current"{% endif %} href="{{ path('magzine_list') }}">杂志分类</a></li>
@@ -45,11 +45,11 @@
                         <li><a {% if currentRoute == 'institute_list' %}class="current"{% endif %} href="{{ path('institute_list') }}">设计机构</a></li>
                     </ul>
                 </li>
-                
-                <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">杂志</a>
+                #}
+                <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">产业套系</a>
                     <ul>
-                        <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magzine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">期刊查看</a></li>
-                        {% if is_granted('ROLE_CORP') %}<li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">期刊创建</a></li>{% endif %}
+                        <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magzine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">套系查看</a></li>
+                        {% if is_granted('ROLE_CORP') %}<li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">套系创建</a></li>{% endif %}
                         <li><a {% if currentRoute == 'article_new' %}class="current"{% endif %} href="{{ path('article_new') }}">文章创建</a></li>
                         {# <li><a {% if currentRoute == 'article_comment_list' %}class="current"{% endif %} href="{{ path('article_comment_list') }}">用户评论</a></li> #}
                         <!-- <li><a href="#">文章检索</a></li> -->
@@ -94,7 +94,7 @@
                     {% block breadcrumb %}<li><a href="#">Magend</a> <span class="divider">/</span></li>{% endblock %}
                 </ul>
             </div>-->
-            <div class="row"><div class="span16" style="min-height: 1000px;">
+            <div class="row"><div class="span12" style="min-height: 1000px;">
                 {% block main %}{% endblock %}
             </div></div>
             
@@ -109,6 +109,7 @@
             <script src="{{ asset('js/jquery-1.7.1.min.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/jquery-ui-1.8.16.custom.min.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/jquery.ui.datepicker-zh-CN.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/jquery.extractor.min.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/jquery.iframe-transport.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/jquery.fileupload.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/jquery.mustache.js') }}" type="text/javascript"></script>
@@ -120,11 +121,8 @@
             <script src="{{ asset('js/backbone.ext.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/backbone.queuedSync.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/backbone.localStorage.js') }}" type="text/javascript"></script>
-            <script src="{{ asset('js/bootstrap-modal.js') }}" type="text/javascript"></script>
-            <script src="{{ asset('js/bootstrap-alerts.js') }}" type="text/javascript"></script>
-            <script src="{{ asset('js/bootstrap-buttons.js') }}" type="text/javascript"></script>
-            <script src="{{ asset('js/bootstrap-tabs.js') }}" type="text/javascript"></script>
-            <script src="{{ asset('js/bootstrap-twipsy.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/Backbone.ModelBinder.min.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/bootstrap.min.js') }}" type="text/javascript"></script>
             <script src="{{ asset('js/tag-it.js') }}" type="text/javascript"></script>
             
             <script src="{{ asset('js/chosen.jquery.min.js') }}" type="text/javascript"></script>

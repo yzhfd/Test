@@ -9,9 +9,6 @@ var Hot = Backbone.Model.extend({
 	minWidth: 10,
 	minHeight: 10,
 	defaults: {
-		// index: 0,
-		// stackIndex: 1,
-		type: 0,
 		x: 0,
 		y: 0,
 		width: 40,
@@ -103,7 +100,10 @@ var HotView = Backbone.View.extend({
       // "mouseup": "onMouseup",
       "dblclick": "dblclick"
     },
+    _modelBinder:undefined,
     initialize: function () {
+    	this._modelBinder = new Backbone.ModelBinder();
+    	
     	this.model.rendered = true;
     	
     	this.model.bind('change:width', this.resize, this);
@@ -167,60 +167,6 @@ var HotView = Backbone.View.extend({
 				hotel.css('overflow', 'visible');
 			}, this)
 		});
-	    
-	    // this.initToolbar();
-    },
-    initToolbar: function() {
-    	var hotView = this;
-        // 工具栏，选中时可见
-        var toolbar = $('<div class="hot-toolbar"></div>');
-        toolbar.append('&nbsp;<button class="btn info" role="lock-position"></button>&nbsp;<button class="btn info" role="lock-ratio"></button>&nbsp;<button class="btn danger" role="delete" style="float:right;">删除</button>');
-        toolbar.prependTo($(this.el));
-
-        toolbar.find('button[role=lock-position]').data('text-normal', '锁定位置').data('text-invert', '解锁位置').end()
-               .find('button[role=lock-ratio]').data('text-normal', '锁定比例').data('text-invert', '解锁比例');
-        toolbar.find('button').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            var role = $(this).attr('role');
-            switch (role) {
-                case "lock-position":
-                    var locked = parseInt(hotView.model.get('locked'), 10);
-                    var value, text;
-                    if (locked) {
-                        value = 0;
-                        text  = $(this).data('text-normal');
-                    } else {
-                        value = 1;
-                        text  = $(this).data('text-invert');
-                    }
-                    // @todo upgrade backbone will allow
-                    hotView.model.set('locked', value);
-                    $(this).text(text);
-                    break;
-                case "lock-ratio":
-                    var ratioLocked = parseInt(hotView.model.get('ratioLocked'), 10);
-                    var value, text;
-                    if (ratioLocked) {
-                        value = 0;
-                        text  = $(this).data('text-normal');
-                    } else {
-                        value = 1;
-                        text  = $(this).data('text-invert');
-                    }
-                    hotView.model.set('ratioLocked', value);
-                    $(this).text(text);
-                    break;
-                case "delete":
-                    var e = jQuery.Event('keydown');
-                    e.which = 46;
-                    $('#page_canvas_img').trigger(e);
-                    break;
-                default:
-                    break;
-            }
-        });
     },
     onMousedown: function (e) {
     	this.model.select();
@@ -237,261 +183,30 @@ var HotView = Backbone.View.extend({
         if ($(e.target).parents('.hot-toolbar').length > 0) return false;
         return this.edit();
     },
-    // @todo edit is too complex, refactor
     edit: function () {
-    	var hottype = this.model.get('type');
-    	var title = $('#hot_' + hottype).text();
-    	$('#hot_dialog').find('.dlgcontent').hide();
-    	var typeDlg = $('#hot_' + hottype + '_dialog');
     	var hotModel = this.model;
-    	typeDlg.data('hot', hotModel);
-    	typeDlg.html(typeDlg.data('resetTo').clone(true, true));
     	
-    	if (hottype == 3 || hottype == 4 || hottype == 2) {
-    		// @todo only hide for audio?
-    		$('#hot_use_content_size').hide();
-    	}
-    	
-    	// populate the form with extra attrs
-    	if (hotModel.extraAttrs) {
-	    	$.each(hotModel.extraAttrs, function(name, value) {
-	    		var input = $(":input[name='" + name + "']:not(:button,:reset,:submit,:image)", typeDlg );
-	            input.val( ( !$.isArray( value ) && ( input.is(':checkbox') || input.is(':radio') ) ) ? [ value ] : value );
-	    	});
-    	}
-    	// video or audio
-    	if (hottype == 3 || hottype == 4) {
-    		var uploadArea = hottype == 3 ? $('#video-upload-area') : $('#audio-upload-area');
-    		if (hotModel.uploads) {
-    			var file = hotModel.uploads[0];
-    			uploadArea
-    			.removeClass('synced')
-    			.addClass('unsynced')
-    			.html(file.name + '<br/>' + parseSize(file.size));
-    		} else if (hotModel.assets) {
-	    		var filePath = hotModel.assets[0]['file'];
-	    		var fileName = hotModel.assets[0]['name'];
-	    		uploadArea
-	    		.addClass('synced')
-	    		.html('<a target="_blank" href="' + basePath + '/uploads/' + filePath + '">' + fileName + '</a>');
-    		}
-    	} else if (hottype == 1 || hottype == 5 || hottype == 6) {// images, image sequence or map
-    		var panel = typeDlg.find('.assets-panel');
-    		// assert panel is not null
-    		
-    		// @todo DRY
-    		if (hotModel.assets) {
-    			$(hotModel.assets).each(function(index, asset){
-    				if (asset.file) {
-		            	var hotimg = $('<li class="hotimg synced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" rel="' + asset.id + '" title="'
-		            			+ asset.name + '"><img width="128" height="96" src="' + basePath + '/uploads/' + asset.file + '" /></a></li>');
-		            	hotimg.appendTo(panel);
-    				} else { // asset is DOM element
-    					$(asset).clone(true, true).appendTo(panel);
-    				}
-    			});
-    		}
-    		
-        	$('a.pagedel').live('click', function(e){
-        		$(this).parent().remove();
-        		return false;
-        	});
-        	
-        	if ($('li.hotimg', panel).length > 0) {
-        		panel.width($('li.hotimg', panel).length * 150 + 20);
-        	}
-        	panel.sortable({containment:panel});
-        	
-        	
-        	if (hottype == 6) {
-        	    var map = new google.maps.Map($('.gmap', typeDlg)[0], {
-        	    	zoom: 2,
-        	    	center: new google.maps.LatLng(48.108, 23.417),
-        	    	mapTypeId: google.maps.MapTypeId.ROADMAP,
-        	    	scrollwheel: false
-        	    });
-        	    var marker = null;
-        	    var lat = parseFloat($('input[name=lat]', typeDlg).val());
-        	    var lng = parseFloat($('input[name=lng]', typeDlg).val());
-        	    if (lat != 0 && lng != 0) {
-        	    	var pos = new google.maps.LatLng(lat, lng);
-        	    	marker = new google.maps.Marker({ position: pos, map: map });
-        	    	map.setCenter(pos);
-        	    }
-        	    var posMark = function (latlng) {
-        	    	if (marker) {
-        	    		marker.setMap(null);
-        	    	}
-        	    	marker = new google.maps.Marker({ position: latlng, map: map });
-        	    	$('input[name=lat]', typeDlg).val(latlng.lat());
-        	    	$('input[name=lng]', typeDlg).val(latlng.lng());    	
-        	    };
-        	    
-            	typeDlg.find('input[name=address]').keypress(function(e){
-            		if (e.which != 13) return false;
-            		
-            		var locText = $(this).val();
-            		var geocoder = new google.maps.Geocoder();
-            		geocoder.geocode({ 'address': locText }, function(results, status) {
-            	        if (status == google.maps.GeocoderStatus.OK) {
-            	        	var latlng = results[0].geometry.location;
-            				map.setCenter(latlng);
-            				posMark(latlng);
-            	        } else {
-            	        	alert("地址解析失败: " + status);
-            	        }
-            	    });
-            		return false;
-            	});
-        	}
-    	} else if (hottype == 0) {
-    		// single image
-    		if (hotModel.uploads) {
-    			var imgFile = hotModel.uploads[0];
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                	$('#image-upload-area').html('<img class="unsynced" style="width:120px;" title="' + imgFile.name + '" src="' + e.target.result + '" />');
-                };
-                reader.readAsDataURL(imgFile);
-    		} else if (hotModel.assets) {
-	    		var filePath = hotModel.assets[0]['file'];
-	    		var fileName = hotModel.assets[0]['name'];
-	    		var imgUrl = basePath + '/uploads/' + filePath;
-	    		$('#image-upload-area').html('<a rel="facebox" href="' + imgUrl + '"><img class="synced" alt="' + fileName + '" style="width:120px;" title="' + fileName + '" src="' + imgUrl + '" /></a>');
-	    		$('#image-upload-area a[rel*=facebox]').facebox();
-    		}
-    	}
-    	
-    	// set hot essential information
-    	var inputX = $('#hot_essential input[name="x"]');
-    	var inputY = $('#hot_essential input[name="y"]');
-    	var inputW = $('#hot_essential input[name="w"]');
-    	var inputH = $('#hot_essential input[name="h"]');
-        var inputL = $('#hot_essential input[name="locked"]');
-        var inputR = $('#hot_essential input[name="ratioLocked"]');
-    	inputX.val(this.model.get('x'));
-    	inputY.val(this.model.get('y'));
-    	inputW.val(this.model.get('width'));
-    	inputH.val(this.model.get('height'));
-        inputL.attr('checked', !!parseInt(this.model.get('locked'), 10));
-        inputR.attr('checked', !!parseInt(this.model.get('ratioLocked'), 10));
-    	
-        inputW.data('oldValue', parseInt(inputW.val(), 10));
-        inputH.data('oldValue', parseInt(inputH.val(), 10));
-        $([inputW, inputH]).each(function () {
-            this.unbind('keyup change paste').bind('keyup change paste', function () {
-                if (!inputR.is(':checked')) return;
-                var thisElement  = $(this);
-                var otherElement = $(this).is('input[name=w]') ? inputH : inputW;
-                var oldValueOfThisElement = thisElement.data('oldValue');
-                if (oldValueOfThisElement == 0) return;
-                var newValue = parseInt(thisElement.val(), 10) * parseInt(otherElement.val(), 10) / oldValueOfThisElement;
-                thisElement.data('oldValue', parseInt(thisElement.val(), 10));
-                otherElement.val(newValue).data('oldValue', newValue);
-            });
-        });
-        
-        $('#hot_use_content_size').die('click').bind('click', _.bind(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.model.examineContentImage().done(function (imgPath, width, height) {
-                inputW.val(width).data('oldValue', width);
-                inputH.val(height).data('oldValue', height);
-            });
-        }, this));
-        
-    	typeDlg.show();
-    	
-    	// $('<div/>').html('<h1>eample</h1>').dialog({autoOpen:true});
     	hotView = this; // used to render
-    	$('#hot_dialog').dialog({
-    		show:'fade', zIndex:2000, title:title,
+    	var hotForm = $('#' + hotModel.cid + '_form');
+    	hotForm.extractor({
+    		show:'fade', zIndex:2000, title:'',
     		width: 'auto', height: 'auto',
     		// dunno why jquery ui button not styled
 			close: function () {
-				
 			},
     		buttons: { 
-    			"Cancel": {
+    			/*"Cancel": {
     				class: 'btn',
     				text: '取消',
     				click: function() {
-    					hotModel.addUploads = null;
-    					
-    					$('#hot_dialog').dialog('close');
+    					hotForm.dialog('close');
     				}
-    			},
+    			},*/
     			"Ok": {
-    				class: 'btn primary',
+    				class: 'btn btn-primary',
     				text: '确认',
     				click: function() {
-    					var x = parseInt(inputX.val());
-    					var y = parseInt(inputY.val());
-    					var w = parseInt(inputW.val());
-    					var h = parseInt(inputH.val());
-                        var l = inputL.is(':checked') ? 1 : 0;
-                        var r = inputR.is(':checked') ? 1 : 0;
-    					
-    					hotModel.set({
-    						x: x,
-    						y: y,
-    						width: w,
-    						height: h,
-                            locked: l,
-                            ratioLocked: r
-    					});
-    					
-    					if ($('form', typeDlg).length > 0) {
-	    					var formObj = $('form', typeDlg).serializeObject();
-	    					hotModel.extraAttrs = formObj;
-    					}
-    					if (hotModel.addUploads) {
-    						if (!hotModel.uploads) hotModel.uploads = [];
-    						$.merge(hotModel.uploads, hotModel.addUploads);
-    						hotModel.addUploads = null;
-    					}
-    					
-    					if (typeDlg.hasClass('has-assets-panel')) {// multiple assets, images here
-    						var oldAssetIds = [];
-    						$(hotModel.assets).each(function(index, asset){
-    							if (asset.id) {
-    								oldAssetIds.push(asset.id);
-    							} else {
-	    							var assetId = $('a.imgwrapper', asset).attr('rel');
-	    							if (assetId) {
-	    								oldAssetIds.push(parseInt(assetId));
-	    							}
-    							}
-    						});
-    						
-    						hotModel.uploads = [];
-    						hotModel.assets = [];
-    						var leftAssetIds = [];
-    						$('li.hotimg', typeDlg).each(function(index, hotimg){
-    							hotimg = $(hotimg);
-    							var imgFile = hotimg.data('file');
-    							hotModel.assets.push(hotimg.clone(true, true)); // not file but element to avoid file read delay
-    							if (imgFile) {
-    								hotModel.uploads.push(imgFile);
-    							}
-    							var assetId = $('a.imgwrapper', hotimg).attr('rel');
-    							if (assetId) {
-    								leftAssetIds.push(parseInt(assetId)); 
-    							}
-    						});
-    						
-    						hotModel.delAssetIds = [];
-    						// _.indexOf thinks 4 and "4" are different
-    						$(oldAssetIds).each(function(index, assetId) {
-    							if (_.indexOf(leftAssetIds, assetId) == -1) {
-    								hotModel.delAssetIds.push(assetId);
-    							}
-    						});
-    					}
-    					
-    					hotModel.isEdited = true;
-    					$('#hot_dialog').dialog('close');
-    					hotView.render();
+    					hotForm.dialog('close');
     				}
     			}
     		}
@@ -525,6 +240,7 @@ var HotView = Backbone.View.extend({
     	});
     	this.model.rendered = false;
     	this.model.layoutChanged = true;
+    	$('#' + this.model.cid + '_form').remove();
     },
     render: function () {
         var self = this;
@@ -553,25 +269,19 @@ var HotView = Backbone.View.extend({
             $(this.el).removeClass('ratio-locked');
         }
         
-        // toolbar text
-        /*
-        var toolElement = $(this.el).find('.hot-toolbar');
-        var positionLockButton = toolElement.find('[role=lock-position]');
-        var ratioLockButton = toolElement.find('[role=lock-ratio]');
-        if (parseInt(this.model.get('locked'), 10)) {
-            positionLockButton.text(positionLockButton.data('text-invert'));
-        } else {
-            positionLockButton.text(positionLockButton.data('text-normal'));
-        }
-        if (parseInt(this.model.get('ratioLocked'), 10)) {
-            ratioLockButton.text(ratioLockButton.data('text-invert'));
-        } else {
-            ratioLockButton.text(ratioLockButton.data('text-normal'));
-        }*/
+        var rounder = function(direction, value){
+        	return Math.round(value);
+        };
         
-        /*
-        $(this.el).find('.size-indicator-text')
-                  .text([this.model.get('width'), this.model.get('height')].join('x')); */
+        var bindings = {
+            x: { selector: 'input.hot_x', converter: rounder },
+            y: { selector: 'input.hot_y', converter: rounder },
+            width: { selector: 'input.hot_w', converter: rounder },
+            height: { selector: 'input.hot_h', converter: rounder }
+        };
+        
+        this._modelBinder.bind(this.model, $('#' + this.model.cid + '_form'), bindings);
+        
         return this;
     }
 });

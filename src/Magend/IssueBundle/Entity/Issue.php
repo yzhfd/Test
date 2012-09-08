@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Magend\ArticleBundle\Entity\Article;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Magend\IssueBundle\Entity\Issue
@@ -45,29 +46,38 @@ class Issue
      */
     private $audio;
     
-    /** 
-     * Original audio file name
+    /**
      * 
-     * @var string $audioName
-     * 
-     * @ORM\Column(name="audio_name", type="string", length=255, nullable=true)
+     * @var File
      */
-    private $audioName;
+    public $audioFile;
+    
+    /**
+     * 
+     * @var string $poster
+     * @ORM\Column(name="poster", type="string", length=255, nullable=true)
+     */
+    private $poster;
     
     /**
      * 
      * @var File
-     * 
      */
-    public $audioFile;
-
+    public $posterFile;
+    
     /**
-     * @var integer $price_level
-     *
-     * @ORM\Column(name="price_level", type="integer", nullable=true)
+     * 
+     * @var string
+     * @ORM\Column(name="video", type="string", length=255, nullable=true)
      */
-    private $priceLevel;
-
+    private $video;
+    
+    /**
+     * 
+     * @var File
+     */
+    public $videoFile;
+    
     /**
      * @var string $landscapeCover
      *
@@ -76,11 +86,23 @@ class Issue
     private $landscapeCover;
     
     /**
+     * 
+     * @var File
+     */
+    public $landscapeCoverFile;
+    
+    /**
      * @var string $portraitCover
      *
      * @ORM\Column(name="portrait_cover", type="string", length=255, nullable=true)
      */
     private $portraitCover;
+    
+    /**
+     *
+     * @var File
+     */
+    public $portraitCoverFile;
 
     /**
      * Comma separated article ids
@@ -154,28 +176,6 @@ class Issue
      * @ORM\Column(name="published_at", type="date", nullable=true)
      */
     private $publishedAt;
-    
-    /**
-     * Year
-     * 
-     * @var integer
-     * @ORM\Column(name="year", type="integer")
-     */
-    private $year;
-    
-    /**
-     * @var string $yearIssueNo
-     *
-     * @ORM\Column(name="year_issueno", type="string", length=255, nullable=true)
-     */
-    private $yearIssueNo;
-    
-    /**
-     * @var integer $totalIssueNo
-     *
-     * @ORM\Column(name="total_issueno", type="integer", nullable=true)
-     */
-    private $totalIssueNo;
 
     /**
      * @var integer $nbFaved
@@ -191,39 +191,8 @@ class Issue
      */
     private $nbDownloaded = 0;
     
-    /**
-     * @var string $preview
-     *
-     * @ORM\Column(name="preview", type="string", length=255, nullable=true)
-     */
-    private $preview;
-    
-    /**
-     * @var string $enPreview
-     *
-     * @ORM\Column(name="en_preview", type="string", length=255, nullable=true)
-     */
-    private $enPreview;
-    
-    /**
-     * @var Magzine
-     * 
-     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
-     */
-    private $magzine;
-    
-    /**
-     * The id in app store, for in-app purchase
-     * 
-     * @var string
-     * @ORM\Column(name="iap_id", type="string", length=255, nullable=true)
-     */
-    private $iapId;
-
-
     public function __construct()
     {
-        $this->year = date("Y");
         $this->articles = new ArrayCollection();
     }
     
@@ -251,20 +220,60 @@ class Issue
             $this->updatedAt = $now;
         }
         
-        if (!$this->getYear()) {
-            $this->setYear(date("Y"));
-        }
-        /*
-        if ($this->coverImage) {
-            $imgName = uniqid('issue_') . '.' . $this->coverImage->guessExtension();
-            $this->coverImage->move(__DIR__.'/../../../../web/uploads/', $imgName);
+        if ($this->landscapeCoverFile) {
+            $imgName = uniqid('landscape_') . '.' . $this->landscapeCoverFile->guessExtension();
+            $this->landscapeCoverFile->move(__DIR__.'/../../../../web/uploads/', $imgName);
             
-            if ($this->getCover()) {
-                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getCover());
+            if ($this->getLandscapeCover()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeCover());
             }
             
-            $this->setCover($imgName);
-        }*/
+            $this->setLandscapeCover($imgName);
+        }
+        
+        if ($this->portraitCoverFile) {
+            $imgName = uniqid('portrait_') . '.' . $this->portraitCoverFile->guessExtension();
+            $this->portraitCoverFile->move(__DIR__.'/../../../../web/uploads/', $imgName);
+        
+            if ($this->getPortraitCover()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitCover());
+            }
+        
+            $this->setPortraitCover($imgName);
+        }
+        
+        if ($this->audioFile) {
+            $fileName = uniqid('audio_') . '.' . $this->audioFile->guessExtension();
+            $this->audioFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+            
+            if ($this->getAudio()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
+            }
+        
+            $this->setAudio($fileName);
+        }
+        
+        if ($this->posterFile) {
+            $fileName = uniqid('poster_') . '.' . $this->posterFile->guessExtension();
+            $this->posterFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+            
+            if ($this->getPoster()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPoster());
+            }
+        
+            $this->setPoster($fileName);
+        }
+        
+        if ($this->videoFile) {
+            $fileName = uniqid('video_') . '.' . $this->videoFile->guessExtension();
+            $this->videoFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+        
+            if ($this->getVideo()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getVideo());
+            }
+        
+            $this->setVideo($fileName);
+        }
     }
     
     /**
@@ -279,22 +288,15 @@ class Issue
         if ($this->getLandscapeCover()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getLandscapeCover());
         }
-        if ($this->getPreview()) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPreview());
+        if ($this->getAudio()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
         }
-        if ($this->getEnPreview()) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getEnPreview());
+        if ($this->getVideo()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getVideo());
         }
-    }
-    
-    public function getMagzine()
-    {
-        return $this->magzine;
-    }
-    
-    public function setMagzine($magzine)
-    {
-        $this->magzine = $magzine;
+        if ($this->getPoster()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPoster());
+        }
     }
 
     /**
@@ -336,64 +338,27 @@ class Issue
     {
         return $this->audio;
     }
-    
-    /**
-     * Get audio name
-     *
-     * @return string 
-     */
-    public function getAudioName()
+
+    public function setVideo($video)
     {
-        return $this->audioName;
+        $this->video = $video;
     }
     
-    /**
-     * Set audio name
-     *
-     * @param string $audioName
-     */
-    public function setAudioName($audioName)
+    public function getVideo()
     {
-        $this->audioName = $audioName;
-    }
-
-    /**
-     * Set priceLevel
-     *
-     * @param integer $priceLevel
-     */
-    public function setPriceLevel($priceLevel)
-    {
-        $this->priceLevel = $priceLevel;
-    }
-
-    /**
-     * Get priceLevel
-     *
-     * @return integer 
-     */
-    public function getPriceLevel()
-    {
-        return $this->priceLevel;
+        return $this->video;
     }
     
-    /**
-     * Get price description
-     * 
-     * @return string
-     */
-    public function getPriceDescription()
+    public function setPoster($poster)
     {
-        if ($this->priceLevel == 0) {
-            return '免费';
-        }
-        
-        $dollars = $this->priceLevel - 1 + 0.99;
-        $rmbs = 6 * $this->priceLevel;
-        
-        return $dollars . '$/' . $rmbs . '¥';
+        $this->poster = $poster;
     }
-
+    
+    public function getPoster()
+    {
+        return $this->poster;
+    }
+    
     /**
      * Set landscape cover
      *
@@ -641,7 +606,7 @@ class Issue
     {
         return $this->nbDownloaded;
     }
-
+    
     /**
      * Set publishedAt
      *
@@ -660,106 +625,6 @@ class Issue
     public function getPublishedAt()
     {
         return $this->publishedAt;
-    }
-
-    /**
-     * Set yearIssueNo
-     *
-     * @param string $yearIssueNo
-     */
-    public function setYearIssueNo($yearIssueNo)
-    {
-        $this->yearIssueNo = $yearIssueNo;
-    }
-
-    /**
-     * Get yearIssueNo
-     *
-     * @return string 
-     */
-    public function getYearIssueNo()
-    {
-        return $this->yearIssueNo;
-    }
-
-    /**
-     * Set totalIssueNo
-     *
-     * @param string $totalIssueNo
-     */
-    public function setTotalIssueNo($totalIssueNo)
-    {
-        $this->totalIssueNo = $totalIssueNo;
-    }
-
-    /**
-     * Get totalIssueNo
-     *
-     * @return string 
-     */
-    public function getTotalIssueNo()
-    {
-        return $this->totalIssueNo;
-    }
-
-    /**
-     * Set preview
-     *
-     * @param string $preview
-     */
-    public function setPreview($preview)
-    {
-        $this->preview = $preview;
-    }
-
-    /**
-     * Get preview
-     *
-     * @return string 
-     */
-    public function getPreview()
-    {
-        return $this->preview;
-    }
-    
-    /**
-     * Set enPreview
-     *
-     * @param string $enPreview
-     */
-    public function setEnPreview($enPreview)
-    {
-        $this->enPreview = $enPreview;
-    }
-
-    /**
-     * Get enPreview
-     *
-     * @return string 
-     */
-    public function getEnPreview()
-    {
-        return $this->enPreview;
-    }
-    
-    public function getYear()
-    {
-        return $this->year;
-    }
-    
-    public function setYear($year)
-    {
-        $this->year = $year;
-    }
-    
-    public function getIapId()
-    {
-        return $this->iapId;
-    }
-    
-    public function setIapId($iapId)
-    {
-        $this->iapId = $iapId;
     }
     
     public function getPublishMode()

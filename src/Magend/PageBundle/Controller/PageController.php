@@ -10,6 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\HotBundle\Entity\Hot;
+use Magend\HotBundle\Entity\HotContainer;
+use Magend\HotBundle\Form\Type\HotType;
+use Magend\HotBundle\Form\Type\HotContainerType;
 use Magend\IssueBundle\Util\SimpleImage;
 
 /**
@@ -20,14 +23,9 @@ use Magend\IssueBundle\Util\SimpleImage;
 class PageController extends Controller
 {
     
-    
-    
     // @todo DRY create thumbnail code
-    
-    
-    
-    
     /**
+     * 
      * @Route("/{id}/edit", name="page_edit", options={"expose" = true})
      * @Template()
      */
@@ -36,15 +34,17 @@ class PageController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
         $page = $repo->find($id);
         
-        $hots = $page->getHots();
-        if (!empty($hots)) {
-            $em = $this->getDoctrine()->getEntityManager();
-            $dql = 'SELECT h, a FROM MagendHotBundle:Hot h LEFT JOIN h.assets a WHERE h in (:hots)';
-            if (!is_array($hots) && method_exists($hots, 'toArray')) $hots = $hots->toArray();
-            $hots = array_values($hots);
-            if (!empty($hots)) {
-                $q = $em->createQuery($dql)->setParameter('hots', $hots);
-                $q->getResult();
+        $req = $this->getRequest();
+        $hotContainer = $page->getHotContainer();
+        $form = $this->createForm(new HotContainerType(), $hotContainer);
+        if ($req->getMethod() == 'POST') {
+            $form->bindRequest($req);
+            if ($form->isValid()) {
+                $page->setHotContainer($hotContainer);
+                $pm = $this->get('magend.page_manager');
+                $pm->updatePage($page);
+                
+                return $this->redirect($this->generateUrl('page_edit', array('id' => $id)));
             }
         }
         
@@ -61,9 +61,11 @@ class PageController extends Controller
         }
         
         return array(
+            'hotdefs' => HotContainer::$hotsDefs,
             'page' => $page,
             'prev' => $prev,
-            'next' => $next
+            'next' => $next,
+            'form' => $form->createView()
         );
     }
     

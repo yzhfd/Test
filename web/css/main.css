@@ -1,6 +1,7 @@
 html, body {
 	font-family: SimHei
 }
+h1, h2, h3, h4, h5, h6, li { line-height: normal !important; }
 *.unselectable {
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -14,84 +15,25 @@ html, body {
 button::-moz-focus-inner {
   border: 0;
 }
-
-.copyright {
-    font-size:18px; font-weight: bold;
+.hot_field {
+	margin-bottom: 4px;
 }
-.copyright_on, .copyright_off:hover {
-	color: #57A000; text-decoration: none;
+.hot_field label {
+    margin: 0 5px 0 2px;
+    width: auto !important;
+    float: none;
+    display: inline !important;
 }
-.copyright_off, .copyright_on:hover {
-    color: #CCC; text-decoration: none;
-}
-.copyright_chosen {
-    color: red;
-}
-
-.newPages {
-	padding: 10px 0 0 60px;
-}
-.newPages li.page {
-	margin-top: 10px;
-	border: 2px solid #57A000;
-}
-.newPages li.page.unsynced {
-	border: 2px solid yellow;
-}
-.newPages li.page.syncfail {
-    border: 2px solid red !important;
-}
-.has-assets-panel {
-	min-width: 400px; min-height: 120px; overflow-x: auto;
-}
-.assets-panel {
-	min-width: 400px; height: 150px; background-color: #333;
-}
-.assets-panel li.hotimg {
-    margin-top: 10px;
-    border: 2px solid #57A000;
-}
-.assets-panel li.hotimg.unsynced {
-    border: 2px solid yellow;
-}
-.assets-panel li.hotimg.syncfail {
-    border: 2px solid red !important;
-}
-li.hotimg { /* refer to li.page below */
-    float: left;
-    margin-left: 18px;
-    position: relative;
-}
-
-#attachAudio {
-    width: 300px; height: 120px;
-    border: 1px solid gray; background-color: #CCC;
-    text-align: center; line-height: 120px; font-size: 2em; color: #777;
-    overflow: hidden; text-overflow: ellipsis;
-}
-
-/* hots */
-#video-upload-area, #audio-upload-area {
-	border: 1px solid #777;
-	background-color: #CCC;
-	text-align: center;
-	height: 100px;
-	padding-top: 40px;
-	color: #777;
-}
-#video-upload-area a {
-	color: #57A000;
-}
-#video-upload-area.unsynced, #audio-upload-area.unsynced, img.unsynced {
-	border: 2px solid yellow;
-}
-#video-upload-area.synced, #audio-upload-area.synced, img.synced {
-    border: 2px solid #57A000;
-}
-#video-upload-area.syncfail, #audio-upload-area.syncfail, img.syncfail {
-    border: 2px solid red !important;
-}
-
+.hot_field input { margin-bottom: 2px; }
+label.hidelabel { display:none !important; }
+.newPages { padding: 10px 0 0 0px; }
+.newPages li.page { margin-top: 10px; border: 2px solid #57A000; }
+.newPages li.page.unsynced { border: 2px solid yellow; }
+.newPages li.page.syncfail { border: 2px solid red !important; }
+.assets-panel { height: 150px; background-color: #333; overflow: auto; clear:both; }
+.assets-panel li.hotimg { position: relative;  float: left; margin: 10px 0 0 18px; border: 2px solid #57A000; }
+.assets-panel li.hotimg.unsynced { border: 2px solid yellow; }
+.assets-panel li.hotimg.syncfail { border: 2px solid red !important; }
 #articles_layout ol.articles {
 	float: left;
 }
@@ -310,7 +252,7 @@ ol, ul { list-style: none; }
 	height: 60px;
 	margin: 10px 0 0 0;
 }
-.hotobj {
+.hot_add {
 	float: left;
 	margin: 5px 0 0 5px;
 	width: 50px;
@@ -319,30 +261,15 @@ ol, ul { list-style: none; }
 	background-color: #DDD;
 	cursor: pointer;
 }
-.hotobj:hover {
-	color: green;
-}
-.hotimgs {
-	background: #EEE url('../images/hotlib_imgs.png') no-repeat center center;
-}
-.hotsimg {
-    background: #EEE url('../images/hotlib_img.png') no-repeat center center;
-}
-.hotvideo {
-    background: #EEE url('../images/hotlib_video.png') no-repeat center center;
-}
-.hotaudio {
-    background: #EEE url('../images/hotlib_audio.png') no-repeat center center;
-}
-.hotlink {
-    background: #EEE url('../images/hotlib_link.png') no-repeat center center;
-}
-.hotseq {
-    background: #EEE url('../images/hotlib_imgseq.png') no-repeat center center;
-}
-.hotmap {
-	background: #EEE url('../images/hotlib_map.png') no-repeat center center;
-}
+.hot_add:hover { color: green; }
+.hotimgs { background: #EEE url('../images/hotlib_imgs.png') no-repeat center center; }
+.hotsimg { background: #EEE url('../images/hotlib_img.png') no-repeat center center; }
+.hotvideo { background: #EEE url('../images/hotlib_video.png') no-repeat center center; }
+.hotaudio { background: #EEE url('../images/hotlib_audio.png') no-repeat center center; }
+.hotlink { background: #EEE url('../images/hotlib_link.png') no-repeat center center; }
+.hotseq { background: #EEE url('../images/hotlib_imgseq.png') no-repeat center center; }
+.hotmap { background: #EEE url('../images/hotlib_map.png') no-repeat center center; }
+.hotimgs span, .hotsimg span, .hotvideo span, .hotaudio span, .hotlink span, .hotseq span, .hotmap span { display: none; }
 #page_canvas {
 	position: absolute; /*!important must be positioned for tracking positions of inside elements */
 	width: 1024px;
@@ -386,7 +313,7 @@ ol, ul { list-style: none; }
 }
 .hot:hover {
 	/*background: transparent url('../images/stripe2.png') repeat;*/
-	background-color: rgba(0, 125, 255);
+	background-color: rgba(0, 125, 255, 1.0);
 }
 .hotsel {
 	background-color: rgba(0, 125, 255, 1.0);

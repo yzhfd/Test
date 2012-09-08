@@ -33,9 +33,6 @@ $(document).ready(function(){
     	$('select.chosen').chosen({ 'no_results_text':'没有结果能匹配' });
     }
 	
-	$('.tabs').tabs();
-	$('.pills').pills();
-	
 	$('.taggable').tagit({
 		allowSpaces: true,
 		caseSensitive: false,

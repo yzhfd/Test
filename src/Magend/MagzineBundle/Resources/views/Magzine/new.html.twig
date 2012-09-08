@@ -1,10 +1,6 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
 {% block main %}
-
-{% if app.user.corp.isTrial and nbMags == 1 %}
-    <h3 style="margin:20px 10px;color:#CC0000;">试用帐号，只能创建一本杂志</h3>
-{% else%}
     <form id="magzine_form" style="width:680px; margin-top:10px;" action="{% if magzineId is null %}{{ path('magzine_new') }}{% else %}{{ path('magzine_edit', { 'id':magzineId }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
         {% if app.user.corp.isTrial %}<p style="margin-left:80px;color:#CC0000;">*试用帐号，只能创建一本杂志</p>{% endif %}
         <div class="clearfix">
@@ -26,6 +22,4 @@
         
         <div class="actions"><button class="btn primary" type="submit">提交</button></div>
     </form>
-{% endif %}
-
 {% endblock %}
