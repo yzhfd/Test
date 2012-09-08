@@ -47,14 +47,6 @@ class ArticleController extends Controller
         $cloneArticle->setId(null);
         $cloneArticle->clonePages();
         $em->persist($cloneArticle);
-        $em->flush();
-        
-        $pages = $cloneArticle->getPageCollection();
-        $pageIds = array();
-        foreach ($pages as $page) {
-            $pageIds[] = $page->getId();
-        }
-        $cloneArticle->setPageIds($pageIds);
         $article->getIssue()->addArticle($cloneArticle);
         $em->flush();
         
@@ -210,35 +202,6 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route(
-     *     "/orderpages",
-     *     name="article_orderpages",
-     *     defaults={"_format" = "json"},
-     *     options={"expose" = true}
-     * )
-     */
-    public function orderPagesAction()
-    {
-        $req = $this->getRequest();
-        $articleId = $req->get('id');
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find($articleId);
-        if (!$article || !$req->get('pageIds')) {
-            return new Response(json_encode(array('result'=>0)));
-        }
-        
-        $pageIds = $req->get('pageIds');
-        $article->setPageIds($pageIds);
-        
-        $em = $this->getDoctrine()->getEntityManager();
-        $em->persist($article);
-        $em->flush();
-        
-        return new Response('{"success":1}');
-    }
-
-    /**
-     * 
      * @Route("/{id}/edit", name="article_edit", requirements={"id" = "\d+"})
      * @Template("MagendArticleBundle:Article:new.html.twig")
      */
@@ -328,20 +291,31 @@ class ArticleController extends Controller
     {
         $article = new Article();
         
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
+        $kws = $kwRepo->findAll();
+                
+        $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
         $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
-        $req = $this->getRequest();
+        
         if ($req->getMethod() == 'POST') {
             $form->bindRequest($req);
             if ($form->isValid()) {
                 $issueId = $req->get('issueId');
                 $issue = $issueRepo->find($issueId);
                 if (empty($issue)) {
-                    throw new Exception('Issue not found');
+                    throw new \ Exception('Issue not found');
+                }
+                
+                $kwText = trim($article->getKeywordsText());
+                if (!empty($kwText)) {
+                    $keywords = $kwRepo->toEntities(explode(',', $kwText));
+                    $article->setKeywords($keywords);
                 }
                 
                 $article->setIssue($issue);
-                $em = $this->getDoctrine()->getEntityManager();
                 $em->persist($article);
                 $em->flush();
                 
@@ -359,7 +333,14 @@ class ArticleController extends Controller
             }
         }
         
+        $user = $this->get('security.context')->getToken()->getUser();
+        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+        $q = $em->createQuery($dql)->setParameter('user', $user);
+        $mags = $q->getResult();
         $tplVars = array(
+            //'institutes' => $institutes,
+            'keywords'   => $kws,
+            'magzines'   => $mags,
             'article'    => $article,
             'form'       => $form->createView()
         );
@@ -401,7 +382,7 @@ class ArticleController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         
         if ($this->getRequest()->isXmlHTTPRequest()) {
-            $query = $em->createQuery('SELECT partial a.{id, title, pageIds}, partial p.{id, landscapeImg, portraitImg, label} FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a.id = :articleId')
+            $query = $em->createQuery('SELECT partial a.{id, title}, partial p.{id, landscapeImg, portraitImg, label} FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a.id = :articleId')
                         ->setParameter('articleId', $id);
         
             $arr = $query->getArrayResult();
@@ -419,77 +400,6 @@ class ArticleController extends Controller
             'article' => $article
         );
     }
-    
-    /**
-     * 
-     * New the article, just itself
-     * 
-     * Must be put below /{id}, or 301 to this
-     * and all requests will be GET
-     * 
-     * @Route("", name="article_new_update", defaults={"_format" = "json"})
-     */
-    public function newUpdateAction()
-    {
-        $req = $this->getRequest();
-        $json = $req->getContent();
-        $paramsObj = json_decode($json);
-        $em = $this->getDoctrine()->getEntityManager();
-        if (isset($paramsObj->id)) {
-            $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-            $article = $repo->find($paramsObj->id);
-            if (empty($article)) {
-                throw new \ Exception('article ' . $paramsObj->id . ' not found');
-            }
-        } else {
-            // @todo might not need issue id
-            if (!isset($paramsObj->issueId)) {
-                return new Response(json_encode(array(
-                    'error' => 'Issue Id is required'
-                )));
-            }
-            
-            $issueId = $paramsObj->issueId;
-            $article = new Article();
-            $issueRef = $em->getReference('MagendIssueBundle:Issue', $issueId);
-            $issueRef->addArticle($article);
-            $article->setIssue($issueRef);
-        }
-
-        if (isset($paramsObj->title)) {
-            $article->setTitle($paramsObj->title);
-        }
-        
-        if (isset($paramsObj->pageIds)) {
-            $pageIds = $paramsObj->pageIds;
-            $article->setPageIds($pageIds);
-            // did associate in page controller
-            /*
-            $pageRefs = array();
-            foreach ($pageIds as $pageId) {
-                $pageRef = $em->getReference('MagendPageBundle:Page', $pageId);
-                $pageRef->setArticle($article);
-                $pageRefs[] = $pageRef;
-            }
-            
-            $article->setPages($pageRefs);
-            $article->setPageIds($pageIds);*/
-        }
-        
-        $em->persist($article);
-        $em->flush();
-        
-        if (isset($paramsObj->id)) {
-            $response = '{}';
-        } else {
-            $response = json_encode(array(
-                'id' => $article->getId()
-            ));
-        }
-        return new Response($response);
-    }
-    
-
     
     /**
      * @Route("/index")

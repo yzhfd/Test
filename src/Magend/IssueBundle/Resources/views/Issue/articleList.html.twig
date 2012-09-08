@@ -74,7 +74,7 @@
                         <td><input type="checkbox" /></td>
                         <td><a href="{{ path('article_edit', { 'id': article.id }) }}">{{ article.title|truncate(10) }}</a></td>
                         <td>{{ article.type|transIn('article') }}</td>
-                        <td>{{ article.pageIds|length }}</td>
+                        <td>{{ article.nbPages }}</td>
                         <td>{{ article.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:110px;">
                             <a href="{{ path('article_edit', { 'id':article.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>

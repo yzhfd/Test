@@ -5,42 +5,57 @@
 {% form_theme form '::fields.html.twig' %}
 
 {% block main %}
+    <h2>{% if issue.id is not empty %}编辑{% else %}创建{% endif %}期刊</h2>
     <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-        
-        <div class="clearfix">
-            {{ form_label(form.title, '标题') }}
-            <div class="input">{{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}</div>
+        <div>
+            {{ form_label(form.title, '杂志选择') }}
+            <select id="magsel" class="medium" name="magzineId">
+                {% for magzine in magzines %}
+                <option value="{{ magzine.id }}" {% if issue.magzine is not null and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
+                {% endfor %}            
+            </select>
         </div>
+
+        {{ form_label(form.year, '年') }}
+        {{ form_errors(form.year) }}{{ form_widget(form.year, { 'attr':{'class':'small'} }) }}
         
-        <div class="clearfix">
-            {{ form_label(form.landscapeCoverFile, '横屏封面') }}
-            <div class="input">{{ form_errors(form.landscapeCoverFile) }}{{ form_widget(form.landscapeCoverFile, { 'attr':{'class':'span6'} }) }}</div>
-        </div>
+        {{ form_label(form.yearIssueNo, '年期数') }}
+        {{ form_errors(form.yearIssueNo) }}{{ form_widget(form.yearIssueNo, { 'attr':{'class':'small'}, 'id':'yearIssueNo' }) }}
         
-        <div class="clearfix">
-            {{ form_label(form.portraitCoverFile, '竖屏封面') }}
-            <div class="input">{{ form_errors(form.portraitCoverFile) }}{{ form_widget(form.portraitCoverFile, { 'attr':{'class':'span6'} }) }}</div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.posterFile, '宣传图片') }}
-            <div class="input">{{ form_errors(form.posterFile) }}{{ form_widget(form.posterFile, { 'attr':{'class':'span6'} }) }}</div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.audioFile, '背景音乐') }}
-            <div class="input">{{ form_errors(form.audioFile) }}{{ form_widget(form.audioFile, { 'attr':{'class':'span6'} }) }}</div>
-        </div>
-        
-        <div class="clearfix">
-            {{ form_label(form.videoFile, '开篇视频') }}
-            <div class="input">{{ form_errors(form.videoFile) }}{{ form_widget(form.videoFile, { 'attr':{'class':'span6'} }) }}</div>
-        </div>
+        {{ form_label(form.totalIssueNo, '总期数') }}
+        {{ form_errors(form.totalIssueNo) }}{{ form_widget(form.totalIssueNo, { 'attr':{'class':'small'}, 'id':'totalIssueNo' }) }}
+
+        {{ form_label(form.title, '标题') }}
+        {{ form_errors(form.title) }}{{ form_widget(form.title, { 'attr':{'class':'span6'} }) }}
+
+        {{ form_label(form.publishedAt, '出版日期') }}
+        {{ form_errors(form.publishedAt) }}{{ form_widget(form.publishedAt, { 'attr':{'class':'small'}, 'id':'publishedAt' }) }}
+
+        {{ form_label(form.priceLevel, '价格') }}
+        {{ form_errors(form.priceLevel) }}{{ form_widget(form.priceLevel, { 'attr':{'class':'small'} }) }}
+
+        {{ form_label(form.iapId, 'AppStore应用ID') }}
+        {{ form_errors(form.iapId) }}{{ form_widget(form.iapId) }}
+                    
+        {{ form_label(form.landscapeCoverFile, '横版封面') }}
+        {{ form_errors(form.landscapeCoverFile) }}{{ form_widget(form.landscapeCoverFile, { 'attr':{'class':'span2'} }) }}
+
+        {{ form_label(form.portraitCoverFile, '竖版封面') }}
+        {{ form_errors(form.portraitCoverFile) }}{{ form_widget(form.portraitCoverFile, { 'attr':{'class':'span2'} }) }}
+
+        {{ form_label(form.previewFile, '预览图') }}
+        {{ form_errors(form.previewFile) }}{{ form_widget(form.previewFile, { 'attr':{'class':'span2'} }) }}
+
+        {{ form_label(form.enPreviewFile, '英文预览图') }}
+        {{ form_errors(form.enPreviewFile) }}{{ form_widget(form.enPreviewFile, { 'attr':{'class':'span2'} }) }}
+
+        {{ form_label(form.audioFile, '背景音乐') }}
+        {{ form_errors(form.audioFile) }}{{ form_widget(form.audioFile, { 'attr':{'class':'span2'} }) }}
         
         {{ form_rest(form) }}
         
-        <div class="actions">
-            <button class="btn btn-primary" type="submit" data-loading-text="提交中...">提交</button>
+        <div class="form-actions">
+            <button class="btn btn-primary btn-large" type="submit" data-loading-text="提交中...">提 交</button>
             <a style="display:none;" id="issue_next" class="btn" href="{% if issue.id is not null %}{{ url('issue_editor', { 'id':issue.id }) }}{% else %}#{% endif %}">创建编排文章</a>
         </div>
     </form>

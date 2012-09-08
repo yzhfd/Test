@@ -19,7 +19,11 @@ use Magend\HotBundle\Entity\HotContainer;
  * @ORM\HasLifecycleCallbacks
  */
 class Page
-{   
+{
+    const TYPE_MAIN      = 0;    
+    const TYPE_INFO      = 1;    
+    const TYPE_STRUCTURE = 2;
+
     /**
      * @var integer $id
      *
@@ -28,7 +32,7 @@ class Page
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
+    
     /**
      * @var Article
      * 
@@ -41,7 +45,15 @@ class Page
      * @var int
      * @ORM\Column(name="type", type="smallint")
      */
-    private $type = 0;
+    private $type = self::TYPE_MAIN;
+    
+    /**
+     * Sequence number of the page
+     * 
+     * @var integer $seq
+     * @ORM\Column(name="seq", type="integer")
+     */
+    private $seq = 0;
     
     /**
      * @var ArrayCollection
@@ -489,5 +501,15 @@ class Page
     public function getPortraitHots()
     {
         return $this->_getHotsByMode(Hot::MODE_PORTRAIT);
+    }
+    
+    public function getSeq()
+    {
+        return $this->seq;
+    }
+    
+    public function setSeq($seq)
+    {
+        $this->seq = $seq;
     }
 }

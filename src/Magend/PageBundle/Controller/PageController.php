@@ -2,6 +2,7 @@
 
 namespace Magend\PageBundle\Controller;
 
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Magend\PageBundle\Entity\Page;
@@ -48,6 +49,7 @@ class PageController extends Controller
             }
         }
         
+        // @todo use seq
         $pageIds = $page->getArticle()->getPageIds();
         $index = array_search($id, $pageIds);
         $prev = $next = null; // id of previous and next page
@@ -162,17 +164,6 @@ class PageController extends Controller
         if ($page) {
             $em = $this->getDoctrine()->getEntityManager();
             $em->remove($page);
-            
-            $article = $page->getArticle();
-            $pageIds = $article->getPageIds();
-            foreach ($pageIds as $index=>$pageId) {
-                if ($pageId == $page->getId()) {
-                    unset($pageIds[$index]);
-                    break;
-                }
-            }
-            $article->setPageIds($pageIds);
-            
             $em->flush();
         }
         
@@ -198,7 +189,7 @@ class PageController extends Controller
     {
         $req = $this->getRequest();
         if (!$req->isXmlHTTPRequest()) {
-            throw new \ Exception("Not allowed to access this page");
+            throw new Exception("Not allowed to access this page");
         }
 
         $json = $req->getContent();
@@ -270,7 +261,7 @@ class PageController extends Controller
 
             $articleId = $req->get('articleId');
             if ($articleId === null) {
-                throw new \Exception('page.article_notfound');
+                throw new Exception('page.article_notfound');
             }
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($articleId);
@@ -329,7 +320,7 @@ class PageController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
         $page = $repo->find($pageId);
         if (empty($page)) {
-            throw new \ Exception('page not found');
+            throw new Exception('page not found');
         }
         
         // @todo landscape or portrait

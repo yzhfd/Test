@@ -160,43 +160,11 @@ var article_new = function () {
 		return dfd.promise();
 	};
 	
-	// old pageIds
-	$('.newPages').find('ol.pages').each(function(index, pages){
-		pages = $(pages);
-		var pageIds = [];
-		pages.find('li.page').each(function(index, lipage){
-			var pageId = $(lipage).attr('rel');
-			if (pageId) pageIds.push(pageId);
-		});
-		pages.data('pageIds', pageIds);
-	});
-	
 	$('.submit_pages').click(function(){
 		var submitBtn = $(this);
 		submitBtn.button('loading');
 		var pages = submitBtn.parent().parent().find('ol.pages');
-		var pageIds = pages.data('pageIds');
-		
-		// upload pages then order them (if there is change)
-		savePages(pages).pipe(function(){
-			var _pageIds = [];
-			pages.find('li.page').each(function(index, lipage){
-				var pageId = $(lipage).attr('rel');
-				if (pageId) _pageIds.push(pageId);
-			});
-			var strPageIds = _pageIds.join(',');
-			if (strPageIds != pageIds.join(',')) {
-				var articleId = $('#newPagesTab').attr('rel');
-				return $.ajax({
-					url: Routing.generate('article_orderpages', {'type':submitBtn.attr('rel')}),
-					data: {
-						id: articleId,
-						pageIds: strPageIds
-					}
-				});
-			}
-			return {};
-		}).always(function(){
+		savePages(pages).always(function(){
 			submitBtn.button('reset');
 		});
 	});

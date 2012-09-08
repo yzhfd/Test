@@ -2,6 +2,7 @@
 
 namespace Magend\ArticleBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Magend\KeywordBundle\Entity\Keyword;
@@ -18,10 +19,15 @@ USE Magend\PageBundle\Entity\Page;
  */
 class Article
 {
-    const TYPE_COMMON = 0;
-    const TYPE_INDEX  = 1;
-    const TYPE_SUITE  = 2;
-    const TYPE_FUNC   = 3;
+    const TYPE_ADS    = 0;      
+    const TYPE_COVER  = 1;
+    const TYPE_INDEX  = 2;
+    const TYPE_RIGHT  = 3;
+    const TYPE_PROJ   = 4;
+    const TYPE_INST   = 5;
+    const TYPE_PEOPLE = 6;
+    const TYPE_ARCTH  = 7;
+    const TYPE_ELSE   = 8;
     
     /**
      * @var integer $id
@@ -130,16 +136,6 @@ class Article
     public $architectsText;
     
     /**
-     * Comma separated text of page ids
-     * Main pages
-     * 
-     * @var string $pageIds
-     *
-     * @ORM\Column(name="page_ids", type="text", nullable=true)
-     */
-    private $pageIds;
-    
-    /**
      * 
      * @var ArrayCollection
      * 
@@ -150,8 +146,17 @@ class Article
      *     cascade={"persist", "remove"},
      *     fetch="EXTRA_LAZY"
      * )
+     * @ORM\OrderBy({"seq" = "ASC"})
      */
     private $pages;
+    
+    /**
+     * 
+     * @var interger
+     * 
+     * @ORM\Column(name="nb_pages", type="smallint")
+     */
+    private $nbPages = 0;
     
     /**
      * Article's comments
@@ -306,11 +311,33 @@ class Article
      */
     public function prePersist()
     {
-        $now = new \DateTime;
+        $now = new DateTime;
         if (null === $this->createdAt) {
             $this->createdAt = $now;
         } else {
             $this->updatedAt = $now;
+        }
+        
+        if ($this->audioFile) {
+            $fileName = uniqid('audio_') . '.' . $this->audioFile->guessExtension();
+            $this->audioFile->move(__DIR__.'/../../../../web/uploads/', $fileName);
+            
+            if ($this->getAudio()) {
+                @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
+            }
+        
+            $this->setAudio($fileName);
+        }
+    }
+    
+    /**
+     * 
+     * @ORM\PostRemove()
+     */
+    public function postRemove()
+    {
+        if ($this->getAudio()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getAudio());
         }
     }
     
@@ -327,29 +354,6 @@ class Article
         foreach ($issues as $issue) {
             $issue->removeArticle($this);
         }
-    }
-    
-    /**
-     * 
-     * @param mixed $pageIds
-     * @param int $pageType
-     */
-    public function setPageIds($pageIds)
-    {
-        if (is_array($pageIds)) {
-            $pageIds = implode(',', $pageIds);
-        }
-        
-        $this->pageIds = $pageIds;
-    }
-    
-    /**
-     * 
-     */
-    public function getPageIds()
-    {
-        $pageIds = $this->pageIds;        
-        return $pageIds ? explode(',', trim($pageIds, ',')) : array();
     }
     
     /**
@@ -621,17 +625,11 @@ class Article
     
     /**
      * 
-     * @return array - pages ordered by pageIds
+     * @todo which type
+     * @return array
      */ 
     public function getPages()
     {
-        $pages = array();
-        $pageIds = $this->getPageIds();
-        foreach ($pageIds as $pageId) {
-            if (!empty($this->pages[$pageId])) {
-                $pages[$pageId] = $this->pages[$pageId];
-            }
-        }
         return $pages;
     }
     
@@ -645,23 +643,26 @@ class Article
     
     /**
      * 
-     * Just count main pages
+     * @return integer
      */
     public function getNbPages()
     {
-        $pageIds = $this->getPageIds();
-        return count($pageIds);
+        return $this->nbPages;
+    }
+    
+    public function setNbPages($nbPages)
+    {
+        $this->nbPages = $nbPages;
     }
     
     public function getThumbnail()
     {
         $pages = $this->getPages();        
-        $pageIds = $this->getPageIds();
-        if (empty($pages) || empty($pageIds)) {
+        if (empty($pages)) {
             return null;
         }
         
-        $firstPage = $pages[$pageIds[0]];
+        $firstPage = $pages->first();
         if (!$firstPage) {
             return null;
         }
