@@ -38,6 +38,28 @@ class Article
      */
     private $id;
     
+    ////////////////////////////////////////////////////
+    
+    /**
+     *
+     * @ORM\Column(name="page_ids", type="text")
+     */
+    public $pageIds;
+    
+    /**
+     *
+     * @ORM\Column(name="infopage_ids", type="text")
+     */
+    public $infoPageIds;
+    
+    /**
+     *
+     * @ORM\Column(name="structurepage_ids", type="text")
+     */
+    public $structurePageIds;
+    
+    ////////////////////////////////////////////////////
+    
     /**
      * @var Article
      *

@@ -22,6 +22,60 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ArticleController extends Controller
 {
+    /**
+     * 
+     * 
+     * @Route("/seq-pages", name="article_seq_pages") 
+     */
+    public function seqPagesAction()
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $pageRepo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $articles = $repo->findAll();
+        foreach ($articles as $article) {
+            $pageIds = explode(',', $article->pageIds);
+            if (count($pageIds) > 1) {
+                $index = 0;
+                foreach ($pageIds as $pageId) {
+                    if (empty($pageId)) continue;
+                    $page = $pageRepo->find($pageId);
+                    if (empty($page)) continue;
+                    $page->setSeq($index);
+                    ++$index;
+                }
+            }
+            
+            $pageIds = explode(',', $article->infoPageIds);
+            if (count($pageIds) > 1) {
+                $index = 0;
+                foreach ($pageIds as $pageId) {
+                    if (empty($pageId)) continue;
+                    $page = $pageRepo->find($pageId);
+                    if (empty($page)) continue;
+                    $page->setSeq($index);
+                    ++$index;
+                }
+            }
+            
+            $pageIds = explode(',', $article->structurePageIds);
+            if (count($pageIds) > 1) {
+                $index = 0;
+                foreach ($pageIds as $pageId) {
+                    if (empty($pageId)) continue;
+                    $page = $pageRepo->find($pageId);
+                    if (empty($page)) continue;
+                    $page->setSeq($index);
+                    ++$index;
+                }
+            }
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        die('done');
+    }
+    
     private function getArticleById($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
@@ -56,7 +110,7 @@ class ArticleController extends Controller
     /**
      * Set the article as copyright
      * 
-     * @Route("/{id}/copyright", name="article_copyright", requirements={"id" = "\d+"})
+     * @Route("/{id}/copyright", name="article_copyright", requirements={"id"="\d+"})
      */
     public function copyrightAction($id)
     {
@@ -202,7 +256,7 @@ class ArticleController extends Controller
     
     /**
      * 
-     * @Route("/{id}/edit", name="article_edit", requirements={"id" = "\d+"})
+     * @Route("/{id}/edit", name="article_edit", requirements={"id"="\d+"})
      * @Template("MagendArticleBundle:Article:new.html.twig")
      */
     public function editAction($id)
@@ -306,7 +360,7 @@ class ArticleController extends Controller
                 $issueId = $req->get('issueId');
                 $issue = $issueRepo->find($issueId);
                 if (empty($issue)) {
-                    throw new \ Exception('Issue not found');
+                    throw new Exception('Issue not found');
                 }
                 
                 $kwText = trim($article->getKeywordsText());
@@ -355,23 +409,6 @@ class ArticleController extends Controller
 
         return $tplVars;
     }
-
-    /**
-     * @Route("/{id}", name="article_update", requirements={"id" = "\d+"})
-     * @Method("post")
-     * @Template()
-     */
-    public function updateAction($id)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find($id);
-        
-        if ($article) {
-            // @todo update
-        }
-        return new Response('');
-    }
     
     /**
      * @Route("/{id}", name="article_show", requirements={"id" = "\d+"})
@@ -399,45 +436,5 @@ class ArticleController extends Controller
         return array(
             'article' => $article
         );
-    }
-    
-    /**
-     * @Route("/index")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
-        $article = $repo->find(13);
-        
-        $keyword = 'awesome';
-        $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
-        $kwEntity = $kwRepo->findOneBy(array(
-            'keyword' => $keyword
-        ));
-        
-        if ($kwEntity == null) {
-            $kwEntity = new Keyword($keyword);            
-        }
-        
-        $article->addKeyword($kwEntity);
-        $em->persist($article);
-        
-        try {
-            // ...
-            $em->flush();
-        } catch( \PDOException $e ) {
-            if( $e->getCode() === '23000' )
-            {
-                echo $e->getMessage();
-
-            // Will output an SQLSTATE[23000] message, similar to:
-            // Integrity constraint violation: 1062 Duplicate entry 'x'
-            // ... for key 'UNIQ_BB4A8E30E7927C74'
-            } else throw $e;
-        }
-        
-        return array();
     }
 }
