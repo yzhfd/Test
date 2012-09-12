@@ -197,18 +197,24 @@ class Page
     
     /**
      * 
+     * 
      * @ORM\PrePersist()
-     * @ORM\PreUpdate()
      */
     public function prePersist()
-    {
-        $now = new DateTime;
-        if (null === $this->createdAt) {
-            $this->createdAt = $now;
-        } else {
-            $this->updatedAt = $now;
-        }
+    {        
+        $this->createdAt = new DateTime;
+        $this->article->incNbPages();
     }
+    
+    /**
+     * 
+     * 
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    {
+        $this->updatedAt = new DateTime;
+    }    
     
     public function unlinkLandscapeImg($withThumbnail = true)
     {
@@ -229,8 +235,18 @@ class Page
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getPortraitImgThumbnail());
         }
     }
+
+    /**
+     * 
+     * @ORM\PreRemove()
+     */
+    public function preRemove()
+    {
+        $this->article->decNbPages();
+    }
     
     /**
+     * 
      * @ORM\PostRemove()
      */
     public function removeImgs()

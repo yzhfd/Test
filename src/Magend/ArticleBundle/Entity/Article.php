@@ -645,6 +645,16 @@ class Article
         $this->nbPages = $nbPages;
     }
     
+    public function incNbPages()
+    {
+        ++$this->nbPages;
+    }
+    
+    public function decNbPages()
+    {
+        --$this->nbPages;
+    }
+    
     public function getThumbnail()
     {
         $pages = $this->getPages();        
@@ -747,6 +757,7 @@ class Article
     public function addPage(Page $page)
     {
         $this->pages[] = $page;
+        $this->incNbPages();
     }
 
     /**
