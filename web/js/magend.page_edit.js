@@ -132,6 +132,16 @@ var page_edit = function () {
 		$(this).parent().remove();
 		return false;
 	});
+	
+	$('html').on('click', 'a.imgwrapper', function(e){
+		e.preventDefault();
+		return false;
+	});
+	
+	$('html').on('dblclick', 'a.imgwrapper', function(e){
+		$('#assetInfoDialog').modal('show');
+		return false;
+	});
 
 	// upload
 	$('.assets-panel').each(function(index, panel){
