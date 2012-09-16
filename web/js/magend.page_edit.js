@@ -139,7 +139,20 @@ var page_edit = function () {
 	});
 	
 	$('html').on('dblclick', 'a.imgwrapper', function(e){
+		var info = $(this).parent().find('.asset_info').val();
+		var textarea = $('#assetInfoDialog textarea');
+		textarea.val(info);
+		$('#assetInfoDialog').data('asset', $(this).parent());
 		$('#assetInfoDialog').modal('show');
+		return false;
+	});
+	
+	$('#asset-info-done').click(function(e){
+		var asset = $('#assetInfoDialog').data('asset');
+		if (asset) {
+			asset.find('.asset_info').val($('#assetInfoDialog textarea').val());
+		}
+		$('#assetInfoDialog').modal('hide');
 		return false;
 	});
 

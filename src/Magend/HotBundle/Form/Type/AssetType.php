@@ -20,6 +20,7 @@ class AssetType extends AbstractType
              ->add('seq', 'hidden', array('label' => '顺序', 'attr' => array('class' => 'asset_seq'), 'data' => 0))
              ->add('tag', 'hidden', array('label' => '标签', 'attr' => array('class' => 'asset_tag')))
              ->add('resource', 'hidden', array('label' => '文件名', 'attr' => array('class' => 'asset_resource')))
+             ->add('info', 'hidden', array('label' => '文本信息', 'attr' => array('class' => 'asset_info')))
         ;
     }
 

@@ -18,9 +18,26 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class AssetController extends Controller
 {
     /**
+     * Update asset info text
+     *
+     * @Route("/update", name="asset_update", defaults={"_format"="json"})
+     */
+    public function updateAction()
+    {
+        $id = $this->getRequest()->get('id');
+        $repo = $this->getDoctrine()->getRepository('MagendAssetBundle:Asset');
+        $asset = $repo->find($id);
+        $asset->setInfo($this->getRequest()->get('info'));
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        return '{"ok":1}';
+    }
+    
+    /**
      * Upload asset's resource
      * 
-     * @Route("/upload", name="asset_upload", defaults={"_format" = "json"}, options={"expose" = true})
+     * @Route("/upload", name="asset_upload", defaults={"_format" = "json"}, options={"expose"=true})
      * @Template()
      */
     public function uploadAction()
