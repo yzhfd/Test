@@ -18,6 +18,33 @@ use Magend\HotBundle\Entity\Hot;
 class HotController extends Controller
 {
     /**
+     * Fix hots in old data
+     * 
+     * @Route("/fix")
+     */
+    public function fixAction()
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendHotBundle:Hot');
+        $hots = $repo->findAll();
+        foreach ($hots as $hot) {
+            $attrs = $hot->getAttrs();
+            
+            if (isset($attrs['x'])) $hot->setX($attrs['x']);
+            if (isset($attrs['y'])) $hot->setY($attrs['y']);
+            if (isset($attrs['w'])) $hot->setW($attrs['w']);
+            if (isset($attrs['h'])) $hot->setH($attrs['h']);
+            $hot->setAttrs(array());
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+        
+        echo 'done';
+        exit;
+    }
+    
+    
+    /**
      * Order hot's assets and delete ones not exist any longer
      * 
      * @Route("/{id}/order_assets", name="hot_order_assets", defaults={"_format" = "json"}, requirements={"id"="\d+"}, options={"expose" = true});
