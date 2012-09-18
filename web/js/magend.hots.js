@@ -190,7 +190,7 @@ var HotView = Backbone.View.extend({
     	var hotForm = $('#' + hotModel.cid + '_form');
     	hotForm.extractor({
     		show:'fade', zIndex:2000, title:'',
-    		width: 'auto', height: 'auto',
+    		width: '360px', height: 'auto',
     		// dunno why jquery ui button not styled
 			close: function () {
 			},

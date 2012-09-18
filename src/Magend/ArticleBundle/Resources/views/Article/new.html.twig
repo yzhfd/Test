@@ -24,6 +24,8 @@
 <ul class="nav nav-tabs">
     <li class="active"><a id"newBasicTab" href="#newBasic" data-toggle="tab">基本信息</a></li>
     <li><a id="newPagesTab" rel="{{ article.id }}" href="#newPages" data-toggle="tab">主页面</a></li>
+    <li class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}><a id="newInfoPagesTab" rel="{{ article.id }}" href="#newInfoPages" data-toggle="tab">信息页</a></li>
+    <li class="article-uncommon article-type4" {% if article.type != 4 %}style="display:none;"{% endif %}><a id="newStructurePagesTab" rel="{{ article.id }}" href="#newStructurePages" data-toggle="tab">结构图</a></li>
 </ul>
 
 <div class="tab-content">
@@ -38,6 +40,52 @@
         </div>
         <div class="well"><button rel="0" data-loading-text="保存中..." class="btn btn-info submit_pages">保存</button></div>
         <ol class="pages" rel="{{ path('page_upload', {'type':0}) }}">
+            <li style="display:none" class="page">
+                <a href="#" title="">
+                <img src="http://placehold.it/128x96" /></a>
+            </li><!-- not empty to make sortable no wrong -->
+            {% if article.id %}
+                {% for page in article.pages %}
+                <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
+                    <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
+                    <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
+                </li>
+                {% endfor %}
+            {% endif %}
+        </ol>
+        <div style="clear:both; height:200px;"></div>
+    </div>
+    
+    <div id="newInfoPages" class="tab-pane newPages" style="width:500px;">
+        <div class="alert alert-error fade in">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>从本地硬盘拖拽图片到这里添加页面.</strong>
+        </div>
+        <div class="well"><button rel="0" data-loading-text="保存中..." class="btn btn-info submit_pages">保存</button></div>
+        <ol class="pages" rel="{{ path('page_upload', {'type':1}) }}">
+            <li style="display:none" class="page">
+                <a href="#" title="">
+                <img src="http://placehold.it/128x96" /></a>
+            </li><!-- not empty to make sortable no wrong -->
+            {% if article.id %}
+                {% for page in article.pages %}
+                <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
+                    <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
+                    <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
+                </li>
+                {% endfor %}
+            {% endif %}
+        </ol>
+        <div style="clear:both; height:200px;"></div>
+    </div>
+    
+    <div id="newStructurePages" class="tab-pane newPages" style="width:500px;">
+        <div class="alert alert-error fade in">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>从本地硬盘拖拽图片到这里添加页面.</strong>
+        </div>
+        <div class="well"><button rel="0" data-loading-text="保存中..." class="btn btn-info submit_pages">保存</button></div>
+        <ol class="pages" rel="{{ path('page_upload', {'type':2}) }}">
             <li style="display:none" class="page">
                 <a href="#" title="">
                 <img src="http://placehold.it/128x96" /></a>
