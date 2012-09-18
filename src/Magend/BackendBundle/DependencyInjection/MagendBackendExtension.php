@@ -26,5 +26,6 @@ class MagendBackendExtension extends Extension
         $loader->load('services.xml');
         $loader->load('form.xml');
         $loader->load('user_orm.xml');
+        $loader->load('category_orm.xml');
     }
 }

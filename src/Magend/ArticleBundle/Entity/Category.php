@@ -21,6 +21,17 @@ class Category
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * 
+     * @var Magazine
+     * 
+     * @ORM\ManyToOne(targetEntity="Magend\MagazineBundle\Entity\Magazine", inversedBy="categories")
+     * @ORM\JoinColumn(
+     *     onDelete="CASCADE"
+     * )
+     */
+    private $magazine;
 
     /**
      * @var string $title
@@ -74,6 +85,16 @@ class Category
     public function getTitle()
     {
         return $this->title;
+    }
+    
+    public function getMagazine()
+    {
+        return $this->magazine;
+    }
+    
+    public function setMagazine($magazine)
+    {
+        $this->magazine = $magazine;
     }
     
     public function getSubCategories()

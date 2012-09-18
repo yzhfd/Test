@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- Article Category -->
+        <parameter key="magend.article.admin.category.class">Magend\BackendBundle\Admin\Entity\CategoryAdmin</parameter>
+        <parameter key="magend.article.admin.category.controller"></parameter>
+        <parameter key="magend.article.admin.category.entity">Magend\ArticleBundle\Entity\Category</parameter>
+        <parameter key="magend.article.admin.category.translation_domain">SonataAdminBundle</parameter>
+
+        <parameter key="magend.article.admin.groupname">杂志分类定义</parameter>
+    </parameters>
+
+    <services>
+        <service id="magend.article.admin.category" class="%magend.article.admin.category.class%">
+            <tag name="sonata.admin" manager_type="orm" group="%magend.article.admin.groupname%" label="分类" />
+            <argument />
+            <argument>%magend.article.admin.category.entity%</argument>
+            <argument />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <call method="setTranslationDomain">
+                <argument>%magend.article.admin.category.translation_domain%</argument>
+            </call>
+        </service>
+    </services>
+    
+</container>

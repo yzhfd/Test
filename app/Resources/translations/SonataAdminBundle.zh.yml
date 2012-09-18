@@ -42,6 +42,7 @@ link_reset_filter: 重置
 label_type_contains: 包含
 label_type_not_contains: 不包含
 label_type_equals: 等于
+label_type_not_equals: 不等于
 label_type_equal: 等于
 label_type_greater_equal: 不小于
 label_type_greater_than: 大于

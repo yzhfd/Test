@@ -90,8 +90,8 @@ class SubCategory
      */
     public function postRemove()
     {
-        if ($this->getThumbnail()) {
-            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getThumbnail());
+        if ($this->getIcon()) {
+            @unlink(__DIR__.'/../../../../web/uploads/' . $this->getIcon());
         }
     }
     
@@ -133,5 +133,15 @@ class SubCategory
     public function getIcon()
     {
         return $this->icon;
+    }
+    
+    public function getCategory()
+    {
+        return $this->category;
+    }
+    
+    public function setCategory($category)
+    {
+        $this->category = $category;
     }
 }
