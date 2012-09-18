@@ -31,8 +31,8 @@ class HotController extends Controller
             
             if (isset($attrs['x'])) $hot->setX($attrs['x']);
             if (isset($attrs['y'])) $hot->setY($attrs['y']);
-            if (isset($attrs['w'])) $hot->setW($attrs['w']);
-            if (isset($attrs['h'])) $hot->setH($attrs['h']);
+            if (isset($attrs['width'])) $hot->setW($attrs['width']);
+            if (isset($attrs['height'])) $hot->setH($attrs['height']);
             $hot->setAttrs(array());
         }
         
