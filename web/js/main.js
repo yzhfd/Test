@@ -50,8 +50,8 @@ $(function () {
 		});
 	}
 	
-	if ($('#magzine_form').length > 0) {
-		var magForm = $('#magzine_form');
+	if ($('#magazine_form').length > 0) {
+		var magForm = $('#magazine_form');
 		magForm.fileupload({
 			// maxFilesize, minFileSize
 			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i

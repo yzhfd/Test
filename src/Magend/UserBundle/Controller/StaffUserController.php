@@ -117,7 +117,7 @@ class StaffUserController extends Controller
         $formBuilder = $this->createFormBuilder($user);
         
         $form = $formBuilder->add('grantedMags', 'entity', array(
-            'class' => 'MagendMagzineBundle:Magzine',
+            'class' => 'MagendMagazineBundle:Magazine',
             'multiple' => true,
             'query_builder' => function (EntityRepository $er) use ($currentUser) {
                 return $er->createQueryBuilder('m')->where('m.owner = :owner')->setParameter('owner', $currentUser);

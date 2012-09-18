@@ -5,7 +5,7 @@
     <Issue issueid="{{ issue.id }}">
         <articles>
         {% for article in issue.articles %}
-            {% if article.copyrightMagzine %}copyrt{% set copyrt = article.id %}{% else %}{{ article.id }}{% endif %}{% if not loop.last %},{% endif %}
+            {% if article.copyrightMagazine %}copyrt{% set copyrt = article.id %}{% else %}{{ article.id }}{% endif %}{% if not loop.last %},{% endif %}
         {% endfor %}
         </articles>
     </Issue>

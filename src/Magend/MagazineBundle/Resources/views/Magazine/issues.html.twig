@@ -12,8 +12,8 @@
             <div>
                 <select id="magtype_sel" class="span2 urlSelect" style="margin-top:8px;">     
                     <option value="">请选择杂志</option>      
-                    {% for magzine in magzines %}      
-                        <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if magzine.id == app.request.get('id') %}selected="selected"{% endif %}>{{ magzine.name }}</option>
+                    {% for magazine in magazines %}      
+                        <option value="{{ path('magazine_issues', { 'id':magazine.id }) }}" {% if magazine.id == app.request.get('id') %}selected="selected"{% endif %}>{{ magazine.name }}</option>
                     {% endfor %}
                 </select>
                 <a class="btn btn-info" href="{{ path('issue_new') }}">添加期刊</a>

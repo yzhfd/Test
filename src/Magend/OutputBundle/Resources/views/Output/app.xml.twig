@@ -2,12 +2,12 @@
 
 {% block body %}
     <App>
-        {% for magzine in magzines %}
+        {% for magazine in magazines %}
         <Magazine>
-            <Id>{{ magzine.id }}</Id>
-            <Name>{{ magzine.name }}</Name>
-            <Cover>{% if magzine.landscapeCover is not null %}{{ magzine.landscapeCover }}{% endif %}</Cover>
-            <Url>{{ url('output_magzine', { 'id':magzine.id }) }}</Url>
+            <Id>{{ magazine.id }}</Id>
+            <Name>{{ magazine.name }}</Name>
+            <Cover>{% if magazine.landscapeCover is not null %}{{ magazine.landscapeCover }}{% endif %}</Cover>
+            <Url>{{ url('output_magazine', { 'id':magazine.id }) }}</Url>
         </Magazine>
         {% endfor %}
     </App>

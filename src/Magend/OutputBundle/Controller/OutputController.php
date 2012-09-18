@@ -42,18 +42,18 @@ class OutputController extends Controller
     }
     
     /**
-     * Output magzine's content(issues)
+     * Output magazine's content(issues)
      * 
-     * @Route("/magzine/{id}", name="output_magzine", requirements={"id"="\d+"}, defaults={"_format" = "xml"})
+     * @Route("/magazine/{id}", name="output_magazine", requirements={"id"="\d+"}, defaults={"_format" = "xml"})
      * @Template()
      */
-    public function magzineAction($id)
+    public function magazineAction($id)
     {
         /*
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if (!$isAdmin) {
             $user = $this->get('security.context')->getToken()->getUser();
-            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
             $mag = $repo->findBy(array(
                 'id' => $id,
                 'user' => $user->getId()
@@ -69,10 +69,10 @@ class OutputController extends Controller
     
     /**
      * 
-     * @Route("/magzines", name="output_magzines", defaults={"_format" = "xml"})
+     * @Route("/magazines", name="output_magazines", defaults={"_format" = "xml"})
      * @Template()
      */
-    public function magzinesAction()
+    public function magazinesAction()
     {
         $user = $this->get('security.context')->getToken()->getUser();
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace Magend\MagzineBundle\Controller;
+namespace Magend\MagazineBundle\Controller;
 
 use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -9,27 +9,27 @@ use Magend\BaseBundle\Controller\BaseController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Magend\MagzineBundle\Entity\Magzine;
+use Magend\MagazineBundle\Entity\Magazine;
 use Symfony\Component\HttpFoundation\Cookie;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * 
- * @Route("/magzine")
+ * @Route("/magazine")
  * @author kail
  */
-class MagzineController extends Controller
+class MagazineController extends Controller
 {   
     /**
-     * @Route("/{id}/copyright", name="magzine_copyright", requirements={"id"="\d+"})
+     * @Route("/{id}/copyright", name="magazine_copyright", requirements={"id"="\d+"})
      * @Template()
      */    
     public function copyrightAction($id)
     {
-        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $magzine = $repo->find($id);
-        if (!$magzine) {
-            throw new Exception('Magzine not found');
+        $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+        $magazine = $repo->find($id);
+        if (!$magazine) {
+            throw new Exception('Magazine not found');
         }
         
         $req = $this->getRequest();
@@ -37,24 +37,24 @@ class MagzineController extends Controller
             $articleId = $req->get('copyright');
             $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
             $article = $repo->find($articleId);
-            $magzine->setCopyrightArticle($article);
+            $magazine->setCopyrightArticle($article);
             $em = $this->getDoctrine()->getEntityManager();
             $em->flush();
             
-            return new RedirectResponse($this->generateUrl('magzine_list'));
+            return new RedirectResponse($this->generateUrl('magazine_list'));
         }
         
-        $cprs = $magzine->getCopyrightArticles();
+        $cprs = $magazine->getCopyrightArticles();
         $noCopyrightArticle = empty($cprs) || $cprs->isEmpty();
         return array(
-            'magzine'            => $magzine,
+            'magazine'            => $magazine,
             'copyrightArticles'  => $cprs,
             'noCopyrightArticle' => $noCopyrightArticle
         );
     }
     
     /**
-     * @Route("/list", name="magzine_list")
+     * @Route("/list", name="magazine_list")
      * @Template()
      */
     public function listAction()
@@ -63,31 +63,31 @@ class MagzineController extends Controller
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if (!$isAdmin) {
             $user = $this->get('security.context')->getToken()->getUser();
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+            $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $em = $this->getDoctrine()->getEntityManager();
             $q = $em->createQuery($dql)->setParameter('user', $user);
         }
         
-        $arr = $this->getList('MagendMagzineBundle:Magzine', $q);
-        $arr['magzines'] = $arr['entities'];
+        $arr = $this->getList('MagendMagazineBundle:Magazine', $q);
+        $arr['magazines'] = $arr['entities'];
         unset($arr['entities']);
         return $arr;
     }
     
     /**
      * 
-     * @Route("/{id}/issues", name="magzine_issues", requirements={"id"="\d+"})
+     * @Route("/{id}/issues", name="magazine_issues", requirements={"id"="\d+"})
      * @Template()
      */
     public function issuesAction($id)
     {
         $cls = 'MagendIssueBundle:Issue';
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
+        $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magazine = :magId ORDER BY s.createdAt DESC")
                     ->setParameter('magId', $id);
         if ($this->getRequest()->isXmlHTTPRequest()) {
             $response = $this->container->get('templating')->renderResponse(
-                'MagendMagzineBundle:Magzine:issueOptions.html.twig',
+                'MagendMagazineBundle:Magazine:issueOptions.html.twig',
                 array('issues' => $query->getResult()));
             $response->headers->set('Content-Type', 'application/json');
             return $response;
@@ -96,28 +96,28 @@ class MagzineController extends Controller
         $arr['issues'] = $arr['entities'];
         unset($arr['entities']);
         
-        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
         $user = $this->get('security.context')->getToken()->getUser();
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if ($isAdmin) {
-            $arr['magzines'] = $repo->findAll();
+            $arr['magazines'] = $repo->findAll();
         } else {
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+            $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $q = $em->createQuery($dql)->setParameter('user', $user->getId());
-            $arr['magzines'] = $q->getResult();
+            $arr['magazines'] = $q->getResult();
         }
         
         $response = $this->container->get('templating')->renderResponse(
-            'MagendMagzineBundle:Magzine:issues.html.twig',
+            'MagendMagazineBundle:Magazine:issues.html.twig',
             $arr
         );
-        $response->headers->setCookie(new Cookie('magzine_id', $id, time() + (3600 * 30 * 24)));
+        $response->headers->setCookie(new Cookie('magazine_id', $id, time() + (3600 * 30 * 24)));
         return $response;
     }
     
     /**
      * 
-     * @Route("/new", name="magzine_new")
+     * @Route("/new", name="magazine_new")
      * @Template()
      */
     public function newAction()
@@ -126,7 +126,7 @@ class MagzineController extends Controller
         if (is_array($ret)) {
             $em = $this->getDoctrine()->getEntityManager();
             $user = $this->get('security.context')->getToken()->getUser();
-            $dql = 'SELECT COUNT(m.id) FROM MagendMagzineBundle:Magzine m WHERE m.owner = :user';
+            $dql = 'SELECT COUNT(m.id) FROM MagendMagazineBundle:Magazine m WHERE m.owner = :user';
             $q = $em->createQuery($dql)->setParameter('user', $user);
             $ret['nbMags'] = $q->getSingleScalarResult();
         }
@@ -136,8 +136,8 @@ class MagzineController extends Controller
     
     /**
      * 
-     * @Route("/{id}/edit", name="magzine_edit", requirements={"id"="\d+"})
-     * @Template("MagendMagzineBundle:Magzine:new.html.twig")
+     * @Route("/{id}/edit", name="magazine_edit", requirements={"id"="\d+"})
+     * @Template("MagendMagazineBundle:Magazine:new.html.twig")
      */
     public function editAction($id)
     {
@@ -146,25 +146,25 @@ class MagzineController extends Controller
     
     /**
      * 
-     * @Route("/{id}/del", name="magzine_del", requirements={"id"="\d+"})
+     * @Route("/{id}/del", name="magazine_del", requirements={"id"="\d+"})
      * @param int $id
      */
     public function delAction($id)
     {
-        $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-        $magzine = $repo->find($id);
-        if (!$magzine) {
-            throw new Exception('Magzine not found');
+        $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+        $magazine = $repo->find($id);
+        if (!$magazine) {
+            throw new Exception('Magazine not found');
         }
         
         $em = $this->getDoctrine()->getEntityManager();
-        $em->remove($magzine);
+        $em->remove($magazine);
         $em->flush();
         
         $om = $this->get('magend.output_manager');
         $om->outputMagazinesXML();
         
-        return new RedirectResponse($this->generateUrl('magzine_list'));
+        return new RedirectResponse($this->generateUrl('magazine_list'));
     }
     
     /**
@@ -175,18 +175,18 @@ class MagzineController extends Controller
      */
     private function submit($id = null)
     {
-        $magzine = null;
+        $magazine = null;
         if (is_null($id)) {
-            $magzine = new Magzine();
+            $magazine = new Magazine();
         } else {
-            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $magzine = $repo->find($id);
-            if (!$magzine) {
-                throw new Exception('Magzine not found');
+            $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+            $magazine = $repo->find($id);
+            if (!$magazine) {
+                throw new Exception('Magazine not found');
             }
         }
         
-        $formBuilder = $this->createFormBuilder($magzine);
+        $formBuilder = $this->createFormBuilder($magazine);
         $form = $formBuilder->add('name', null, array('label' => '杂志分类'))
                             ->add('landscapeCoverImage', 'file', array('label' => '横版封面', 'required' => false))
                             ->add('portraitCoverImage', 'file', array('label' => '竖版封面', 'required' => false))
@@ -199,26 +199,26 @@ class MagzineController extends Controller
                 $em = $this->getDoctrine()->getEntityManager();
                 
                 // make it dirty for persistence
-                if ($magzine->landscapeCoverImage || $magzine->portraitCoverImage) {
-                    $magzine->setUpdatedAt(new \DateTime);
+                if ($magazine->landscapeCoverImage || $magazine->portraitCoverImage) {
+                    $magazine->setUpdatedAt(new \DateTime);
                 }
                 
                 if (is_null($id)) {
                     $vm = $this->get('magend.version_manager');
                     $vm->incGroupVersion();
                     $user = $this->get('security.context')->getToken()->getUser();
-                    $magzine->setOwner($user);
+                    $magazine->setOwner($user);
                 }
                 
-                $em->persist($magzine);
+                $em->persist($magazine);
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('magzine_list'));
+                return $this->redirect($this->generateUrl('magazine_list'));
             }
         }
         
         return array(
-            'magzineId' => $id,
+            'magazineId' => $id,
             'form' => $form->createView()
         );
     }

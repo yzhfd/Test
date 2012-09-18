@@ -25,9 +25,9 @@
     <Magazine>
         {% for issue in issues %}
         <Issue>
-            <Username>{% if magzine.owner is not null %}{{ magzine.owner.username }}{% endif %}</Username>
-            <MagazineId>{{ magzine.id }}</MagazineId>
-            <MagazineName>{{ magzine.name }}</MagazineName>
+            <Username>{% if magazine.owner is not null %}{{ magazine.owner.username }}{% endif %}</Username>
+            <MagazineId>{{ magazine.id }}</MagazineId>
+            <MagazineName>{{ magazine.name }}</MagazineName>
             <Id>{{ issue.id }}</Id>
             <Name>{{ issue.title }}</Name>
             <LandscapeCover>{% if issue.landscapeCover %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ issue.landscapeCover) }}{% endif %}</LandscapeCover>

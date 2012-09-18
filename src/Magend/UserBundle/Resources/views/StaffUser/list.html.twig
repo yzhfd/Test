@@ -41,7 +41,7 @@
                         <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
                         <td>
                         {% for mag in user.grantedMags %}
-                            <a href="{{ path('magzine_issues', { 'id':mag.id }) }}">{{ mag.name }}</a>{% if not loop.last %}、{% endif %}
+                            <a href="{{ path('magazine_issues', { 'id':mag.id }) }}">{{ mag.name }}</a>{% if not loop.last %}、{% endif %}
                         {% endfor %}
                         </td>
                         <td style="width:100px;">

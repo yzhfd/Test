@@ -3,7 +3,7 @@ var issue_new = function () {
 		// get issueno 
 		$.ajax({
 			url: Routing.generate('issuenos'),
-			data: { magzineId:$(this).val() },
+			data: { magazineId:$(this).val() },
 			success: function (result) {
 				if (!result) result = {};
 				$('#yearIssueNo').val(result.yearIssueNo);

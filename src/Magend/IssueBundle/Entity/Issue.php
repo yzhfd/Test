@@ -231,11 +231,11 @@ class Issue
     private $enPreview;
     
     /**
-     * @var Magzine
+     * @var Magazine
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="issues")
+     * @ORM\ManyToOne(targetEntity="Magend\MagazineBundle\Entity\Magazine", inversedBy="issues")
      */
-    private $magzine;
+    private $magazine;
     
     /**
      * The id in app store, for in-app purchase
@@ -359,14 +359,14 @@ class Issue
         }
     }
     
-    public function getMagzine()
+    public function getMagazine()
     {
-        return $this->magzine;
+        return $this->magazine;
     }
     
-    public function setMagzine($magzine)
+    public function setMagazine($magazine)
     {
-        $this->magzine = $magzine;
+        $this->magazine = $magazine;
     }
 
     /**

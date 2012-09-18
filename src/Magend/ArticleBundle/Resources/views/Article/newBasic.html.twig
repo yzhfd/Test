@@ -2,15 +2,15 @@
 
     {{ form_label(form.title, '杂志选择') }}
     <select id="magsel" class="medium">
-        {% for magzine in magzines %}
-        <option value="{{ path('magzine_issues', { 'id':magzine.id }) }}" {% if issue is defined and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
+        {% for magazine in magazines %}
+        <option value="{{ path('magazine_issues', { 'id':magazine.id }) }}" {% if issue is defined and issue.magazine.id == magazine.id %}selected="selected"{% endif %}>{{ magazine.name }}</option>
         {% endfor %}            
     </select>
     
     {{ form_label(form.title, '期刊选择') }}
     <select id="issuesel" class="medium" name="issueId" required=true>
         {% if issue is defined %}
-        {% include 'MagendMagzineBundle:Magzine:issueOptions.html.twig' with {'issues':issue.magzine.issues} %}
+        {% include 'MagendMagazineBundle:Magazine:issueOptions.html.twig' with {'issues':issue.magazine.issues} %}
         {% endif %}
     </select>
     

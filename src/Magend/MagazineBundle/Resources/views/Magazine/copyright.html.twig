@@ -6,11 +6,11 @@
     <p>该杂志尚没有版权文章，请先设置至少一篇文章为版权页</p>
 {% else %}
 选择默认版权页
-<form id="magzine_copyright_form" style="width:240px; margin-top:10px;" method="POST" action="{{ path('magzine_copyright', { 'id':magzine.id })}}">
+<form id="magazine_copyright_form" style="width:240px; margin-top:10px;" method="POST" action="{{ path('magazine_copyright', { 'id':magazine.id })}}">
     <select name="copyright">
         <option value=""></option>
         {% for article in copyrightArticles %}
-            <option value="{{ article.id }}" {% if magzine.copyrightArticle is not null and article.id == magzine.copyrightArticle.id %}selected="selected"{% endif %}>{{ article.title }}</option>
+            <option value="{{ article.id }}" {% if magazine.copyrightArticle is not null and article.id == magazine.copyrightArticle.id %}selected="selected"{% endif %}>{{ article.title }}</option>
         {% endfor %}
     </select>
     

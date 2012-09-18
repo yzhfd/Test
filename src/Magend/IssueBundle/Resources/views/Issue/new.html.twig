@@ -9,9 +9,9 @@
     <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
         <div>
             {{ form_label(form.title, '杂志选择') }}
-            <select id="magsel" class="medium" name="magzineId">
-                {% for magzine in magzines %}
-                <option value="{{ magzine.id }}" {% if issue.magzine is not null and issue.magzine.id == magzine.id %}selected="selected"{% endif %}>{{ magzine.name }}</option>
+            <select id="magsel" class="medium" name="magazineId">
+                {% for magazine in magazines %}
+                <option value="{{ magazine.id }}" {% if issue.magazine is not null and issue.magazine.id == magazine.id %}selected="selected"{% endif %}>{{ magazine.name }}</option>
                 {% endfor %}            
             </select>
         </div>

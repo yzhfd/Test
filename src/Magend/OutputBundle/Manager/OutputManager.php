@@ -64,11 +64,11 @@ class OutputManager {
     public function outputMagazine($id)
     {
         if ($id !== null) {
-            $repo = $this->container->get('doctrine')->getRepository('MagendMagzineBundle:Magzine');
-            $magzine = $repo->find($id);
+            $repo = $this->container->get('doctrine')->getRepository('MagendMagazineBundle:Magazine');
+            $magazine = $repo->find($id);
             
             $em = $this->container->get('doctrine.orm.entity_manager');
-            $query = $em->createQuery("SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.createdAt DESC")
+            $query = $em->createQuery("SELECT s FROM MagendIssueBundle:Issue s WHERE s.magazine = :magId ORDER BY s.createdAt DESC")
                         ->setParameter('magId', $id);
             $issues = $query->getResult();
             if (empty($issues)) {
@@ -76,18 +76,18 @@ class OutputManager {
             }
         } else {
             $issues = array();
-            $magzine = array();
+            $magazine = array();
         }
         
-        $response = $this->render('MagendOutputBundle:Output:magzine.xml.twig', array(
+        $response = $this->render('MagendOutputBundle:Output:magazine.xml.twig', array(
             'issues' => $issues,
-            'magzine' => $magzine
+            'magazine' => $magazine
         ));
         return $response;
     }
     
     /**
-     * Output magzine xml to Publish directory
+     * Output magazine xml to Publish directory
      * 
      * @param integer $id
      */
@@ -100,7 +100,7 @@ class OutputManager {
     }
     
     /**
-     * Output magzines xml to Publish directory
+     * Output magazines xml to Publish directory
      * 
      * @param integer $id
      */
@@ -129,16 +129,16 @@ class OutputManager {
         $em = $this->container->get('doctrine.orm.entity_manager');
         $where = $user == null ? '' : 'WHERE m.owner = :user';
         $params = $user == null ? array() : array('user' => $user->getId());
-        $query = $em->createQuery("SELECT m FROM MagendMagzineBundle:Magzine m $where ORDER BY m.createdAt DESC")
+        $query = $em->createQuery("SELECT m FROM MagendMagazineBundle:Magazine m $where ORDER BY m.createdAt DESC")
                     ->setParameters($params);
-        $magzines = $query->getResult();
-        if (empty($magzines)) {
-            $magzines = array();
+        $magazines = $query->getResult();
+        if (empty($magazines)) {
+            $magazines = array();
         }
         
-        $tplVars = array('magzines' => $magzines);
+        $tplVars = array('magazines' => $magazines);
         if ($bResponse) {
-            $response = $this->render('MagendOutputBundle:Output:magzines.xml.twig', $tplVars);
+            $response = $this->render('MagendOutputBundle:Output:magazines.xml.twig', $tplVars);
             return $response;
         } else {
             return $tplVars;

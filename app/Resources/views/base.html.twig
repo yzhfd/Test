@@ -38,17 +38,17 @@
             <ul id="main-nav">
                 <li><a href="{{ path('home') }}" class="nav-top-item no-submenu {% if currentRoute == 'home' %}current{% endif %}">首页</a></li>
                 
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['magzine_list', 'proj_list', 'institute_list'] %}current{% endif %}">杂志组</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['magazine_list', 'proj_list', 'institute_list'] %}current{% endif %}">杂志组</a>
                     <ul>
-                        <li><a {% if currentRoute == 'magzine_list' %}class="current"{% endif %} href="{{ path('magzine_list') }}">杂志分类</a></li>
+                        <li><a {% if currentRoute == 'magazine_list' %}class="current"{% endif %} href="{{ path('magazine_list') }}">杂志分类</a></li>
                         <li><a {% if currentRoute == 'proj_list' %}class="current"{% endif %} href="{{ path('proj_list') }}">项目类型</a></li>
                         <li><a {% if currentRoute == 'institute_list' %}class="current"{% endif %} href="{{ path('institute_list') }}">设计机构</a></li>
                     </ul>
                 </li>
                 
-                <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magzine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">杂志</a>
+                <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magazine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit'] %}current{% endif %}">杂志</a>
                     <ul>
-                        <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magzine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">期刊查看</a></li>
+                        <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magazine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">期刊查看</a></li>
                         {% if is_granted('ROLE_CORP') %}<li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">期刊创建</a></li>{% endif %}
                         <li><a {% if currentRoute == 'article_new' %}class="current"{% endif %} href="{{ path('article_new') }}">文章创建</a></li>
                         {# <li><a {% if currentRoute == 'article_comment_list' %}class="current"{% endif %} href="{{ path('article_comment_list') }}">用户评论</a></li> #}

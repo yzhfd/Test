@@ -48,7 +48,7 @@ class IssueController extends Controller
             throw new Exception('Issue not found'); 
         }
         
-        $cpr = $issue->getMagzine()->getCopyrightArticle();
+        $cpr = $issue->getMagazine()->getCopyrightArticle();
         $articleIds = $issue->getArticleIds();
         if (in_array($cpr->getId(), $articleIds)) {
             throw new Exception('Already inserted'); 
@@ -74,7 +74,7 @@ class IssueController extends Controller
             throw new Exception('Issue not found'); 
         }
         
-        $cpArticle = $issue->getMagzine()->getCopyrightArticle();
+        $cpArticle = $issue->getMagazine()->getCopyrightArticle();
         $issue->removeArticle($cpArticle);
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
@@ -110,7 +110,7 @@ class IssueController extends Controller
         $issue->setPublishMode(Issue::PUBLISH_PREVIEW);
         $em->flush();
         
-        // output magzine's xml
+        // output magazine's xml
         $this->_outputGroupXml($issue);
         
         $rootDir = $this->container->getParameter('kernel.root_dir');
@@ -268,7 +268,7 @@ class IssueController extends Controller
     {
         $om = $this->get('magend.output_manager');
         $om->outputMagazinesXML();
-        $om->outputMagazineXML($issue->getMagzine()->getId());
+        $om->outputMagazineXML($issue->getMagazine()->getId());
     }
     
     /**
@@ -297,7 +297,7 @@ class IssueController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
         
-        // output magzine's xml
+        // output magazine's xml
         $this->_outputGroupXml($issue);
         $zipName = $this->compressIssueAssets($issue);
         
@@ -333,18 +333,18 @@ class IssueController extends Controller
         
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if ($isAdmin) {
-            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
             $mags = $magRepo->findAll();
         } else {
             $user = $this->get('security.context')->getToken()->getUser();
-            $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+            $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $em = $this->getDoctrine()->getEntityManager();
             $q = $em->createQuery($dql)->setParameter('user', $user);
             $mags = $q->getResult();
         }
         return array(
             'issue'    => $issue,
-            'magzines' => $mags,
+            'magazines' => $mags,
             'form'     => $form->createView()
         );        
     }
@@ -488,9 +488,9 @@ class IssueController extends Controller
     public function issueNoAction()
     {
         $req = $this->getRequest();
-        $magId = $req->get('magzineId');
+        $magId = $req->get('magazineId');
         $em = $this->getDoctrine()->getEntityManager();
-        $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
+        $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magazine = :magId ORDER BY s.totalIssueNo DESC')
                     ->setParameter('magId', $magId)
                     ->setMaxResults(1);
         try {
@@ -517,10 +517,10 @@ class IssueController extends Controller
         $req = $this->getRequest();
         $issue = new Issue();
         $em = $this->getDoctrine()->getEntityManager();
-        $magId = $req->get('magzineId', $req->cookies->get('magzine_id'));
+        $magId = $req->get('magazineId', $req->cookies->get('magazine_id'));
         if ($req->getMethod() == 'GET' && $magId !== null) {
-            $magzine = $em->getReference('MagendMagzineBundle:Magzine', $magId);
-            $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magzine = :magId ORDER BY s.totalIssueNo DESC')
+            $magazine = $em->getReference('MagendMagazineBundle:Magazine', $magId);
+            $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magazine = :magId ORDER BY s.totalIssueNo DESC')
                         ->setParameter('magId', $magId)
                         ->setMaxResults(1);
             try {
@@ -529,7 +529,7 @@ class IssueController extends Controller
                 $totalIssueNo = $latestIssue->getTotalIssueNo();
                 $yearIssueNo = $latestIssue->getYearIssueNo();
                 //$yearIssueNo
-                $issue->setMagzine($magzine);
+                $issue->setMagazine($magazine);
                 $issue->setYearIssueNo($yearIssueNo);
                 $issue->setTotalIssueNo($totalIssueNo + 1);
             } catch (\ Exception $e) {
@@ -568,13 +568,13 @@ class IssueController extends Controller
         $form->bindRequest($req);
         if ($form->isValid()) {                
             $em = $this->getDoctrine()->getEntityManager();
-            $magzineId = $req->get('magzineId');
-            $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
-            $mag = $magRepo->find($magzineId);
+            $magazineId = $req->get('magazineId');
+            $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+            $mag = $magRepo->find($magazineId);
             if (empty($mag)) {
-                throw new Exception('magzine ' . $magzineId . ' not found');
+                throw new Exception('magazine ' . $magazineId . ' not found');
             }
-            $issue->setMagzine($mag);
+            $issue->setMagazine($mag);
             $em->persist($issue);
             $em->flush();
             
@@ -632,15 +632,15 @@ class IssueController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         
         $em = $this->getDoctrine()->getEntityManager();
-        $magId = $this->getRequest()->cookies->get('magzine_id');
+        $magId = $this->getRequest()->cookies->get('magazine_id');
         
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if ($magId !== null) {
             if ($isAdmin) {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m  WHERE m.id = :mag';
+                $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m  WHERE m.id = :mag';
                 $q = $em->createQuery($dql)->setParameter('mag', $magId);
             } else {
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
+                $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
                 $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
             }
             try {
@@ -656,7 +656,7 @@ class IssueController extends Controller
         if ($magId === null) {
             $where = $isAdmin ? '' : 'LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
             $params = $isAdmin ? array() : array('user' => $user->getId());
-            $dql = 'SELECT m.id FROM MagendMagzineBundle:Magzine m '. $where . ' ORDER BY m.createdAt DESC';
+            $dql = 'SELECT m.id FROM MagendMagazineBundle:Magazine m '. $where . ' ORDER BY m.createdAt DESC';
             $query = $em->createQuery($dql)->setParameters($params);
             $query->setMaxResults(1);
             try {
@@ -666,7 +666,7 @@ class IssueController extends Controller
             }
         }
         
-        return new RedirectResponse($this->generateUrl('magzine_issues', array(
+        return new RedirectResponse($this->generateUrl('magazine_issues', array(
             'id' => $magId
         )));
     }
@@ -825,7 +825,7 @@ class IssueController extends Controller
         $em->flush();
         
         $om = $this->get('magend.output_manager');
-        $om->outputMagazineXML($issue->getMagzine()->getId());
+        $om->outputMagazineXML($issue->getMagazine()->getId());
         
         return $this->redirect($this->generateUrl('issue_list'));
     }

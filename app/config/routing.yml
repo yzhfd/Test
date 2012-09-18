@@ -48,8 +48,8 @@ MagendInstituteBundle:
     type:     annotation
     prefix:   /
 
-MagendMagzineBundle:
-    resource: "@MagendMagzineBundle/Controller/"
+MagendMagazineBundle:
+    resource: "@MagendMagazineBundle/Controller/"
     type:     annotation
     prefix:   /
 

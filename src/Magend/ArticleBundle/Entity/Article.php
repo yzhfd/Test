@@ -272,11 +272,11 @@ class Article
     private $updatedAt;
     
     /**
-     * @var Magzine
+     * @var Magazine
      * 
-     * @ORM\ManyToOne(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="copyrightArticles")
+     * @ORM\ManyToOne(targetEntity="Magend\MagazineBundle\Entity\Magazine", inversedBy="copyrightArticles")
      */
-    private $copyrightMagzine;
+    private $copyrightMagazine;
     
     // @todo postRemove
     
@@ -853,27 +853,27 @@ class Article
      */
     public function isCopyright()
     {
-        return $this->getCopyrightMagzine() != null;
+        return $this->getCopyrightMagazine() != null;
     }
 
     /**
-     * Set copyrightMagzine
+     * Set copyrightMagazine
      *
-     * @param Magzine $copyrightMagzine
+     * @param Magazine $copyrightMagazine
      */
-    public function setCopyrightMagzine($mag)
+    public function setCopyrightMagazine($mag)
     {
-        $this->copyrightMagzine = $mag;
+        $this->copyrightMagazine = $mag;
     }
 
     /**
-     * Get copyrightMagzine
+     * Get copyrightMagazine
      *
      * @return string 
      */
-    public function getCopyrightMagzine()
+    public function getCopyrightMagazine()
     {
-        return $this->copyrightMagzine;
+        return $this->copyrightMagazine;
     }
     
     /**

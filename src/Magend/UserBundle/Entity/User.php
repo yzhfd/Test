@@ -43,10 +43,10 @@ class User extends BaseUser
     private $corp;
     
     /**
-     * Magzines that this user have rights to edit
+     * Magazines that this user have rights to edit
      *
-     * @var Magzine
-     * @ORM\ManyToMany(targetEntity="Magend\MagzineBundle\Entity\Magzine", inversedBy="staffUsers")
+     * @var Magazine
+     * @ORM\ManyToMany(targetEntity="Magend\MagazineBundle\Entity\Magazine", inversedBy="staffUsers")
      * @ORM\JoinTable(name="pq_magazine_staff")
      */
     private $grantedMags;

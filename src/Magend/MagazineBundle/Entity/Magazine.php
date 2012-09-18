@@ -1,6 +1,6 @@
 <?php
 
-namespace Magend\MagzineBundle\Entity;
+namespace Magend\MagazineBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,13 +8,13 @@ use Magend\ArticleBundle\Entity\Article;
 use Magend\UserBundle\Entity\User;
 
 /**
- * Magend\MagzineBundle\Entity\Magzine
+ * Magend\MagazineBundle\Entity\Magazine
  *
- * @ORM\Table(name="mag_magzine")
- * @ORM\Entity(repositoryClass="Magend\MagzineBundle\Entity\MagzineRepository")
+ * @ORM\Table(name="mag_magazine")
+ * @ORM\Entity(repositoryClass="Magend\MagazineBundle\Entity\MagazineRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Magzine
+class Magazine
 {
     /**
      * @var integer $id
@@ -35,7 +35,7 @@ class Magzine
     private $owner;
 
     /**
-     * Staff user who are permitted to edit this magzine
+     * Staff user who are permitted to edit this magazine
      *
      * @var User
      * @ORM\ManyToMany(targetEntity="Magend\UserBundle\Entity\User", mappedBy="grantedMags")
@@ -103,7 +103,7 @@ class Magzine
      * 
      * @ORM\OneToMany(
      *     targetEntity="Magend\IssueBundle\Entity\Issue",
-     *     mappedBy="magzine",
+     *     mappedBy="magazine",
      *     indexBy="id",
      *     cascade={"persist", "remove"},
      *     fetch="EXTRA_LAZY"
@@ -117,7 +117,7 @@ class Magzine
      * 
      * @ORM\OneToMany(
      *     targetEntity="Magend\ArticleBundle\Entity\Article",
-     *     mappedBy="copyrightMagzine",
+     *     mappedBy="copyrightMagazine",
      *     fetch="EXTRA_LAZY"
      * )
      */

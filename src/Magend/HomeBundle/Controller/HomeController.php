@@ -20,29 +20,29 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
-        $magId = $this->getRequest()->cookies->get('magzine_id');
-        $magzine = null;
+        $magId = $this->getRequest()->cookies->get('magazine_id');
+        $magazine = null;
         
         if ($magId !== null) {
-            $repo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+            $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
             $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
             if (!$isAdmin) {
                 $user = $this->get('security.context')->getToken()->getUser();
-                $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
+                $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE (m.owner = :user OR u = :user) AND m.id = :mag';
                 $em = $this->getDoctrine()->getEntityManager();
                 $q = $em->createQuery($dql)->setParameter('user', $user->getId())->setParameter('mag', $magId);
                 try {
-                    $magzine = $q->getSingleResult();
+                    $magazine = $q->getSingleResult();
                 } catch (Exception $e) {
-                    $magzine = null;
+                    $magazine = null;
                 }
             } else {
-                $magzine = $repo->find($magId);
+                $magazine = $repo->find($magId);
             }
         }
         
         return array(
-            'magzine' => $magzine
+            'magazine' => $magazine
         );
     }
     

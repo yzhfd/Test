@@ -1,0 +1,22 @@
+{% extends '::base.xml.twig' %}
+
+{% block body %}
+    <GroupList>{# which magazine #}
+        {% for magazine in magazines %}
+        <Group>
+            <GroupId>{{ magazine.id }}</GroupId>
+            <GroupName>{{ magazine.name }}</GroupName>
+            <GroupCover>{% if magazine.landscapeCover is not null %}{{ magazine.landscapeCover }}{% endif %}</GroupCover>
+        </Group>
+        
+        {#
+        <Magazine
+            id="{{ magazine.id }}"
+            name="{{ magazine.name }}"
+            landscapeCover="{% if magazine.landscapeCover is not null %}{{ asset('uploads/' ~ magazine.landscapeCover) }}{% endif %}"
+            portraitCover="{% if magazine.portraitCover is not null %}{{ asset('uploads/' ~ magazine.portraitCover) }}{% endif %}"
+        ></Magazine>
+        #}
+        {% endfor %}
+    </GroupList>
+{% endblock %}

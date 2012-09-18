@@ -6,11 +6,11 @@
 
     <!--
     <parameters>
-        <parameter key="magend_magzine.example.class">Magend\MagzineBundle\Example</parameter>
+        <parameter key="magend_magazine.example.class">Magend\MagazineBundle\Example</parameter>
     </parameters>
 
     <services>
-        <service id="magend_magzine.example" class="%magend_magzine.example.class%">
+        <service id="magend_magazine.example" class="%magend_magazine.example.class%">
             <argument type="service" id="service_id" />
             <argument>plain_value</argument>
             <argument>%parameter_name%</argument>

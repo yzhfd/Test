@@ -119,20 +119,20 @@ class ArticleController extends Controller
         $article = $this->getArticleById($id);
         $asCopyright = $on == 1;
         
-        // add/remove article from magzine's copyright articles
+        // add/remove article from magazine's copyright articles
         $issue = $article->getIssue();
         if (empty($issue)) {
             if ($asCopyright) {
                 throw new Exception('Article not belongs to any issue');
             } 
         } else {
-            $mag = $issue->getMagzine();
+            $mag = $issue->getMagazine();
             if (empty($issue)) {
                 if ($asCopyright) {
-                    throw new Exception('Article not belongs to any magzine');
+                    throw new Exception('Article not belongs to any magazine');
                 } 
             } else {
-                $article->setCopyrightMagzine($asCopyright ? $mag : null);
+                $article->setCopyrightMagazine($asCopyright ? $mag : null);
             }
         }
         
@@ -309,7 +309,7 @@ class ArticleController extends Controller
             }
         }
         
-        $magRepo = $this->getDoctrine()->getRepository('MagendMagzineBundle:Magzine');
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
         $mags = $magRepo->findAll();
         
         $articleIds = $issue->getArticleIds();
@@ -328,7 +328,7 @@ class ArticleController extends Controller
             //'institutes' => $institutes,
             'keywords'  => $kws,
             'issue'     => $issue,
-            'magzines'  => $mags,
+            'magazines'  => $mags,
             'article'   => $article,
             'form'      => $form->createView(),
             'prev'      => $prev,
@@ -388,13 +388,13 @@ class ArticleController extends Controller
         }
         
         $user = $this->get('security.context')->getToken()->getUser();
-        $dql = 'SELECT m FROM MagendMagzineBundle:Magzine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
+        $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
         $q = $em->createQuery($dql)->setParameter('user', $user);
         $mags = $q->getResult();
         $tplVars = array(
             //'institutes' => $institutes,
             'keywords'   => $kws,
-            'magzines'   => $mags,
+            'magazines'   => $mags,
             'article'    => $article,
             'form'       => $form->createView()
         );

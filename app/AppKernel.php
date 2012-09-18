@@ -28,7 +28,7 @@ class AppKernel extends Kernel
             new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new Avalanche\Bundle\ImagineBundle\AvalancheImagineBundle(),
             new Magend\HomeBundle\MagendHomeBundle(),
-            new Magend\MagzineBundle\MagendMagzineBundle(),
+            new Magend\MagazineBundle\MagendMagazineBundle(),
             new Magend\InstituteBundle\MagendInstituteBundle(),
             new Magend\BaseBundle\MagendBaseBundle(),
             new Magend\FeedbackBundle\MagendFeedbackBundle(),
