@@ -24,6 +24,27 @@ class ArticleController extends Controller
 {
     /**
      * 
+     * @Route("/fix-nbpages", name="article_fix_nbpages")
+     */
+    public function fixNbPagesAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $dql = 'SELECT COUNT(p.id) FROM MagendArticleBundle:Article a LEFT JOIN a.pages p WHERE a.id = :article';
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $pageRepo = $this->getDoctrine()->getRepository('MagendPageBundle:Page');
+        $articles = $repo->findAll();
+        foreach ($articles as $article) {
+            $q = $em->createQuery($dql)->setParameter('article', $article->getId());
+            $nbPages = $q->getSingleScalarResult();
+            $article->setNbPages($nbPages);
+        }
+        
+        $em->flush();
+        die('done');
+    }
+    
+    /**
+     * 
      * 
      * @Route("/seq-pages", name="article_seq_pages") 
      */
