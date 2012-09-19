@@ -1,0 +1,8 @@
+<ol>
+{% for news in newsList %}
+    <li>
+        <span>{{ news.createdAt|date('Y-m-d') }}</span> <a {% if news.url %}target="_blank" href="{{ news.url }}"{% else %}rel="facebox" href="#newscontent_{{ news.id }}"{% endif %}">{{ news.title }}</a>
+        <div id="newscontent_{{ news.id }}" class="hide">{{ news.content|nl2br }}</div>
+    </li>
+{% endfor %}
+</ol>

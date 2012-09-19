@@ -69,10 +69,11 @@
                     </ul>
                 </li>
                 
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'user_edit'] %}current{% endif %}">系统设置</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit'] %}current{% endif %}">系统设置</a>
                     <ul>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li><a title="管理员后台管理" {% if currentRoute == 'sonata_admin_dashboard' %}class="current"{% endif %} href="{{ path('sonata_admin_dashboard') }}">管理后台</a></li>
+                            <li><a {% if currentRoute == 'news_list' %}class="current"{% endif %} href="{{ path('news_list') }}">讯息发布</a></li>
                         {% else %}
                             <li><a {% if currentRoute == 'user_edit' %}class="current"{% endif %} href="{{ path('user_edit') }}">帐号设置</a></li>
                         {% endif %}

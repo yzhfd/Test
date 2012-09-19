@@ -2,7 +2,7 @@
 
 {% block main %}
     <form id="magazine_form" style="width:680px; margin-top:10px;" action="{% if magazineId is null %}{{ path('magazine_new') }}{% else %}{{ path('magazine_edit', { 'id':magazineId }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-        {% if app.user.corp.isTrial %}<p style="margin-left:80px;color:#CC0000;">*试用帐号，只能创建一本杂志</p>{% endif %}
+        {% if app.user.corp and app.user.corp.isTrial %}<p style="margin-left:80px;color:#CC0000;">*试用帐号，只能创建一本杂志</p>{% endif %}
         <div class="clearfix">
             {{ form_label(form.name) }}
             <div class="input">{{ form_errors(form.name) }}{{ form_widget(form.name, { 'attr':{'class':'middle'} }) }}</div>
@@ -20,6 +20,6 @@
         
         {{ form_rest(form) }}
         
-        <div class="actions"><button class="btn primary" type="submit">提交</button></div>
+        <div class="actions"><button class="btn btn-primary" type="submit">提交</button></div>
     </form>
 {% endblock %}

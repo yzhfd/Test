@@ -1,0 +1,25 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+
+<form id="news_form" style="width:680px; margin-top:10px;" action="{% if news.id is null %}{{ path('news_new') }}{% else %}{{ path('news_edit', { 'id':news.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
+    {{ form_label(form.title) }}
+    {{ form_errors(form.title) }}
+    {{ form_widget(form.title, { 'attr':{'class':'span4'} }) }}
+    
+    <p style="color:red;">网址和内容二选一</p>
+    
+    {{ form_label(form.url) }}
+    {{ form_errors(form.url) }}
+    {{ form_widget(form.url, { 'attr':{'class':'span4'} }) }}
+    
+    {{ form_label(form.content) }}
+    {{ form_errors(form.content) }}
+    {{ form_widget(form.content, { 'attr':{'class':'span6', 'rows':8} }) }}
+    
+    {{ form_rest(form) }}
+    
+    <div class="actions"><button class="btn btn-primary" type="submit">提交</button></div>
+</form>
+
+{% endblock %}

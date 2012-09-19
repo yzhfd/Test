@@ -45,6 +45,8 @@ class AppKernel extends Kernel
             new Sonata\CacheBundle\SonataCacheBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            new Magend\NewsBundle\MagendNewsBundle(),
+            new Magend\OperationBundle\MagendOperationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

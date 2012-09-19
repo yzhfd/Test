@@ -1,3 +1,13 @@
+MagendOperationBundle:
+    resource: "@MagendOperationBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+MagendNewsBundle:
+    resource: "@MagendNewsBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 MagendBackendBundle:
     resource: "@MagendBackendBundle/Controller/"
     type:     annotation

@@ -5,6 +5,16 @@
     
     <div class="row" style="margin-top:20px;">
         <div class="span6">
+            <h3>最新讯息</h3>
+            {% render 'MagendNewsBundle:News:latest' %}
+        </div>
+        
+        <div class="span6">
+            <h3>操作记录</h3>
+            
+        </div>
+        {#
+        <div class="span6">
             <h3>最近打开的期刊</h3>
             {% if magazine is not null %}<a href="{{ path('magazine_issues', { 'id':magazine.id}) }}">{{ magazine.name }}</a>{% endif %}
             
@@ -12,14 +22,6 @@
             <p style=" margin-top:40px; font-size: 18px;"><a href="{{ path('published') }}">点击查看Publish了的的资源文件</a></p>
             {% endif %}
         </div>
-        
-        <div class="span6">
-            <h3>新闻</h3>
-            <ol>
-                <li>1. <a href="http://v.youku.com/v_show/id_XMzQ0NjEzNTY0.html">苹果iBooks Author 官方演示</a></li>
-                <li>2. <a href="http://www.5dscape.com">5DSCAPE现提供专业的IPAD商业开发</a></li>
-                <li>3. <a href="http://www.nanjing2014.org/cn/">2014年第二届青年奥林匹克运动会官方网站</a></li>
-            </ol>
-        </div>
+        #}
     </div>
 {% endblock %}
