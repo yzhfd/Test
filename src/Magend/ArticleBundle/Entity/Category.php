@@ -49,7 +49,7 @@ class Category
      *     mappedBy="subcategories"
      * )
      */
-    private $subcategories;
+    private $subCategories;
 
 
     /**
@@ -99,11 +99,11 @@ class Category
     
     public function getSubCategories()
     {
-        return $this->subcategories;
+        return $this->subCategories;
     }
     
     public function addSubCategory($subcategory)
     {
-        $this->subcategories[] = $subcategory;
+        $this->subCategories[] = $subcategory;
     }
 }

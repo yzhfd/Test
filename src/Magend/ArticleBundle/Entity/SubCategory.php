@@ -27,7 +27,7 @@ class SubCategory
      * 
      * @var Category
      * 
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="subcategories")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="subCategories")
      * @ORM\JoinColumn(
      *     onDelete="CASCADE"
      * )

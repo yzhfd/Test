@@ -61,7 +61,7 @@ class Article
     ////////////////////////////////////////////////////
     
     /**
-     * @var Article
+     * @var Fav
      *
      * @ORM\OneToMany(
      *     targetEntity="Fav",
