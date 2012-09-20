@@ -1,0 +1,7 @@
+<ol>
+{% for operation in operations %}
+    <li>
+        <span>{{ operation.createdAt|date('Y-m-d H:i') }}</span> {{ operation.user.username }}{{ operation.content|raw }}
+    </li>
+{% endfor %}
+</ol>
