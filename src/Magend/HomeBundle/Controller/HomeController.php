@@ -20,6 +20,7 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
+        /*
         $magId = $this->getRequest()->cookies->get('magazine_id');
         $magazine = null;
         
@@ -40,9 +41,9 @@ class HomeController extends Controller
                 $magazine = $repo->find($magId);
             }
         }
-        
+        */
         return array(
-            'magazine' => $magazine
+            // 'magazine' => $magazine
         );
     }
     

@@ -330,7 +330,7 @@ class IssueController extends Controller
                 return $ret;
             }
         }
-        
+        /*
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
         if ($isAdmin) {
             $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
@@ -341,10 +341,9 @@ class IssueController extends Controller
             $em = $this->getDoctrine()->getEntityManager();
             $q = $em->createQuery($dql)->setParameter('user', $user);
             $mags = $q->getResult();
-        }
+        }*/
         return array(
             'issue'    => $issue,
-            'magazines' => $mags,
             'form'     => $form->createView()
         );        
     }
@@ -508,20 +507,24 @@ class IssueController extends Controller
     }
     
     /**
+     * $id is magazine id
      * 
-     * @Route("/new", name="issue_new")
+     * @Route("/magazine/{id}/new", name="issue_new", requirements={"id"="\d+"})
      * @Template()
      */
-    public function newAction()
+    public function newAction($id)
     {
         $req = $this->getRequest();
         $issue = new Issue();
+        
+        $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+        $mag = $magRepo->find($id);
+        $issue->setMagazine($mag);
+        
         $em = $this->getDoctrine()->getEntityManager();
-        $magId = $req->get('magazineId', $req->cookies->get('magazine_id'));
-        if ($req->getMethod() == 'GET' && $magId !== null) {
-            $magazine = $em->getReference('MagendMagazineBundle:Magazine', $magId);
+        if ($req->getMethod() == 'GET') {
             $query = $em->createQuery('SELECT s FROM MagendIssueBundle:Issue s WHERE s.magazine = :magId ORDER BY s.totalIssueNo DESC')
-                        ->setParameter('magId', $magId)
+                        ->setParameter('magId', $id)
                         ->setMaxResults(1);
             try {
                 $latestIssue = $query->getSingleResult();
@@ -529,10 +532,9 @@ class IssueController extends Controller
                 $totalIssueNo = $latestIssue->getTotalIssueNo();
                 $yearIssueNo = $latestIssue->getYearIssueNo();
                 //$yearIssueNo
-                $issue->setMagazine($magazine);
                 $issue->setYearIssueNo($yearIssueNo);
                 $issue->setTotalIssueNo($totalIssueNo + 1);
-            } catch (\ Exception $e) {
+            } catch (Exception $e) {
                 // do nothing
             }
         }
@@ -541,6 +543,8 @@ class IssueController extends Controller
     }
     
     /**
+     * 
+     * $id is issue id
      * 
      * @Route("/{id}/edit", name="issue_edit")
      * @Template("MagendIssueBundle:Issue:new.html.twig")
@@ -566,16 +570,18 @@ class IssueController extends Controller
     {
         $req = $this->getRequest();
         $form->bindRequest($req);
-        if ($form->isValid()) {                
+        if ($form->isValid()) {             
             $em = $this->getDoctrine()->getEntityManager();
-            $magazineId = $req->get('magazineId');
-            $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
-            $mag = $magRepo->find($magazineId);
-            if (empty($mag)) {
-                throw new Exception('magazine ' . $magazineId . ' not found');
+            if (empty($issue) || $issue->getId() == null) {
+                $magazineId = $req->get('id');
+                $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+                $mag = $magRepo->find($magazineId);
+                if (empty($mag)) {
+                    throw new Exception('magazine ' . $magazineId . ' not found');
+                }
+                $issue->setMagazine($mag);
+                $em->persist($issue);
             }
-            $issue->setMagazine($mag);
-            $em->persist($issue);
             $em->flush();
             
             if ($req->isXmlHTTPRequest()) {
@@ -588,7 +594,6 @@ class IssueController extends Controller
                 return $response;
             } else {
                 return $this->redirect($this->generateUrl('issue_edit', array('id' => $issue->getId()))); //issue_article_list
-                // return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
             }
         }
         //var_dump( $form->getErrors() );exit;
@@ -623,6 +628,7 @@ class IssueController extends Controller
     }
     
     /**
+     * Deprecated
      * 
      * @Route("/list", name="issue_list")
      * @Template()

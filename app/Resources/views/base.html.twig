@@ -44,17 +44,33 @@
                     </ul>
                 </li>
                 
-                <li><a href="{{ path('issue_list') }}" class="nav-top-item {% if currentRoute in ['magazine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit', 'proj_list', 'institute_list'] %}current{% endif %}">世界建筑导报</a>
+                {% set magRoutes = ['magazine_issues', 'issue_list', 'issue_article_list', 'issue_new', 'issue_edit', 'article_list', 'article_new', 'article_edit', 'page_edit', 'magazine_classify'] %}
+                {% if currentRoute in magRoutes %}
+                    {% if magazine is defined %}
+                    {% set onMag = magazine %}
+                    {% elseif issue is defined %}
+                    {% set onMag = issue.magazine %}
+                    {% elseif article is defined %}
+                    {% set onMag = article.issue.magazine %}
+                    {% elseif page is defined %}
+                    {% set onMag = page.article.issue.magazine %}
+                    {% endif %}
+                {% endif %}
+                
+                {% for mag in app.session.get('globalMags') %}
+                <li><a href="{{ path('magazine_issues', {'id':mag.id}) }}" class="nav-top-item {% if onMag is defined and onMag.id == mag.id %}current{% endif %}">{{ mag.name }}</a>
                     <ul>
-                        <li><a {% if currentRoute == 'issue_list' or currentRoute == 'magazine_issues' %}class="current"{% endif %} href="{{ path('issue_list') }}">期刊查看</a></li>
-                        {% if is_granted('ROLE_CORP') %}<li><a {% if currentRoute == 'issue_new' %}class="current"{% endif %} href="{{ path('issue_new') }}">期刊创建</a></li>{% endif %}
-                        <li><a {% if currentRoute == 'article_new' %}class="current"{% endif %} href="{{ path('article_new') }}">文章创建</a></li>
+                        <li><a {% if currentRoute == 'magazine_classify' and onMag is defined and onMag.id == mag.id %}class="current"{% endif %} href="{{ path('magazine_classify', {'id':mag.id}) }}">分类定义</a></li>
+                        <li><a {% if currentRoute == 'magazine_issues' and onMag is defined and onMag.id == mag.id %}class="current"{% endif %} href="{{ path('issue_list') }}">期刊查看</a></li>
+                        {% if is_granted('ROLE_CORP') %}
+                        <li><a {% if currentRoute == 'issue_new' and onMag is defined and onMag.id == mag.id %}class="current"{% endif %} href="{{ path('issue_new', {'id':mag.id}) }}">期刊创建</a></li>
+                        {% endif %}
+                        <li><a {% if currentRoute == 'article_new' and onMag is defined and onMag.id == mag.id %}class="current"{% endif %} href="{{ path('article_new', {'id':mag.id}) }}">文章创建</a></li>
                         {# <li><a {% if currentRoute == 'article_comment_list' %}class="current"{% endif %} href="{{ path('article_comment_list') }}">用户评论</a></li> #}
                         <!-- <li><a href="#">文章检索</a></li> -->
-                        <li><a {% if currentRoute == 'proj_list' %}class="current"{% endif %} href="{{ path('proj_list') }}">项目类型</a></li>
-                        <li><a {% if currentRoute == 'institute_list' %}class="current"{% endif %} href="{{ path('institute_list') }}">设计机构</a></li>
                     </ul>
                 </li>
+                {% endfor %}
                 
                 <li><a href="#" class="nav-top-item {% if currentRoute in ['staff_user_list', 'staff_user_new', 'corp_user_list', 'corp_user_show', 'trial_user_list', 'trial_user_show', 'trial_user_new', 'consumer_list'] %}current{% endif %}">用户管理</a>
                     <ul>

@@ -54,6 +54,17 @@ class MagazineController extends Controller
     }
     
     /**
+     * 
+     * @Route("/{id}/classify", name="magazine_classify", requirements={"id"="\d+"})
+     * @Template() 
+     */
+    public function classifyAction($id)
+    {
+        
+        return array();
+    }
+    
+    /**
      * @Route("/list", name="magazine_list")
      * @Template()
      */
@@ -85,34 +96,14 @@ class MagazineController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $query = $em->createQuery("SELECT s FROM $cls s INDEX BY s.id WHERE s.magazine = :magId ORDER BY s.createdAt DESC")
                     ->setParameter('magId', $id);
-        if ($this->getRequest()->isXmlHTTPRequest()) {
-            $response = $this->container->get('templating')->renderResponse(
-                'MagendMagazineBundle:Magazine:issueOptions.html.twig',
-                array('issues' => $query->getResult()));
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
-        }
         $arr = $this->getList($cls, $query);
         $arr['issues'] = $arr['entities'];
         unset($arr['entities']);
         
         $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
-        $user = $this->get('security.context')->getToken()->getUser();
-        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN');
-        if ($isAdmin) {
-            $arr['magazines'] = $repo->findAll();
-        } else {
-            $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-            $q = $em->createQuery($dql)->setParameter('user', $user->getId());
-            $arr['magazines'] = $q->getResult();
-        }
-        
-        $response = $this->container->get('templating')->renderResponse(
-            'MagendMagazineBundle:Magazine:issues.html.twig',
-            $arr
-        );
-        $response->headers->setCookie(new Cookie('magazine_id', $id, time() + (3600 * 30 * 24)));
-        return $response;
+        $mag = $repo->find($id);
+        $arr['magazine'] = $mag;
+        return $arr;
     }
     
     /**

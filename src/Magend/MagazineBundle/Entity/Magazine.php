@@ -108,6 +108,7 @@ class Magazine
      *     cascade={"persist", "remove"},
      *     fetch="EXTRA_LAZY"
      * )
+     * @ORM\OrderBy({"createdAt"="ASC"})
      */
     private $issues;
     

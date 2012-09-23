@@ -1,17 +1,7 @@
-<form id="article_form" action="{% if article.id is null %}{{ path('article_new') }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-
-    {{ form_label(form.title, '杂志选择') }}
-    <select id="magsel" class="medium">
-        {% for magazine in magazines %}
-        <option value="{{ path('magazine_issues', { 'id':magazine.id }) }}" {% if issue is defined and issue.magazine.id == magazine.id %}selected="selected"{% endif %}>{{ magazine.name }}</option>
-        {% endfor %}            
-    </select>
-    
+<form id="article_form" action="{% if article.id is null %}{{ path('article_new', {'id':app.request.get('id')}) }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     {{ form_label(form.title, '期刊选择') }}
     <select id="issuesel" class="medium" name="issueId" required=true>
-        {% if issue is defined %}
-        {% include 'MagendMagazineBundle:Magazine:issueOptions.html.twig' with {'issues':issue.magazine.issues} %}
-        {% endif %}
+        {% include 'MagendMagazineBundle:Magazine:issueOptions.html.twig' with {'issues':magazine.issues} %}
     </select>
     
     {{ form_label(form.type, '文章类型') }}
@@ -22,7 +12,7 @@
     
     {{ form_label(form.enTitle, '英文标题') }}
     {{ form_errors(form.enTitle) }}{{ form_widget(form.enTitle, { 'attr':{'class':'span6'} }) }}
-
+    
     {{ form_label(form.keywordsText, '关键词') }}
     <select id="keywordsel" class="medium" style="margin-bottom:5px;">
         <option value=""></option>

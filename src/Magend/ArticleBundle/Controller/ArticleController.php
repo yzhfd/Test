@@ -358,11 +358,12 @@ class ArticleController extends Controller
     }
     
     /**
+     * $id is magazine id
      * 
-     * @Route("/new", name="article_new")
+     * @Route("/magazine/{id}/new", name="article_new", requirements={"id"="\d+"})
      * @Template()
      */
-    public function newAction()
+    public function newAction($id)
     {
         $article = new Article();
         
@@ -370,7 +371,7 @@ class ArticleController extends Controller
         
         $kwRepo = $this->getDoctrine()->getRepository('MagendKeywordBundle:Keyword');
         $kws = $kwRepo->findAll();
-                
+        
         $req  = $this->getRequest();
         $form = $this->createForm(new ArticleType(), $article);
         $issueRepo = $this->getDoctrine()->getRepository('MagendIssueBundle:Issue');
@@ -408,27 +409,15 @@ class ArticleController extends Controller
             }
         }
         
-        $user = $this->get('security.context')->getToken()->getUser();
-        $dql = 'SELECT m FROM MagendMagazineBundle:Magazine m LEFT JOIN m.staffUsers u WHERE m.owner = :user OR u = :user';
-        $q = $em->createQuery($dql)->setParameter('user', $user);
-        $mags = $q->getResult();
-        $tplVars = array(
-            //'institutes' => $institutes,
-            'keywords'   => $kws,
-            'magazines'   => $mags,
-            'article'    => $article,
-            'form'       => $form->createView()
-        );
+        $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+        $magazine = $repo->find($id);
         
-        $issueId = $req->get('id');
-        if ($issueId !== null) {
-            $issue = $issueRepo->find($issueId);
-            if ($issue) {
-                $tplVars['issue'] = $issue;
-            }
-        }
-
-        return $tplVars;
+        return array(
+            'magazine' => $magazine,
+            'keywords' => $kws,
+            'article'  => $article,
+            'form'     => $form->createView()
+        );
     }
     
     /**

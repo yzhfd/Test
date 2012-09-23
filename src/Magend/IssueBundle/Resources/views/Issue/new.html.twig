@@ -5,17 +5,8 @@
 {% form_theme form '::fields.html.twig' %}
 
 {% block main %}
-    <h2>{% if issue.id is not empty %}编辑{% else %}创建{% endif %}期刊</h2>
-    <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new') }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
-        <div>
-            {{ form_label(form.title, '杂志选择') }}
-            <select id="magsel" class="medium" name="magazineId">
-                {% for magazine in magazines %}
-                <option value="{{ magazine.id }}" {% if issue.magazine is not null and issue.magazine.id == magazine.id %}selected="selected"{% endif %}>{{ magazine.name }}</option>
-                {% endfor %}            
-            </select>
-        </div>
-
+    <h2>{{ issue.magazine.name }} - {% if issue.id is not empty %}编辑{% else %}创建{% endif %}期刊</h2>
+    <form id="issue_form" action="{% if issue.id is null %}{{ path('issue_new', {'id':app.request.get('id')}) }}{% else %}{{ path('issue_edit', { 'id':issue.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
         {{ form_label(form.year, '年') }}
         {{ form_errors(form.year) }}{{ form_widget(form.year, { 'attr':{'class':'small'} }) }}
         
