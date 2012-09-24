@@ -1,6 +1,7 @@
 <form id="article_form" action="{% if article.id is null %}{{ path('article_new', {'id':app.request.get('id')}) }}{% else %}{{ path('article_edit', { 'id':article.id }) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     {{ form_label(form.title, '期刊选择') }}
     <select id="issuesel" class="medium" name="issueId" required=true>
+        {% if magazine is not defined and issue is not empty %}{% set magazine = issue.magazine %}{% endif %}
         {% include 'MagendMagazineBundle:Magazine:issueOptions.html.twig' with {'issues':magazine.issues} %}
     </select>
     

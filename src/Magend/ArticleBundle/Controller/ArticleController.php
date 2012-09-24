@@ -330,9 +330,6 @@ class ArticleController extends Controller
             }
         }
         
-        $magRepo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
-        $mags = $magRepo->findAll();
-        
         $articleIds = $issue->getArticleIds();
         $index = array_search($id, $articleIds);
         $prev = $next = null; // id of previous and next page
@@ -349,7 +346,6 @@ class ArticleController extends Controller
             //'institutes' => $institutes,
             'keywords'  => $kws,
             'issue'     => $issue,
-            'magazines'  => $mags,
             'article'   => $article,
             'form'      => $form->createView(),
             'prev'      => $prev,

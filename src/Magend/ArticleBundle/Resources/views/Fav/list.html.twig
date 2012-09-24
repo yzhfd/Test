@@ -25,7 +25,7 @@
                         <td><a href="{{ path('article_edit', { 'id':fav.article.id}) }}">{{ fav.article.title }}</a></td>
                         <td>{{ fav.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:50px;">
-                             <a rel="confirm" href="#" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
+                             <a rel="confirm" href="{{ path('article_fav_del', { 'id':fav.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
                         </td>
                     </tr>
                     {% endfor %}
