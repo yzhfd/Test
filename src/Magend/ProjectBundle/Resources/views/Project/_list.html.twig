@@ -1,0 +1,36 @@
+<table>
+    <thead><tr>
+        <th style="width: 20px;"><input class="check-all" type="checkbox" /></th>
+        <th>名称</th>
+        <th>缩略图</th>
+        <th>操作</th>
+    </tr></thead>
+ 
+    <tfoot><tr>
+        <td colspan="6">
+            <!--<div class="bulk-actions align-left">
+                <select name="dropdown" class="small">
+                    <option value="option1">选择...</option>
+                    <option value="option3">删除</option>
+                </select>
+                <a class="button" href="#">执行</a>
+            </div>-->
+            
+            <div class="clear"></div>
+        </td>
+    </tr></tfoot>
+ 
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td><input type="checkbox" /></td>
+            <td><a href="#">{{ project.name }}</a></td>
+            <td>{% if project.thumbnail %}<a rel="colorbox" href="{{ asset('uploads/' ~ project.thumbnail) }}"><img style="width: 40px; height: 30px;" src="{{ asset('uploads/' ~ project.thumbnail) }}" /></a>{% endif %}</td>
+            <td style="width:50px;">
+                 <a rel="dialog" href="{{ path('proj_edit', { 'id':project.id } ) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
+                 <a rel="confirm" href="{{ path('proj_del', { 'id':project.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

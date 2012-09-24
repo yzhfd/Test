@@ -2,6 +2,7 @@
 
 namespace Magend\InstituteBundle\Controller;
 
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Magend\BaseBundle\Controller\BaseController as Controller;
@@ -26,6 +27,14 @@ class InstituteController extends Controller
         $arr = $this->getList('MagendInstituteBundle:Institute');
         $arr['institutes'] = $arr['entities'];
         unset($arr['entities']);
+        
+        
+        if ($this->getRequest()->get('_route') == '_internal') {
+            return $this->get('templating')->renderResponse(
+                'MagendInstituteBundle:Institute:_list.html.twig',
+                $arr
+            );
+        }
         return $arr;
     }
     
@@ -39,7 +48,7 @@ class InstituteController extends Controller
         $repo = $this->getDoctrine()->getRepository('MagendInstituteBundle:Institute');
         $inst = $repo->find($id);
         if (!$inst) {
-            throw new \ Exception('Institute not found');
+            throw new Exception('Institute not found');
         }
         
         $em = $this->getDoctrine()->getEntityManager();
@@ -84,7 +93,7 @@ class InstituteController extends Controller
             $repo = $this->getDoctrine()->getRepository('MagendInstituteBundle:Institute');
             $institute = $repo->find($id);
             if (!$institute) {
-                throw new \ Exception('Institute not found');
+                throw new Exception('Institute not found');
             }
         }
         

@@ -42,7 +42,8 @@ class RegistrationController extends BaseController
         $form = $this->container->get('fos_user.registration.form');
         $formHandler = $this->container->get('fos_user.registration.form.handler');
         $confirmationEnabled = $this->container->getParameter('fos_user.registration.confirmation.enabled');
-
+        
+        $sess = $this->container->get('session');
         $process = $formHandler->process($confirmationEnabled);
         if ($process) {
             $user = $form->getData();
@@ -54,7 +55,11 @@ class RegistrationController extends BaseController
                 $this->authenticateUser($user);
             }
             
-            return new RedirectResponse($this->container->get('router')->generate('home'));
+            if ($sess->get('in_web')) {
+                return new RedirectResponse($this->container->get('router')->generate('home'));
+            } else {
+                return $this->container->get('templating')->renderResponse('MagendUserBundle:User:user.xml.twig');
+            }
         } else if ($this->container->get('request')->getMethod() == 'POST') {
             $errors = $this->getErrorMessages($form);
             return $this->container->get('templating')->renderResponse(
@@ -63,6 +68,7 @@ class RegistrationController extends BaseController
             );
         }
         
+        $this->container->get('session')->set('in_web', true);
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Registration:register.html.'.$this->getEngine(), array(
             'form' => $form->createView(),
             'theme' => $this->container->getParameter('fos_user.template.theme'),

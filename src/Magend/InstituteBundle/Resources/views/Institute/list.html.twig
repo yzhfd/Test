@@ -14,54 +14,8 @@
         </div> <!-- End .content-box-header -->
                 
         <div class="content-box-content">
-            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
-            <table>
-                <thead><tr>
-                    <th><input class="check-all" type="checkbox" /></th>
-                    <th>机构名称</th>
-                    <th>缩略图</th>
-                    <th>简介</th>
-                    <th>链接</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
-                </tr></thead>
-             
-                <tfoot><tr>
-                    <td colspan="6">
-                        <!--<div class="bulk-actions align-left">
-                            <select name="dropdown" class="small">
-                                <option value="option1">选择...</option>
-                                <option value="option3">删除</option>
-                            </select>
-                            <a class="button" href="#">执行</a>
-                        </div>-->
-                        
-                        {% if pager.haveToPaginate() %}{{ pagerfanta(pager, 'magend') }}{% endif %}
-                        <div class="clear"></div>
-                    </td>
-                </tr></tfoot>
-             
-                <tbody>
-                    {% for institute in institutes %}
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td><a href="#intro_{{ institute.id }}" rel="facebox" title="查看详细">{{ institute.name }}</a></td>
-                        <td>{% if institute.thumbnail is not null %}<a href="#" title="放大"><img width="128" height="96" src="{{ asset('uploads/' ~ institute.thumbnail) }}" /></a>{% endif %}</td>
-                        <td style="width: 240px;">
-                            {{ institute.intro|truncate(100) }}
-                            <div class="hide" id="intro_{{ institute.id }}">{{ institute.intro|nl2br }}</div>
-                        </td>
-                        <td><a title="{{ institute.link }}" href="{{ institute.link }}" target="_blank">{{ institute.link|replace({'http://':''})|truncate(15) }}</a></td>
-                        <td>{{ institute.createdAt|date('Y-m-d H:i') }}</td>
-                        <td style="width:50px;">
-                            <!-- Icons -->
-                             <a rel="dialog" href="{{ path('institute_edit', { 'id':institute.id }) }}" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                             <a rel="confirm" href="{{ path('institute_del', { 'id':institute.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> 
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="tab-content default-tab" id="tab1">
+            {% include 'MagendInstituteBundle:Institute:_list.html.twig' %}
             </div>
         </div>
     </div><!-- End Content Box -->

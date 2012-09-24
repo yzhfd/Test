@@ -2,6 +2,8 @@
 
 namespace Magend\UserBundle\Controller;
 
+use Exception;
+use DateTime;
 use Magend\BaseBundle\Controller\BaseController as Controller;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +37,7 @@ class AccessController extends Controller
         try {
             // token will be authenticated token on success
             $token = $this->get('security.authentication.manager')->authenticate($token);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error = $this->get('translator')->trans($e->getMessage());
         }
         
@@ -43,7 +45,7 @@ class AccessController extends Controller
             $user = $token->getUser();
             if ($user instanceof User) {
                 // @todo from which device
-                $user->setLastLogin(new \DateTime());
+                $user->setLastLogin(new DateTime());
                 $um = $this->get('magend.user_manager');
                 $um->updateUser($user);
                 

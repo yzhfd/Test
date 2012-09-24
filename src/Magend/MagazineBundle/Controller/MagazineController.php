@@ -47,7 +47,7 @@ class MagazineController extends Controller
         $cprs = $magazine->getCopyrightArticles();
         $noCopyrightArticle = empty($cprs) || $cprs->isEmpty();
         return array(
-            'magazine'            => $magazine,
+            'magazine'           => $magazine,
             'copyrightArticles'  => $cprs,
             'noCopyrightArticle' => $noCopyrightArticle
         );
@@ -60,8 +60,9 @@ class MagazineController extends Controller
      */
     public function classifyAction($id)
     {
-        
-        return array();
+        $repo = $this->getDoctrine()->getRepository('MagendMagazineBundle:Magazine');
+        $magazine = $repo->find($id);
+        return array('magazine' => $magazine);
     }
     
     /**

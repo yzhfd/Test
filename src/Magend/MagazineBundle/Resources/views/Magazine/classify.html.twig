@@ -2,8 +2,30 @@
 
 {% block contentTitle %}分类定义{% endblock %}
 
-{% block main %}
-
-{% render 'MagendProjectBundle:Project:list' %}
-                    
+{%block main %}
+    <div class="content-box">
+        <div class="content-box-header">
+            <h3>分类定义</h3>
+            {% if magazine.id == 1 %}
+            <ul class="content-box-tabs">
+                <li><a href="#proj_list" class="default-tab">项目类型</a></li>
+                <li><a href="#institute_list">设计机构</a></li>
+            </ul>
+            <div class="clear"></div>
+            {% endif %}
+        </div>
+        
+        <div class="content-box-content">
+            {% if magazine.id == 1 %}
+            <div id="proj_list" class="tab-content default-tab">
+            {% render 'MagendProjectBundle:Project:list' %}
+            </div>
+            
+            <div id="institute_list" class="tab-content" style="display: none;">
+            {% render 'MagendInstituteBundle:Institute:list' %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
 {% endblock %}

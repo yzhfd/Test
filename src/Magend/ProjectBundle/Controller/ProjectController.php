@@ -24,6 +24,12 @@ class ProjectController extends Controller
         $projectRepo = $this->getDoctrine()->getRepository('MagendProjectBundle:Project');
         $projects = $projectRepo->findAll();
         
+        if ($this->getRequest()->get('_route') == '_internal') {
+            return $this->get('templating')->renderResponse(
+                'MagendProjectBundle:Project:_list.html.twig',
+                array('projects' => $projects)
+            );
+        }
         return array('projects' => $projects);
     }
 
