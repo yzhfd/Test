@@ -81,6 +81,23 @@ class CommentController extends Controller
     }
     
     /**
+     * Delete comment
+     * 
+     * @Route("/{id}/comment/del", name="article_comment_del", requirements={"id"="\d+"})
+     */
+    public function delAction($id)
+    {
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Comment');
+        $cmt = $repo->find($id);
+        $article = $cmt->getArticle();
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($cmt);
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('article_comment_list', array('id' => $article->getId())));
+    }
+    
+    /**
      * New comment by API
      * 
      * @Route("/api/{id}/comment/new", name="article_api_comment_new", requirements={"id"="\d+"})

@@ -31,10 +31,7 @@
                         <td>{{ comment.body }}</td>
                         <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
                         <td style="width:50px;">
-                        {#
-                             <a rel="dialog" href="#" title="编辑"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="编辑" /></a>
-                             <a rel="confirm" href="#" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
-                        #} 
+                             <a rel="confirm" href="{{ path('article_comment_del', {'id':comment.id}) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a>
                         </td>
                     </tr>
                     {% endfor %}
