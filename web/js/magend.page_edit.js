@@ -216,6 +216,7 @@ var page_edit = function () {
 		});
 		form.attr('id', hot.cid + '_form');
 		form.attr('title', form.closest('.hots_group').parent().find('label.hots_group').text());
+		hot.typeText = form.attr('title');
 		
 		// last step
 		pageCanvas.hots.add(hot);
@@ -258,6 +259,7 @@ var page_edit = function () {
 			var hotForm = newForm.find('.hot_form');
 			hotForm.attr('id', hot.cid + '_form');
 			hotForm.attr('title', ui.draggable.attr('title'));
+			hot.typeText = hotForm.attr('title');
 			
 			// last step
 			pageCanvas.hots.add(hot);

@@ -13,8 +13,8 @@ var Hot = Backbone.Model.extend({
 		y: 0,
 		width: 40,
 		height: 40,
-        locked: 0,   // if element's position is locked or not, persistent
-        ratioLocked: 0 // if element's aspect ratio is locked or not (when resizing), persistent
+        locked: false,   // if element's position is locked or not, persistent
+        ratioLocked: false // if element's aspect ratio is locked or not (when resizing), persistent
 	},
 	isEdited: false, // true if confirm on edit dialog
 	layoutChanged: false, // true if being moved/resized/deleted
@@ -23,6 +23,7 @@ var Hot = Backbone.Model.extend({
     hasSaved: function () {
         return !(this.isNew() || this.isEdited || this.layoutChanged);
     },
+    typeText: '热区', // 单图，链接，etc
     examineContentImage: function () {
         var dfd  = jQuery.Deferred();
         var self = this;
@@ -129,7 +130,17 @@ var HotView = Backbone.View.extend({
 	    });
 	    hotel.data('cid', this.model.cid);
 	    hotel.append('<div class="hot-content"></div>'); // put text, image or any other content here
-	    hotel.append('<div class="hot-toolbar"><span class="position-indicator"></span>热区<span class="size-indicator"></span></div>');
+	    hotel.append('<div class="hot-toolbar"><a class="position-locker unlock" title="位置已解锁" href="#"></a><span class="position-indicator"></span>'
+	    			+ this.model.typeText
+	    			+ '<span class="size-indicator"></span><a class="size-locker unlock" title="缩放比例已解锁" href="#"></a></div>');
+	    hotel.find('a.position-locker').click(_.bind(function(){
+	    	this.model.set({locked:!this.model.get('locked')});
+	    	return false;
+	    }, this));
+	    hotel.find('a.size-locker').click(_.bind(function(e){
+	    	this.model.set({ratioLocked:!this.model.get('ratioLocked')});
+	    	return false;
+	    }, this));
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
@@ -141,7 +152,7 @@ var HotView = Backbone.View.extend({
     				x: $(this.el).position().left,
     				y: $(this.el).position().top
     			});
-    			hotel.find('.position-indicator').text([$(this.el).position().left, $(this.el).position().top].join('x'));
+    			hotel.find('.position-indicator').text('');
     			// this.model.save();
 			}, this)
 		}).resizable({
@@ -149,7 +160,7 @@ var HotView = Backbone.View.extend({
 			minHeight: this.model.minHeight | 10,
 			containment: 'parent',
 			handles: 'n, e, s, w, ne, se, sw, nw',
-			aspectRatio: !!parseInt(this.model.get('ratioLocked'), 10),
+			aspectRatio: this.model.get('ratioLocked'),
 			// support shift fixed aspectRatio
 			start: function (e) {
 				// hotel.css('overflow', 'hidden');
@@ -167,7 +178,7 @@ var HotView = Backbone.View.extend({
 					width: $(this.el).width(),
 					height: $(this.el).height()
 				});
-                hotel.find('.size-indicator').text([Math.round($(this.el).width()), Math.round($(this.el).height())].join('x'));
+                hotel.find('.size-indicator').text('');
 				hotel.css('overflow', 'visible');
 			}, this)
 		});
@@ -225,10 +236,18 @@ var HotView = Backbone.View.extend({
     	this.model.layoutChanged = true;
     },
     updatePositionLock: function () {
-        $(this.el).draggable('option', 'disabled', !!parseInt(this.model.get('locked'), 10));
+    	var locked = this.model.get('locked');
+    	var locker = $(this.el).find('.position-locker');
+    	locked ? locker.removeClass('unlock').attr('title', '位置已锁定').addClass('lock')
+    		   : locker.removeClass('lock').attr('title', '位置已解锁').addClass('unlock');
+        $(this.el).draggable('option', 'disabled', locked);
     },
     updateRatioLock: function () {
-        $(this.el).resizable('option', 'aspectRatio', !!parseInt(this.model.get('ratioLocked'), 10));
+    	var locked = this.model.get('ratioLocked');
+    	var locker = $(this.el).find('.size-locker');
+    	locked ? locker.removeClass('unlock').attr('title', '缩放比例已锁定').addClass('lock')
+    		   : locker.removeClass('lock').attr('title', '缩放比例已解锁').addClass('unlock');
+        $(this.el).resizable('option', 'aspectRatio', locked);
     },
     remove: function (e) {
     	// this.model.destroy(); // not really destroyed but garbaged, so can be undone

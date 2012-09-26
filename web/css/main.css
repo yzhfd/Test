@@ -328,14 +328,19 @@ ol, ul { list-style: none; }
 .hot .hot-toolbar {
     display: none; position: absolute; z-index: 2000;
     top:-31px; left:-1px; border-left:1px solid black; border-right:1px solid black; border-top:2px solid royalblue;
-    width:100%; min-width: 230px; height:24px; padding: 2px 0;
+    width:100%; min-width: 210px; height:24px; padding: 2px 0;
     background-color: black; color: white;
     border-top-left-radius: 2px; border-top-right-radius: 2px;
     opacity: 1.0; text-align: center; line-height:24px; font-weight: bold; font-size: 14px;
 }
 .hotsel .hot-toolbar { display: block; }
-.hot .position-indicator { float:left; font-size:13px; margin-left:2px; }
-.hot .size-indicator { float:right; font-size:13px; margin-right:2px; }
+.hot .position-indicator { position:absolute; width:60px; left:22px; text-align: left; font-size:13px; margin-left:2px; }
+.hot .size-indicator { position:absolute; width:60px; right:22px; text-align:right; font-size:13px; margin-right:2px; }
+.hot .position-locker, .hot .size-locker { position: absolute; display: block; width:18px; height:18px; top:5px; }
+.hot .position-locker { left: 2px; }
+.hot .size-locker { right: 2px; }
+.hot .position-locker.lock, .hot .size-locker.lock { background:transparent url('../images/lock.png') center center repeat; }
+.hot .position-locker.unlock, .hot .size-locker.unlock { background:transparent url('../images/unlock.png') center center repeat; }
 li.ui-selected { background-color: rgba(255, 0, 0, 0.5); }
 #hot_dialog { display: none; }
 table.bordered-table {
