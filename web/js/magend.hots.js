@@ -128,17 +128,20 @@ var HotView = Backbone.View.extend({
 	    	height: parseInt(this.model.get('height'))
 	    });
 	    hotel.data('cid', this.model.cid);
-	    // hotel.append('<div class="size-indicator"><div class="size-indicator-text"></div></div>'); // size indicator element
+	    hotel.append('<div class="hot-content"></div>'); // put text, image or any other content here
+	    hotel.append('<div class="hot-toolbar"><span class="position-indicator"></span>热区<span class="size-indicator"></span></div>');
 	    hotel.draggable({
 			// snap: true,
 			containment: 'parent',
-			drag: function () {
-	    	},
+			drag: _.bind(function () {
+	    		hotel.find('.position-indicator').text([$(this.el).position().left, $(this.el).position().top].join('x'));
+	    	}, this),
 			stop: _.bind(function () {
     			this.model.set({
     				x: $(this.el).position().left,
     				y: $(this.el).position().top
     			});
+    			hotel.find('.position-indicator').text([$(this.el).position().left, $(this.el).position().top].join('x'));
     			// this.model.save();
 			}, this)
 		}).resizable({
@@ -149,14 +152,14 @@ var HotView = Backbone.View.extend({
 			aspectRatio: !!parseInt(this.model.get('ratioLocked'), 10),
 			// support shift fixed aspectRatio
 			start: function (e) {
-				hotel.css('overflow', 'hidden');
+				// hotel.css('overflow', 'hidden');
 				/*if (e.shiftKey) {
 					$(this).resizable('option', 'aspectRatio', true);
 				}*/
 			},
             resize: function (event, ui) {
                 // 实时更新
-                // hotel.find('.size-indicator-text').text([Math.round(ui.size.width), Math.round(ui.size.height)].join('x'));
+                hotel.find('.size-indicator').text([Math.round(ui.size.width), Math.round(ui.size.height)].join('x'));
             },
 			stop: _.bind(function () {
 				// $(this.el).resizable('option', 'aspectRatio', false);
@@ -164,6 +167,7 @@ var HotView = Backbone.View.extend({
 					width: $(this.el).width(),
 					height: $(this.el).height()
 				});
+                hotel.find('.size-indicator').text([Math.round($(this.el).width()), Math.round($(this.el).height())].join('x'));
 				hotel.css('overflow', 'visible');
 			}, this)
 		});
@@ -195,13 +199,6 @@ var HotView = Backbone.View.extend({
 			close: function () {
 			},
     		buttons: { 
-    			/*"Cancel": {
-    				class: 'btn',
-    				text: '取消',
-    				click: function() {
-    					hotForm.dialog('close');
-    				}
-    			},*/
     			"Ok": {
     				class: 'btn btn-primary',
     				text: '确认',
