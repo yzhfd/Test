@@ -52,8 +52,14 @@ class FavController extends Controller
             return new Response(0);
         }
         $user = $repo->find($uid);
+        if (empty($user)) {
+            return new Response(0);
+        }
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
         $article = $repo->find($id);
+        if (empty($article)) {
+            return new Response(0);
+        }
         
         $fav = new Fav();
         $fav->setArticle($article);
