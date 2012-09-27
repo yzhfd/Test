@@ -119,6 +119,7 @@ var HotView = Backbone.View.extend({
     	this.model.bind('edit', this.edit, this);
     	// this.model.bind('destroy', this.remove, this); // loop as destroy on remove
     	
+    	// construct and initate the el
     	var hotel = $(this.el);
     	hotel.addClass('hot');
 	    hotel.css({

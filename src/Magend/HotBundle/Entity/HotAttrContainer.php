@@ -17,7 +17,10 @@ class HotAttrContainer
     
     private $hot;
     
-    // @todo 'required' => false
+    /**
+     * MUST
+     * 'required' => false
+     */ 
     public static $attrsDefs = array(
             1 => array(
                 'interaction' => array('type' => null, 'options' => array('label' => '互动效果', 'required' => false)),
@@ -58,10 +61,10 @@ class HotAttrContainer
                 'audioAssets' => array('type' => 'assets', 'options' => array('label' => '音频', 'type' => 'asset', 'nb_max' => 1, 'file_note' => '音频文件', 'file_formats' => 'mp3,wav', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             9 => array(
-                'autoplay' => array('type' => 'checkbox', 'options' => array('label' => '自动播放')),
-                'gravity' => array('type' => 'checkbox', 'options' => array('label' => '重力感应')),
-                'speed' => array('type' => 'choice', 'options' => array('label' => '滑动速度', 'choices' => array(1, 2, 3), 'attr' => array('class' => 'span1'))),
-                'bar' => array('type' => 'checkbox', 'options' => array('label' => '显示控制条')),
+                'autoplay' => array('type' => 'checkbox', 'options' => array('label' => '自动播放', 'required' => false)),
+                'gravity' => array('type' => 'checkbox', 'options' => array('label' => '重力感应', 'required' => false)),
+                'speed' => array('type' => 'choice', 'options' => array('label' => '滑动速度', 'choices' => array(1, 2, 3), 'attr' => array('class' => 'span1'), 'required' => false)),
+                'bar' => array('type' => 'checkbox', 'options' => array('label' => '显示控制条', 'required' => false)),
                 'imgAssets' => array('type' => 'assets', 'options' => array('label' => '序列图片', 'type' => 'asset', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             10 => array(
