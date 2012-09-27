@@ -29,6 +29,16 @@ class Issue
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * @var IAP
+     * 
+     * @ORM\OneToOne(
+     *     targetEntity="Magend\IAPBundle\Entity\IAP",
+     *     mappedBy="issue"
+     * )
+     */
+    private $iap;
 
     /**
      * @var string $title
@@ -357,6 +367,16 @@ class Issue
         if ($this->getEnPreview()) {
             @unlink(__DIR__.'/../../../../web/uploads/' . $this->getEnPreview());
         }
+    }
+    
+    public function getIAP()
+    {
+        return $this->iap;
+    }
+    
+    public function setIAP($iap)
+    {
+        $this->iap = $iap;
     }
     
     public function getMagazine()

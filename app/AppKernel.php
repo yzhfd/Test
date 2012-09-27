@@ -47,6 +47,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Magend\NewsBundle\MagendNewsBundle(),
             new Magend\OperationBundle\MagendOperationBundle(),
+            new Magend\IAPBundle\MagendIAPBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

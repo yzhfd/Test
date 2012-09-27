@@ -1,0 +1,12 @@
+{% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
+
+{% block main %}
+    <form id="iap_form" style="width:480px; margin-top:10px;" action="{{ path('iap_distribute', {'id':app.request.get('id')}) }}" method="post" {{ form_enctype(form) }}>
+        {{ form_label(form.iapId) }}
+        {{ form_errors(form.iapId) }}{{ form_widget(form.iapId) }}
+        
+        {{ form_rest(form) }}
+        
+        <div class="actions"><button class="btn btn-primary" type="submit">提 交</button></div>
+    </form>
+{% endblock %}

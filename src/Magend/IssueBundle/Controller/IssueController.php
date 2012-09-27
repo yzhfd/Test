@@ -20,6 +20,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Magend\IssueBundle\Util\SimpleImage;
+use Magend\IAPBundle\Entity\IAP;
 use Doctrine\ORM\NoResultException;
 
 /**
@@ -582,6 +583,13 @@ class IssueController extends Controller
                 $issue->setMagazine($mag);
                 $em->persist($issue);
             }
+            
+            if ($issue->getIAP() == null && $issue->getPriceLevel() > 0) {
+                $iap = new IAP();
+                $iap->setIssue($issue);
+                $em->persist($iap);
+            }
+            
             $em->flush();
             
             if ($req->isXmlHTTPRequest()) {

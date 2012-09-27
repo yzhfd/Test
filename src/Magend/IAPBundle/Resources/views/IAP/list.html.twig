@@ -1,0 +1,49 @@
+{% extends '::base.html.twig' %}
+
+{% block main %}
+    <div class="content-box"><!-- Start Content Box -->
+        <div class="content-box-header">
+            <h3>IAP申请列表</h3>
+        </div> <!-- End .content-box-header -->
+                
+        <div class="content-box-content">
+            <div class="tab-content default-tab" id="tab1"> <!-- This is the target div. id must match the href of this div's tab -->
+            <table>
+                <thead><tr>
+                    <th>期刊名称</th>
+                    <th>IAP ID</th>
+                    <th>收费信息</th>
+                    <th>IAP状态</th>
+                    <th>申请时间</th>
+                    <th>分发时间</th>
+                    <!-- <th>所属杂志</th> -->
+                    <th>操作</th>
+                </tr></thead>
+             
+                <tfoot><tr>
+                    <td colspan="6">
+                        <div class="clear"></div>
+                    </td>
+                </tr></tfoot>
+             
+                <tbody>
+                    {% for iap in iaps %}
+                    <tr>
+                        <td>{{ iap.issue.title }}</td>
+                        <td>{{ iap.issue.iapId }}</td>
+                        <td>{{ iap.issue.priceDescription }}</td>
+                        <td>{{ iap.issue.iapId ? '完成' : '申请中' }}</td>
+                        <td>{{ iap.createdAt|date('Y-m-d') }}</td>
+                        <td>{% if iap.distributedAt %}{{ iap.distributedAt|date('Y-m-d') }}{% endif %}</td>
+                        <td style="width:50px;">
+                             <a rel="dialog" href="{{ path('iap_distribute', { 'id':iap.id } ) }}" title="分发ID"><img src="{{ asset('images/simpla/icons/pencil.png') }}" alt="分发ID" /></a>
+                             {# <a rel="confirm" href="{{ path('iap_del', { 'id':news.id }) }}" title="删除"><img src="{{ asset('images/simpla/icons/cross.png') }}" alt="删除" /></a> #} 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div><!-- End Content Box -->
+{% endblock %}

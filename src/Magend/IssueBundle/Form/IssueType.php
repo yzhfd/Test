@@ -22,7 +22,7 @@ class IssueType extends AbstractType
                     '2'=>'1.99$/12¥ ',
                     '3'=>'2.99$/18¥ ')
             ))
-            ->add('iapId', null, array('required' => false))
+            ->add('iapId', null, array('required' => false, 'read_only' => true))
             ->add('landscapeCoverFile', 'file', array('required'=>false))
             ->add('portraitCoverFile', 'file', array('required'=>false))
             ->add('previewFile', 'file', array('required'=>false))
