@@ -88,6 +88,13 @@ class Asset
      * @ORM\Column(name="info", type="text", nullable=true)
      */
     private $info;
+    
+    /**
+     * @var text $enInfo
+     *
+     * @ORM\Column(name="en_info", type="text", nullable=true)
+     */
+    private $enInfo;
 
     /**
      * @var datetime $createdAt
@@ -240,6 +247,26 @@ class Asset
     public function getInfo()
     {
         return $this->info;
+    }
+    
+    /**
+     * Set enInfo
+     *
+     * @param text $enInfo
+     */
+    public function setEnInfo($enInfo)
+    {
+        $this->enInfo = $enInfo;
+    }
+
+    /**
+     * Get enInfo
+     *
+     * @return text 
+     */
+    public function getEnInfo()
+    {
+        return $this->enInfo;
     }
     
     public function getHot()
