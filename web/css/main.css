@@ -15,15 +15,15 @@ h1, h2, h3, h4, h5, h6, li { line-height: normal !important; }
 button::-moz-focus-inner {
   border: 0;
 }
-.hot_field {
-	margin-bottom: 4px;
-}
+.hot_field { margin-bottom: 4px; }
 .hot_field label {
     margin: 0 5px 0 2px;
     width: auto !important;
     float: none;
     display: inline !important;
 }
+.y-wrapper { position:absolute; top:10px; left: 130px; }
+.h-wrapper { position:absolute; top: 40px; left:100px; }
 .hot_field input { margin-bottom: 2px; }
 label.hidelabel { display:none !important; }
 .newPages { padding: 10px 0 0 0px; }
