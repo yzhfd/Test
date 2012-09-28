@@ -34,7 +34,7 @@
     <li class="hotimg">
         {% set asset = form.get('value') %}
         <a href="{% if asset is empty %}#{% else %}{{ path('page_del', { 'id':asset.id }) }}{% endif %}" class="pagedel"></a>
-        <a class="imgwrapper" href="#" title="{% if asset is empty %}#{% else %}{{ asset.tag }}{% endif %}">
+        <a class="imgwrapper" rel="tooltip" data-placement="right" href="#" title="{% if asset is empty %}#{% else %}{{ asset.width }}x{{ asset.height }}<br/>{{ asset.tag }}{% endif %}">
             <img width="128" height="96" src="{% if asset is not empty %}{% if asset.isImage %}{{ ('uploads/' ~ asset.resource)|apply_filter('landscapeThumb') }}{% elseif asset.isVideo %}{{ asset('images/video.png') }}{% elseif asset.isAudio %}{{ asset('images/audio.png') }}{% endif %}{% endif %}" />
         </a>
         

@@ -58,7 +58,8 @@ $(document).ready(function(){
 		window.location = $(this).val();
 	});
 	
-	//$('a[rel*=tipsy]').twipsy();
+	$('a[rel=tooltip]').tooltip();
+	
 	$('a[rel*=confirm]').live('click', function(e){		
 		var title = $(this).attr('title');
 		if (!title) title = $(this).attr('data-original-title');

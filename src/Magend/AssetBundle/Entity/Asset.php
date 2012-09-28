@@ -329,4 +329,18 @@ class Asset
     {
         return $this->createdAt;
     }
+    
+    public function getWidth()
+    {
+        $imgPath = __DIR__.'/../../../../web/uploads/' . $this->getResource();
+        list($width, $height) = getimagesize($imgPath);
+        return $width;
+    }
+    
+    public function getHeight()
+    {
+        $imgPath = __DIR__.'/../../../../web/uploads/' . $this->getResource();
+        list($width, $height) = getimagesize($imgPath);
+        return $height;
+    }
 }
