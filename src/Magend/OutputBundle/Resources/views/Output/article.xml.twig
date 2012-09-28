@@ -25,6 +25,7 @@
                 {% for asset in hot.assets %}
                     <Asset>{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ asset.resource) }}</Asset>
                     <Info><![CDATA[{{ asset.info }}]]></Info>
+                    <EnInfo><![CDATA[{{ asset.enInfo }}]]></EnInfo>
                 {% endfor %}
                 </Assets>
                 
