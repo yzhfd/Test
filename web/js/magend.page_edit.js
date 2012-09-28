@@ -139,9 +139,9 @@ var page_edit = function () {
 	});
 	
 	$('html').on('dblclick', 'a.imgwrapper', function(e){
-		var info = $(this).parent().find('.asset_info').val();
-		var textarea = $('#assetInfoDialog textarea');
-		textarea.val(info);
+		$('#assetInfoDialog textarea.info').val($(this).parent().find('.asset_info').val());
+		$('#assetInfoDialog textarea.enInfo').val($(this).parent().find('.asset_enInfo').val());
+		
 		$('#assetInfoDialog').data('asset', $(this).parent());
 		$('#assetInfoDialog').modal('show');
 		return false;
@@ -150,7 +150,8 @@ var page_edit = function () {
 	$('#asset-info-done').click(function(e){
 		var asset = $('#assetInfoDialog').data('asset');
 		if (asset) {
-			asset.find('.asset_info').val($('#assetInfoDialog textarea').val());
+			asset.find('.asset_info').val($('#assetInfoDialog textarea.info').val());
+			asset.find('.asset_enInfo').val($('#assetInfoDialog textarea.enInfo').val());
 		}
 		$('#assetInfoDialog').modal('hide');
 		return false;
