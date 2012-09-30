@@ -54,6 +54,7 @@ class HotAttrContainer
             ),
             7 => array(
                 'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '嵌入', 1 => '点击全屏浏览'))),
+                'link' => array('type' => null, 'options' => array('label' => '视频链接', 'required' => false)),
                 'videoAssets' => array('type' => 'assets', 'options' => array('label' => '视频', 'type' => 'asset', 'nb_max' => 1, 'file_note' => '视频文件', 'file_formats' => 'mp4,avi', 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
             8 => array(
