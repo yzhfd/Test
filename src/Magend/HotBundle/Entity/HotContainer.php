@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class HotContainer
 {
+    // 改变下面数组前面的数字序列会导致数据库中的数据错误，如需改变，注意更新数据
     public static $hotsDefs = array(
             1 => array('name' => 'furnitureDetailHots',  'label' => '单品家具展示热区', 'span' => '单品家具'),
             2 => array('name' => 'slideLayerHots', 'label' => '滑动图层热区', 'span' => '滑动图层'),
@@ -17,6 +18,7 @@ class HotContainer
             8 => array('name' => 'audioHots', 'label' => '音频热区', 'span' => '音频', 'class' => 'hotaudio'),
             9 => array('name' => 'seqImagesHots', 'label' => '序列图热区', 'span' => '序列图', 'class' => 'hotseq'),
             10 => array('name' => 'mapHots', 'label' => '地图热区', 'span' => '地图', 'class' => 'hotmap'),
+            11 => array('name' => 'textHots', 'label' => '文字热区', 'span' => '文字'), // 'class' => 'hottext'
     );
     
     private $hotCollections;

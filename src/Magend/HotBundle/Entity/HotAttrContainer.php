@@ -75,6 +75,9 @@ class HotAttrContainer
                 'subtype' => array('type' => 'choice', 'options' => array('label' => '显示方式', 'expanded' => true, 'required' => false, 'choices' => array(0 => '全屏显示', 1 => '窗口显示'))),
                 'btnAssets' => array('type' => 'assets', 'options' => array('label' => '开、关按钮', 'type' => 'asset', 'nb_max' => 2, 'allow_add' => true, 'prototype' => true, 'allow_delete' => true)),
             ),
+            11 => array(
+                'text' => array('type' => 'textarea', 'options' => array('label' => '文本', 'required' => false, 'attr'=> array('class' => 'span4', 'rows' => 6))),
+            )
     );
     
     private $attrs;

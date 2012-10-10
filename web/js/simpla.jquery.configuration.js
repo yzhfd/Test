@@ -3,6 +3,7 @@ $(document).ready(function(){
 	//Sidebar Accordion Menu:
 	$("#main-nav li ul").hide(); // Hide all sub menus
 	$("#main-nav li a.current").parent().find("ul").slideToggle("slow"); // Slide down the current menu item's sub menu
+	$("#main-nav li a.expand").parent().find("ul").slideToggle("normal"); // Slide down the current menu item's sub menu
 	
 	$("#main-nav li a.nav-top-item").click( // When a top menu item is clicked...
 		function () {
