@@ -1,0 +1,56 @@
+{% extends '::base.html.twig' %}
+
+{% block contentTitle %}开发设置{% endblock %}
+
+{% block main %}
+下文中的用户ID均为整数ID
+
+
+收藏接口
+收藏某个文章
+
+/fav/article/xxx?uid=yyy (xxx为文章ID，yyy为用户ID)
+
+
+
+删除某个特定收藏
+
+/fav/xxx/delete (xxx是收藏的ID，不是文章ID)
+
+
+某个用户收藏的文章列表
+
+/fav/user/xxx/articles?_format=xml (xxx为用户ID)
+/fav/user/xxx/articles (xxx为用户ID，网页版形式)
+
+
+注册接口
+用户ID
+
+fos_user_registration_form[username]
+
+用户昵称
+fos_user_registration_form[nickname]
+
+邮箱
+fos_user_registration_form[email]
+
+密码
+fos_user_registration_form[plainPassword][first]
+
+密码确认
+fos_user_registration_form[plainPassword][second]
+（注册成功后会以xml的形式返回新注册用户的信息）
+
+
+评论接口
+/article/api/xxx/comment/new (xxx为文章ID)
+请求方法为POST
+参数
+body，即留言内容
+uid，用户ID
+
+
+网页版管理
+/article/xxx/comment/list （留言列表，可删除）
+{% endblock %}

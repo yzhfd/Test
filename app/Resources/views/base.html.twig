@@ -86,12 +86,13 @@
                 </li>
                 
                 {% set nbWaitingIAP = getNumberOfWaitingIAP() %}
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit'] %}current{% elseif nbWaitingIAP > 0 %}expand{% endif %}">系统设置</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit', 'dev_home'] %}current{% elseif nbWaitingIAP > 0 %}expand{% endif %}">系统设置</a>
                     <ul>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li><a title="管理员后台管理" {% if currentRoute == 'sonata_admin_dashboard' %}class="current"{% endif %} href="{{ path('sonata_admin_dashboard') }}">管理后台</a></li>
                             <li><a {% if currentRoute == 'news_list' %}class="current"{% endif %} href="{{ path('news_list') }}">讯息发布</a></li>
                             <li><a {% if currentRoute == 'iap_list' or currentRoute == 'iap_edit' %}class="current"{% endif %} href="{{ path('iap_list') }}">{% if nbWaitingIAP > 0 %}<span class="badge badge-warning">{{ nbWaitingIAP }}</span> {% endif %}IAP申请</a></li>
+                            <li><a {% if currentRoute == 'dev_home' %}class="current"{% endif %} href="{{ path('dev_home') }}">开发设置</a></li>
                         {% else %}
                             <li><a {% if currentRoute == 'user_edit' %}class="current"{% endif %} href="{{ path('user_edit') }}">帐号设置</a></li>
                         {% endif %}
