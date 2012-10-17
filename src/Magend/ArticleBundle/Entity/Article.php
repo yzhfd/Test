@@ -42,19 +42,19 @@ class Article
     
     /**
      *
-     * @ORM\Column(name="page_ids", type="text")
+     * @ORM\Column(name="page_ids", type="text", nullable=true)
      */
     public $pageIds;
     
     /**
      *
-     * @ORM\Column(name="infopage_ids", type="text")
+     * @ORM\Column(name="infopage_ids", type="text", nullable=true)
      */
     public $infoPageIds;
     
     /**
      *
-     * @ORM\Column(name="structurepage_ids", type="text")
+     * @ORM\Column(name="structurepage_ids", type="text", nullable=true)
      */
     public $structurePageIds;
     
