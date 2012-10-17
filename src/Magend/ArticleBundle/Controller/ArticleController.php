@@ -387,10 +387,10 @@ class ArticleController extends Controller
                     $article->setKeywords($keywords);
                 }
                 
-                $article->setIssue($issue);
                 $em->persist($article);
                 $em->flush();
                 
+                $issue->noOp = true;
                 $issue->addArticle($article);
                 $em->flush();
                 

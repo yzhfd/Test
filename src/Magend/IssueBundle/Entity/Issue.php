@@ -128,6 +128,7 @@ class Issue
      *     targetEntity="Magend\ArticleBundle\Entity\Article",
      *     inversedBy="issues",
      *     indexBy="id",
+     *     cascade={"persist"},
      *     fetch="EXTRA_LAZY"
      * )
      * @ORM\JoinTable(name="mag_issue_article")
@@ -254,6 +255,8 @@ class Issue
      * @ORM\Column(name="iap_id", type="string", length=255, nullable=true)
      */
     private $iapId;
+    
+    public $noOp = false;
 
 
     public function __construct()

@@ -67,7 +67,7 @@ class OperationEventListener
             $op->setUser($user);
             $url = $router->generate('magazine_issues', array('id' => $entity->getId()));
             $op->setContent('编辑了杂志<a href="' . $url . '">' . $entity->getName() .  '</a>');
-        } else if ($entity instanceof Issue) {
+        } else if ($entity instanceof Issue && !$entity->noOp) { // @todo dirty fix of duplicate manytomany (article<=>issue)
             $op = new Operation();
             $op->setUser($user);
             $url = $router->generate('issue_article_list', array('id' => $entity->getId()));
