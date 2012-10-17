@@ -30,6 +30,9 @@ class IAP
      *     targetEntity="Magend\IssueBundle\Entity\Issue",
      *     inversedBy="iap"
      * )
+     * @ORM\JoinColumn(
+     *     onDelete="CASCADE"
+     * )
      */
     private $issue;
 
