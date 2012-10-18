@@ -99,6 +99,8 @@ li.hotimg a, li.hotimg img {
 	min-width: 800px;
 	/*super important for sortable*/
 }
+.copyright_off { color:#CCC !important; }
+.copyright_off:hover { color:#57A000 !important; }
 li.highlighted {
 	background-color: #FFFFAA;
 }

@@ -15,7 +15,7 @@
             <link rel="stylesheet" href="{{ asset('css/simpla/invalid.css') }}" type="text/css" media="screen" />
             <link rel="stylesheet" href="{{ asset('css/jquery.contextMenu.css') }}" type="text/css" media="screen" />
             <link rel="stylesheet" href="{{ asset('css/chosen.css') }}" type="text/css" media="screen" />
-            <link href="{{ asset('css/main.css') }}?v=0.2" rel="stylesheet" type="text/css" />  
+            <link href="{{ asset('css/main.css') }}?v=0.3" rel="stylesheet" type="text/css" />  
         {% endblock %}
         
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
@@ -86,7 +86,7 @@
                 </li>
                 
                 {% set nbWaitingIAP = getNumberOfWaitingIAP() %}
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit', 'dev_home'] %}current{% elseif nbWaitingIAP > 0 %}expand{% endif %}">系统设置</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit', 'dev_home'] %}current{% endif %}">系统设置 {% if nbWaitingIAP > 0 %}<span class="badge badge-warning">{{ nbWaitingIAP }}</span>{% endif %}</a>
                     <ul>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li><a title="管理员后台管理" {% if currentRoute == 'sonata_admin_dashboard' %}class="current"{% endif %} href="{{ path('sonata_admin_dashboard') }}">管理后台</a></li>
