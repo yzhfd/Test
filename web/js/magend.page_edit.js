@@ -63,7 +63,7 @@ var fileUploadable = function(panel) {
 		            	
 						panel.fileupload('option', 'success', function(result){
 							asset.find('.pagedel').attr('href', result.delUrl);
-							asset.find('img').attr('src', result.asset);
+							asset.find('img').attr('src', result.asset).show().css({'visibility':'visible'}); // fix chrome
 							asset.find('input.asset_resource').val(result.resource);
 							asset.removeClass('unsynced');
 						});

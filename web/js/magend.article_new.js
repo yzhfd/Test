@@ -80,9 +80,10 @@ var article_new = function () {
 				(function (file) {
 		            var reader = new FileReader();
 		            reader.onload = function (e) {
-		            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a href="#" title="'
-		            			+ file.name + '"><img width="128" height="96" src="' + e.target.result + '" /></a></li>');
+		            	var page = $('<li class="page unsynced"><a href="#" class="pagedel"></a><a class="imgwrapper" href="#" title="'
+		            			+ file.name + '"><img alt="' + file.name + '" width="128" height="96" /></a></li>');
 		            	page.appendTo(pages);
+		            	page.find('img').attr('src', e.target.result);
 		            	page.data('file', file);
 		            };
 		            
@@ -150,7 +151,7 @@ var article_new = function () {
 						}
 						
 						lipage.overlay('hide').removeClass('unsynced', 'fast');
-						lipage.find('img').attr('src', result.page);
+						lipage.find('img').attr('src', result.page).show().css({'visibility':'visible'}); // fix chrome
 						lipage.removeData('file');
 						lipage.attr('rel', result.id);
 						lipage.attr('seq', result.seq);
