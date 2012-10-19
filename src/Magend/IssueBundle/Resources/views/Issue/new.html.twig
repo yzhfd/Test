@@ -1,6 +1,6 @@
 {% extends app.request.isXmlHTTPRequest() ? '::ajaxBase.html.twig' : '::base.html.twig' %}
 
-{% block title %}创建新期刊{% endblock %}
+{% block title %}{{ issue.id is not empty ? '编辑' : '创建' }}期刊{% endblock %}
 
 {% form_theme form '::fields.html.twig' %}
 
@@ -27,17 +27,17 @@
 
         {{ form_label(form.iapId, 'AppStore应用ID') }}
         {{ form_errors(form.iapId) }}{{ form_widget(form.iapId) }}
-                    
-        {{ form_label(form.landscapeCoverFile, '横版封面') }}
+        
+        {{ form_label(form.landscapeCoverFile, '横版封面') }} {% if issue.id and issue.landscapeCover %}<img width="120" height="90" src="{{ asset('uploads/' ~ issue.landscapeCover) }}" />{% endif %}
         {{ form_errors(form.landscapeCoverFile) }}{{ form_widget(form.landscapeCoverFile, { 'attr':{'class':'span2'} }) }}
 
-        {{ form_label(form.portraitCoverFile, '竖版封面') }}
+        {{ form_label(form.portraitCoverFile, '竖版封面') }} {% if issue.id and issue.portraitCover %}<img width="90" height="120" src="{{ asset('uploads/' ~ issue.portraitCover) }}" />{% endif %}
         {{ form_errors(form.portraitCoverFile) }}{{ form_widget(form.portraitCoverFile, { 'attr':{'class':'span2'} }) }}
 
-        {{ form_label(form.previewFile, '预览图') }}
+        {{ form_label(form.previewFile, '预览图') }} {% if issue.id and issue.preview %}<img width="90" height="120" src="{{ asset('uploads/' ~ issue.preview) }}" />{% endif %}
         {{ form_errors(form.previewFile) }}{{ form_widget(form.previewFile, { 'attr':{'class':'span2'} }) }}
 
-        {{ form_label(form.enPreviewFile, '英文预览图') }}
+        {{ form_label(form.enPreviewFile, '英文预览图') }} {% if issue.id and issue.enPreview %}<img width="90" height="120" src="{{ asset('uploads/' ~ issue.enPreview) }}" />{% endif %}
         {{ form_errors(form.enPreviewFile) }}{{ form_widget(form.enPreviewFile, { 'attr':{'class':'span2'} }) }}
 
         {{ form_label(form.audioFile, '背景音乐') }}

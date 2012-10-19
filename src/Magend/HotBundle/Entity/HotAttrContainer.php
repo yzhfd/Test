@@ -77,6 +77,7 @@ class HotAttrContainer
             ),
             11 => array(
                 'text' => array('type' => 'textarea', 'options' => array('label' => '文本', 'required' => false, 'attr'=> array('class' => 'span4', 'rows' => 6))),
+                'font' => array('type' => 'choice', 'options' => array('label' => '字体大小', 'required' => false, 'attr'=> array('class' => 'span1'), 'choices' => array(5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30))),
             )
     );
     
