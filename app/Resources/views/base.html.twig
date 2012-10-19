@@ -86,7 +86,7 @@
                 </li>
                 
                 {% set nbWaitingIAP = getNumberOfWaitingIAP() %}
-                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit', 'dev_home'] %}current{% endif %}">系统设置 {% if nbWaitingIAP > 0 %}<span class="badge badge-warning">{{ nbWaitingIAP }}</span>{% endif %}</a>
+                <li><a href="#" class="nav-top-item {% if currentRoute in ['sonata_admin_dashboard', 'news_list', 'user_edit', 'iap_list', 'iap_edit', 'dev_home'] %}current{% endif %}">{% if nbWaitingIAP > 0 %}<span class="badge badge-warning">{{ nbWaitingIAP }}</span>{% endif %} 系统设置</a>
                     <ul>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li><a title="管理员后台管理" {% if currentRoute == 'sonata_admin_dashboard' %}class="current"{% endif %} href="{{ path('sonata_admin_dashboard') }}">管理后台</a></li>
