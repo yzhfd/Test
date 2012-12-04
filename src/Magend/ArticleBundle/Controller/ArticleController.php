@@ -14,6 +14,7 @@ use Magend\IssueBundle\Entity\Issue;
 use Magend\ArticleBundle\Form\ArticleType;
 use Magend\KeywordBundle\Entity\Keyword;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Magend\OperationBundle\Entity\Operation;
 
 /**
  * 
@@ -389,6 +390,13 @@ class ArticleController extends Controller
                 
                 $em->persist($article);
                 $em->flush();
+                
+                $op = new Operation();
+                $user = $this->get('security.context')->getToken()->getUser();
+                $op->setUser($user);
+                $url = $this->get('router')->generate('article_edit', array('id' => $article->getId()));
+                $op->setContent('添加了文章<a href="' . $url . '">' . $article->getTitle() .  '</a>');
+                $em->persist($op);
                 
                 $issue->noOp = true;
                 $issue->addArticle($article);

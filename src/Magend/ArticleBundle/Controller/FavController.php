@@ -76,7 +76,7 @@ class FavController extends Controller
     /**
      * Delete fav
      *
-     * @Route("/del", name="article_fav_del")
+     * @Route("/delete", name="article_fav_delete")
      * 
      */
     public function delAction()

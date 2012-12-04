@@ -44,10 +44,7 @@ class OperationEventListener
             $url = $router->generate('issue_article_list', array('id' => $entity->getId()));
             $op->setContent('添加了期刊<a href="' . $url . '">' . $entity->getTitle() .  '</a>');
         } else if ($entity instanceof Article) {
-            $op = new Operation();
-            $op->setUser($user);
-            $url = $router->generate('article_edit', array('id' => $entity->getId()));
-            $op->setContent('添加了文章<a href="' . $url . '">' . $entity->getTitle() .  '</a>');
+            // 
         }
         if ($op) {
             $em->persist($op);

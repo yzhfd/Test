@@ -129,7 +129,6 @@ class Article
      * @ORM\ManyToMany(
      *     targetEntity="Magend\KeywordBundle\Entity\Keyword",
      *     inversedBy="articles",
-     *     cascade={"persist"},
      *     fetch="EXTRA_LAZY"
      * )
      * @ORM\JoinTable(name="mag_article_keyword")
@@ -651,6 +650,42 @@ class Article
             $pages = new ArrayCollection($pages);
         }
         $this->pages = $pages;
+    }
+
+    public function getMainPages()
+    {
+        $mainPages = array();
+        foreach ($this->pages as $page) {
+            if ($page->getType() == Page::TYPE_MAIN) {
+                $mainPages[] = $page;
+            }
+        }
+        
+        return $mainPages;
+    }
+    
+    public function getInfoPages()
+    {
+        $infoPages = array();
+        foreach ($this->pages as $page) {
+            if ($page->getType() == Page::TYPE_INFO) {
+                $infoPages[] = $page;
+            }
+        }
+        
+        return $infoPages;
+    }
+    
+    public function getStructurePages()
+    {
+        $structurePages = array();
+        foreach ($this->pages as $page) {
+            if ($page->getType() == Page::TYPE_STRUCTURE) {
+                $structurePages[] = $page;
+            }
+        }
+        
+        return $structurePages;        
     }
     
     /**

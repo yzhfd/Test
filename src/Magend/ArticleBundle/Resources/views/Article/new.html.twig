@@ -45,7 +45,7 @@
                 <img src="http://placehold.it/128x96" /></a>
             </li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
-                {% for page in article.pages %}
+                {% for page in article.mainPages %}
                 <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
                     <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
                     <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
@@ -68,7 +68,7 @@
                 <img src="http://placehold.it/128x96" /></a>
             </li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
-                {% for page in article.pages %}
+                {% for page in article.infoPages %}
                 <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
                     <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
                     <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
@@ -91,7 +91,7 @@
                 <img src="http://placehold.it/128x96" /></a>
             </li><!-- not empty to make sortable no wrong -->
             {% if article.id %}
-                {% for page in article.pages %}
+                {% for page in article.structurePages %}
                 <li class="page" rel="{{ page.id }}" seq="{{ page.seq }}">
                     <a href="{{ path('page_del', { 'id': page.id }) }}" class="pagedel"></a>
                     <a href="#" title=""><img src="{{ ('uploads/' ~ page.landscapeImg)|apply_filter('landscapeThumb') }}" /></a>
