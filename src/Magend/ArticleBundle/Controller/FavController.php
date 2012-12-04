@@ -76,13 +76,38 @@ class FavController extends Controller
     /**
      * Delete fav
      *
-     * @Route("/{id}/del", name="article_fav_del", requirements={"id"="\d+"})
+     * @Route("/del", name="article_fav_del")
      * 
      */
-    public function delAction($id)
+    public function delAction()
     {
+        $repo = $this->getDoctrine()->getRepository('MagendUserBundle:User');
+        $uid = $this->getRequest()->get('uid');
+        if ($uid === null) {
+            return new Response(0);
+        }
+        $user = $repo->find($uid);
+        if (empty($user)) {
+            return new Response(0);
+        }
+        $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Article');
+        $aid = $this->getRequest()->get('aid');
+        if ($aid === null) {
+            return new Response(0);
+        }
+        $article = $repo->find($aid);
+        if (empty($article)) {
+            return new Response(0);
+        }
+        
         $repo = $this->getDoctrine()->getRepository('MagendArticleBundle:Fav');
-        $fav = $repo->find($id);
+        $fav = $repo->findOneBy(array(
+            'user' => $uid,
+            'article' => $aid
+        ));
+        if (!$fav) {
+            return new Response(0); // not found
+        }
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($fav);
         $em->flush();

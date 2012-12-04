@@ -70,7 +70,7 @@ class Fav
     public function prePersist()
     {
         $this->createdAt = new DateTime;
-        $this->article->incNbFavs();
+        // $this->article->incNbFavs();
     }
     
     /**
@@ -79,7 +79,7 @@ class Fav
      */
     public function preRemove()
     {
-        $this->article->decNbFavs();
+        // $this->article->decNbFavs();
     }
     
     public function getArticle()
