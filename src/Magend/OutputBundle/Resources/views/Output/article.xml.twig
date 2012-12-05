@@ -11,7 +11,65 @@
              project_addr="{{ article.projectAddr }}"
              audio="{% if article.audio is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ article.audio) }}{% endif %}">
         
-        {% for page in article.pages %}
+        {% for page in article.mainPages %}
+        <Page id="{{ loop.index }}"
+              type="{{ page.type }}"
+              landscape="{% if page.landscapeImg is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.landscapeImg) }}{% endif %}"
+              portrait="{% if page.portraitImg is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.portraitImg) }}{% endif %}"
+              landscape_preview="{% if page.landscapeImgThumbnail is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.landscapeImgThumbnail) }}{% endif %}"
+              portrait_preview="{% if page.portraitImgThumbnail is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.portraitImgThumbnail) }}{% endif %}">
+            {% for hot in page.hots %}
+            <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.w }}" height="{{ hot.h }}">
+                
+                <Assets>
+                {% for asset in hot.assets %}
+                    <Asset>{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ asset.resource) }}</Asset>
+                    <Info><![CDATA[{{ asset.info }}]]></Info>
+                    <EnInfo><![CDATA[{{ asset.enInfo }}]]></EnInfo>
+                {% endfor %}
+                </Assets>
+                
+                <Attrs>
+                {% for key, val in hot.attrs %}
+                    <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
+                {% endfor %}
+                </Attrs>
+            
+            </Hot>
+            {% endfor %}
+        </Page>
+        {% endfor %}
+        
+         {% for page in article.infoPages %}
+        <Page id="{{ loop.index }}"
+              type="{{ page.type }}"
+              landscape="{% if page.landscapeImg is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.landscapeImg) }}{% endif %}"
+              portrait="{% if page.portraitImg is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.portraitImg) }}{% endif %}"
+              landscape_preview="{% if page.landscapeImgThumbnail is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.landscapeImgThumbnail) }}{% endif %}"
+              portrait_preview="{% if page.portraitImgThumbnail is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.portraitImgThumbnail) }}{% endif %}">
+            {% for hot in page.hots %}
+            <Hot type="{{ hot.type }}" x="{{ hot.x }}" y="{{ hot.y }}" width="{{ hot.w }}" height="{{ hot.h }}">
+                
+                <Assets>
+                {% for asset in hot.assets %}
+                    <Asset>{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ asset.resource) }}</Asset>
+                    <Info><![CDATA[{{ asset.info }}]]></Info>
+                    <EnInfo><![CDATA[{{ asset.enInfo }}]]></EnInfo>
+                {% endfor %}
+                </Assets>
+                
+                <Attrs>
+                {% for key, val in hot.attrs %}
+                    <{{key|capitalize}}>{{ val }}</{{key|capitalize}}>
+                {% endfor %}
+                </Attrs>
+            
+            </Hot>
+            {% endfor %}
+        </Page>
+        {% endfor %}
+        
+         {% for page in article.structurePages %}
         <Page id="{{ loop.index }}"
               type="{{ page.type }}"
               landscape="{% if page.landscapeImg is not null %}{{ 'http://' ~ app.request.httpHost ~ asset('uploads/' ~ page.landscapeImg) }}{% endif %}"
