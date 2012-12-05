@@ -193,7 +193,7 @@ class IssueController extends Controller
             file_put_contents($publishDir . "article$aid.xml", $response->getContent());
             
             $article->getAudio();
-            $pages = array_merge($article->getPages(), $article->getInfoPages(), $article->getStructurePages());
+            $pages = $article->getPages();
             if (empty($pages)) continue;
             
             foreach ($pages as $page) {
