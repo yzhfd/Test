@@ -30,7 +30,7 @@ class OutputManager {
         $query = $em->createQuery('SELECT a, k, p, h FROM MagendArticleBundle:Article a LEFT JOIN a.keywords k LEFT JOIN a.pages p LEFT JOIN p.hots h WHERE a = :article')
                     ->setParameter('article', $id);
         $article = $query->getSingleResult();
-        
+        $article->total_pages=  array_merge($article->getMainPages(),$article->getInfoPages(),$article->getStructurePages());
         $response = $this->render('MagendOutputBundle:Output:article.xml.twig', array(
             'article' => $article
         ));
